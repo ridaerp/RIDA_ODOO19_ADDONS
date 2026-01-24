@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_product_template_stock_re,product.template stock_re,product.model_product_template,stock_restrictions_group,1,0,0,0
-access_product_product_stock_re,product.product stock_re,product.model_product_product,stock_restrictions_group,1,0,0,0

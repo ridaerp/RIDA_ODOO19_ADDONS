@@ -1,8 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-hr_overtime_batch_user,hr_overtime_batch_user,model_hr_overtime_batch,base.group_user,1,1,1,1
-hr_overtime_batch_line_user,hr_overtime_batch_line_user,model_overtime_batch_line,base.group_user,1,1,1,1
-hr_overtime_overtime_auth,hr_overtime_overtime_auth,model_overtime_auth,base.group_user,1,1,1,1
-hr_overtime_overtime_auth_line,hr_overtime_overtime_auth_line,model_overtime_auth_line,base.group_user,1,1,1,1
-hr_overtime_overtime_sectionhead,hr_overtime_overtime_sectionhead,model_overtime_sectionhead,base.group_user,1,1,1,1
-hr_overtime_overtime_sectionhead_line,hr_overtime_overtime_sectionhead_line,model_overtime_sectionhead_line,base.group_user,1,1,1,1
-hr_overtime_overtime_report_wizard,hr_overtime_overtime_report_wizard,model_overtime_report_wizard,hr.group_hr_user,1,1,1,1
