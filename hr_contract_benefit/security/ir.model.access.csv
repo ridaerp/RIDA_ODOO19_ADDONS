@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+hr_grade_benefits_employee,hr.grade.benefits.employee.access,model_hr_grade_benefits,base.group_user,1,0,0,0
+hr_grade_benefits_admin,hr.grade.benefits.manager.access,model_hr_grade_benefits,hr.group_hr_manager,1,1,1,1
+hr_grade_benefits_officer,hr.grade.benefits.officer.access,model_hr_grade_benefits,hr.group_hr_user,1,1,1,0
+hr_salary_benefits_employee,hr.salary.benefits.employee.access,model_hr_salary_benefits,base.group_user,1,0,0,0
+hr_salary_benefits_admin,hr.salary.benefits.manager.access,model_hr_salary_benefits,hr.group_hr_manager,1,1,1,1
+hr_salary_benefits_officer,hr.salary.benefits.access.officer,model_hr_salary_benefits,hr.group_hr_user,1,1,1,0

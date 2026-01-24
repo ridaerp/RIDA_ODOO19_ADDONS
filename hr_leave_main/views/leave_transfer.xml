@@ -1,0 +1,116 @@
+<odoo>
+    <data>
+
+
+        <!-- Form -->
+
+        <record id="view_leave_transfer_form" model="ir.ui.view">
+			<field name="name">hr.leave.transfer.form</field>
+			<field name="model">hr.leave.transfer</field>
+			<field name="arch" type="xml">
+                <form string="Leave transfer">
+                    <header>
+                        <button name="action_submit" string="Submit" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+
+                        <button name="action_dpt_mgr_approve" string="Approve" invisible="state != 'dept_manager'" type="object" class="oe_highlight"/>
+                        <button name="action_reject" string="Reject" invisible="state != 'dept_manager'"  type="object" />
+
+                        <button name="action_hr_mgr_approve" string="Approve" invisible="state != 'hr_manager'"  type="object" class="oe_highlight" groups="hr_holidays.group_hr_holidays_manager"/>
+                        <button name="action_reject" string="Reject" invisible="state != 'hr_manager'"   type="object" groups="hr_holidays.group_hr_holidays_manager"/>
+
+                        <button name="action_draft" string="Set As Draft" invisible="state != 'reject'"  type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approve"/>
+                    </header>
+                    <sheet>
+                       <group>
+                           <field name="employee_id" required="1" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                           <field name="company_id" required="1" />
+                           <field name="leave_type" required="1" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                           <field name="days" required="1" readonly="state != 'draft'"/>
+                        </group>
+                    </sheet>
+                        <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+               </form>
+            </field>
+        </record>
+
+        <!-- Tree -->
+        <record id="view_hr_leave_transfer_tree" model="ir.ui.view">
+			<field name="name">hr.leave.transfer.tree</field>
+			<field name="model">hr.leave.transfer</field>
+			<field name="arch" type="xml">
+               <tree string="Leave Transfer">
+                    <field name="employee_id"/>
+                    <field name="company_id"/>
+                    <field name="leave_type"/>
+                    <field name="days"/>
+               </tree>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_hr_leave_transfer" model="ir.actions.act_window">
+			<field name="name">Leave Transfer Approve</field>
+			<field name="res_model">hr.leave.transfer</field>
+			<field name="view_mode">tree,form</field>
+            <field name="domain">[('employee_id.parent_id.user_id','=',uid)]</field>
+		</record>
+
+         <!-- My transfer -->
+        <record id="action_hr_leave_transfer_my" model="ir.actions.act_window">
+			<field name="name">My Leave Transfer</field>
+			<field name="res_model">hr.leave.transfer</field>
+            <field name="domain">[('employee_id.user_id','=',uid)]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+        <menuitem name="My Leave Transfer"
+			parent="hr_holidays.menu_hr_holidays_my_leaves"
+			id="menu_hr_leave_transfer_my"
+			action="action_hr_leave_transfer_my"
+			sequence="4"/>
+
+        <!-- leave transfer approve -->
+        <record id="action_hr_leave_transfer_approve" model="ir.actions.act_window">
+			<field name="name">Leave Transfer</field>
+			<field name="res_model">hr.leave.transfer</field>
+            <field name="domain">[('state','not in', ['draft']),('employee_id.parent_id.user_id','=',uid)]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+        <menuitem name="Leave Transfer"
+			parent="hr_holidays.hr_holidays_menu_manager_approve"
+			id="menu_hr_leave_transfer_approve"
+			action="action_hr_leave_transfer_approve"
+			sequence="5"/>
+        
+        <!-- All -->
+        <record id="action_hr_leave_transfer_all" model="ir.actions.act_window">
+			<field name="name">All Leave Transfer</field>
+			<field name="res_model">hr.leave.transfer</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+        <menuitem name="All Employee Leave Transfer"
+			parent="hr_holidays.hr_holidays_menu_manager_all"
+			id="menu_hr_leave_transfer_all"
+			action="action_hr_leave_transfer_all"
+            groups="hr_holidays.group_hr_holidays_manager"
+			sequence="4"/>
+
+        <!-- multi company rule -->
+        <record id="hr_leave_transfer_comp_rule" model="ir.rule">
+            <field name="name">hr leave transfer multi-company</field>
+            <field name="model_id" ref="model_hr_leave_transfer"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force"> ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+            <field name="active" eval="True"/>
+        </record>
+    
+
+    </data>
+</odoo>

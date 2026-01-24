@@ -1,0 +1,662 @@
+<odoo>
+    <data>
+        <record id="kpi_app_proc_form" model="ir.ui.view">
+            <field name="name">PERFROMANCE APPRAISL PROCEDURE</field>
+            <field name="model">kpi.person</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                    name="action_open_reviews"
+                                    class="oe_stat_button"
+                                    icon="fa-star"
+                                    string="Reviews">
+                                <field name="review_count" widget="statinfo" string="Reviews"/>
+                            </button>
+                        </div>
+                     <!--    <button name="action_re_evaluate_employee"
+                            string="Re-evaluate Employee"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ['approved','draft','emp_acceptance','wlm_approve']"
+                            groups="base_rida.rida_group_line_manager"/> -->
+
+                  <button name="action_print_kpi"
+                    string="Print KPI"
+                    type="object"/>
+                    <!-- class="btn-primary" invisible="state !='approved'"/> -->
+
+                        <!-- === Mid-Year & Final-Year Review Buttons === -->
+                        <!-- <button name="action_set_mid_year_review"
+                                type="object"
+                                string="Mid-Year Review"
+                                class="btn-primary"
+                                invisible="state != 'wlm_approve' or show_mid_year_button == False"
+                                groups="base_rida.rida_group_line_manager"/>
+
+                        <button name="action_set_final_year_review"
+                                type="object"
+                                string="Final-Year Review"
+                                class="oe_highlight"
+                                invisible="state != 'wlm_approve' or show_final_year_button == False"
+                                groups="base_rida.rida_group_line_manager"/> -->
+
+                        <button string="Submit" name="action_submit" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+
+                        <button string="Approve" name="action_wlm_approve" type="object" class="oe_highlight"
+                                invisible="state != 'wlm_approve'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+                        <button string="Accept" name="action_emp_acceptance" type="object" class="oe_highlight"
+                                invisible="state != 'emp_acceptance'"
+                        />
+                         <button string="Approve" name="action_lmn_approve" type="object" class="oe_highlight"
+                               invisible="state != 'wlm_approve'"  groups="base_rida.rida_group_line_manager"
+                        />
+
+                       <!--   <button string="Approve" name="action_lm_new_approve" type="object" class="oe_highlight"
+                                invisible="state != 'wlm_approve'" groups="base_rida.rida_group_line_manager"
+
+                        />  -->
+
+
+
+                        <button string="Approve" name="action_emp_approve" type="object" class="oe_highlight"
+                                invisible="state != 'emp_approve'"
+                        />
+                        <button string="Approve" name="action_director_approve" type="object" class="oe_highlight"
+                          invisible="state != 'w_director_approve'"  groups="base_rida.rida_group_line_manager"
+                        />
+                        <button string="Approve" name="action_c_level_approve" type="object" class="oe_highlight"
+                              invisible="state != 'w_c_level_approve'" groups="base_rida.rida_group_line_manager"
+                        />
+                        <button string="Approve" name="action_hr_manager_approve" type="object" class="oe_highlight"
+                                invisible="state != 'w_hr_m'" groups="base_rida.rida_hr_manager_notify"
+                        />
+                        <button string="Set to Draft" name="action_draft"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager,base_rida.rida_hr_manager_notify"
+                                type="object" invisible="state != 'reject'"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state not in ['wlm_approve','w_director_approve','w_c_level_approve','w_hr_m']"
+                                string="Reject"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager,base_rida.rida_hr_manager_notify"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,emp_acceptance,wlm_approve,emp_approve,w_director_approve,w_c_level_approve,w_hr_m,approved"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id" readonly="1"/>
+                                <field name="department_id" readonly="state != 'draft'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1" />
+                            </group>
+                            <group>
+                                <field name="review_state" string="Review Period" readonly="state != 'draft'" invisible="1"/>
+                                <field name="date" readonly="1"/>
+                                <field name="company_id"
+                                       required="1" readonly="state != 'draft'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                />
+                            </group>
+                        </group>
+                        <group string="PART I- PERSONAL">
+                            <group>
+                                <field name="employee_id"
+                                       readonly="department_id == False or state != 'draft'"
+                                       domain="['|',('department_id.parent_id', '=',department_id),'|',('department_id.parent_id.parent_id', '=',department_id),('department_id', '=',department_id),('company_id', '=',company_id)]"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="job_id"/>
+                                <field name="report_emp_id" required="1" readonly="0"
+                                />
+                            </group>
+                            <group>
+                                <field name="emp_code"/>
+                                <field name="emp_department_id" readonly="1"/>
+                                <br/>
+                                <br/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <label for="date_from" string="Period of Review "/>
+                                <div>
+                                    <field name="date_from" invisible="1"/>
+                                    <field name="date_to" invisible="1"/>
+                                    <!-- inside your form view sheet/group -->
+                                    <field name="show_mid_year_button" invisible="1"/>
+                                    <field name="show_final_year_button" invisible="1"/>
+
+                                    <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                        <span class="oe_inline">
+                                            From
+                                        </span>
+                                        <field name="date_from" readonly="state != 'draft'"
+                                               required="1" class="oe_inline" nolabel="1"/>
+                                        <span class="oe_inline">
+                                            To
+                                        </span>
+                                        <field name="date_to" readonly="state != 'draft'"
+                                               required="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="lmn_comment" readonly="state != 'approved'"/>
+                            <field name="emp_comment"
+                                   readonly="state != 'approved'" invisible="state != 'draft'"/>
+                        </group>
+                        <notebook>
+                            <page string="PART II-KPI">
+                                <h3>PART || : KEY PERFORMANCE INDICATOR WORKS</h3>
+                                <field name="kpi_ids"
+                                       readonly="state != 'draft'">
+                                    <tree string="KPI" editable="bottom">
+                                        <field name="sequence" widget="step_number" readonly="1"/>
+                                        <field name="kpi_indicator" width="290px" required="1"/>
+                                        <field name="performance_measure" required="1"/>
+                                        <field name="kpi2_weight" sum="Total Of Weight" required="1"/>
+                                        <field name="kpi2_plan_target"/>
+                                        <field name="kpi2_actual_result"/>
+                                        <field name="kpi2_score_actual" readonly="1"/>
+                                        <field name="kpi2_rating" readonly="1" required="1"/>
+                                        <field name="kpi2_weight_score" sum="TOTAL WEIGHTED SCORE"/>
+                                    </tree>
+                                </field>
+
+                                <group>
+                                    <field name="kpi2_more_info"/>
+                                </group>
+                                <table border="1" style="text-align:center"
+                                       invisible="kpi2_more_info == False">
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <h4>Rating</h4>
+                                        </th>
+                                        <th>
+                                            <p>1</p>
+                                            <h4>Far Below Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <p>2</p>
+                                            <h4>Partially Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <p>3</p>
+                                            <h4>Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <p>4</p>
+                                            <h4>Exceed Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <p>5</p>
+                                            <h4>Outstanding</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color: #f2f2f2;">
+                                            <h4>General Guidelines</h4>
+                                        </td>
+                                        <td>
+                                            <h4>Well BELOW job requirements. Significant improvement must occur
+                                                immediately
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>MEET SOME performance standards for the position. Clear need for
+                                                consistency in
+                                                meeting all requirements
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>FULLY ACCEPTABLE performance/behaviours in a position where a high
+                                                standard is
+                                                required
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Performance or behaviour that are REGULARLY ABOVE EXPECTATION for the
+                                                position
+                                                most of the time
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Clearly superior behaviour/ performance contributions; regularly
+                                                /significantly
+                                                EXCEED position’s requirement all the time.
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color: #f2f2f2;">
+                                            <h4>KPIs Score = Actual Results/ Plan Target x 100</h4>
+                                        </td>
+                                        <td>
+                                            <h4>Well below requirements
+                                                Less than 70%
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Approaching requirements
+                                                70% - 90%
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Meets requirements
+                                                91% - 110%
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Above requirements
+                                                111% - 120%
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>High organizational impact
+                                                121% - 130%
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </page>
+                            <page string="PART III-COMPETENCY">
+                                <h3>PART III : COMPETENCY WORKSHEET</h3>
+                                <field name="kpi_competency_ids"
+                                       nolabel="1" readonly="state != 'draft'">
+                                    <tree string="KPI" editable="bottom" edit="True" delete="false">
+                                        <field name="name" widget="html" readonly="1" decoration-bf="1 == 1"/>
+                                        <field name="kpi_weight" sum=" Sum of Weight"/>
+                                        <field name="behavior_evaluation"/>
+                                        <field name="kpi2_rating"/>
+                                        <field name="kpi2_weight_score" sum="TOTAL WEIGHTED SCORE"/>
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="kpi3_more_info"/>
+                                </group>
+                                <table border="1" style="text-align:center"
+                                       invisible="kpi3_more_info == 'False'">
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <p>1</p>
+                                        </th>
+                                        <th>
+                                            <p>2</p>
+                                        </th>
+                                        <th>
+                                            <p>3</p>
+                                        </th>
+                                        <th>
+                                            <p>4</p>
+                                        </th>
+                                        <th>
+                                            <p>5</p>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <p>RARLY</p>
+                                        </th>
+                                        <th>
+                                            <p>OCCASIONALLY</p>
+                                        </th>
+                                        <th>
+                                            <p>CONSISTENCY</p>
+                                        </th>
+                                        <th>
+                                            <p>EXCEEDS MOST OF THE TIME</p>
+                                        </th>
+                                        <th>
+                                            <p>EXCEEDS ALL THE TIME</p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Did not exhibit/ display the behavior in work situations.
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Has minimal understanding of the behavior and sometimes exhibit it in
+                                                routine work situations.
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Has a good understanding of the behavior and tries to exhibit it in
+                                                routine work related situations.
+                                                Occasionally requires quidance/ coaching from superiors.
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Exhibits the behavior in a wide variety of work related situations. Does
+                                                not require extensive quidance/ coaching
+                                            </h4>
+                                        </td>
+                                        <td>
+                                            <h4>Clearly superior behaviour/ performance contributions; regularly
+                                                /significantly
+                                                EXCEED position’s requirement all the time.
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </page>
+                            <page string="PART IV + V Overall Rating">
+                                <h3>PART IV : OVERALL PERFORMANCE - FINANCIAL YEAR END ONLY</h3>
+                                <table border="1" style="text-align:center"
+                                >
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <p></p>
+                                        </th>
+                                        <th>
+                                            <p>ACTUAL WEIGHTED SCORE</p>
+                                        </th>
+                                        <th>
+                                            <p>WEIGHT</p>
+                                        </th>
+                                        <th>
+                                            <p>INDIVIDUAL WEIGHTED SCORE</p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total KPI (A)</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_weight_kpi"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weigh_kpi"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_score_kpi"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total Competency (B)</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_weight_competency"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weight_competency"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_score_competency"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_overall_weight"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weight_kpi_competenct"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_overall_score"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th style="background-color: #875A7B;color: white;font-size:18px">
+                                            <p>
+                                                Rating
+                                                <field name="last_rating"/>
+                                            </p>
+                                        </th>
+
+                                    </tr>
+                                </table>
+
+                                <group>
+                                    <field name="kpi4_more_info"/>
+                                </group>
+                                <table border="1" style="text-align:center"
+                                       invisible="kpi4_more_info == False">
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <p>RATING</p>
+                                        </th>
+                                        <th>
+                                            <p>INDIVIDUAL WEIGHTED SCORE</p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>1</p>
+                                            <h4>Far Below Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>Below 1.49</h4>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <p>2</p>
+                                            <h4>Partially Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>1.50 - 2.49</h4>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <p>3</p>
+                                            <h4>Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>2.50 - 3.49</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>4</p>
+                                            <h4>Exceeded Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>3.50 - 4.49</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>5</p>
+                                            <h4>Outstanding</h4>
+                                        </th>
+                                        <th>
+                                            <h4>4.50 and above</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+
+                                    </tr>
+
+                                </table>
+                            </page>
+                        </notebook>
+                    </sheet>
+                           <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_employee_kpi_view_form" model="ir.ui.view">
+            <field name="name">hr.employee.view.form.inherit.kpi</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button name="set_employee_kpi" invisible="kpi_count == False"
+                            type="object" class="oe_stat_button" icon="fa-list-alt">
+                        <field name="kpi_count" string="Employee Performance" widget="statinfo"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+
+        <record id="model_kpi_person_action_update_kpis" model="ir.actions.server">
+            <field name="name">تحديث التقييمات للكل</field>
+            <field name="model_id" ref="model_kpi_person"/> <field name="binding_model_id" ref="model_kpi_person"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_update_all_old_kpis()
+            </field>
+        </record>
+
+        <record id="kpi_app_proc_tree" model="ir.ui.view">
+            <field name="name">PERFROMANCE APPRAISL PROCEDURE</field>
+            <field name="model">kpi.person</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="req_id"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="emp_department_id"/>
+                    <field name="report_emp_id"/>
+                    <field name="display_name" string="Period of Review"/>
+                    <field name="company_id"/>
+                    <field name="review_state" widget="badge"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="kpi_app_proc_form_search" model="ir.ui.view">
+            <field name="name">PERFROMANCE APPRAISL PROCEDURE</field>
+            <field name="model">kpi.person</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <group string="Group By">
+                        <filter name="by_review_state" string="By Review Period" domain="[]"
+                                context="{'group_by':'review_state'}"/>
+                        <filter name="by_department" string="By Department"
+                        domain="[]" context="{'group_by': 'department_id'}"/>
+                        <filter name="by_employee" string="By Employee"
+                                domain="[]" context="{'group_by': 'employee_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="kpi_app_proc_action" model="ir.actions.act_window">
+            <field name="name">PERFROMANCE APPRAISL PROCEDURE</field>
+            <field name="res_model">kpi.person</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="kpi_app_report_tree" model="ir.ui.view">
+            <field name="name">KPI Reports Tree</field>
+            <field name="model">kpi.person</field>
+            <field name="arch" type="xml">
+                <tree decoration-bf="name" decoration-danger="last_rating == 1"
+                      decoration-warning="last_rating == 2"
+                      decoration-info="last_rating == 3"
+                      decoration-primary="last_rating == 4"
+                      decoration-success="last_rating == 5">
+                    <field name="name"/>
+                    <field name="req_id"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="emp_department_id"/>
+                    <field name="last_rating" options="{'no_summable': True}"/>
+                    <field name="report_emp_id"/>
+                    <field name="display_name" string="Period of Review"/>
+                    <field name="company_id"/>
+                    <field name="review_state"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kpi_app_report_action" model="ir.actions.act_window">
+            <field name="name">KPI Report for Executives</field>
+            <field name="res_model">kpi.person</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="kpi_app_report_tree"/>
+            <field name="context">{'group_by': ['department_id']}</field>
+            <field name="domain">[('state', '=', 'approved')]</field>
+        </record>
+
+        <record id="kpi_app_proc_action" model="ir.actions.act_window">
+            <field name="name">KPI for Executives</field>
+            <field name="res_model">kpi.person</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="kpi_app_proc_tree"/>
+        </record>
+
+        <menuitem name="KPI" id="kpi_root"
+                  groups="base.group_user"
+                  web_icon="kpi,static/description/icon.png"
+        />
+
+        <menuitem name="KPI for Executives" id="kpi_app_proc"
+                  parent="kpi_root"
+                  groups="base.group_user"
+                  action="kpi_app_proc_action"/>
+
+        <menuitem name="KPI Report" id="kpi_report_menu"
+                  groups="hr.group_hr_user" parent="kpi_root"
+        />
+
+        <menuitem name="KPI Report for Executives" id="kpi_exective_report"
+                  parent="kpi_report_menu"
+                  action="kpi_app_report_action"/>
+
+
+    </data>
+</odoo>

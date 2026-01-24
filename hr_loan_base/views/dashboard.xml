@@ -1,0 +1,95 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="hr_loan_kanban_view">
+            <field name="name">hr.loan.kanban</field>
+            <field name="model">hr.loan</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="total_amount"/>
+                    <field name="total_paid_amount"/>
+                    <field name="balance_amount"/>
+                    <field name="progress"/>
+                    <field name="color"/>
+                    <field name="image"/>
+                    <templates>
+                        <t t-name="kanban-box" style="width:250px;height:380px;">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)} ">
+                                <div class="row" style="margin-left:0px;">
+                                    <div class="col-xs-4">
+                                        <a type="open">
+                                            <img style="width:70px;height:100%;" t-att-src="kanban_image('hr.loan', 'image', record.id.value)" class="oe_customer_picture"/>
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-5" style="margin-left:30px;">
+                                        <h2>
+                                            <a type="open">
+                                                <field name="name"/>
+                                            </a>
+                                        </h2>
+                                        <h3>
+                                            <a type="open">
+                                                <field name="employee_id"/>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-left:0px;">
+                                    <div class="col-xs-6">
+                                        <field name="progress" widget="progressbar" style="width:120px;height:90px;cursor:pointer;">
+                                                      Progress
+                                        </field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-7">
+                                        <ul>
+                                            <li t-if="record.total_amount.raw_value">
+                                                <b>total amount:</b>
+                                                <field name="total_amount"/>
+                                            </li>
+                                            <li t-if="record.total_paid_amount.raw_value">
+                                                <b>total paid amount:</b>
+                                                <field name="total_paid_amount"/>
+                                            </li>
+                                            <li t-if="record.balance_amount.raw_value">
+                                                <b>remaining amount:</b>
+                                                <field name="balance_amount"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- <div t-if="widget.editable" class="o_project_kanban_colorpicker">
+                                    <ul class="oe_kanban_colorpicker" style="max-width:250px;" data-field="color"/>
+                                </div> -->
+                                <div class="o_dropdown_kanban dropdown">
+                                    <!-- Top-right drop down menu here... -->
+                                    <a class="dropdown-toggle btn" data-toggle="dropdown" role="menu" href="#">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <!-- Edit and Delete actions, if available: -->
+                                        <t t-if="widget.editable">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                        </t>
+                                        <t t-if="widget.deletable">
+                                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                        </t>
+                                        <!-- Color picker option: -->
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</odoo>

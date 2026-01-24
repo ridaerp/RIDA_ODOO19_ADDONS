@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="equipment_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.equipment</field>
+            <field name="default" eval="True"/>
+            <field name="description">The Equipment Has been created</field>
+        </record>
+        <record id="equipment_rej_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.equipment</field>
+            <field name="default" eval="True"/>
+            <field name="description">The Equipment Has been Rejected</field>
+        </record>
+
+        <record id="equipment_request_form_custom_view" model="ir.ui.view">
+            <field name="name">equipment.form</field>
+            <field name="model">request.equipment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state not in ['draft']"
+                                class="oe_highlight" groups="maintenance.group_equipment_manager"/>
+                        <button string="Approval" name="set_approve" type="object" invisible="state not in ['md']"
+                                class="oe_highlight" groups="base_rida.rida_group_master_data_manager"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                               invisible="state not in ['md']" string="Reject" groups="base_rida.rida_group_master_data_manager"
+                        />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,md,done"/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="code_seq" readonly="1"/>
+                            </h1>
+                            <label for="code" class="oe_edit_only"/>
+                            <h1>
+                                <field name="code" string="Code" readonly="state == 'done'"
+                                       placeholder="Equipment Code"/>
+                            </h1>
+                            <label for="name" class="oe_edit_only" string="Equipment Name"/>
+                            <h1>
+                                <field name="name" readonly="state == 'done'"
+                                       placeholder="Equipment Name"/>
+                            </h1>
+                            <field
+                                    name="tag_ids"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color'}"
+                                    placeholder="e.g. Computers"
+                                    readonly="state == 'done'"
+                            />
+                        </div>
+                        <group>
+                            <group>
+                                <field name="equipment_id" readonly="1"
+                                       invisible="state != 'done'"/>
+                                <field
+                                        name="parent_id"
+                                        readonly="not context.get('parent_id_editable', True) or state == 'done' "
+                                        options="{'no_create': True, 'no_create_edit':True}"
+
+                                />
+                                <field name="category_id" options="{'no_create': True, 'no_create_edit':True}"
+                                       context="{'default_company_id':company_id}" required="1"
+                                       readonly="state == 'done'"/>
+                                <field name="fleet_category" options="{'no_create': True, 'no_create_edit':True}"
+                                       invisible="equipment_type != 'vechicles'" required="equipment_type == 'vechicles'"
+                                       readonly="state == 'done'"/>
+
+                                <field name="analytic_account_id" options="{'no_create': True, 'no_create_edit':True}"
+                                       readonly="state == 'done' or state != 'md'" required="state == 'md'"
+                                />
+                                <field name="vechicle_id" readonly="1"/>
+                                <field name="equipment_type" invisible="1"/>
+
+                                <field name="company_id" readonly="state == 'done'"
+                                       options="{'no_create': True}"/>
+                                <field name="equipment_assign_to" readonly="state == 'done'"
+                                       widget="radio"/>
+                                <field name="employee_id" string="Employee"
+                                       options="{'no_create': True, 'no_create_edit':True}"
+                                       readonly="state == 'done'"
+                                       invisible="equipment_assign_to == 'department' or equipment_assign_to == False"/>
+                                <field name="department_id" string="Department"
+                                       options="{'no_create': True, 'no_create_edit':True}"
+                                       readonly="state == 'done'"
+                                       invisible="equipment_assign_to == 'employee' or equipment_assign_to == False"/>
+                            </group>
+                            <group>
+                                <field name="maintenance_team_id" context="{'default_company_id':company_id}"
+                                       options="{'no_create': True, 'no_create_edit':True}"
+                                       readonly="state == 'done'"/>
+                                <field name="location" string="Used in location"
+                                       readonly="state == 'done'"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Product Information" name="product_information">
+                                <group>
+                                    <group>
+                                        <field name="partner_id" options="{'no_create': True, 'no_create_edit':True}"
+                                               readonly="state == 'done'"/>
+                                        <field name="partner_ref" readonly="state == 'done'"/>
+                                        <field name="model" readonly="state == 'done'"/>
+                                        <field name="serial_no" readonly="state == 'done'"/>
+                                        <field name="vin" readonly="state == 'done'"/>
+                                        <field name="plate"
+                                               readonly="state == 'done'" invisible="equipment_type != 'vechicles'"/>
+                                        <field name="year"
+                                               readonly="state == 'done'" invisible="equipment_type != 'vechicles'"/>
+                                    </group>
+                                    <group>
+                                        <field name="effective_date" readonly="state == 'done'"/>
+                                        <field name="cost" readonly="state == 'done'"
+                                               groups="maintenance.group_equipment_manager"/>
+                                        <field name="vechicle_model"
+                                               options="{'no_create': True, 'no_create_edit':True}"
+                                               readonly="state == 'done'" required="equipment_type == 'vechicles'"
+                                               invisible="equipment_type != 'vechicles'"/>
+                                        <field name="brand"
+                                             readonly="state == 'done'" invisible="equipment_type != 'vechicles'"/>
+                                        <field name="equipment_fleet_type"
+                                               options="{'no_create': True, 'no_create_edit':True}"
+                                            readonly="state == 'done'" invisible="equipment_type != 'vechicles'"/>
+                                        <field name="engine"
+                                              readonly="state == 'done'" invisible="equipment_type != 'vechicles'"/>
+                                        <field name="engine_serial"
+                                            readonly="state == 'done'" invisible="equipment_type == 'vechicles'"/>
+                                        <field name="warranty_date" readonly="state == 'done'"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Description" name="description">
+                                <field name="description" readonly="state == 'done'" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                     <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="equipment_tree_view" model="ir.ui.view">
+            <field name="name">master equipment tree</field>
+            <field name="model">request.equipment</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code_seq"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="analytic_account_id"/>
+                    <field name="req_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="equipment_request_form_search" model="ir.ui.view">
+            <field name="name">equipment.request.search</field>
+            <field name="model">request.equipment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_seq"/>
+                    <field name="code_seq"/>
+                    <field name="code_seq"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="equipment_request_master_act_window" model="ir.actions.act_window">
+            <field name="name">Equipment Request</field>
+            <field name="res_model">request.equipment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Equipment" id="equipment_request_menu" parent="master_data"
+                  action="equipment_request_master_act_window"
+                  groups=""/>
+
+    </data>
+</odoo>

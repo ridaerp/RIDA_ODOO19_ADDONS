@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <data>
+
+
+
+ <record id="view_account_analytic_account_list1" model="ir.ui.view">
+            <field name="name">account.analytic.account.list</field>
+            <field name="model">account.analytic.account</field>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Analytic Accounts" edit="false" create="false">
+                    <field name="name" string="Name"/>
+                    <field name="code"/>
+                    <field name="partner_id"/>
+                    <field name="active" invisible="1"/>
+                    <field name="company_id" />
+                    <field name="debit" sum="Debit"/>
+                    <field name="credit" sum="Credit"/>
+                    <field name="balance" sum="Balance"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_account_analytic_account_kanban1" model="ir.ui.view">
+            <field name="name">account.analytic.account.kanban</field>
+            <field name="model">account.analytic.account</field>
+            <field name="arch" type="xml">
+               <kanban class="o_kanban_mobile">
+                   <field name="display_name"/>
+                   <field name="balance"/>
+                   <field name="currency_id"/>
+                   <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div t-attf-class="#{!selection_mode ? 'text-center' : ''}">
+                                   <strong><span><field name="display_name"/></span></strong>
+                                </div>
+                                <hr class="mt8 mb8"/>
+                                <div class="row">
+                                    <div t-attf-class="col-12 #{!selection_mode ? 'text-center' : ''}">
+                                        <span>
+                                            Balance: <field name="balance" widget="monetary"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+     <record id="view_account_analytic_account_search2" model="ir.ui.view">
+            <field name="name">account.analytic.account.search2</field>
+            <field name="model">account.analytic.account</field>
+              <field name="inherit_id" ref="analytic.view_account_analytic_account_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='associatedpartner']" position="after">
+                         <filter name="group_type" string="Type" context="{'group_by': 'type'}"/>
+            </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_analytic_account_search1" model="ir.ui.view">
+            <field name="name">account.analytic.account.search</field>
+            <field name="model">account.analytic.account</field>
+            <field name="arch" type="xml">
+                <search string="Analytic Account">
+                    <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]" string="Analytic Account"/>
+                    <field name="partner_id"/>
+                    <separator/>
+                    <filter string="Archived" domain="[('active', '=', False)]" name="inactive"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Associated Partner" name="associatedpartner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+
+    <!-- Inherit Form View to Modify it -->
+        <record id="view_account_form22" model="ir.ui.view">
+            <field name="name">account analytic account</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="type"/>
+                </xpath>
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="analytic_type"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        
+        <record id="view_account_analytic_account_form1" model="ir.ui.view">
+            <field name="name">analytic.analytic.account.form</field>
+            <field name="model">account.analytic.account</field>
+            <field name="arch" type="xml">
+                <form string="Analytic Account"  edit="false" create="false">
+                    <sheet string="Analytic Account">
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="action" name="%(analytic.account_analytic_line_action)d"
+                            icon="fa-usd"  string="Cost/Revenue" widget="statinfo"/>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"   invisible="active == True"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline" placeholder="e.g. Project XYZ"/>
+                            </h1>
+                        </div>
+                        <div name="project"/>
+                        <group name="main">
+                            <group>
+                                <field name="active" invisible="1"/>
+                                <field name="code"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+<!--                                <field name="group_id"/>-->
+                                <field name="company_id" options="{'no_create': True}" />
+                                <field name="currency_id" options="{'no_create': True}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+
+
+        <record id="action_account_analytic_account_form1" model="ir.actions.act_window">
+            <field name="name">Analytic Accounts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.analytic.account</field>
+            <field name="search_view_id" ref="view_account_analytic_account_search1"/>
+            <field name="context">{'search_default_active':1}</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new analytic account
+              </p>
+            </field>
+        </record>
+
+
+   <record id="action_account_analytic_account_form11" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_analytic_account_list1"/>
+            <field name="act_window_id" ref="acc_workflow.action_account_analytic_account_form1"/>
+        </record>
+
+        <record id="action_account_analytic_account_tree11" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_account_analytic_account_form1"/>
+            <field name="act_window_id" ref="acc_workflow.action_account_analytic_account_form1"/>
+        </record>
+
+
+        <!-- Action: Filtered Vendor Bills without landed_cost_id -->
+        <record id="action_bills_with_out_landed_cost" model="ir.actions.act_window">
+            <field name="name">Bills WithOut Landed Cost</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('move_type','=','in_invoice'), ('landed_cost_id','=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Menu Item bill without landed cost -->
+        <menuitem id="menu_bills_with_out_landed_cost" name="Bills With Out Landed Cost" parent="account.menu_finance_payables" action="action_bills_with_out_landed_cost"
+                 />
+
+        <!-- Action: Filtered Vendor Bills with landed_cost_id -->
+        <record id="action_landed_cost_bills" model="ir.actions.act_window">
+            <field name="name">Landed Cost Bills</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('move_type','=','in_invoice'), ('landed_cost_id','!=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_landed_cost_bills" name="Landed Cost Bills" parent="account.menu_finance_payables" action="action_landed_cost_bills"
+                 />
+
+
+
+
+    <menuitem id="cost_center" name="Analytic Account" action="acc_workflow.action_account_analytic_account_form1" groups="group_analytic_account_report"/>
+
+
+   
+<menuitem id="menu_action_analytic_lines_tree_read" parent="account.menu_finance_entries" name="Analytic Items" action="analytic.account_analytic_line_action_entries" 
+    groups="acc_workflow.group_analytic_account_report" />
+
+
+<menuitem id="menu_action_analytic_lines3_tree_read" name="Analytic Items" action="analytic.account_analytic_line_action_entries" 
+    groups="acc_workflow.group_analytic_account_report" />
+
+
+        </data>
+</odoo>

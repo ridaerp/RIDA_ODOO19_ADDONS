@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="remote_access_Request_form_view" model="ir.ui.view">
+            <field name="name">remote.access.request.form</field>
+            <field name="model">remote.access.request</field>
+            <field name="arch" type="xml">
+                <form string="Device Request">
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                        <button string="approve" name="set_confirm" type="object" invisible="state != 'lmn_approve'"
+                                class="oe_highlight" groups="base_rida.rida_group_line_manager"/>
+                        <button string="Approve" name="set_ict_director_confirm" type="object"
+                       invisible="state != 'ict_director_approval'"
+                                class="oe_highlight" groups="base_rida.group_department_ict_hod_manager"/>
+                        <button string="Solved" name="set_approve" type="object" invisible="state != 'ict_approved'"
+                                class="oe_highlight" groups="base_rida.rida_group_ict_team"/>
+                        <button string="Set To Draft" name="set_to_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight" groups="base.group_user"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                         invisible="state in ['draft','lmn_approve','ict_director_approval','ict_approved']" string="Reject"
+                                groups="base.group_user"
+                        />
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,lmn_approve,ict_director_approval,ict_approved,confirm"/>
+                    </header>
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>Remote Access Request Form</b>
+                            </h3>
+                        </center>
+                        <br/>
+                        <label for="policy" readonly="state != 'draft'"
+                               string="Remote Computing Access Policy: All individuals accessing RG confidential or internal use data from a non-RG sites' location or transporting such data off-site on electronic devices must be authorized to do so using One-Rida Virtual Private Network (VPN).  VPNs provide secure communications through the public internet.  ICT provides VPN services to secure remote access to the RG network using the public internet to carry the traffic.Any person found to have violated this policy may have their remote network access privileges temporarily or permanently revoked. I have read and understand the Remote Computing Access Policy and Procedures."/>
+                        <field name="policy" readonly="state != 'draft'" />
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"
+                                       options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+                                <field name="job_id"/>
+                                <field name="phone"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="email"/>
+                                <field name="date" required="1" readonly="state != 'draft'" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" readonly="state != 'draft'" />
+                        </group>
+                        <group>
+                            <group>
+                                <label for="date_from" string="Period"/>
+                                <div>
+                                    <field name="date_from" invisible="1"/>
+                                    <field name="date_to" invisible="1"/>
+                                    <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                        <span class="oe_inline">
+                                            From
+                                        </span>
+                                        <field name="date_from" readonly="state != 'draft'"
+                                               required="1" class="oe_inline" nolabel="1"/>
+                                        <span class="oe_inline">
+                                            To
+                                        </span>
+                                        <field name="date_to" readonly="state != 'draft'"
+                                               required="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="authorization"
+                                  required="state == 'ict_approved'" readonly="state == 'confirm'"
+                                   widget="radio"/>
+                        </group>
+                        <notebook>
+                            <page string="Approval and Signature">
+                                <group>
+                                    <group>
+                                        <field name="emp_approval" readonly="1"
+                                          invisible="emp_approval == False"/>
+                                        <field name="date_approval" readonly="1"
+                                           invisible="date_approval == False"/>
+                                    </group>
+                                    <group>
+                                        <field name="emp_l_mng" readonly="1"
+                                          invisible="emp_l_mng == False" />
+                                        <field name="emp_l_mng_date" readonly="1"
+                                         invisible="emp_l_mng_date == False" />
+                                    </group>
+                                    <group>
+                                        <field name="ict_approval" readonly="1"
+                                         invisible="ict_approval == False"/>
+                                        <field name="ict_date_approval" readonly="1"
+                                          invisible="ict_date_approval == False" />
+                                    </group>
+                                    <group>
+                                        <field name="prov_id" invisible="prov_id == False"
+                                               readonly="1"/>
+                                        <field name="prov_date_approval"
+                                               readonly="1"  invisible="prov_id == False"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                        <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="it_custody_form_view" model="ir.ui.view">
+            <field name="name">custody.it_custody.form</field>
+            <field name="model">it.custody</field>
+            <field name="arch" type="xml">
+                <form string="It custody">
+                    <header>
+                        <button string="approve" name="set_confirm" type="object" invisible="state != 'draft'"
+                                class="oe_highlight" groups="base_rida.rida_group_ict_team"/>
+                        <button string="Confirm" name="set_approve" type="object" invisible="state != 'employee_approve'"
+                                class="oe_highlight"/>
+                        <button string="Set To Draft" name="set_to_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight" groups="base.group_user"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                        invisible="state in ['draft','employee_approve']"  string="Reject"
+                                groups="base.group_user"
+                        />
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,employee_approve,confirm,clearance"/>
+                    </header>
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>IT Custody Form</b>
+                            </h3>
+                        </center>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"
+                                       options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+                                <field name="job_id"/>
+                                <field name="cust_id" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                      readonly="state != 'draft'" />
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="date" readonly="state != 'draft'" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Device Information">
+                                <group>
+                                    <group>
+                                        <field name="device_model"
+                                              readonly="state != 'draft'" required="state == 'draft'"/>
+                                        <field name="device_name"
+                                              readonly="state != 'draft'" required="state == 'draft'"/>
+                                    </group>
+                                    <group>
+                                        <field name="device_ser"
+                                               readonly="state != 'draft'" required="state == 'draft'"/>
+                                        <field name="description"
+                                               readonly="state != 'draft'" required="state == 'draft'"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Clearance Information"
+                           invisible="state in ['draft','employee_approve']">
+                                <group>
+                                    <group>
+                                        <field name="device_status" widget="radio"
+                                          readonly="state != 'clearance'"/>
+                                        <field name="rece_id" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="description_clear"
+                                           readonly="state != 'clearance'"  />
+                                        <field name="received_date" readonly="1"/>
+                                    </group>
+                                </group>
+                                <button name="set_to_clearance" string="Clearance"
+                                        class="oe_highlight" type="object"
+                                        groups="base_rida.rida_group_ict_team"
+                                     invisible="state == 'clearance'" />
+                            </page>
+                            <page string="Approval and Signature">
+                                <group>
+                                    <group>
+                                        <field name="emp_approval" readonly="1"
+                                         invisible="emp_approval == False" />
+                                        <field name="date_approval" readonly="1"
+                                           invisible="emp_approval == False"/>
+                                    </group>
+                                    <group>
+                                        <field name="prov_id" invisible="prov_id == False"
+                                               readonly="1"/>
+                                        <field name="prov_date_approval"
+                                               readonly="1" invisible="prov_id == False" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                         <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="it_custody_type_form_view" model="ir.ui.view">
+            <field name="name">custody.it_custody.type.form</field>
+            <field name="model">it.custody.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="it_custody_tree_view" model="ir.ui.view">
+            <field name="name">custody.it_custody.tree</field>
+            <field name="model">it.custody</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="cust_id"/>
+                    <field name="device_name"/>
+                    <field name="prov_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="it_custody_type_tree_view" model="ir.ui.view">
+            <field name="name">custody.it_custody.type.tree</field>
+            <field name="model">it.custody.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="remote_access_request_tree_view" model="ir.ui.view">
+            <field name="name">remote.access.request.tree</field>
+            <field name="model">remote.access.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="prov_id"/>
+                    <field name="prov_date_approval"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="it_custody_search_view" model="ir.ui.view">
+            <field name="name">it_custody.search</field>
+            <field name="model">it.custody</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Custody Type" name="group_type" domain="[]"
+                                context="{'group_by':'cust_id'}"/>
+                        <filter string="Provided By" name="group_prov_id" domain="[]"
+                                context="{'group_by':'prov_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="remote_access_request_search_view" model="ir.ui.view">
+            <field name="name">remote.access.search</field>
+            <field name="model">remote.access.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Provided By" name="group_prov_id" domain="[]"
+                                context="{'group_by':'prov_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="it_custody_act_window" model="ir.actions.act_window">
+            <field name="name">IT Custody Form</field>
+            <field name="res_model">it.custody</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="remote_access_request_action" model="ir.actions.act_window">
+            <field name="name">Remote Access Request Form</field>
+            <field name="res_model">remote.access.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="it_custody_type_act_window" model="ir.actions.act_window">
+            <field name="name">Custody Type</field>
+            <field name="res_model">it.custody.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="ICT Procedures" id="ict_prodcedures" parent="form_document"/>
+        <menuitem name="IT Custody" sequence="1" id="it_custody_menu_root" parent="ict_prodcedures"
+                  action="it_custody_act_window"/>
+        <menuitem name="IT Configuration" groups="base_rida.rida_group_ict_team" id="it_conf_menu" parent="ict_prodcedures"/>
+        <menuitem name="IT Custody Type" id="it_custody_type" parent="it_conf_menu"
+                  action="it_custody_type_act_window"/>
+        <menuitem name="Remote Access Request" sequence="4" id="remote_access_request"
+                  parent="ict_prodcedures"
+                  action="remote_access_request_action"/>
+
+    </data>
+</odoo>

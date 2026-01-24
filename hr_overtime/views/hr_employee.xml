@@ -1,0 +1,22 @@
+<odoo>
+  <data>
+
+
+    <record id="hr_employee_overtime_inherit_view_form" model="ir.ui.view">
+        <field name="name">hr.Employee.Overtime.inherit.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+          <!--   <xpath expr="//form/sheet/div[@class='oe_button_box']" position="inside">
+                 <button name="action_view_overtime" type="object" class="oe_stat_button" string="Overtime" icon="fa-list">
+                    <field name="overtime_count"/>
+                    
+                </button>                       
+            </xpath> -->
+        <xpath expr="//field[@name='emp_code']" position="after">
+          <field name="cross_employee" invisible="1"/>
+        </xpath>
+        </field>
+    </record>
+  </data>
+</odoo>

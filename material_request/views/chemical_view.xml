@@ -1,0 +1,648 @@
+<odoo>
+    <data>
+        <!-- chemical samples -->
+        <record id="seq_chemical_request" model="ir.sequence">
+            <field name="name">Chemical Request Reference</field>
+            <field name="code">cheimcal_request.sequence</field>
+            <field name="prefix">CH-ASS-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_lab_reference" model="ir.sequence">
+            <field name="name">Lab Reference</field>
+            <field name="code">lab_reference.sequence</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="chemical_request_tree" model="ir.ui.view">
+            <field name="name">Samples Assay Request</field>
+            <field name="model">chemical.samples.request</field>
+            <field name="arch" type="xml">
+                <tree string="Samples Assay">
+                    <field name="name"/>
+                    <field name="sample_type"/>
+                    <field name="sample_no_from"/>
+                    <field name="sample_no_to"/>
+                    <field name="date"/>
+                    <field name="requested_by" />
+                    <field name="department_id"/>
+
+                    <field name="total_sample_quantity" />
+
+                    <field name="hcl_total" sum="hcl_total" />
+                    <field name="hno3_total" sum="hno3_total" />
+                    <field name="dibk_total" sum="dibk_total" />
+                    <field name="aliquate_total"  sum="aliquate_total"/>
+
+                    <field name="state"/>
+
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="chemical_request_search" model="ir.ui.view">
+            <field name="name">Samples Assay Request</field>
+            <field name="model">chemical.samples.request</field>
+
+            <field name="arch" type="xml">
+                <search string="Search Samples Assay ">
+                    <field name="name" string="Request No."/>
+                    <field name="sample_type" string="Sample Type"/>
+                    <field name="department_id" string="Department"/>
+                    <field name="state" string="Status"/>
+                    <separator/>
+
+                    <field name="requested_by"/>
+                    <filter domain="[('requested_by','=', uid)]" name="my_request" help="My requests"/>
+
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_sample_type" string="Sample Type" context="{'group_by':'sample_type'}"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
+                                context="{'group_by':'requested_by'}"/>
+                    </group>
+
+
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_chemical_request_form" model="ir.ui.view">
+            <field name="name">Samples Assay Request</field>
+            <field name="model">chemical.samples.request</field>
+            <field name="arch" type="xml">
+                <form string="Samples Assay">
+                    <header>
+
+
+                        <button name="button_submit" invisible="state != 'draft'" string="Submit" type="object"
+                                groups="material_request.ore_lab_requester"/>
+
+                        <button name="button_receive" invisible="state != 'receive'" string="Receive" type="object"
+                                groups="material_request.group_chemical_receiver_user"/>
+
+                        <button name="button_assay" invisible="state != 'assay'" string="Assay" type="object"
+                                groups="material_request.group_ore_rock_chemical_user"/>
+
+                        <!--                    Set to Draft-->
+                        <button name="button_draft" invisible="state not in ['cancel','reject']" string="Set as Draft"
+                                type="object"
+                                groups="material_request.ore_lab_requester"/>
+
+                        <button name="button_reject" type="object" string="Reject"
+                                invisible="state not in ['assay','receive']"
+                                        groups="material_request.group_ore_rock_purchase_user,material_request.group_chemical_receiver_user"/>
+
+<!--                        <button name="%(material_request.purchase_order_reject_action)d" type="action"-->
+<!--                                invisible="state not in ['assay','receive']" string="Reject"-->
+<!--                                groups="material_request.group_chemical_receiver_user"/>-->
+
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,receive,assay,reject,close"
+                               statusbar_colors='{"assay":"blue"}'/>
+
+                    </header>
+                    <sheet>
+
+
+                        <div class="oe_edit_only">
+                            <label for="name" class="oe_inline"/>
+                        </div>
+                        <h1>
+
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+
+                            <group>
+                                        <field name="state" invisible="1"/>
+                                <field name="production_id" readonly="1"
+                                 groups="mrp.group_mrp_user"/>
+                                <field name="average"  readonly="1"
+                                 groups="mrp.group_mrp_user"/>
+                                 <!-- <field name="stripping_id" readonly="1"/> 
+                                 <field name="pregnant_result" readonly="1"/> -->
+
+                                <field name="date" readonly="1"/>
+                                <field name="requested_by" readonly="1"/>
+
+                                <field name="sample_type" readonly="state not in ['draft','generate']"/>
+
+                                <field name="other" invisible="sample_type != 'other'"
+                                       required="sample_type == 'other'"/>
+                                <field name="methods" invisible="state not in ['assay','close']"
+                                       required="state == 'assay'" readonly="state != 'assay'"/>
+                                <field name="analysis_required" invisible="state not in ['assay','close']"
+                                       required="state == 'assay'" readonly="state != 'assay'"/>
+                                <field name="date_analysis" readonly="1" invisible="state not in ['assay','close']"/>
+
+                                <field name="sample_no_from" readonly="state not in ['draft','generate']"
+                                       required="sample_type in ['rock_chips']"
+                                       invisible="sample_type not in ['rock_chips'] and state != 'draft'"
+                                       groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"
+                                />
+                                <field name="sample_no_to" readonly="state not in ['draft','generate']"
+                                       required="sample_type in ['rock_chips']"
+                                       invisible="sample_type not in ['rock_chips'] and state != 'draft'"
+                                       groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
+
+                                <field name="rock_vendor" groups="material_request.group_ore_rock_db_geology_user"
+                                       invisible="form_type not in ['external_sample','external_visit']"
+                                       readonly="state != 'draft'"
+                                       required="form_type != 'scaling_unit'"
+                                />
+                                <field name="area_id" groups="material_request.group_ore_rock_db_geology_user"
+                                       invisible="form_type not in ['external_sample','external_visit']"
+                                       readonly="state != 'draft'" required="form_type != 'scaling_unit'"/>
+
+                                <field name="daily_night" readonly="state not in ['draft','generate']"
+                                       required="sample_type in ['crusher']" invisible="sample_type not in ['crusher']"
+                                       groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
+
+                                <field name="cic_samples" readonly="state not in ['draft','generate']"
+                                       required="sample_type in ['cic']" invisible="sample_type not in ['cic']"
+                                       groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
+
+                                <field name="cic_sub_samples" readonly="state not in ['draft','generate']"
+                                       required="cic_samples in ['factory']" invisible="cic_samples not in ['factory']"
+                                       groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
+
+
+
+
+
+                            </group>
+
+                            <group>
+                                <field name="lab_reference_no" invisible="state not in ['assay','close']"/>
+                                <field name="form_type" groups="material_request.group_ore_rock_db_geology_user"
+                                       readonly="state != 'draft'"/>
+                                <field name="request_id" readonly="1"
+                                       groups="material_request.group_ore_rock_supply_chain_manager,material_request.ore_lab_requester"/>
+                                <field name="receive_date" readonly="1"
+                                       invisible="state not in ['receive','assay','close']"/>
+                                <field name="receive_name" readonly="1"
+                                       invisible="state not in ['receive','assay','close']"/>
+
+                                <field name="department_id" readonly="state not in ['draft','generate']"/>
+
+                                <field name="email" readonly="state not in ['draft','generate']"/>
+                                <field name="phone" readonly="state not in ['draft','generate']"/>
+                                <field name="project" readonly="state not in ['draft','generate']"/>
+                                <field name="company_id" readonly="state not in ['draft','generate']"/>
+
+
+                            </group>
+
+
+                        </group>
+                        <notebook>
+                            <page string="Samples" Name="Samples" >
+                                <button name="button_generate" readonly="state != 'draft'" string="Generate Samples"
+                                        type="object"
+                                        groups="material_request.ore_lab_requester"/>
+
+                        <field name="request_samples_ids"   on_change="0">
+                                    <tree editable="bottom" >
+                                        <field name="parent_state" invisible="1"/>
+
+
+
+                                        <field name="batch" readonly="parent_state not in ['draft','generate']"/>
+
+
+                                        <field name="sample_seq_no" readonly="parent_state not in ['draft','generate']"/>
+
+                                        <field name="sample_no1" readonly="parent_state not in ['draft','generate']"/>
+
+
+                                        <field name="quantity" string="QTY"
+                                               readonly="parent_state not in ['draft','generate']"
+                                               sum="quantity"/>
+
+                                        <field name="sample_type"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+
+
+                                        <field name="analysis_required"
+                                               readonly="parent_state not in ['draft','generate']"/>
+
+
+                                        <field name="methods" readonly="parent_state not in ['draft','generate']"/>
+
+                                        <field name="comments" readonly="parent_state not in ['draft','generate']"/>
+
+
+                           
+
+                       <field name="au"
+
+                                readonly="parent_state != 'assay'"
+
+                                groups="material_request.group_ore_rock_chemical_user"
+                                               sum="au"/>
+
+                                                <field name="au"
+
+                                readonly="1"
+
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.ore_lab_requester"
+                                               sum="au"/>
+
+
+                                        <field name="try1" readonly="parent_state != 'assay'" optional="show"
+                                             
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+
+                                        <field name="try2" readonly="parent_state != 'assay'" optional="show"
+                                               
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                        <field name="ag" readonly="parent_state != 'assay'" optional="show"
+                                              
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                        <field name="cu" readonly="parent_state != 'assay'" optional="show"
+                                             
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                        <field name="fe" readonly="parent_state != 'assay'" optional="show"
+                                               
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                        <field name="east" groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="north" groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="elevation"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="rock_type"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="sample_position"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="oxidation"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+                                        <field name="alteration"
+                                               groups="material_request.group_ore_rock_db_geology_user"/>
+
+
+                                    </tree>
+
+                                    <form>
+                                        <sheet>
+                                            <group colspan="4" col="4"/>
+
+ <field name="parent_state" invisible="1"/>
+
+                                            <field name="batch"
+                                                   readonly="parent_state != 'draft' and parent_state != 'generate'"/>
+
+
+                                            <!-- <field name="sample_no" readonly="1" /> -->
+
+                                            <field name="sample_no1"
+                                                   readonly="parent_state not in ['draft','generate']"/>
+
+
+                                            <field name="quantity" readonly="parent_state not in ['draft','generate']"
+                                                   sum="quantity"/>
+
+
+                                            <field name="analysis_required"
+                                                   readonly="parent_state not in ['draft','generate']"/>
+
+
+                                            <field name="methods" readonly="parent_state not in ['draft','generate']"/>
+
+                                            <field name="comments" readonly="parent_state not in ['draft','generate']"/>
+
+
+                                            <field name="au" readonly="parent_state not in ['draft','generate']"
+                                                  
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"
+                                                   sum="au"/>
+
+
+                                            <field name="try1" readonly="parent_state != 'assay'"
+                                                  
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                            <field name="try2" readonly="parent_state != 'assay'"
+                                                  
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                            <field name="ag" readonly="parent_state != 'assay'"
+
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                            <field name="cu" readonly="parent_state != 'assay'"
+                                                   
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+
+                                            <field name="fe" readonly="parent_state != 'assay'"
+                                                  
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                        </sheet>
+                                    </form>
+
+
+                                </field>
+                            </page>
+                 
+                            <page string="DISPOSAL OF SAMPLES">
+
+
+                                <h6 class="oe_title">
+                                    <field name="disposal_info" class="oe_inline"/>
+                                </h6>
+                                <group>
+                                    <group>
+                                        <field name="store" widget="radio"/>
+                                        <field name="store_time" widget="float_time"
+                                               invisible="store != 'yes'" required="store == 'yes'"/>
+                                    </group>
+                                    <group>
+                                        <field name="dump" widget="radio"/>
+                                        <field name="dump_time" widget="float_time"
+                                               invisible="dump != 'yes'" required="dump == 'yes'"/>
+                                    </group>
+
+                                    <group>
+                                        <field name="oven" widget="radio"/>
+                                        <field name="oven_time" widget="float_time"
+                                               invisible="oven != 'yes'" required="oven == 'yes'"/>
+                                    </group>
+
+
+                                </group>
+
+                            </page>
+
+
+             
+             <page string="Report Elements"
+      groups="material_request.group_ore_rock_chemical_user,material_request.group_ore_reader_planning"
+       invisible="not (state in ('close', 'assay'))">
+
+    <group>
+        <field name="total_sample_quantity" readonly="1"/>
+    </group>
+
+<div style="display: grid; grid-template-columns: 150px 100px 150px; gap: 8px; border: 1px solid #ccc; padding: 6px;">
+    <div><strong>Chemical Materials</strong></div>
+    <div><strong>Qty</strong></div>
+    <div><strong>Sample QTY/Total</strong></div>
+
+    <div>HCL</div>
+    <div><field name="hcl"/></div>
+    <div><field name="hcl_total"/></div>
+
+    <div>HNO₃</div>
+    <div><field name="hno3"/></div>
+    <div><field name="hno3_total"/></div>
+
+    <div>DIBK</div>
+    <div><field name="dibk"/></div>
+    <div><field name="dibk_total"/></div>
+
+    <div>Aliquate</div>
+    <div><field name="aliquate"/></div>
+    <div><field name="aliquate_total"/></div>
+</div>
+
+  
+</page>
+
+
+
+
+
+                            <!--                            <page string="ORE/Rock Info" name="ore_rock_inf"-->
+                            <!--                                  groups="material_request.group_ore_rock_db_geology_user"-->
+                            <!--                            invisible="form_type != 'external_visit'">-->
+                            <!--                                <group>-->
+
+                            <!--                                    <group>-->
+                            <!--                                        <h2 class="oe_title">Survey Point</h2>-->
+                            <!--                                        <field name="east" placeholder="Easting"-->
+                            <!--                                               readonly="state != 'draft'"/>-->
+                            <!--                                        <field name="north" placeholder="Northing"-->
+                            <!--                                               readonly="state != 'draft'"/>-->
+                            <!--                                        <field name="elevation" placeholder="Elevation"-->
+                            <!--                                               readonly="state != 'draft'"/>-->
+                            <!--                                    </group>-->
+
+                            <!--                                    <group>-->
+                            <!--                                        <h2 class="oe_title">Samples</h2>-->
+                            <!--                                        <field name="rock_type" readonly="state != 'draft'"/>-->
+                            <!--                                        <field name="sample_position" readonly="state != 'draft'"/>-->
+                            <!--                                    </group>-->
+
+                            <!--                                </group>-->
+
+                            <!--                                <group>-->
+
+                            <!--                                    <group></group>-->
+                            <!--                                    <group>-->
+                            <!--                                        <h2 class="oe_title">Geology</h2>-->
+                            <!--                                        <field name="oxidation" readonly="state != 'draft'"/>-->
+                            <!--                                        <field name="alteration" readonly="state != 'draft'"/>-->
+                            <!--                                    </group>-->
+                            <!--                                </group>-->
+                            <!--                            </page>-->
+                        </notebook>
+                        <footer>
+                            <field name="notes" placeholder="Enter your notes here..."/>
+                        </footer>
+                    </sheet>
+
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
+                </form>
+            </field>
+
+
+        </record>
+
+
+        <record model="ir.actions.act_window" id="chemical_request_action">
+            <field name="name">Samples Assay Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chemical.samples.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="chemical_request_search"/>
+
+            <field name="help" type="html">
+
+                <p class="oe_view_nocontent_create">
+                    Click to start a new chemical request process.
+                </p>
+
+            </field>
+        </record>
+
+
+        <record id="chemical_sample_sequence_tree" model="ir.ui.view">
+            <field name="name">Chemical Samples Sequence</field>
+            <field name="model">chemical.samples.sequences</field>
+            <field name="arch" type="xml">
+                <tree string="Samples Sequence">
+                    <field name="sample_no"/>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="daily_night"/>
+                    <field name="cic_samples"/>
+                    <field name="cic_sub_samples"/>
+
+
+
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="chemical_sample_sequence_form" model="ir.ui.view">
+            <field name="name">Chemical Samples Sequence</field>
+            <field name="model">chemical.samples.sequences</field>
+            <field name="arch" type="xml">
+                <form string="Samples Sequence">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="sample_no"/>
+                                <field name="name"/>
+                                <field name="category"/>
+                            </group>
+                            <group>
+                                <field name="daily_night"/>
+                                <field name="cic_samples"/>
+                                <field name="cic_sub_samples"/>
+
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="chemical_sample_list_action">
+            <field name="name">Chemical Samples Sequence</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chemical.samples.sequences</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to start a new samples list .
+                </p>
+
+            </field>
+        </record>
+
+        <record id="view_weight_samples_lines_search" model="ir.ui.view">
+            <field name="name">weight.samples.line.search</field>
+            <field name="model">weight.samples</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="request_id"/>
+                    <field name="partner_id"/>
+                    <field name="sample_no"/>
+
+                    <group expand="1" string="Group By">
+                        <filter string="Weight Request" name="group_by_chemical_request"
+                                context="{'group_by': 'request_id'}"/>
+                        <filter string="Partner" name="group_by_partner"
+                                context="{'group_by': 'partner_id', 'group_by_partner': True}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_weight_samples_line_tree_external_visit_custom" model="ir.ui.view">
+            <field name="name">weight.samples.tree.external.visit.custom</field>
+            <field name="model">weight.samples</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="request_id"/>
+                    <field name="date_request"/>
+                    <field name="partner_id" string="Vendor"/>
+                    <field name="area_id"/>
+                    <field name="sample_no"/>
+                    <field name="form_type"/>
+                    <field name="au"/>
+                    <field name="average_au" sum="Total Average"/>
+                    <field name="unit_price" sum="Total Price"/>
+                    <field name="rock_type"/>
+                    <field name="sample_position"/>
+                    <field name="dip_strike"/>
+                    <field name="east"/>
+                    <field name="north"/>
+                    <field name="elevation"/>
+                    <!--                                        <field name="state"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_weight_samples_external_visit_custom" model="ir.actions.act_window">
+            <field name="name">External Visit Samples</field>
+            <field name="res_model">weight.samples</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_weight_samples_line_tree_external_visit_custom"/>
+            <field name="context">{'search_default_group_by_chemical_request': 1, 'search_default_group_by_partner': 1,
+                'is_external_visit': True}
+            </field>
+            <field name="domain">[('form_type', '=', 'external_visit')]</field>
+            <!--                        <field name="domain">[('form_type', '=', 'external_visit'), ('partner_id', '!=', False)]</field>-->
+        </record>
+
+        <record model="ir.actions.act_window" id="external_sample_visit_action">
+            <field name="name">External Sample Visit</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">weight.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"default_form_type": "external_visit"}</field>
+            <field name="domain">[("form_type", "=", "external_visit")]</field>
+            <field name="search_view_id" ref="view_weight_request_search"/>
+        </record>
+
+        <menuitem id="root_chemical_request_menu" sequence="0"
+                  name="Chemical Assay"
+                  groups="material_request.ore_lab_requester,material_request.group_ore_rock_chemical_user,material_request.group_chemical_receiver_user,material_request.group_chemical_requester_reader"
+                  action="chemical_request_action" web_icon="material_request,static/description/images.png"/>
+
+
+        <menuitem id="menu_chemical_request_configuration" sequence="1" parent="root_chemical_request_menu"
+                  name="Configuration"
+                  groups="base_rida.rida_group_master_data_manager"/>
+
+        <menuitem id="menu_chemical_request_samples" sequence="0" parent="menu_chemical_request_configuration"
+                  name="Samples Sequence" groups="base_rida.rida_group_master_data_manager"
+                  action="chemical_sample_list_action"/>
+
+        <menuitem id="external_sample_visit" name="External Visit Samples" sequence="5"
+                  groups="material_request.group_ore_rock_db_geology_user"
+                  parent="material_request.menu_ore_poo_maiin"/>
+
+        <menuitem id="menu_chemical_samples_external_visit"
+                  name="External Visit Sample Report" groups="material_request.group_ore_rock_db_geology_user"
+                  parent="external_sample_visit"
+                  action="action_weight_samples_external_visit_custom"
+                  sequence="2"/>
+
+        <menuitem id="menu_external_sample_visit" name="External Sample Visit" sequence="1" groups="material_request.group_ore_rock_db_geology_user"
+                  action="external_sample_visit_action" parent="external_sample_visit"/>
+
+    </data>
+</odoo>

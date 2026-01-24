@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+ <record id="reassigned_evalutor_wizard" model="ir.ui.view">
+        <field name="name">reassigned.evaluator</field>
+        <field name="model">reassigned.evaluator</field>
+        <field name="arch" type="xml">
+            <form>
+                           <group>
+                        <field name="reassigned_evaluator" required="1" />
+                    </group>
+                <footer>
+                    <button string='Confirm' name="action_validate_evaulator" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="reassigned_evalutor_action" model="ir.actions.act_window">
+        <field name="name">Re-Assign</field>
+        <field name="res_model">reassigned.evaluator</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="reassigned_evalutor_wizard" />
+        <field name="target">new</field>
+    </record>
+
+
+
+        <record id="view_weighted_scoring_evaluation_form" model="ir.ui.view">
+            <field name="name">weight.scoring.evaluation.form</field>
+            <field name="model">weight.scoring.evaluation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="action_submit" type="object" class="oe_highlight" invisible="state != 'draft'"
+                        />
+
+                          <button name="%(material_request.reassigned_evalutor_action)d" string="Assigne Evaluator"
+                                invisible="state not in 'draft'"
+                                
+                                type="action"/>
+
+
+
+
+                        <button string="Approve" name="action_lmn_approve" type="object" class="oe_highlight"
+                              invisible="state != 'dept_manager'"  groups="base_rida.rida_group_line_manager"
+                        />
+                        <button string="Approve" name="action_w_proc_exective" type="object" class="oe_highlight"
+                             invisible="state != 'w_proc_exective'" groups="material_request.group_buyers"
+                        />
+                        <button string="Approve" name="action_w_proc_manager" type="object" class="oe_highlight"
+                              invisible="state != 'w_proc_manager'"  groups="base_rida.rida_group_supply_chain_manager"
+                        />
+                        <button string="Set to Draft" name="action_draft"
+                                groups="base_rida.rida_group_line_manager,material_request.group_buyers,base_rida.rida_group_supply_chain_director"
+                                type="object" invisible="state != 'reject'" />
+                        <button name="%(material_request.purchase_order_reject_action)d"
+                                type="action"
+                             invisible="state not in ['draft','dept_manager','w_proc_exective','w_proc_manager']"
+                                string="Reject"
+                                groups="base_rida.rida_group_line_manager,material_request.group_buyers,base_rida.rida_group_supply_chain_director"
+                        />
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,dept_manager,w_proc_exective,w_proc_manager,approved"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_view_purchase_order" class="oe_stat_button"
+                                    groups="purchase.group_purchase_user" icon="fa-shopping-cart">
+                                <field name="purchase_count" string="RFQs For SCM" widget="statinfo"/>
+                            </button>
+
+                              <button type="object" name="action_view_purchase_order_read" class="oe_stat_button"
+                                     icon="fa-shopping-cart">
+                                <field name="purchase_count" string="RFQs" widget="statinfo"/>
+                            </button>
+
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+
+
+            <table class="table table-bordered">
+                <tr>
+                    <th style="text-align:center">
+                        <p>Supplier No</p>
+                    </th>
+                    <th style="text-align:center">
+                        <p>Supplier Name</p>
+                    </th>
+                    <th style="text-align:center">
+                        <p>Total Weighted Score</p>
+                    </th>
+                
+                 <th style="text-align:center" 
+                        >
+                        <p>Ratings</p>
+                    </th> 
+            <th style="text-align:center" >
+                        <p>Rating Decision </p>
+                    </th>
+                <th style="text-align:center" >
+                        <p>Rejection Reason </p>
+                    </th>
+
+                </tr>
+                <tr>
+                    <th style="text-align:center">
+                        <p>Sup 1</p>
+                    </th>
+                    <td style="text-align:center">
+                        <field name="a_supplier_id" readonly="1"/>
+                    </td>
+                    <th style="text-align:center;">
+                        <field name="total_supplier_a_weighted_score" readonly="1"/>
+                    </th>
+                       
+                                                
+            <th style="text-align:center">
+                <field name="supplier_a_rating_html" widget="html" readonly="1" />
+            </th>
+
+
+            <th style="text-align:center">
+                <field name="supplier_a_rating_new"  readonly="1" />
+                 </th>
+
+             <th style="text-align:center;">
+                <field name="reject_reason1"  invisible="supplier_a_rating_new == 'accept'" placeholder="Enter The Reject Reason"  readonly="1"/>
+
+
+            </th>
+             <th style="text-align:center;">
+                <field name="reject_reason1"  invisible="supplier_a_rating_new == 'accept'" placeholder="Enter The Reject Reason"  readonly="1"/>
+
+
+            </th>
+
+             <th style="text-align:center;">
+                        <field name="hide_supplier_a" invisible="1"/>
+             </th>
+            </tr>
+            <tr invisible="b_supplier_id == 'False'">
+                <th style="text-align:center">
+                    <p>Sup 2</p>
+                </th>
+                <td style="text-align:center">
+                    <field name="b_supplier_id" readonly="1"/>
+                </td>
+                <th style="text-align:center;">
+                    <field name="total_supplier_b_weighted_score" readonly="1"/>
+                </th>
+               
+                                                
+             <th style="text-align:center">
+                <field name="supplier_b_rating_html" widget="html" readonly="1"/>
+            </th>
+
+            <th style="text-align:center">
+                <field name="supplier_b_rating_new"   readonly="1"/>
+                 </th>
+
+            <th style="text-align:center">
+                <field name="reject_reason2"  invisible="supplier_b_rating_new == 'accept'" placeholder="Enter The Reject Reason"   readonly="1" />
+
+
+            </th>
+          <th style="text-align:center;">
+                    <field name="hide_supplier_b" invisible="1"/>
+                </th>
+
+
+                </tr>
+      
+
+
+                              <tr>
+                    <th style="text-align:center">
+                        <p>Sup 3</p>
+                    </th>
+                    <td style="text-align:center">
+                        <field name="c_supplier_id" readonly="1"/>
+                    </td>
+                    <th style="text-align:center;">
+                        <field name="total_supplier_c_weighted_score" readonly="1"/>
+                    </th>
+                       
+                                                
+            <th style="text-align:center">
+                <field name="supplier_c_rating_html" widget="html" readonly="1" />
+            </th>
+
+
+            <th style="text-align:center">
+                <field name="supplier_c_rating_new"   readonly="1"/>
+                </th>
+
+
+            <th style="text-align:center">
+                <field name="reject_reason3"  invisible="supplier_c_rating_new == 'accept'" placeholder="Enter The Reject Reason"   readonly="1" />
+
+
+            </th>
+
+             <th style="text-align:center;">
+                        <field name="hide_supplier_c" invisible="1"/>
+             </th>
+            </tr>
+
+
+                    </table>
+
+
+
+<notebook>
+            <page string="Evaluation Info">
+
+                 <group>
+
+                    <!-- Row 1 -->
+                        <field name="title"/>
+                   
+                        <field name="material_request_id" readonly="1"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                  
+                        <field name="mr_requester" readonly="1"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                         
+                        <field name="additional_evaluator"
+                               readonly="1"/>
+
+                        <field name="assigned_date"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                               
+                   
+                        <field name="req_id" readonly="1"/>
+                    
+                        <field name="date_request" readonly="1"/>
+                        <field name="company_id" readonly="1"/>
+
+
+                </group>
+
+            </page>
+
+
+  <page string="Products Acceptance" readonly="state not in ['draft','dept_manager']">
+    <group string="Suppliers Summary" colspan="4">
+        <table class="table table-bordered" style="width:100%; text-align:center;">
+            <thead style="background-color:#f2f2f2; color:black;">
+                <tr>
+                    <th style="color:black;">Supplier</th>
+                    <th style="color:black;">Total Accept</th>
+                    <th style="color:black;">Total Reject</th>
+                    <th style="color:black;">Performance (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Supplier 1 -->
+                <tr>
+                    <td style="color:black;">Sup 1</td>
+                    <td style="color:green;"><field name="a_total_accept" readonly="1"/></td>
+                    <td style="color:red;"><field name="a_total_reject" readonly="1"/></td>
+                    <td><field name="a_performance" readonly="1"/></td>
+                </tr>
+
+                <!-- Supplier 2 -->
+                <tr>
+                    <td style="color:black;">Sup 2</td>
+                    <td style="color:green;"><field name="b_total_accept" readonly="1"/></td>
+                    <td style="color:red;"><field name="b_total_reject" readonly="1"/></td>
+                    <td><field name="b_performance" readonly="1"/></td>
+                </tr>
+
+                <!-- Supplier 3 -->
+                <tr>
+                    <td style="color:black;">Sup 3</td>
+                    <td style="color:green;"><field name="c_total_accept" readonly="1"/></td>
+                    <td style="color:red;"><field name="c_total_reject" readonly="1"/></td>
+                    <td><field name="c_performance" readonly="1"/></td>
+                </tr>
+            </tbody>
+        </table>
+    </group>
+ <field name="product_line_ids" widget="one2many_list"  readonly="state != 'draft'">
+
+
+                          <tree editable="bottom"
+                                  create="false" delete="false">
+                                  <field name="product_id"/>
+                                  <field name="product_accept_sup1" widget="radio"/>
+                                   <field name="note_sup1" required="product_accept_sup1 == 'reject'" invisible="product_accept_sup1 != 'reject'"/>
+                                  <field name="product_accept_sup2" widget="radio"/>
+                                   <field name="note_sup2" required="product_accept_sup2 == 'reject'" invisible="product_accept_sup2 != 'reject'"/>
+                                  <field name="product_accept_sup3" widget="radio"/>
+                                <field name="note_sup3" required="product_accept_sup3 == 'reject'" invisible="product_accept_sup3 != 'reject'"/>
+
+
+                                  <!-- <field name="note" invisible ="0" /> -->
+
+                              </tree> 
+                          </field>
+
+            
+       </page>
+       <page string="Technical Score ">
+        <separator string="Evaluation Guide/Ratings Index "/>
+
+<table class="table table-sm table-bordered" style="width:100%; text-align:center;">
+    <tbody>
+        <tr style="background-color:#f9f9f9;">
+            <td>
+                <b>1% - 40%</b><br/>
+                <span style="color:red;">Unsatisfactory</span>
+            </td>
+            <td>
+                <b>41% - 49%</b><br/>
+                <span style="color:blue;">Partially Meets Requirements</span>
+            </td>
+            <td>
+                <b>50% - 89%</b><br/>
+                <span style="color:green;">Fully Meets Requirements</span>
+            </td>
+            <td>
+                <b>90% - 100%</b><br/>
+                <span style="color:gold;">Exceeds Requirements &amp; Target</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+                        <field name="score_ids" widget="one2many_list"  readonly="state != 'draft'">
+                            <tree editable="bottom" decoration-danger="is_colored" decoration-success="is_green_colored"
+                                  create="false" delete="false"
+                                  decoration-bf="is_colored">
+                                <field name="question" widget="html"  style="white-space: normal; text-align: justify; width: 100%;" readonly="1"/>
+                                <field name="weighted" sum="Total" string="Weighted"
+                                       invisible="display_type == 'line_section'" readonly="1"/>
+
+
+       <!-- Sup 1 -->
+        <field name="supplier_a_weighted_score" sum="Total" string="Sup 1: Score"
+               invisible="display_type == 'line_section'" column_invisible="parent.a_supplier_id == False"
+               style="font-weight: bold; color: #28A745;"
+               />
+
+
+        <field name="supplier_a_percentage" string="Sup 1: %" 
+               invisible="display_type == 'line_section'" column_invisible="parent.a_supplier_id == False"
+               style="font-weight: bold; color: #28A745;"  placeholder="0"/>
+
+        <!-- Sup 2 -->
+        <field name="supplier_b_weighted_score" sum="Total" string="Sup 2: Score"
+               invisible="display_type == 'line_section'" column_invisible="parent.b_supplier_id == False"
+               style="font-weight: bold; color: #FFD700;" />
+
+        <field name="supplier_b_percentage" string="Sup 2: %"
+               invisible="display_type == 'line_section'" column_invisible="parent.b_supplier_id == False"
+               style="font-weight: bold; color: #FFD700;" placeholder="0"/>
+
+        <!-- Sup 3 -->
+        <field name="supplier_c_weighted_score" sum="Total" string="Sup 3: Score"
+               invisible="display_type == 'line_section'" column_invisible="parent.c_supplier_id == False"
+               style="font-weight: bold; color: #1E90FF;" />
+
+        <field name="supplier_c_percentage" string="Sup 3: %"
+               invisible="display_type == 'line_section'" column_invisible="parent.c_supplier_id == False"
+               style="font-weight: bold; color: #1E90FF;"  placeholder="0"/>
+                              
+                                <field name="type" invisible="1"/>
+                                <field name="display_type" invisible="1"/>
+                                <field name="is_colored" invisible="1"/>
+                                <field name="is_green_colored" invisible="1"/>
+                            </tree>
+                        </field>
+                        <group>
+                          <field name="comment" readonly="state != 'draft'"/></group>
+                    </page>
+                     <page string="Commercial Score " invisible="state in ['draft','dept_manager']" >
+                        <field name="comm_score_ids" widget="one2many_list" groups="material_request.group_buyers"
+                               readonly="state == 'approved'">
+                            <tree editable="bottom" decoration-danger="is_colored" decoration-success="is_green_colored"
+                                  create="false" delete="false"
+                                  decoration-bf="is_colored">
+                                <field name="question" widget="html" style="white-space: normal; text-align: justify; width: 100%;" readonly="1"/>
+                                <field name="weighted" string="Weighted" sum="Total"
+                                 invisible="display_type == 'line_section'"   readonly="1"/>
+                                <field name="supplier_a_weighted_score" sum="Total" string="Sup 1: Score"
+                                      invisible="display_type == 'line_section'" column_invisible="parent.a_supplier_id == False or parent.hide_supplier_a"/>
+                                <field name="supplier_a_percentage" string="Sup 1: %" column_invisible="parent.a_supplier_id == False or parent.hide_supplier_a"
+                                      invisible="display_type == 'line_section'" placeholder="0"/>
+                                <field name="supplier_b_weighted_score" sum="Total" string="Sup 2: Score"
+                                      column_invisible="parent.b_supplier_id == False  or parent.hide_supplier_b" invisible="display_type == 'line_section'"/>
+                                <field name="supplier_b_percentage" string="Sup 2: % "
+                                     column_invisible="parent.b_supplier_id == False or parent.hide_supplier_b" invisible="display_type == 'line_section'"
+                                       placeholder="0"/>
+                                <field name="supplier_c_weighted_score" sum="Total" string="Sup 3: Score"
+                        column_invisible="parent.c_supplier_id == False or  parent.hide_supplier_c" invisible="display_type == 'line_section'"/>
+                                <field name="supplier_c_percentage" 
+                                       column_invisible="parent.c_supplier_id == False or parent.hide_supplier_c" invisible="display_type == 'line_section'"
+                                       string="Sup 3: %" placeholder="0"/>
+                                <field name="type" invisible="1"/>
+                                <field name="display_type" invisible="1"/>
+                                <field name="is_colored" invisible="1"/>
+                                <field name="is_green_colored" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                    </notebook>
+                        <group>
+                          <field name="accepted_suppliers_ids" invisible="1" widget="many2many_tags"/>
+                            <field name="awarded_supplier" domain="[('id','in',accepted_suppliers_ids)]" readonly="state in ['draft','dept_manager','approved']" invisible="state  in ['draft','dept_manager']"  widget="many2many_tags"/>
+
+                           
+
+
+                        </group>
+
+                    </sheet>
+                      <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_weight_scoring_evaluation_tree" model="ir.ui.view">
+            <field name="name">weight.scoring.evaluation.tree</field>
+            <field name="model">weight.scoring.evaluation</field>
+            <field name="arch" type="xml">
+                <tree string="Weighted Scoring Evaluation">
+                    <field name="name"/>
+                    <field name="req_id"/>
+                    <field name="material_request_id"/>
+                    <field name="title"/>
+                    <field name="date_request"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_weight_scoring_evaluation_search" model="ir.ui.view">
+            <field name="name">weight.scoring.evaluation.search</field>
+            <field name="model">weight.scoring.evaluation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="material_request_id"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="action_weighted_scoring_evaluation" model="ir.actions.act_window">
+            <field name="name">Weighted Scoring Evaluation</field>
+            <field name="res_model">weight.scoring.evaluation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create': 0}</field>
+        </record>
+
+        <menuitem name="Technical And Commercial Evaluation" id="menu_technical_evaluation"
+                  parent="material_request.menu_evaluations_root" sequence="1"
+        />
+        <menuitem name="Weighted Scoring Evaluation" id="menu_weighted_scoring"
+                  action="action_weighted_scoring_evaluation"
+                  parent="menu_technical_evaluation"
+
+        />
+
+
+
+            <menuitem name="Technical And Commercial Evaluation" id="menu_technical_evaluation_user"
+
+                  parent="material_request.menu_material_request_main" sequence="10"
+
+        />
+
+
+
+        <menuitem name="Weighted Scoring Evaluation" id="menu_weighted_scoring_users" 
+                action="action_weighted_scoring_evaluation"
+                  parent="menu_technical_evaluation_user"
+
+        />
+
+
+          <record id="rfq_tehincal_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+
+            <form string="Purchase Order" class="o_purchase_order">
+               
+                <sheet>
+                   
+
+                <div class="oe_title">
+                        
+                        <h1 class="d-flex">
+                            <field name="priority" widget="priority" class="me-3"/>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" widget="res_partner_many2one" placeholder="Name, TIN, Email, or Reference" readonly="1"/>
+                            <field name="currency_id" groups="base.group_multi_currency" force_save="1" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="currency_id" invisible="1" readonly="1" groups="!base.group_multi_currency"/>
+                               <field name="date_order" invisible="1" readonly="1"/>
+                           
+                        </group>
+                        <group>
+                <field name="request_id" readonly="1"/>
+                <field name="request_ids"  widget="many2many_tags" readonly="1"/>
+                <field name="department_id" readonly="1"/>
+                <field name="picking_type_id" readonly="1"/>
+                <field name="assigned_data" readonly="1"/>
+
+                        </group>
+                 
+                    </group>
+                       <notebook>
+                        <page string="Products" name="products">
+                            <field name="tax_country_id" invisible="1"/>
+                            <field name="order_line" widget="section_and_note_one2many"   readonly="1">
+                                <tree string="Purchase Order Lines" editable="bottom">
+                                        
+                                    <field name="tax_calculation_rounding_method" column_invisible="True"/>
+                                    <field name="display_type" column_invisible="True"/>
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="state" column_invisible="True"/>
+                                    <field name="product_type" column_invisible="True"/>
+                                    <field name="product_uom" column_invisible="True" groups="!uom.group_uom"/>
+                                    <field name="product_uom_category_id" column_invisible="True"/>
+                                    <field name="invoice_lines" column_invisible="True"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" readonly="1" required="not display_type" width="35%" context="{'partner_id': parent.partner_id, 'quantity': product_qty, 'company_id': parent.company_id, 'use_partner_name': False}" force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', 'parent_of', parent.company_id)]"/>
+                                    <field name="name" widget="section_and_note_text"/>
+                                    <field name="date_planned" optional="hide" required="not display_type" force_save="1"/>
+                                    <field name="analytic_distribution" widget="analytic_distribution" optional="hide" groups="analytic.group_analytic_accounting" options="{'product_field': 'product_id', 'business_domain': 'purchase_order', 'amount_field': 'price_subtotal'}"/>
+                                    <field name="product_qty"/>
+                                    <field name="qty_received_manual" column_invisible="True"  readonly="1"/>
+                                    
+                                    <field name="qty_received" string="Received"  readonly="1" optional="show"/>
+                                    <field name="qty_invoiced" string="Billed" readonly="1"  optional="show"/>
+                                    <field name="product_uom" string="UoM" groups="uom.group_uom" readonly="1" required="not display_type" options="{'no_open': True}" force_save="1" optional="show"/>
+                                  
+                                    
+                                    <field name="price_unit" readonly="1"/>
+                                   
+                                    
+                                   
+                                    <field name="price_subtotal" string="Tax excl."/>
+                                    <field name="price_total" string="Tax incl." readonly="1" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                           <group>
+                                <group>
+                                    <field colspan="2" name="notes" nolabel="1" placeholder="Define your terms and conditions ..."/>
+                                </group>
+                            
+                            </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+
+
+
+    </data>
+</odoo>

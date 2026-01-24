@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="update_area_request_form_view" model="ir.ui.view">
+            <field name="name">update.area.request.form</field>
+            <field name="model">update.area.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state != 'draft'"
+                                class="oe_highlight"
+                                groups="material_request.group_ore_reader_sale,material_request.group_ore_rock_purchase_user,material_request.group_ore_reader_planning"/>
+                        <button string="Confirm" name="set_confirm" type="object" invisible="state != 'waiting_pricing'"
+                                class="oe_highlight"
+                                groups="material_request.group_ore_reader_planning"/>
+                        <button string="Approve" name="update_area" type="object"  invisible="state != 'coo'"
+                                class="oe_highlight"
+                                groups="base_rida.rida_group_CCSO,base_rida.rida_group_COO"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                 invisible="state not in ['waiting_pricing', 'coo']"  string="Reject"
+                                groups="material_request.group_ore_reader_planning,base_rida.rida_group_CCSO,base_rida.rida_group_COO"
+                        />
+                        <button name="set_draft" string="Set To Draft" type="object" invisible="state != 'reject'"
+                                groups="material_request.group_ore_reader_planning,base_rida.rida_group_CCSO,base_rida.rida_group_COO"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting_pricing,coo,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id"/>
+                                <field name="department_id" readonly="state != 'draft'"/>
+                                <field name="area" options="{'no_create': True, 'no_create_edit':True}" readonly="state != 'draft'"/>
+                                <field name="area_name" readonly="state != 'draft'"/>
+                                <field name="distance" readonly="state != 'draft'"/>
+                                <field name="gasolain"
+                                       readonly="state != 'draft'"/>
+                                <field name="unit_price"
+                                       invisible="state == 'draft'" readonly="state != 'waiting_pricing'" required="state == 'waiting_pricing'"/>
+                                <field name="discount_on_ore_price"
+                                      invisible="state == 'draft'" readonly="state != 'waiting_pricing'"/>
+                                <field name="discount_on_transportation"
+                                       invisible="state == 'draft'" readonly="state != 'waiting_pricing'"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="description" readonly="state == 'done'"/>
+                            </group>
+                        </group>
+                    </sheet>
+                      <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="master_data_update_area_request_view" model="ir.ui.view">
+            <field name="name">update area request tree</field>
+            <field name="model">update.area.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="req_id"/>
+                    <field name="area"/>
+                    <field name="gasolain"/>
+                    <field name="unit_price"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="master_data_update_area_request_search" model="ir.ui.view">
+            <field name="name">update.area.request.search</field>
+            <field name="model">update.area.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="master_data_update_area_request_action" model="ir.actions.act_window">
+            <field name="name">Update Area Request</field>
+            <field name="res_model">update.area.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Update Area Request" id="master_data_update_area_request" parent="master_data_area"
+                  action="master_data_update_area_request_action"
+                  groups="material_request.group_ore_reader_sale,material_request.group_ore_reader_planning,material_request.group_ore_rock_purchase_user,base_rida.rida_group_CCSO,base_rida.rida_group_COO"/>
+
+    </data>
+</odoo>

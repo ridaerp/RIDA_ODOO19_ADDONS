@@ -1,0 +1,55 @@
+<odoo>
+  <data>
+<!-- link between maintenance equitment and fleet vehciles-->
+
+     <record id="fleet_vehcile_form_inehrit" model="ir.ui.view">
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vin_sn']" position="before">
+<!--                <field name="equipment_id"/>-->
+                <field name="display_name" string="Related Equipment"/>
+            </xpath>
+            <xpath expr="//field[@name='vin_sn']" position="after">
+<!--                <field name="equipment_id"/>-->
+                <field name="start_odometer" />
+            </xpath>
+        
+        <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="preview_equip_list"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-car"
+                    string="Equipment">
+
+                </button>
+        </xpath>
+
+
+
+          <xpath expr="//button[@name='return_action_to_open']" position="after">
+
+                <button name="action_view_mr" type="object" class="oe_stat_button" icon="fa-wrench" help="show the Maintenance logs for this vehicle">
+                            <field name="maintenance_count" widget="statinfo" string="Maintenance Request"/>
+                        </button>
+                    </xpath> 
+                </field>
+            </record>
+
+
+
+    <!-- fleet.fleet_vehicle_view_form -->
+
+        <menuitem
+        id="menu_m_request_fleet_form"
+        name="Maintenance Requests"
+        parent="fleet.fleet_vehicles"
+        action="maintenance.hr_equipment_request_action"
+        groups="base_maintenance_group.group_maintenance_user"
+        sequence="3"/>
+
+
+</data>
+</odoo>
+            

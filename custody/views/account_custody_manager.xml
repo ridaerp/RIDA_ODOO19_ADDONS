@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_account_custody_manager" model="ir.actions.act_window">
+            <field name="name">To Approve</field>
+            <!-- <field name="type">ir.actions.act_window</field> -->
+            <field name="res_model">account.custody</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="action_custody_clearance_manager" model="ir.actions.act_window">
+            <field name="name">To Clearance</field>
+            <field name="res_model">custody.clear</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    <menuitem
+        id="menu_account_custody_manager"
+        action="action_account_custody_manager"
+        name="To Approve"
+        sequence="2"
+        parent = "menu_account_custody"
+        groups="custody.group_manager"
+    />
+        <menuitem
+        id="menu_account_custody_cle_manager"
+        action="action_custody_clearance_manager"
+        name="To Clearance"
+        parent = "menu_account_custody"
+        groups="custody.group_manager"
+    />
+    </data>
+</odoo>

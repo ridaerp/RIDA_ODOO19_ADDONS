@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="medicare_issuance_request" model="ir.ui.view">
+            <field name="name">medicare issuance request</field>
+            <field name="model">medicare.issuance.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Confirm" name="set_approve" type="object" invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                        <button string="Set to Draft" name="action_draft"
+                                type="object" invisible="state != 'reject'"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state != 'draft'" string="Reject"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id"/>
+                                <field name="doctor_visitor_id" readonly="1"
+                                       invisible="doctor_visitor_id == False"/>
+                                <field name="lab_id" readonly="1"
+                                       invisible="lab_id == False"/>
+                                <field name="minor_id" readonly="1"
+                                       invisible="minor_id == False"/>
+                                <field name="patient" invisible="1"/>
+                                <field name="type" widget="radio" readonly="state == 'done'"
+                                       required="1"/>
+                                <field name="p_employee"
+                                       invisible="type != 'employee'" required="type == 'employee'"
+                                       readonly="state != 'draft'"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="p_contractor"
+                                       invisible="type != 'contractor'" required="type == 'contractor'"
+                                       readonly="state != 'draft'"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="p_quest"
+                                       invisible="type != 'quest'" required="type == 'quest'"
+                                       readonly="state != 'draft'"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="age"/>
+                                <field name="account_analytic_id" required="1"
+                                       readonly="state == 'done'"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="type_product" invisible="1"
+                                       readonly="state == 'done'"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="company_id"
+                                       invisible="type != 'employee'" readonly="state != 'draft'"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="description" readonly="state == 'done'"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Products">
+                                <field name="product_ids" readonly="state == 'done'">
+                                    <tree editable="bottom">
+                                        <field name="product_id" required="1"
+                                               domain="[('type_product','=',parent.type_product)]"
+                                               options="{'no_create': True,'no_open':True}"/>
+                                        <field name="default_code"/>
+                                        <field name="qty_available"/>
+                                        <field name="qty" required="1"/>
+                                        <field name="uom_id"/>
+                                        <field name="description"/>
+                                        <field name="price"/>
+                                        <field name="total_price" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                          <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="medicare_issuance_request_tree" model="ir.ui.view">
+            <field name="name">medicare.issuance.request.tree</field>
+            <field name="model">medicare.issuance.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="IS Number"/>
+                    <field name="doctor_visitor_id"/>
+                    <field name="type"/>
+                    <field name="patient"/>
+                    <field name="account_analytic_id"/>
+                    <field name="date"/>
+                    <field name="req_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View for sim.card (ASSIGNED SIM CARD) -->
+        <record id="sim_card_form_view" model="ir.ui.view">
+            <field name="name">sim.card.form</field>
+            <field name="model">sim.card</field>
+            <field name="arch" type="xml">
+                <form string="Assigned SIM Card" create="false">
+                    <header>
+                        <button name="action_confirm_it" type="object" string="Confirm IT Issue"
+                                class="oe_highlight"
+                                invisible="it_confirmed == True or employee_id == False"/>
+                        <button name="action_reset_it_confirmation" type="object" string="Reset IT Confirmation"
+                                invisible="it_confirmed == False"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" text="IT Confirmed" bg_color="text-bg-success"
+                                invisible="it_confirmed == False"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_sim_card_history" type="object" class="oe_stat_button"
+                                    icon="fa-sim-card">
+                                <field name="sim_card_count" widget="statinfo" string="SIM Cards History"/>
+                            </button>
+                        </div>
+                        <group>
+                            <field name="mobile_number" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="employee_id" required="1"/>
+                            <field name="receiver_id" required="1"/>
+                            <field name="department_id" />
+                            <field name="job_id" readonly="1"/>
+                            <field name="carrier_id" readonly="1"/>
+                            <field name="sim_type_id" readonly="1"/>
+                            <field name="activation_date"/>
+                            <field name="deactivation_date"/>
+                            <field name="sim_status" readonly="1"/>
+                            <field name="it_confirmed" readonly="1"/>
+                            <field name="notes"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View for sim.card (ASSIGNED SIM CARD) -->
+        <record id="sim_card_tree_view" model="ir.ui.view">
+            <field name="name">sim.card.tree</field>
+            <field name="model">sim.card</field>
+            <field name="arch" type="xml">
+                <tree string="Assigned SIM Cards" create="false" decoration-success="it_confirmed"
+                      decoration-bf="employee_id">
+                    <field name="mobile_number"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="receiver_id"/>
+                    <field name="department_id"/>
+                    <field name="sim_status"/>
+                    <field name="it_confirmed" column_invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search View for sim.card (ASSIGNED SIM CARD) -->
+        <record id="sim_card_search_view" model="ir.ui.view">
+            <field name="name">sim.card.search</field>
+            <field name="model">sim.card</field>
+            <field name="arch" type="xml">
+                <search string="Search Assigned SIM Cards">
+                    <field name="mobile_number"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="receiver_id"/>
+                    <field name="sim_status"/>
+                    <filter string="Active" name="active" domain="[('sim_status', '=', 'active')]"/>
+                    <filter string="Inactive" name="inactive" domain="[('sim_status', '=', 'inactive')]"/>
+                    <filter string="Blocked" name="blocked" domain="[('sim_status', '=', 'blocked')]"/>
+                    <filter string="Lost" name="lost" domain="[('sim_status', '=', 'lost')]"/>
+                    <filter string="Stolen" name="stolen" domain="[('sim_status', '=', 'stolen')]"/>
+                    <filter string="IT Confirmed" name="it_confirmed" domain="[('it_confirmed', '=', True)]"/>
+                    <filter string="IT Not Confirmed" name="it_not_confirmed" domain="[('it_confirmed', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for sim.card (ASSIGNED SIM CARD) -->
+        <record id="sim_card_action" model="ir.actions.act_window">
+            <field name="name">Assigned SIM Cards</field>
+            <field name="res_model">sim.card</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Assign a SIM card to an employee!
+                </p>
+                <p>
+                    Manage SIM cards assigned to employees.
+                </p>
+            </field>
+        </record>
+
+        <data noupdate="1">
+            <record id="carrier_zain" model="sim.card.carrier">
+                <field name="name">Zain</field>
+            </record>
+            <record id="carrier_sudani" model="sim.card.carrier">
+                <field name="name">Sudani</field>
+            </record>
+            <record id="carrier_mtn" model="sim.card.carrier">
+                <field name="name">MTN</field>
+            </record>
+            <record id="sim_type_voice" model="sim.card.type">
+                <field name="name">SIM Voice with Data</field>
+            </record>
+            <record id="sim_type_data" model="sim.card.type">
+                <field name="name">SIM Data Only</field>
+            </record>
+        </data>
+
+
+        <!-- Menu Items -->
+        <menuitem id="sim_card_menu_root" name="SIM Cards" parent="rida_forms.ict_prodcedures"
+                  sequence="1"/>
+        <menuitem id="sim_card_menu" name="Assigned SIM Cards" parent="sim_card_menu_root"
+                  action="sim_card_action" sequence="20"/>
+
+    </data>
+</odoo>

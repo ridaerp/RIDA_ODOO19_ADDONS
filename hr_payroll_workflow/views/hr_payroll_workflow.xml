@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_payroll_workflow_inherit_hr_payroll" model="ir.ui.view">
+        <field name="name">hr payroll extended</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace">
+                <header>
+                    <!-- <header> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+
+                    <button string="Submit" type="object" name="submit_draft_state" groups="hr.group_hr_user"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+
+                    <!--   <button string="HR Director Approve" type="object" name="director_approve_state" groups="base_rida.rida_group_hr_director" attrs="{'invisible': [('state','not in','director_approve')]}" class="oe_highlight"/> -->
+                    <!--
+                              <button string="CCSO Approve" type="object" name="ccso_approve_state" groups="base_rida.rida_group_CCSO" attrs="{'invisible': [('state','not in','ccso_approve')]}" class="oe_highlight"/> -->
+
+                    <!--    <button string="finance Approve" name="action_payslip_done" groups="base_rida.rida_finance_manager" type="object" invisible="state != 'verify'" class="oe_highlight" context="{'payslip_generate_pdf': False}"/> -->
+
+                    <button string="finance Approve" name="action_payslip_done"
+                            groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site" type="object"
+                            invisible="state != 'verify'" class="oe_highlight" context="{'payslip_generate_pdf': False}"/>
+
+                    <button string="Compute Sheet" type="object" name="compute_sheet" groups="hr.group_hr_user"
+                            invisible="state != 'draft'" class="oe_highlight"
+                            title="Recompute the payslip lines"/>
+
+                    <button string="Refund" name="refund_sheet"   invisible="state != 'done'" type="object"/>
+
+                    <button string="Set to Draft" name="action_payslip_draft" type="object"   invisible="state != 'cancel'"/>
+
+                    <button string="Cancel Payslip" name="action_payslip_cancel" type="object"
+                           invisible="state == 'cancel'"/>
+
+                    <button string="Recompute Worked Days" name="action_refresh_from_work_entries" type="object"
+                            title="Recompute the worked days lines and the payslip lines, in case you modified the work entries"
+                            invisible="state not in ['draft', 'director_approve'] or not employee_id"/>
+
+                    <button string="Print" name="action_print_payslip" type="object"/>
+
+                    <button string="Export Payslip" name="action_export_payslip" type="object"
+                            invisible="not is_superuser"/>
+
+
+                </header>
+            </xpath>
+                        <xpath expr="//field[@name='struct_id']" position="before">
+                            <!-- Add your fields here -->
+                            <field name="analytic_account_id"/>
+                            <field name="take_home_wage" sum="take_home_wage"
+                                   groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+                            <field name="payslip_day" readonly="False"
+                                   groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+
+
+                            <field name="bank_acc_id" string="Bank Acc No."/>
+                            <field name="bank_id" string="Bank Name"/>
+
+                            <field name="salary_currency"/>
+                            <field name="salary_currency"/>
+                            <field name="make_visible"
+                                   invisible="1"
+                            />
+
+                        </xpath>
+
+
+            <xpath expr="//form/sheet/notebook/page[@name='salary_computation']" position="attributes">
+                <attribute name="invisible">state in ['verify', 'ccso_approve']</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='get_increase']" position="attributes">
+<attribute name="invisible">"not make_visible"</attribute>            </xpath>
+            <!--<xpath expr="//form/sheet/notebook/page[@name='loans']"  position="attributes">
+              <attribute name="attrs">{'invisible':[('make_visible','=',False)]}</attribute>
+            </xpath> -->
+            <!--  <xpath expr="//form/sheet/notebook/page[@name='loans_type']"  position="attributes">
+              <attribute name="attrs">{'invisible':[('make_visible','=',False)]}</attribute>
+            </xpath> -->
+
+
+        </field>
+    </record>
+
+    <record id="hr_payroll_workflow_inherit_hr_payroll_custom_run_form" model="ir.ui.view">
+        <field name="name">hr payroll extended</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+
+                <button string="Submit" type="object" name="set_to_submit_state_batch" groups="hr.group_hr_user"
+                        invisible="state != 'draft'" class="oe_highlight"/>
+
+                <button string="HR Director Approve" type="object" name="set_to_director_approve_state_batch"
+                        groups="base_rida.rida_group_hr_director" invisible="state != 'director_approve'" class="oe_highlight"/>
+
+                <!--   <button string="CCSO Approve" type="object" name="set_to_ccso_approve_state_batch" groups="base_rida.rida_group_CCSO" states="ccso_approve" class="oe_highlight"/> -->
+
+
+                <button string="Set to Draft" name="action_draft" type="object" invisible="0"/>
+            </xpath>
+
+
+            <xpath expr="//button[@name='action_validate']" position="replace">
+                <button name="action_validate" type="object" string="Create Draft Entry" invisible="state != 'verify'"
+                        class="oe_highlight" context="{'payslip_generate_pdf': False}"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,close"/>
+            </xpath>
+<!--            <xpath expr="//field[@name='credit_note']" position="after">-->
+<!--                <field name="currency_id"/>-->
+<!--                <field name="structure_id"/>-->
+<!--            </xpath>-->
+            <xpath expr="//div[@name='button_box']" position="inside">
+
+                <button name="action_open_payslip_for_report" class="oe_stat_button" icon="fa-book" type="object"
+                        help="Generated Payslips" invisible="payslip_count == 0"
+                        groups="base_rida.ccso_approve,base_rida.rida_group_hr_director">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="payslip_count"/>
+                        </span>
+                        <span class="o_stat_text">Payslips</span>
+                    </div>
+                </button>
+            </xpath>
+
+
+        </field>
+
+    </record>
+
+
+    <record id="hr_payroll.hr_payslip_action_view_to_pay" model="ir.actions.act_window">
+        <field name="domain">[('state', 'in', ['draft', 'verify','director_approve','ccso_approve','close'])]</field>
+    </record>
+
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_salary_rule_form_inherit" model="ir.ui.view">
+        <field name="name">hr.salary.rule.inherit.5</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='sequence']" position="after">
+                <field name="apper_on_journal"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- payslip -->
+
+
+    <record id="view_hr_payslip_treee" model="ir.ui.view">
+        <field name="name">hr.payslip.tree</field>
+        <field name="model">hr.payslip</field>
+        <field name="arch" type="xml">
+            <tree string="Payslips" js_class="hr_payroll_payslip_tree" sample="1">
+
+                <field name="currency_id" invisible="1"/>
+                <field name="number" decoration-bf="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="payslip_run_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="basic_wage" invisible="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="net_wage" invisible="1" widget="monetary" options="{'currency_field': 'currency_id'}"
+                       decoration-bf="1"/>
+                <field name="employee_code"/>
+                <field name="salary_currency"/>
+                <field name="bank_id"/>
+                <field name="bank_acc_id"/>
+
+                <field name="take_home_wage" widget="monetary" options="{'currency_field': 'salary_currency'}"/>
+
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-warning="state == 'verify'" decoration-success="state in ('done','paid')"/>
+
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_payroll.view_hr_payslip_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.tree</field>
+        <field name="model">hr.payslip</field>
+        <field name="arch" type="xml">
+            <tree string="Payslips" js_class="hr_payroll_payslip_tree" sample="1">
+
+                <field name="currency_id" invisible="1"/>
+                <field name="number" decoration-bf="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="payslip_run_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="basic_wage" invisible="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="net_wage" invisible="1" widget="monetary" options="{'currency_field': 'currency_id'}"
+                       decoration-bf="1"/>
+                <field name="employee_code"/>
+                <field name="salary_currency"/>
+                <field name="bank_id"/>
+                <field name="bank_acc_id"/>
+
+                <field name="take_home_wage" widget="monetary" options="{'currency_field': 'salary_currency'}"/>
+
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-warning="state == 'verify'" decoration-success="state in ('done','paid')"/>
+
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_payroll.view_hr_payslip_filter" model="ir.ui.view">
+        <field name="name">hr.payslip.select</field>
+        <field name="model">hr.payslip</field>
+        <field name="arch" type="xml">
+            <search string="Search Payslips">
+                <field name="employee_id"/>
+                <field name="employee_code"/>
+                <field name="analytic_account_id"/>
+                <field name="name" string="Payslips"
+                       filter_domain="['|', ('name', 'ilike', self), ('number', 'ilike', self)]"/>
+                <field name="date_from"/>
+                <field name="contract_id"/>
+                <field name="payslip_run_id"/>
+                <filter string="Cost Center" name="analytic_account_id"/>
+                <filter string="To Compute" name="draft" domain="[('state', '=', 'draft')]" help="Draft Slip"/>
+                <filter string="To Confirm" name="draft" domain="[('state', '=', 'verify')]" help="Slips to Confirm"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]" help="Done Slip"/>
+                <separator/>
+<!--                <filter string="Date" name="date_filter" date="date_to" default_period="last_month"/>-->
+                <separator/>
+                <filter string="Credit Notes" name="credit_note" domain="[('credit_note', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="employee_id" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Analytic Account" name="analytic_account_id"
+                            context="{'group_by': 'analytic_account_id'}"/>
+                    <filter string="Status" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Batch" name="group_by_batch" context="{'group_by': 'payslip_run_id'}"/>
+                    <filter string="Company" name="company_id" groups="base.group_multi_company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Contract Form Inherit -->
+    <record id="inherited_contract_view_id" model="ir.ui.view">
+        <field name="name">contract.currency.inherit.view.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add your xpath here -->
+            <xpath expr="//field[@name='hr_responsible_id']" position="after">
+                <!-- Add your fields here -->
+                <field name="salary_currency" groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='payroll_wage']" position="after">
+
+                <field name="has_transport_allows" groups="hr_payroll.group_hr_payroll_user"/>
+
+                <field name="transportion_allowance" invisible="not has_transport_allows"
+                       groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="has_car_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="car_allowance" invisible="not has_car_allows"
+                       groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="has_fuel_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="fuel_allowance" invisible="not has_fuel_allows"
+                       groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="has_phone_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="phone_allowance" invisible="not has_phone_allows"
+                       groups="hr_payroll.group_hr_payroll_user"/>
+
+
+                <field name="has_scarcity_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='max']" position="after">
+
+                <field name="seconment_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="acting_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+
+                <field name="acting_type" invisible="not acting_allowance"
+                       groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="acting_amount" invisible="1" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="workeddays" groups="hr_payroll.group_hr_payroll_user"/>
+
+
+                <field name="medical_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="medicine_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+
+                <field name="other_recevible" groups="hr_payroll.group_hr_payroll_user"/>
+                <field name="other_deductions" groups="hr_payroll.group_hr_payroll_user"/>
+
+
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+    <record id="hr_contract_allowance_tree" model="ir.ui.view">
+        <field name="name">Other Allowances</field>
+        <field name="model">hr.contract.allowance</field>
+        <field name="arch" type="xml">
+            <tree string="Other Allowances">
+                <field name="transportion_allowance"/>
+                <field name="car_allowance"/>
+                <field name="fuel_allowance"/>
+                <field name="phone_allowance"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_contract_allowance_form" model="ir.ui.view">
+        <field name="name">Other Allowances</field>
+        <field name="model">hr.contract.allowance</field>
+        <field name="arch" type="xml">
+            <form string="Other Allowances">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="transportion_allowance"/>
+                        <field name="car_allowance"/>
+                        <field name="fuel_allowance"/>
+                        <field name="phone_allowance"/>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record id="hr_contract_allowance_action" model="ir.actions.act_window">
+        <field name="name">Other Allowances</field>
+        <field name="res_model">hr.contract.allowance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Other Allowances" parent="hr.menu_human_resources_configuration" id="hr_contract_allowance_menu"
+              groups="hr_payroll.group_hr_payroll_user" action="hr_contract_allowance_action" sequence="1"/>
+
+
+    <template id="hr_payroll.report_payslip">
+        <t t-call="web.html_container">
+            <t t-foreach="inside_foreach_docs or docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/>
+                    <div class="page">
+                        <h2 t-field="o.name"/>
+                        <t t-set="is_invalid" t-value="o._is_invalid()"/>
+                        <t t-if="is_invalid">
+                            <strong>
+                                <t t-esc="is_invalid"/>
+                            </strong>
+                        </t>
+                        <table name="employee-infos" class="table table-sm table-bordered">
+                            <tr>
+                                <td class="w-25">
+                                    <strong>Employee</strong>
+                                </td>
+                                <td class="w-25">
+                                    <strong>Marital Status</strong>
+                                </td>
+                                <td class="w-25">
+                                    <strong>Designation</strong>
+                                </td>
+                                <td class="w-25">
+                                    <strong>Pay Period</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.employee_id"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.employee_id.marital"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.employee_id.job_title"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.date_from"/>
+                                    -
+                                    <span t-field="o.date_to"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.employee_id.address_home_id.street"/>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.employee_id.address_home_id.city"/>
+                                    <span t-field="o.employee_id.address_home_id.zip"/>
+                                </td>
+                                <td>
+                                    <strong>Person in charge</strong>
+                                </td>
+                                <td>
+                                    <strong>Identification</strong>
+                                </td>
+                                <td>
+                                    <strong>Computed on</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.employee_id.work_email"/>
+                                </td>
+                                <td name="personne-in-charge">
+                                    <t t-esc="o.employee_id.children"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.employee_id.identification_id"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.compute_date"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="w-25">
+                                    <strong>Basic Salary</strong>
+                                </td>
+                                <td style="color:#875A7B" class="w-25">
+                                    <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total"
+                                          t-options='{"widget": "monetary", "display_currency": o.salary_currency}'/>
+                                </td>
+                                <td class="w-25"></td>
+                                <td class="w-25"></td>
+                            </tr>
+                        </table>
+                        <div id="total">
+                            <table class="table table-sm">
+                                <thead class="o_black_border">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Number of Hours</th>
+                                        <th>Number of Days</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <span t-foreach="o.worked_days_line_ids" t-as="worked_days">
+                                        <t t-if="worked_days.code != 'OUT'">
+                                            <tr style="color:none">
+                                                <td>
+                                                    <span t-field="worked_days.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="worked_days.number_of_hours"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="worked_days.number_of_days"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="worked_days.amount" digits="[42, 2]"
+                                                          t-options='{"widget": "monetary", "display_currency": o.salary_currency}'/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </span>
+                                    <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)"
+                                          t-as="line">
+                                        <t t-set="line_style"/>
+                                        <t t-set="line_class"/>
+                                        <t t-if="line.code == 'NET'">
+                                            <t t-set="line_style" t-value="'color:#875A7B;'"/>
+                                            <t t-set="line_class" t-value="'o_total o_border_bottom'"/>
+                                        </t>
+                                        <t t-if="(line.code == 'BASIC') or (line.code == 'GROSS')">
+                                            <t t-set="line_style" t-value="'color:#00A09D;'"/>
+                                            <t t-set="line_class" t-value="'o_subtotal o_border_bottom'"/>
+                                        </t>
+                                        <tr t-att-class="line_class" t-att-style="line_style">
+                                            <td>
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <span t-if="line.quantity > 1" t-esc="line.quantity"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.total"
+                                                      t-options='{"widget": "monetary", "display_currency": o.salary_currency}'/>
+                                            </td>
+                                        </tr>
+                                    </span>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p t-if="o.net_wage &gt;= 0">Total to pay on
+                            <td>
+                                <span t-field="o.employee_id.bank_account_id"/>
+                            </td>
+                            , bank account of<span t-field="o.employee_id"/>:
+                            <td>
+                                <span t-field="o.net_wage"/>
+                            </td>
+                        </p>
+                        <p t-if="o.net_wage &lt; 0">The net amount will be recovered from the first positive
+                            remuneration established after this.
+                        </p>
+
+                        <table name="contract-infos" class="table table-sm table-bordered">
+                            <tr>
+                                <td class="w-25">
+                                    <strong>Contract Start Date</strong>
+                                </td>
+                                <td class="w-25">
+                                    <strong>Working Schedule</strong>
+                                </td>
+                                <td class="w-25" name="company-car-title"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.employee_id.first_contract_date"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.employee_id.contract_id.hours_per_week"/>
+                                </td>
+                                <td class="w-25" name="company-car-model"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_payslip_input_type" model="ir.ui.view">
+        <field name="name">Hr Payslip Input Type</field>
+        <field name="model">hr.payslip.input.type</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_input_type_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="sequence"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

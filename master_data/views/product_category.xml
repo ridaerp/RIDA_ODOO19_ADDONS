@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_categoty_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.product.categoty</field>
+            <field name="default" eval="True"/>
+            <field name="description">The Product Categoty Has been created</field>
+        </record>
+        <record id="product_categoty_rej_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.product.categoty</field>
+            <field name="default" eval="True"/>
+            <field name="description">The Product Categoty Has been Rejected</field>
+        </record>
+
+        <record id="view_request_product_cat_form" model="ir.ui.view">
+            <field name="name">request.pr.cat.form</field>
+            <field name="model">request.product.categoty</field>
+            <field name="arch" type="xml">
+                <form string="Request Account">
+                    <header>
+                        <button string="Submit" name="set_confirm" type="object" invisible="state not in ['draft']"
+                                class="oe_highlight" groups="base_rida.rida_group_supply_chain_manager,account.group_account_user"/>
+                        <button string="Approve" name="set_advisor_confirm" type="object" invisible="state not in ['w_adv']"
+                                class="oe_highlight" groups="account.group_account_manager"/>
+                        <button string="Create Product Category" name="create_product_category" type="object"
+                             invisible="state not in ['md']"
+                                class="oe_highlight" groups="base_rida.rida_group_master_data_manager"/>
+
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                          invisible="state not in ['w_adv','md']" string="Reject"
+                                groups="account.group_account_manager,base_rida.rida_group_master_data_manager"
+                        />
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,w_adv,md,done"/>
+                    </header>
+                    <sheet string="Account">
+                        <div class="oe_title">
+                            <label for="name" string="Category name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Lamps"
+                                   readonly="state in ['reject','done']" required="1"/>
+                            </h1>
+                        </div>
+                        <group name="first" col="2">
+                            <field name="product_category_id" class="oe_inline"
+                              readonly="state in ['reject','done']" required="1"/>
+                        </group>
+                        <br/>
+                        <group>
+                            <field name="new_pr_cat"
+                             invisible="state != 'done'" />
+                        </group>
+                        <div name="project"/>
+                        <group invisible="state == 'draft'" readonly="state in ['reject','done']" required="state in ['w_adv','md']" >
+                            <group string="Inventory Valuation">
+                                <field name="property_cost_method"
+                                    required="state in ['w_adv','md']"/>
+                                <field name="property_valuation" required="state in ['w_adv','md']"
+                                       groups="account.group_account_readonly,stock.group_stock_manager"/>
+                            </group>
+                        </group>
+                        <group invisible="state == 'draft'" readonly="state in ['reject','done']" >
+                            <group string="Account Properties" groups="account.group_account_readonly">
+                                <field name="property_account_creditor_price_difference_categ"
+                                       domain="[('deprecated','=',False)]"
+                                      invisible="property_valuation == 'manual_periodic'"
+                                       groups="account.group_account_readonly"/>
+                                <field name="property_account_income_categ_id" domain="[('deprecated', '=', False)]"/>
+                                <field name="property_account_expense_categ_id" domain="[('deprecated', '=', False)]"/>
+                            </group>
+                            <group name="account_stock_property" string="Account Stock Properties"
+                                   groups="account.group_account_readonly"
+                                    invisible="property_valuation == 'manual_periodic'">
+                                <field name="property_stock_valuation_account_id" options="{'no_create': True}"
+                                     required="property_valuation == 'real_time' and state in ['w_adv','md']"/>
+                                <field name="property_stock_journal"
+                                     required="property_valuation == 'real_time' and state in ['w_adv','md']"/>
+                                <field name="property_stock_account_input_categ_id"
+                                     required="property_valuation == 'real_time' and state in ['w_adv','md']" />
+                                <field name="property_stock_account_output_categ_id"
+                                    required="property_valuation == 'readl_time' and state in ['w_adv','md']"/>
+                            </group>
+
+                        </group>
+                    </sheet>
+                        <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="master_pr_cat_tree_view" model="ir.ui.view">
+            <field name="name">product cat tree</field>
+            <field name="model">request.product.categoty</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code_seq"/>
+                    <field name="date"/>
+                    <field name="req_id"/>
+                    <field name="name"/>
+                    <field name="product_category_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="pr_category_request_form_search" model="ir.ui.view">
+            <field name="name">pr.cat.request.search</field>
+            <field name="model">request.product.categoty</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_seq"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="pr_category_request_act_window" model="ir.actions.act_window">
+            <field name="name">Product Category</field>
+            <field name="res_model">request.product.categoty</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem name="Product Category" id="category_request_menu" parent="master_data.master_data"
+                  action="pr_category_request_act_window"
+                  groups="account.group_account_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_supply_chain_manager"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_site_overtime_form_view" model="ir.ui.view">
+            <field name="name">hr.site.overtime.form.view</field>
+            <field name="model">hr.site.overtime</field>
+            <field name="arch" type="xml">
+                <form string = "Overtime" col="4">
+                   <header>
+                        <button name="button_hr_manager_approval" type="object" class="btn-primary" string="HR Manager Approve" groups="hr.group_hr_manager" invisible ="state != 'hrm_approval'"/>
+                        <button name="button_hr_manager_cancel" type="object" string="HR Manager Cancel" groups="hr.group_hr_manager" invisible="state != 'hrm_approval'"/>
+                        <button name="site_button_submit" type="object" class="btn-primary" string="Submit" invisible ="state != 'draft'"/>
+                        <button name="button_lm_approve" type="object" class="btn-primary" string="Line Manager Approve" groups="base_rida.rida_group_line_manager" invisible ="state != 'lm'"/>
+                        <button name="button_site_set_draft" type="object" string="Set To Draft" groups="base_rida.rida_group_line_manager" invisible ="state != 'reject'"/>
+                        <button name="site_action_reject" type="object" string="Line Manager Reject" groups="base_rida.rida_group_line_manager" invisible ="state != 'lm'"/>
+                        
+                        <button name="button_hr_officer_site_approve" type="object" class="btn-primary" string="HR Officer Approve" groups="hr.group_hr_user" invisible ="state != 'hr_officer'"/>
+                        <button name="button_hr_officer_site_cancel" type="object" string="HR Officer Cancel" groups="hr.group_hr_user" invisible="state != 'hr_officer'"/>
+                        <button name="button_ccso_site_approve" type="object" class="btn-primary" string="CCSO Approve" groups="base_rida.rida_group_CCSO" invisible ="state != 'ccso'"/>
+                        <button name="button_ccso_site_cancel" type="object" string="CCSO Cancel" groups="base_rida.rida_group_CCSO" invisible ="state != 'ccso'"/>
+                        <button name="cancel" string="Cancel" special="cancel" invisible ="state != 'draft'"/>
+                        
+                        <field name="state" widget="statusbar" statusbar_visible="draft,paid"/>
+                    </header>
+                    <sheet>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h1>
+                                    <field name="employee_id" placeholder="Employee name" readonly="state != 'draft'" domain="[('rida_employee_type','=','site')]"/>
+                                </h1>
+                            </div>
+                        </div>
+                        <group string="" col="4" colspan="4">
+                            <field name="company_id"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="note"/>
+                            <field name="employee_type"/>
+                            <field name="basic_salary" invisible="1" />
+                            <field name="gross_salary" invisible="1" />
+                        </group>
+                        <notebook>
+                            <page string="Day Hours">
+                                <group name="group_tp">
+                                    <group name='group_left'>
+                                        <field name="hours_normal"/>
+                                        <field name="hours_normal_rate_site" readonly="1"/>
+                                    </group>
+                                    <group name='group_right'>
+                                        <field name="calculated_day_hours" readonly="1"/>
+                                        <field name="overtime_normal" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Weekend Days">
+                                <group name="group_tp">
+                                    <group name='group_left'>
+                                        <field name="hours_weekend" />
+                                        <field name="hours_weekend_rate_site" readonly="1" />
+                                    </group>
+                                    <group name='group_right' >
+                                        <field name="calculated_weekend_hours" readonly="1"/>
+                                        <field name="overtime_weekend" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Overtime">
+                                <group string="Overtime" col="4">
+                                    <group>
+                                        <field name="net_overtime"/>
+                                    </group>
+
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="hr_site_overtime_tree_view" model="ir.ui.view">
+            <field name="name">hr.site.overtime.Tree.View</field>
+            <field name="model">hr.site.overtime</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <field name="total"/>
+                    <field name="overtime"/>
+                    <field name="net_overtime"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_site_overtime_filter" model="ir.ui.view">
+            <field name="name">over.time</field>
+            <field name="model">hr.site.overtime</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                    <filter domain="[('state', '=', 'draft')]" string="To Submit" name="to_report" help="New Requests"/>
+                    <filter domain="[('state','in',['hr_officer','hrm_approval','ceo'])]" string="To Approve" name="submitted" help="Submitted Requests"/>
+                    <filter domain="[('state', '=', 'confirm')]" string="Approved" name="approved" help="Approved Requests"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" name="employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+                        <filter name="State" string="State" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Date" name="date" domain="[]" context="{'group_by':'date'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_employee_overtime_kanban">
+            <field name="name">hr.site.overtime.kanban</field>
+            <field name="model">hr.site.overtime</field>
+            <field name="arch" type="xml">
+                <kanban create="false" import="0" class="o_kanban_mobile">
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings mt4">
+                                        <strong class="o_kanban_record_title">
+                                            <span>
+                                                <t t-esc="record.date.value"/>
+                                            </span>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <strong class="o_kanban_record_title">
+                                            <span>
+                                                <t t-esc="record.employee_id.value"/>
+                                            </span>
+                                        </strong>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_hr_site_overtime_pivot" model="ir.ui.view">
+            <field name="name">hr.site.overtime.pivot</field>
+            <field name="model">hr.site.overtime</field>
+            <field name="arch" type="xml">
+                <pivot string="Site OverTime">
+                    <field name="employee_id" type="row"/>
+                    <field name="date" interval="month" type="col"/>
+                    <field name="total" type="measure" widget="float_time"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!--Overtime Parent Menu-->
+<!--        <menuitem name="Site Overtime Management" id="hr_site_overtime_root" parent="hr_attendance.menu_hr_attendance_root" sequence="50" groups="hr.group_hr_user,hr.group_hr_manager"/>-->
+
+        <!--action for my overtime menu-->
+        <record id="hr_site_overtime_action" model="ir.actions.act_window">
+            <field name="name">My Site Overtime</field>
+            <field name="res_model">hr.site.overtime</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_to_report': 1}</field>
+            <field name="domain">[]</field>
+        </record>
+
+
+"
+<!--        <menuitem name="Site Overtime Request" id="hr_site_overtime_menu" parent="hr_site_overtime_root" sequence="9" action="hr_site_overtime_action" groups="hr.group_hr_user"/>-->
+
+
+        <!--action for overtime to approve menu-->
+        <record id="action_hr_site_overtime_approve" model="ir.actions.act_window">
+            <field name="name">Site OverTime To Approve</field>
+            <field name="res_model">hr.site.overtime</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_submitted': 1}</field>
+            <field name="domain">[('state','not in', ['draft'])]</field>
+        </record>
+
+<!--        <menuitem name="Site Overtime To Approve" id="menu_hr_site_overtime_approve" parent="hr_site_overtime_root" sequence="10" action="action_hr_site_overtime_approve" groups="hr.group_hr_user,hr.group_hr_manager"/>-->
+    </data>
+</odoo>

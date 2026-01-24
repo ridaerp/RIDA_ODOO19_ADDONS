@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <template id="print_custody_report_pdf">
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                   <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                       <center>
+                           <h1>Custody</h1>
+                       </center>
+                       <br/>
+                       <br/>
+                        <div class="row mt32" >
+                            <div class="col-xs-6">
+                                <p><b>Reference: </b><span t-esc="o.name"></span></p>
+                                <p><b>Department: </b><span t-esc="o.department_id.name"></span></p>
+                                <p><b>Employee : </b><span t-esc="o.employee_id.name"></span></p>
+                                <p><b>Description : </b><span t-esc="o.description"></span></p>
+                            </div>
+                            <div class="col-xs-6">
+                                <p><b>Date: </b><span t-esc="o.date_request"></span></p>
+                                <p><b>Amount: </b><span t-esc="o.amount"></span> <b><span t-esc="o.currency_id.name"></span></b></p>
+                                <!--<p><b>Currency: </b><span t-esc="o.currency_id.name"></span></p>-->
+                                <p><b>Amount(Character): </b><span t-esc="o.amount_char"></span></p>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                       <!--<table class="table table-condesed table">-->
+                           <!--&lt;!&ndash;<thead>&ndash;&gt;-->
+
+                                   <!--&lt;!&ndash;<td><b> Created by</b></td>&ndash;&gt;-->
+                                   <!--&lt;!&ndash;<td><b>Dept Manager </b></td>&ndash;&gt;-->
+                                   <!--&lt;!&ndash;<td><b>Finance </b></td>&ndash;&gt;-->
+                                   <!--&lt;!&ndash;<td><b>Autior </b></td>&ndash;&gt;-->
+                                   <!--&lt;!&ndash;<td><b>GM </b></td>&ndash;&gt;-->
+
+                             <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+                             <!--<tbody>-->
+                                 <!--&lt;!&ndash;<t each="o.line_ids" t-as="l">&ndash;&gt;-->
+                                 <!--<tr>-->
+                                      <!--<td><b> Created by</b></td>-->
+                                       <!--<td><b>Dept Manager </b></td>-->
+                                       <!--<td><b>Finance </b></td>-->
+                                       <!--<td><b>Autior </b></td>-->
+                                       <!--<td><b>GM </b></td>-->
+                                 <!--</tr>-->
+                                 <!--<tr>-->
+                                         <!--<td></td>-->
+                                         <!--<td></td>-->
+                                         <!--<td></td>-->
+                                         <!--<td></td>-->
+                                         <!--<td></td>-->
+
+
+
+                                     <!--</tr>-->
+                                     <!--<tr>-->
+                                         <!--<td><span t-esc = "o.create_uid.name"></span></td>-->
+                                         <!--<td><span>_________________</span></td>-->
+                                         <!--<td><span>_________________</span></td>-->
+                                         <!--<td><span>_________________</span></td>-->
+                                         <!--<td><span>_________________</span></td>-->
+
+
+                                     <!--</tr>-->
+                                 <!--&lt;!&ndash;</t>&ndash;&gt;-->
+                             <!--</tbody>-->
+
+                       <!--</table>-->
+
+                        <br/>
+                        <br/>
+                        <div>
+                            <div class="row mt32">
+                                <div class="col-xs-2" style="width: 20%"><p> <b> Created by:    </b><span t-esc="o.create_uid.name"></span></p><p><b>.................</b></p></div>
+                                <div class="col-xs-2" style="width: 20%"><p> <b> Dept. Manager  </b></p> <br/><p><b>.................</b></p></div>
+                                <div class="col-xs-2" style="width: 20%"><p> <b> Finance        </b></p> <br/><p><b>.................</b></p></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

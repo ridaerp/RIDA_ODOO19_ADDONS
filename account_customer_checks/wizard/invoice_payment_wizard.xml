@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+       <record id="view_account_payment_invoice_new_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.invoice.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='communication']" position="after">
+                <separator string="Check Information" invisible="not is_check_journal"/><br/>
+
+                  <field name="check_journal_id" widget="selection" invisible="not is_check_journal" required="is_check_journal and payment_type == 'outbound'"/>
+
+
+                <field name="is_check_journal" invisible="1"/>
+                <!-- <field name="check_no" attrs="{'invisible': [('is_check_journal','=', False)], 'required': [('is_check_journal','=', True)]}"/> -->
+                <!-- <field name="check_date" attrs="{'invisible': [('is_check_journal','=', False)], 'required': [('is_check_journal','=', True)]}"/> -->
+                
+                    <field name="check_ref" invisible="not is_check_journal" required="is_check_journal and payment_method_code == 'check_printing'" />
+
+              
+
+            </xpath>
+        </field>
+       </record>
+   </data>
+</odoo>

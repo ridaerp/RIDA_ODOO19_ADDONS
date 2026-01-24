@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+hr_expense_sheet_accountant,hr expense sheet accountant,model_hr_expense_sheet,account.group_account_user,1,1,0,0
+hr_expense_sheet_CCSO,hr expense sheet  CCSO,model_hr_expense_sheet,base_rida.rida_group_CCSO,1,1,0,0
+hr_expense_sheet_administrator,hr expense sheet administrator,model_hr_expense_sheet,hr.group_hr_manager,1,1,0,0
+hr_expense_sheet_officer,hr expense sheet officer,model_hr_expense_sheet,hr.group_hr_user,1,1,1,1
+hr_expense_sheet_manager,hr expense sheet line manager,model_hr_expense_sheet,base_rida.rida_group_line_manager,1,1,0,0
+hr_expense_sheet_internal_user,hr expense sheet internal user,model_hr_expense_sheet,base.group_user,1,1,1,1
+hr_expense.access_uom_uom_hr_expense_user,hr_expense.uom.uom.hr.expense.user,uom.model_uom_uom,hr_expense.group_hr_expense_team_approver,1,0,0,0
+
+
+
+

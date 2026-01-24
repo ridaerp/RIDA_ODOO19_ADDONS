@@ -1,0 +1,91 @@
+<odoo>
+    <data>
+        <record id="hr_contract_view_form_inherited" model="ir.ui.view">
+            <field name="name">hr.contract.form.inherited</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract_benefit.hr_contract_view_form_inherited_benefit"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='date_end']" position="after">
+                    <field name="grade_id" />
+                    <field name = "company_id"/>
+                    <field name="first_contract_date"/>
+                </xpath>
+                <xpath expr="//field[@name='hr_responsible_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+
+                <xpath expr="//page[@name='information']" position="replace">
+                    <page string="Salary Information" name="information"
+                        groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site">
+                        <group name="group_top">
+                        <group name="group_left">
+<!--                          comment by ekhlas   <field name="grade_id" />
+ -->                            <field name="basic"/>
+                            <field name="emp_code" invisible="1"/>
+                            <field name="min"/>
+                            <field name="max"/>
+                        </group>
+                        <group name="group_right">
+                            <field name="payroll_wage" 
+                                groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+                        </group>
+                    </group>
+                        <group>
+
+                                <field name="grade_line_id" nolabel="1" colspan="2" class="o_full_width">
+                                <tree editable="top" >
+                                    <field name="name" readonly="True" force_save="1" required="1"/>
+                                    <field name="code" readonly="True" force_save="1" required="1"/>
+                                    <field name="type" readonly="1" force_save="1"/>
+                                    <field name="percentage" readonly="type == 'fixed'"  force_save="1"/>
+                                    <field name="amount" readonly="type != 'fixed'"  force_save="1"/>
+                                </tree>
+                            </field>
+
+
+
+                        </group>
+                        <group>
+                            <field name="total_allowance"/>
+                            <field name="wage" string="Take Home/Month"/>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Salary Calculations" name="calculation" 
+                        groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site">
+                        <group name="group_top">
+                        <group name="group_left">
+                            <field name="payroll_wage" invisible="1" />
+                            <field name="basic_percentage" />
+                            <field name="cola_percentage" />
+                            <field name="housing_percentage" />
+                            <field name="transportion_percentage" />
+                        </group>
+                        <group name="group_right">
+                            <field name="basic_salary"   force_save="1"/>
+                            <field name="cola"   force_save="1"/>
+                            <field name="housing"   force_save="1"/>
+                            <field name="transportion"   force_save="1"/>
+                        </group>
+                    </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_contract_filter_inherit_emp_code" model="ir.ui.view">
+            <field name="name">view.contract.filter.inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_search"/>
+            <field name="arch" type="xml">
+                    <xpath expr="//search" position="inside">
+                        <field name="emp_code" filter_domain="[('emp_code','ilike',self)]"/>
+                    </xpath>
+                </field>
+        </record>
+
+    </data>
+</odoo>

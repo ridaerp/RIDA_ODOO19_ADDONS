@@ -1,0 +1,38 @@
+<odoo>
+	<data>
+
+		<record model="ir.module.category" id="budget_category">
+			<field name="name">Budget</field>
+			<field name="sequence">12</field>
+		</record>
+
+		<!-- Department User -->
+		<record id="group_budget_department_user" model="res.groups">
+			<field name="name">Department User</field>
+			<field name="category_id" ref="budget_category"/>
+		</record>
+
+		<!-- Department Manager -->
+		<record id="group_budget_department_manager" model="res.groups">
+			<field name="name">Department Manager</field>
+			<field name="category_id" ref="budget_category"/>
+			<field name="implied_ids" eval="[(4, ref('rida_budget.group_budget_department_user'))]"/>
+		</record>
+
+		<!-- Board of Directors -->
+		<record id="group_budget_bod" model="res.groups">
+			<field name="name">Board of Directors</field>
+			<field name="category_id" ref="budget_category"/>
+			<field name="implied_ids" eval="[(4, ref('rida_budget.group_budget_department_manager'))]"/>
+		</record>
+
+		<!-- CEO -->
+		<record id="group_budget_ceo" model="res.groups">
+			<field name="name">CEO</field>
+			<field name="category_id" ref="budget_category"/>
+			<field name="implied_ids" eval="[(4, ref('rida_budget.group_budget_bod'))]"/>
+		</record>
+
+
+	</data>
+</odoo>

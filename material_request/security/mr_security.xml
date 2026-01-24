@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+
+        <!--  MR requester User rule(change by ekhlas code ) -->
+        <record id="internal_request_rule" model="ir.rule">
+            <field name="name">MR Requester Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('requested_by', '=', user.id),
+                ('company_id','in', company_ids),('requested_by', '=', user.id)]
+            </field>
+
+            <field name="groups" eval="[(4, ref('material_request.group_purchase_request_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+        
+
+      <record id="weight_scoring_evaluation_rule" model="ir.rule">
+            <field name="name">Tehnical Evaluation Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">
+               [ '|',
+                        ('mr_requester', '=', user.id),
+                        ('additional_evaluator', '=', user.id),
+                   
+            ]
+            </field>
+
+            <field name="groups" eval="[(4, ref('material_request.group_purchase_request_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+        <record id="weight_scoring_evaluation_rule_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('mr_requester.line_manager_id', '=', user.id),
+                ('company_id','in', company_ids),('mr_requester.line_manager_id', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="weight_scoring_evaluation_rule_line_evaluator" model="ir.rule">
+            <field name="name">Tehnical Evaluation Assgined Evalautor Manager  Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('additional_evaluator.line_manager_id', '=', user.id),
+                ('company_id','in', company_ids),('additional_evaluator.line_manager_id', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+        <!--  MR Line Manager User rule(change by ekhlas code ) -->
+
+
+        <record id="internal_line_manager_rule" model="ir.rule">
+            <field name="name">Requester Line Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('line_manager_id', '=', user.id),
+                ('company_id','in', company_ids),('line_manager_id', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <!--  MR Line Line Manager User rule(change by ekhlas code )-->
+
+        <record id="internal_line_line_manager_rule" model="ir.rule">
+            <field name="name">Line Line Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('line_line_manager_id', '=', user.id),
+                ('company_id','in', company_ids),('line_line_manager_id', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <!--  Purchase User(Buyer) User rule(change by ekhlas code )-->
+
+        <record id="internal_buyer_rule" model="ir.rule">
+            <field name="name">Buyer Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('assigned_to_supply', '=', user.id),
+                ('company_id','in', company_ids),('assigned_to_supply', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+ <record id="weight_scoring_evaluation_rule_buyer_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation  Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+ <record id="lower_scoring_evaluation_rule_buyer_line" model="ir.rule">
+            <field name="name">Lower Evaluation  Rule</field>
+            <field name="model_id" ref="model_supplier_performance_evaluation"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+    <record id="weight_scoring_evaluation_rule_buy_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation Buy Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force"> ['|',
+                ('company_id', '=', company_id),('mr_requester.line_manager_id', '=', user.id),
+                ('company_id','in', company_ids),('mr_requester.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+        <!--  Purchase Manager(SCM Manager) User rule(change by ekhlas code )-->
+
+        <record id="group_supply_chain_manager_rule" model="ir.rule">
+            <field name="name">scm Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_supply_chain_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+    <record id="weight_scoring_evaluation_rule_manager_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation  Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_supply_chain_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <!--  Purchase Manager(Contract Manager) User rule(change by ekhlas code )-->\
+        <record id="group_contract_manager_rule" model="ir.rule">
+            <field name="name">Contract Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_contract_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+        <record id="weight_scoring_evaluation_contract_manager_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation  Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_contract_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+        <!--  CCOS RULE  rule(change by ekhlas code )-->
+        <record id="group_ccso_manager_rule" model="ir.rule">
+            <field name="name">CCSO Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_CCSO'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="weight_scoring_evaluation_ccso_line" model="ir.rule">
+            <field name="name">Tehnical Evaluation CCSO Rule</field>
+            <field name="model_id" ref="model_weight_scoring_evaluation"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_CCSO'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+
+        <!--  Fleet Director RULE  rule(change by ekhlas code )-->
+
+
+        <record id="group_fleet_manager_rule" model="ir.rule">
+            <field name="name">fleet Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[('user_type', '=','fleet')]</field>
+            <field name="groups" eval="[(4, ref('base_rida.group_fleet_director'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <!--  Operation Director RULE  rule(change by ekhlas code )-->
+        <record id="group_site_manager_rule" model="ir.rule">
+            <field name="name">site Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('company_id','in', company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_site_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <record id="material_request_peer_active_company" model="ir.rule">
+            <field name="name">Material Request Per Company</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">['|',
+                ('company_id', '=', company_id),('company_id','in', company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+
+        <record id="issuance_request_peer_active_company" model="ir.rule">
+            <field name="name">Issuance Request Per Company</field>
+            <field name="model_id" ref="model_issuance_request"/>
+            <field name="domain_force">['|',
+                ('company_id', '=', company_id),('company_id','in', company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+
+        <record id="group_warehouse_supervisor_rule" model="ir.rule">
+            <field name="name">warehouse</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="group_mr_read_rule" model="ir.rule">
+            <field name="name">MR Read</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_mr_reader'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="internal_contract_rule" model="ir.rule">
+            <field name="name">Contract Read</field>
+            <field name="model_id" ref="model_purchase_contract"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_purchase_request_user'))]"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+
+        </record>
+
+
+        <record id="group_contract_read1_rule" model="ir.rule">
+            <field name="name">Contract Read</field>
+            <field name="model_id" ref="model_purchase_contract"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+
+        </record>
+
+
+        <record id="group_contract_read2_rule" model="ir.rule">
+            <field name="name">Contract Read</field>
+            <field name="model_id" ref="model_purchase_contract"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="group_contract_read3_rule" model="ir.rule">
+            <field name="name">Contract Read</field>
+            <field name="model_id" ref="model_purchase_contract"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+
+
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+        <record id="group_contract_read4_rule" model="ir.rule">
+            <field name="name">Contract Read</field>
+            <field name="model_id" ref="model_purchase_contract"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups" eval="[(4, ref('account.group_account_user'))]"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+
+        </record>
+
+
+        <record id="purchase_roc_user_account_move_line_rule" model="ir.rule">
+            <field name="name">Purchase User Account Move Line</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+
+
+        </record>
+
+
+        <record id="roc_purchase_user_account_move_rule" model="ir.rule">
+            <field name="name">Purchase User Account Move</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+        </record>
+
+        <record id="roc_purchase_user_account_move_rule3" model="ir.rule">
+            <field name="name">Purchase User Account Move</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+        </record>
+
+        <record id="purchase_roc_user_account_move_line_rule3" model="ir.rule">
+            <field name="name">Purchase User Account Move Line</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+
+
+        </record>
+
+
+        <!--  chemical requester -->
+        <record id="chemical_request_rule" model="ir.rule">
+            <field name="name">Chemical Requester Rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('requested_by', '=', user.id),
+                ('company_id','in', company_ids),('requested_by', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <!--  chemical Manager -->
+        <record id="chemical_ore_manager_rule" model="ir.rule">
+            <field name="name">Meta Lab Manager Rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[('requested_by.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <!--  production Team Group.. -->
+        <record id="chemical_production_rule" model="ir.rule">
+            <field name="name">Chemical Production Rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[('request_id','=',False)]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_ore_reader_pro'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="chemical_all_ule" model="ir.rule">
+            <field name="name">Chemical Lab Rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+
+            <field name="groups" eval="[(4, ref('material_request.group_chemical_receiver_user')),(4,ref(
+                'material_request.group_ore_rock_chemical_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+        <record id="chemical_reader_line_ule" model="ir.rule">
+            <field name="name">Chemical Lab Rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[('request_id','=',False)]</field>
+
+            <field name="groups" eval="[(4, ref('material_request.group_chemical_requester_reader'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <!--  scaling  requester -->
+
+
+        <record id="chemical_all_ule_report_rock" model="ir.rule">
+            <field name="name">Scaling unit report rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[('sample_type','=','rock_chips')]</field>
+
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <record id="reader_scale_all_read" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_reader_user'))]"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+        </record>
+
+
+        <record id="reader_scale_allq_group_section" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_reader_sale')),
+                   (4, ref('material_request.group_ore_reader_stock')),
+                   (4, ref('material_request.group_ore_reader_pro')),(4, ref('material_request.group_ore_reader_planning'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+        <record id="reader_scale_all2_read" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="reader_scal_all_ule" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+            <field name="groups"
+                   eval="[(4,ref('material_request.ore_lab_requester'))]"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="0"/>
+
+        </record>
+
+        <record id="reader_scal_all2_ule" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+            <field name="groups"
+                   eval="[(4,ref('material_request.group_weight_unit_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+        <!--  meta requester -->
+        <record id="meta_request_ore_rule" model="ir.rule">
+            <field name="name">Meta Lab ore Rule</field>
+            <field name="model_id" ref="model_metallurgical_request"/>
+            <field name="domain_force">
+                ['|',
+                ('company_id', '=', company_id),('requested_by', '=', user.id),
+                ('company_id','in', company_ids),('requested_by', '=', user.id)]
+            </field>
+            <field name="groups" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <!--  meta Manager -->
+        <record id="meta_request_ore_manager_rule" model="ir.rule">
+            <field name="name">Meta Lab Manager Rule</field>
+            <field name="model_id" ref="model_metallurgical_request"/>
+            <field name="domain_force">[('requested_by.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+        <record id="reader_meta_all_ule" model="ir.rule">
+            <field name="name">Meta Lab Rule</field>
+            <field name="model_id" ref="model_metallurgical_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+
+            <field name="groups" eval="[(4, ref('material_request.group_meta_lab_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+
+        </record>
+
+
+        <record id="reader_meta_all2_ule" model="ir.rule">
+            <field name="name">Meta Lab Rule</field>
+            <field name="model_id" ref="model_metallurgical_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+
+            <field name="groups" eval="[(4, ref('material_request.group_meta_lab_reader'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+
+        </record>
+
+
+        <record id="reader_meta_all2_ule" model="ir.rule">
+            <field name="name">Meta Lab Rule</field>
+            <field name="model_id" ref="model_metallurgical_request"/>
+            <field name="domain_force">[(1, '=',1)]</field>
+
+
+            <field name="groups" eval="[(4, ref('material_request.group_meta_lab_Metallurgist_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+            <!-- Record Rule for Purchase Order -->
+            <record id="purchase_order_rule_group_buyers_company_rohax" model="ir.rule">
+                <field name="name">Purchase Order: Restrict to Company Rohax</field>
+                <field name="model_id" ref="purchase.model_purchase_order"/>
+                <field name="groups" eval="[(4, ref('material_request.group_buyers'))]"/>
+                <field name="domain_force">[('company_id', 'in', company_ids), ('request_id', '!=', False)]</field>
+            </record>
+
+             <record id="purchase_order_rule_director_rohax" model="ir.rule">
+                <field name="name">Purchase Order: Restrict to Company Rohax</field>
+                <field name="model_id" ref="purchase.model_purchase_order"/>
+                <field name="groups" eval="[(4, ref('base_rida.rida_group_supply_chain_director'))]"/>
+                <field name="domain_force">[('company_id', 'in', company_ids), ('request_id', '!=', False)]</field>
+            </record>
+
+      
+
+
+<!-- ('contract_purchased','!=',False) -->
+
+
+            <!-- Record Rule for Purchase Order -->
+            <record id="purchase_order_rule_" model="ir.rule">
+                <field name="name">Purchase Order: Allow Ore Rock Purchase</field>
+                <field name="model_id" ref="purchase.model_purchase_order"/>
+                <field name="groups" eval="[(4, ref('material_request.group_ore_rock_db_geology_user'))]"/>
+                <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            </record>
+
+
+    </data>
+</odoo>

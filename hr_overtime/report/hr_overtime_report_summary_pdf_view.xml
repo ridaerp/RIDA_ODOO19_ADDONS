@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <template id="over_time_report_op_temp_id">
+            <t t-call="web.html_container">
+                <t t-call="web.internal_layout">
+                <!-- <t t-foreach="docs" t-as="o"> -->
+                <!-- <t t-call="web.html_container"> -->
+
+                <!-- <div class="page"> -->
+
+                <div class="page">
+
+                    <!-- <div class="header" style="border-bottom: 2px solid black">
+                <h3 class="text-center">OVER TIME FORM</h3>
+            </div> -->
+                    <table class="table report_border table-bordered" style="margin-bottom:0px;">
+                        <!-- <t t-if="origin != l.origin">
+                            <td>foo</td>
+                        </t>
+                        <t t-else="">
+                            <td>bar</td>
+                        </t> -->
+                        <!-- <t t-if="origin != l.origin"> -->
+                        <tr>
+                            <td style="width:150px; padding: 0px 5px;background-color: #A9A9A9 !important;;" class="text-left">EMPLOYEE NAME</td>
+                            <th>
+                                <span t-esc="docs[0].employee_id.name"/>
+                            </th>
+                            <td style="width:150px; padding: 0px 5px;background-color: #A9A9A9 !important;;" class="text-left">JOB TITLE</td>
+                            <th>
+                                <span t-esc="docs[0].employee_id.job_id.name"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style="width:150px; padding: 0px 5px;background-color: #A9A9A9 !important;;" class="text-left">EMPLOYEE NO.</td>
+                            <th>
+                                <span t-esc="docs[0].employee_id.emp_code"/>
+                            </th>
+                            <td style="width:150px; padding: 0px 5px;background-color: #A9A9A9 !important;;" class="text-left">DEPARTMENT</td>
+                            <th>
+                                <span t-esc="docs[0].employee_id.department_id.name"/>
+                            </th>
+                        </tr>
+                        <!-- <t> -->
+                    </table>
+                    <br/>
+                    <table class="table table-condensed table-bordered" style="width: 100%">
+                        <thead>
+                            <tr style="background-color: #A9A9A9 !important;;">
+                                <th rowspan="2" class="text-center">SNO</th>
+                                <th rowspan="2" class="text-center">Date</th>
+                                <th colspan="3" class="text-center">NORMAL</th>
+                                <th colspan="3" class="text-center">NIGHT</th>
+                                <th colspan="3" class="text-center">WEEKENDS</th>
+                                <th colspan="3" class="text-center">HOLIDAYS</th>
+                                <th rowspan="2" class="text-center">REASONS</th>
+
+                            </tr>
+                            <!--<tr style="background-color: #A9A9A9 !important;;">-->
+
+                            <!--<th class="text-center">OT HRS</th>-->
+                            <!--<th></th>-->
+                            <!--<th></th>-->
+                            <!--<th class="text-center">OT HRS</th>-->
+                            <!--<th class="text-center">OT HRS</th>-->
+                            <!--<th class="text-center">OT HRS</th>-->
+                            <!--</tr>-->
+                        </thead>
+                        <t t-set="sno" t-value="0"/>
+                        <t t-foreach="docs" t-as="o">
+                            <t t-set="sno" t-value="sno+1"/>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" class="text-center">
+                                        <t t-esc="sno"/>
+                                    </td>
+                                    <td rowspan="2" class="text-center">
+                                        <span t-esc="o.date"/>
+                                    </td>
+
+                                    <td colspan="3" class="text-center">
+                                        <span t-esc="o.hours_normal"/>
+                                    </td>
+
+                                    <td colspan="3" class="text-center">
+                                        <span t-esc="o.hours_night"/>
+                                    </td>
+
+                                    <td colspan="3" class="text-center">
+                                        <span t-esc="o.hours_weekend"/>
+                                    </td>
+
+                                    <td colspan="3" class="text-center">
+                                        <span t-esc="o.hours_holiday"/>
+                                    </td>
+
+                                    <td rowspan="2" class="text-center">
+                                        <span t-esc="o.note"/>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </t>
+
+                    </table>
+                    <br/>
+                    <br/>
+                    <br/>
+
+
+                    <table class="table table-condensed table-bordered" style="width: 100%">
+                        <thead>
+                            <!-- <t t-foreach="docs" t-as="o"> -->
+                            <tr>
+                                <th rowspan="2" class="text-center">Total Weekday OT Hours:  <span>
+                                    <t t-esc="total_normal"/>
+                                </span>
+                                <br/>
+Total Night OT Hours:  <span>
+                                <t t-esc="total_night"/>
+                            </span>
+                            <br/>
+Total Holiday OT Hours:  <span>
+                            <t t-esc="total_holiday"/>
+                        </span>
+                        <br/>
+Total Weekend OT Hours:  <span>
+                        <t t-esc="total_weekend"/>
+                    </span>
+                </th>
+                <th rowspan="2" class="text-center">Employee Signature</th>
+                <th rowspan="2" class="text-center">Department Manager</th>
+                <th rowspan="2" class="text-center">HR Manager</th>
+                <th rowspan="2" class="text-center">Payroll</th>
+
+            </tr>
+            <!-- </t> -->
+        </thead>
+    </table>
+</div>
+</t>
+</t>
+<!-- </t> -->
+<!-- </t> -->
+</template>
+
+
+<!-- <template id="over_time_report_op_temp">
+<t t-call="web.html_container"> -->
+<!-- <t t-foreach="docs" t-as="o"> -->
+<!-- <t t-call="hr_overtime.over_time_report_op_temp_id"/> -->
+<!-- </t> -->
+<!-- </t>
+</template> -->
+
+</data>
+</odoo>

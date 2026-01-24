@@ -1,0 +1,219 @@
+<odoo>
+    <data>
+
+        <record id="seq_contract" model="ir.sequence">
+            <field name="name">Contract Refrence</field>
+            <field name="code">Contract.sequence</field>
+            <field name="prefix">CO-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!-- Add you code here -->
+        <!-- contract form view -->
+        <record id="contract_view_form" model="ir.ui.view">
+            <field name="name">contract </field>
+            <field name="model">contract.contract</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,running,reject"/>
+                        <button name="action_reject" string="Reject" type="object" invisible="state not in ('draft','running')"/>
+                        <button name="button_change_contract" string="Change in Contract" type="object" invisible="state not in ('running')"/>
+                        <button name="button_payment_request" string="Payment Request" type="object" invisible="state not in ('running')"/>
+
+                        <button name="button_contract_submit"  string="Approve" invisible="state != 'draft'" type="object" class="oe_highlight" groups="material_request.group_contract_manager"/>
+                        <button name="button_contract_send"  string="Approve"  invisible="state != 'contract_send'" type="object" class="oe_highlight" groups="material_request.group_contract_manager"/>
+                        <button name="button_contract_specialist"  string="Approve" invisible="state != 'contract_specialist'"   type="object" class="oe_highlight" groups="material_request.group_contract_manager"/>
+                        <button name="button_supply_chain_manager" string="Approve" invisible="state != 'supply_chain_manager'"
+                          type="object" class="oe_highlight" groups="base_rida.rida_group_supply_chain_manager"/>
+                        <button name="button_general_manager_approve" string="Approve"  invisible="state != 'general_manager'"
+                        type="object" class="oe_highlight"  groups="base_rida.rida_group_CCSO"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+
+
+                            <button name="action_view_contracts"
+                                    class="oe_stat_button"
+                                    type="object"
+                                    string="Change Contract"
+                                      invisible="contract_count == 0 or state != 'running'" >
+                                <field name="contract_count"
+                                      invisible="contract_count == 0"
+                                     widget="statinfo"/>
+                            </button>
+
+                             <button name="action_view_payments_requests"
+                                     class="oe_stat_button"  type="object"
+                                     string="Request Payment"
+                                      invisible="payment_count == 0 or state != 'running'" >
+                                <field name="payment_count"   invisible="payment_count == 0" widget="statinfo"/>
+                             </button>
+
+                       <!--  </div>
+                        <div > -->
+                            
+                        </div>
+                         <div class="oe_title">
+                        <span class="o_form_label" invisible="state not in ('draft')" >Contract</span>
+                    <h1>
+                           <field name="name" placeholder="Contract Number" readonly="1"/>
+                      <br></br>   <field name="contract_number" placeholder="Title"  readonly="state != 'draft'"/>
+
+                    </h1>
+                    </div>
+                        <!-- Add your fields here -->
+                        <group>
+                            <group>
+                            <field name="vendor_id"/>
+                            <field name="company_id" invisible="1"/>
+                             <field name="buyer_assigned"/>
+                             <field name="department_id" readonly="0"/>
+                              <field name="duration" readonly="1"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="start_date" string="Signed Date" readonly="state != 'draft'"/>
+                            <field name="eff_date" readonly="state != 'draft'"/>
+                            <field name="estimated_cost"  readonly="state != 'draft'"/>
+                            <field name="finish_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="state != 'draft'"/>
+                          </group>
+                            <group>
+
+                            <!-- <field name="job_description" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
+                            <field name="location_type" invisible="0"/>
+                            <field name="project_no"/>
+                            <field name="project_description"/>
+                             <field name="company_signatory"/>
+                            <field name="company_signatory_title"/>
+                            <field name="contract_amount" readonly="state != 'draft'"/>
+                            <field name="contract_type"/>
+                            <field name="contract_level"/>
+                            <!-- <field name="logistic"/> -->
+                            <field name="attatchment" readonly="state != 'draft'" />
+                            <!-- <field name="number_of_loads" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="estimated_distance" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="service_type" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="current_location" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="new_location" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="collection_point" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="delivery_point" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="release_date" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="collection_mobile_number" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="delivery_mobile_number" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="scope" attrs="{'invisible': [('logistic', '=', False)]}"/>
+                            <field name="logistic_attatchment" attrs="{'invisible': [('logistic', '=', False)]}"/> -->
+                            <!-- <field name="clicked" invisible="1"/> -->
+                        </group>
+                            </group>
+
+                        <notebook>
+                            <page string="Products Lines">
+                                <field name="work_ids" readonly="state != 'draft'" >
+                                    <tree editable="bottom">
+                                        <field name="product_id" />
+                                        <field name="description"/>
+                                        <field name="quantity"/>
+                                        <field name="rate"/>
+                                        <field name="analytic_account_account"/>
+                                        <field name="estimated_cost"/>
+                                        <!-- <field name="uom"/> -->
+                                        <!-- <field name="tax"/> -->
+                                        <!-- <field name="subtotal"/> -->
+                                        <field name="unit_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                        <field name="total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                        <!-- <field name="currency_id"/> -->
+
+
+                                    </tree>
+                                </field>
+                            </page>
+                            <!-- <page string="Payment request details">
+                                <group col="4" colspan="4">
+                                <field name="original_contract_sum"/>
+                                    <field name="this_claim"/>
+                                    <field name="address"/>
+                                    <field name="fax_number"/>
+                                    <field name="telephone_number"/>
+                                    <field name="email"/>
+                                </group>
+                            </page> -->
+                            <page string="Terms and Conditions">
+                                <group col="4" colspan="4">
+                                    <field name="payment_term_id"/>
+                                    <br/>
+                                    <br/>
+                                    <field name="t_c" readonly="state != 'draft'"/>
+                                    <field name="t_c_attatchment" readonly="state != 'draft'"/>
+                                </group>
+                            </page>
+                            <page string="Scope Of Work">
+                                <group >
+                                    <field name="scope_work" readonly="state != 'draft'"/>
+                                    <field name="scope_doc" />
+                                </group>
+                            </page>
+                            <page string="Remarks And Notes">
+                                <group >
+                                    <field name="remarks" readonly="state != 'draft'"/>
+                                </group>
+                            </page>
+                            <page  string="Vendor Signature" name="vendor_signature" >
+                                <group>
+                                    <field name="signed_by"/>
+                                    <field name="signed_on"/>
+                                    <field name="signature" widget="image"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- contract tree view -->
+        <record id="contract_view_tree" model="ir.ui.view">
+            <field name="name">contract.view.tree</field>
+            <field name="model">contract.contract</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state in 'draft,department_manager'" decoration-danger="state == 'reject'" decoration-success="state == 'approveed'">
+                    <!-- Add your fields here -->
+                    <field name="name"/>
+                    <field name="requested_by"/>
+                    <field name="department_id"/>
+                    <field name="vendor_id"/>
+                    <field name="contract_number"/>
+                    <field name="start_date"/>
+                    <field name="finish_date"/>
+                    <field name="activity_ids" widget="list_activity" optional="show"/>
+
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        
+        <!-- contract action window -->
+        <record id="contract_action" model="ir.actions.act_window">
+            <field name="name">Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contract.contract</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Here you can find contracts
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+        
+
+        <menuitem id="contract_menu_act" name="Contracts" parent="purchase.menu_purchase_root" sequence="17" groups="material_request.group_contract_manager,material_request.group_buyers"/>
+        <menuitem id="contract_menu" name="Contract" parent="contract_menu_act" action="contract_action" sequence="1"/>
+
+        <!-- rida configuration menu-->
+        <!-- <menuitem  action="external_service_management_conf_action" id="external_service_management__conf_menu_act"
+           parent="purchase.menu_purchase_config" sequence="1"/> -->
+
+    </data>
+</odoo>

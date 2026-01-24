@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+	<template id="journal_entries_report_id">
+       <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size:12px;">
+                	<div class="row" >
+                		<t t-set="company" t-value="o.company_id"></t>
+                		<center>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <h3><t t-esc="company.name" /></h3>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+
+                			<br/>
+                			Journal Entries
+                		</center>
+                	</div>
+                	<div class="row">
+                		<h4>
+                			<span t-field="o.name"/>
+                		</h4>
+            			<center>
+	            			<table width="100%">
+	            				<tr>
+	            					<td>Journal: <span t-field="o.journal_id.name" />
+	            					</td>
+	            					<td>
+	            						Date: <span t-field="o.date"/>
+	            					</td>
+	            				</tr>
+	            				<tr>
+	            					<td>
+	            						Partner: <span t-field="o.partner_id.name"/>
+	            					</td>
+	            					<td>
+	            						Reference: <span t-field="o.ref"/>
+	            					</td>
+	            				</tr>
+	            			</table>
+                		</center>
+                	</div>
+                	<div class="row">
+                         <style>
+                    .tblbordr {
+                        text-align: center;
+                        border: 1px solid black;
+                    }
+                </style>
+                		<table width="100%" class="table table-border">
+                			<thead>
+                				<tr>
+                					<th>Account</th>
+                					<th>Date</th>
+                					<th>Due Date</th>
+                					<th>Partner</th>
+                					<th>Lable</th>
+                					<th>Analytic Account</th>
+                					<th>Debit</th>
+                					<th>Credit</th>
+                				</tr>
+                			</thead>
+                			<tbody>
+                				 <t t-foreach="o.line_ids" t-as="line">
+                				 	<tr>
+                				 		<td>
+                				 			<span t-field="line.account_id.name"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.date"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.date_maturity"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.partner_id.name"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.name"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.account_id.name"/>
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.debit"/>
+                				 			
+                				 		</td>
+                				 		<td>
+                				 			<span t-field="line.credit"/>
+                				 			
+                				 		</td>
+                				 	</tr>
+                				 </t>
+                			</tbody>
+                			<tfooter>
+                				<tr>
+                					<td colspan="6"></td>
+                					<td>
+                						<span t-esc="o.total_debit_credit().get('dr_total')"/>
+                					</td>
+                					<td>
+                						<span t-esc="o.total_debit_credit().get('cr_total')"/>
+                					</td>
+                				</tr>
+                			</tfooter>
+                		</table>
+                	</div>
+                </div>
+            </t>
+        </t>
+        </t>
+    </template>
+
+
+    <report 
+        id="journal_entries_moce_print_id"
+        model = "account.move"
+        string = "Journal Entries"
+        report_type = "qweb-pdf"
+        name = "opal.journal_entries_report_id"  
+        file = "opal.journal_entries_report_id"
+    />
+
+     <record id="journal_entries_paperformat" model="report.paperformat">
+            <field name="name">Journal Entries</field>
+            <field name="default">false</field>
+            <field name="format">custom</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+            <field name="report_ids" eval="[(4, ref('journal_entries_moce_print_id'))]"/>
+       </record>
+   </data>
+</odoo>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_kpi_review_tree" model="ir.ui.view">
+            <field name="name">kpi.review.tree</field>
+            <field name="model">kpi.review</field>
+            <field name="arch" type="xml">
+                <tree string="Performance Reviews" create="false">
+                    <field name="name"/>
+                    <field name="note"/>
+                    <field name="person_id"/>
+                    <field name="review_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_kpi_review_form" model="ir.ui.view">
+            <field name="name">kpi.review.form</field>
+            <field name="model">kpi.review</field>
+            <field name="arch" type="xml">
+                <form string="Performance Review">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="review_state" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="person_id" readonly="1"/>
+                            </group>
+                            <field name="note"/>
+                        </group>
+
+                        <notebook>
+                            <!-- Works Page -->
+                            <page string="Works">
+                                <field name="work_ids">
+                                    <tree editable="bottom" create="false" delete="false" readonly="1">
+                                        <field name="sequence"/>
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="weight"/>
+                                        <field name="kpi2_plan_target"/>
+                                        <field name="kpi2_actual_result"/>
+                                        <field name="score"/>
+                                        <field name="kpi2_rating"/>
+                                        <field name="kpi2_weight_score"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <!-- Competencies Page -->
+                            <page string="Competencies">
+                                <field name="competency_ids" create="false" delete="false" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="weight"/>
+                                        <field name="behavior_evaluation"/>
+                                        <field name="level"/>
+                                        <field name="score"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="PART IV + V Overall Rating">
+                                <h3>PART IV : OVERALL PERFORMANCE - FINANCIAL YEAR END ONLY</h3>
+                                <table border="1" style="text-align:center"
+                                >
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <p></p>
+                                        </th>
+                                        <th>
+                                            <p>ACTUAL WEIGHTED SCORE</p>
+                                        </th>
+                                        <th>
+                                            <p>WEIGHT</p>
+                                        </th>
+                                        <th>
+                                            <p>INDIVIDUAL WEIGHTED SCORE</p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total KPI (A)</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_weight_kpi"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weigh_kpi"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_score_kpi"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total Competency (B)</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_weight_competency"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weight_competency"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="overall_score_competency"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: #f2f2f2;">
+                                            <p>Total</p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_overall_weight"/>
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_weight_kpi_competenct"/>%
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+                                                <field name="total_overall_score"/>
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th>
+                                            <p>
+
+                                            </p>
+                                        </th>
+                                        <th style="background-color: #875A7B;color: white;font-size:18px">
+                                            <p>
+                                                Rating
+                                                <field name="last_rating"/>
+                                            </p>
+                                        </th>
+
+                                    </tr>
+                                </table>
+
+                                <group>
+                                    <field name="kpi4_more_info"/>
+                                </group>
+                                <table border="1" style="text-align:center"
+                                       invisible="kpi4_more_info == False">
+                                    <tr style="background-color: #f2f2f2;">
+                                        <th>
+                                            <p>RATING</p>
+                                        </th>
+                                        <th>
+                                            <p>INDIVIDUAL WEIGHTED SCORE</p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>1</p>
+                                            <h4>Far Below Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>Below 1.49</h4>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <p>2</p>
+                                            <h4>Partially Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>1.50 - 2.49</h4>
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <p>3</p>
+                                            <h4>Met Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>2.50 - 3.49</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>4</p>
+                                            <h4>Exceeded Expectations</h4>
+                                        </th>
+                                        <th>
+                                            <h4>3.50 - 4.49</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <p>5</p>
+                                            <h4>Outstanding</h4>
+                                        </th>
+                                        <th>
+                                            <h4>4.50 and above</h4>
+                                        </th>
+                                    </tr>
+                                    <tr>
+
+                                    </tr>
+
+                                </table>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_kpi_review" model="ir.actions.act_window">
+            <field name="name">Performance Reviews</field>
+            <field name="res_model">kpi.review</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create performance review records from KPI Person using smart buttons.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

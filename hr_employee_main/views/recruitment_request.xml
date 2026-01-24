@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="recr_request_custom_form" model="ir.ui.view">
+            <field name="name">Recruitment Request</field>
+            <field name="model">recruitment.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="action_submit" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+                        <button string="Confirm" name="action_submit_line_mng" type="object" class="oe_highlight"
+                                invisible="state != 'line_mng'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+                        <button string="Verify" name="action_off_approve" type="object" class="oe_highlight"
+                                invisible="state != 'hr_off'"
+                                groups="hr.group_hr_user"/>
+                        <button string="Approve" name="action_chmo_approve" type="object" class="oe_highlight"
+                                invisible="state != 'w_chro'"
+                                groups="base_rida.rida_hr_manager_notify"/>
+                        <button string="Approve" name="approve_operation_director" type="object"
+                                invisible="state != 'coo'"
+                                class="oe_highlight" groups="base_rida.rida_group_site_manager"/>
+                        <button string="Approve" name="approve_ccso" type="object"  invisible="state != 'ccso'"
+                                class="oe_highlight" groups="base_rida.rida_group_CCSO,base_rida.rida_group_COO"/>
+                        <button string="Set to Draft" name="action_draft"
+                                groups="base_rida.rida_group_site_manager,base_rida.rida_hr_manager_notify,base_rida.rida_group_CCSO,base_rida.rida_group_line_manager"
+                                type="object" invisible="state != 'reject'"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state not in ['hr_off', 'w_chro', 'ccso', 'coo' , 'line_mng']" string="Reject"
+                                groups="hr.group_hr_user,base_rida.rida_group_site_manager,base_rida.rida_hr_manager_notify,base_rida.rida_group_CCSO,base_rida.rida_group_line_manager,base_rida.rida_group_COO"/>
+                        />
+                        <button string="Close" name="action_close" type="object" class="oe_highlight"
+                                invisible="state != 'approved'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+
+                              <field name="state" widget="statusbar"
+                               statusbar_visible="draft,line_mng,hr_off,w_chro,coo,approved"
+                               invisible="user_type == 'hq' and recr_type != 'temp'"/>
+                        <field name="state_ccso" widget="statusbar" invisible="user_type != 'hq' or recr_type == 'temp'"
+                               statusbar_visible="draft,line_mng,hr_off,w_chro,ccso,approved"/>
+                    </header>
+                    <br/>
+                    <b>
+                        <p align="center">Doc. No. UMC-HRADM-QP-HR-RFC/02
+                            -
+                            Issue/Rev 03/00
+                        </p>
+                    </b>
+
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>RECRUITMENT REQUSITION FORM</b>
+                            </h3>
+                        </center>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_type" invisible="1"/>
+                                <field name="req_id" readonly="1"/>
+                                <field name="department_id"
+                                       readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="job_location"
+                                       readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="number_vacancies" readonly="state == 'approved'"
+                                       required="1"/>
+                                <field name="description" readonly="state == 'approved'"
+                                       required="1"/>
+                                <field name="expected_date" readonly="state == 'approved'"
+                                       required="1"/>
+                            </group>
+                            <group>
+                                <field name="date"
+                                       required="1" readonly="state == 'approved'"/>
+                                <field name="company_id"
+                                       required="1" readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                />
+                                <field name="job_req_id" readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="recr_plan" widget="radio" required="1"
+                                       readonly="state == 'approved'"/>
+                                <field name="recr_type" widget="radio" required="1"
+                                       readonly="state == 'approved'"/>
+                                <field name="duration" invisible="recr_type != 'temp'" required="recr_type == 'temp'"
+                                />
+                            </group>
+                        </group>
+                        <group string="Reason for recruiting">
+                            <field name="reason_recr" widget="radio" readonly="state == 'approved'"
+                                   options="{'horizontal': true}" required="1"/>
+                            <field name="comments" required="1" readonly="state == 'approved'"/>
+                        </group>
+                        <group string="Job and position requirement">
+                            <group>
+                                <field name="laptop" readonly="state == 'approved'"/>
+                                <field name="pc" readonly="state == 'approved'"/>
+                                <field name="office_desk" readonly="state == 'approved'"/>
+                                <field name="others" readonly="state == 'approved'"/>
+                                <field name="position_req_other" readonly="state == 'approved'"
+                                       invisible="others == False"
+                                />
+                            </group>
+                            <group>
+                                <field name="locker" readonly="state == 'approved'"/>
+                                <field name="ppe" readonly="state == 'approved'"/>
+                                <field name="tool_book" readonly="state == 'approved'"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="For HR\ADM Department User" groups="hr.group_hr_user">
+                                <group>
+                                    <!-- <group>
+                                        <field name="min_grade_id"
+                                               attrs="{'required': [('state','not in',['draft'])],'readonly': [('state','in',['approved'])]}"
+                                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"/>
+                                        <field name="min_salary"
+                                               attrs="{'required': [('state','not in',['draft'])],'readonly': [('state','in',['approved'])]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="max_grade_id"
+                                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                               attrs="{'required': [('state','in',['w_chro'])],'readonly': [('state','in',['approved'])]}"/>
+                                        <field name="max_salary" options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                               attrs="{'required': [('state','in',['w_chro'])],'readonly': [('state','in',['approved'])]}"/>
+                                    </group> -->
+                                </group>
+                                <group>
+                                    <field name="comments_for_hr" readonly="state == 'approved'"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                        <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="recr_request_form" model="ir.ui.view">
+            <field name="name">Recruitment Request</field>
+            <field name="model">recruitment.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="action_submit" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+                        <button string="Confirm" name="action_submit_line_mng" type="object" class="oe_highlight"
+                                invisible="state != 'line_mng'"
+                                groups="hr.group_hr_user,base_rida.rida_group_line_manager"/>
+                        <button string="Verify" name="action_off_approve" type="object" class="oe_highlight"
+                                invisible="state != 'hr_off'"
+                                groups="hr.group_hr_user"/>
+                        <button string="Approve" name="action_chmo_approve" type="object" class="oe_highlight"
+                                invisible="state != 'w_chro'"
+                                groups="base_rida.rida_hr_manager_notify"/>
+                        <button string="Approve" name="approve_operation_director" type="object"
+                                invisible="state != 'coo'"
+                                class="oe_highlight" groups="base_rida.rida_group_site_manager"/>
+                        <button string="Approve" name="approve_ccso" type="object" invisible="state != 'ccso'"
+                                class="oe_highlight" groups="base_rida.rida_group_CCSO"/>
+                        <button string="Set to Draft" name="action_draft"
+                                groups="base_rida.rida_group_site_manager,base_rida.rida_hr_manager_notify,base_rida.rida_group_CCSO,base_rida.rida_group_line_manager"
+                                type="object" invisible="state != 'reject'"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state in ['hr_off', 'w_chro', 'ccso', 'coo']" string="Reject"
+                                groups="base_rida.rida_group_site_manager,base_rida.rida_hr_manager_notify,base_rida.rida_group_CCSO,base_rida.rida_group_line_manager,base_rida.rida_group_COO"/>
+                        />
+              <field name="state" widget="statusbar"
+                               statusbar_visible="draft,line_mng,hr_off,w_chro,coo,approved"
+                               invisible="user_type == 'hq' and recr_type != 'temp'"/>
+                        <field name="state_ccso" widget="statusbar" invisible="user_type != 'hq' or recr_type == 'temp'"
+                               statusbar_visible="draft,line_mng,hr_off,w_chro,ccso,approved"/>
+                    </header>
+                    <br/>
+                    <b>
+                        <p align="center">Doc. No. UMC-HRADM-QP-HR-RFC/02
+                            -
+                            Issue/Rev 03/00
+                        </p>
+                    </b>
+
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>RECRUITMENT REQUSITION FORM</b>
+                            </h3>
+                        </center>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_type" invisible="1"/>
+                                <field name="req_id" readonly="1"/>
+                                <field name="department_id"
+                                       readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="job_location"
+                                       readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="number_vacancies" readonly="state == 'approved'"
+                                       required="1"/>
+                                <field name="description" readonly="state == 'approved'"
+                                       required="1"/>
+                                <field name="expected_date" readonly="state == 'approved'"
+                                       required="1"/>
+                            </group>
+                            <group>
+                                <field name="date"
+                                       required="1" readonly="state == 'approved'"/>
+                                <field name="company_id"
+                                       required="1" readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                />
+                                <field name="job_req_id" readonly="state == 'approved'"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                       required="1"/>
+                                <field name="recr_plan" widget="radio" required="1"
+                                       readonly="state == 'approved'"/>
+                                <field name="recr_type" widget="radio" required="1"
+                                       readonly="state == 'approved'"/>
+                                <field name="duration" invisible="recr_type != 'temp'" required="recr_type == 'temp'"
+                                />
+                            </group>
+                        </group>
+                        <group string="Reason for recruiting">
+                            <field name="reason_recr" widget="radio" readonly="state == 'approved'"
+                                   options="{'horizontal': true}" required="1"/>
+                            <field name="comments" required="1" readonly="state == 'approved'"/>
+                        </group>
+                        <group string="Job and position requirement">
+                            <group>
+                                <field name="laptop" readonly="state == 'approved'"/>
+                                <field name="pc" readonly="state == 'approved'"/>
+                                <field name="office_desk" readonly="state == 'approved'"/>
+                                <field name="others" readonly="state == 'approved'"/>
+                                <field name="position_req_other" readonly="state == 'approved'"
+                                       invisible="others == False"
+                                />
+                            </group>
+                            <group>
+                                <field name="locker" readonly="state == 'approved'"/>
+                                <field name="ppe" readonly="state == 'approved'"/>
+                                <field name="tool_book" readonly="state == 'approved'"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="For HR\ADM Department User" groups="hr.group_hr_user">
+                                <group>
+                                    <!-- <group>
+                                        <field name="min_grade_id"
+                                               attrs="{'required': [('state','not in',['draft'])],'readonly': [('state','in',['approved'])]}"
+                                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"/>
+                                        <field name="min_salary"
+                                               attrs="{'required': [('state','not in',['draft'])],'readonly': [('state','in',['approved'])]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="max_grade_id"
+                                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                               attrs="{'required': [('state','in',['w_chro'])],'readonly': [('state','in',['approved'])]}"/>
+                                        <field name="max_salary" options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
+                                               attrs="{'required': [('state','in',['w_chro'])],'readonly': [('state','in',['approved'])]}"/>
+                                    </group> -->
+                                </group>
+                                <group>
+                                    <field name="comments_for_hr" readonly="state == 'approved'"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="recr_request_tree" model="ir.ui.view">
+            <field name="name">Recruitment Request</field>
+            <field name="model">recruitment.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="req_id"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="recr_request_form_search" model="ir.ui.view">
+            <field name="name">Recruitment Request</field>
+            <field name="model">recruitment.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="recr_request_action" model="ir.actions.act_window">
+            <field name="name">Recruitment Request</field>
+            <field name="res_model">recruitment.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Recruitment Request" id="recr_request"
+                  parent="recr_plan_root"
+                  groups="hr.group_hr_user,base_rida.rida_group_line_manager"
+                  action="recr_request_action"/>
+
+    </data>
+</odoo>

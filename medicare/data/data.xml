@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--   Nuring procedures Items -->
+
+        <record id="admission" model="minor.items">
+            <field name="name">Admission</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="ecg" model="minor.items">
+            <field name="name">ECG</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="admission" model="minor.items">
+            <field name="name">Admission</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="measuring" model="minor.items">
+            <field name="name">B/P Measuring</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="pluse" model="minor.items">
+            <field name="name">Pulse Rate Measuring</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="rate_meas" model="minor.items">
+            <field name="name">Respiratory Rate Measuring</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="temp_meas" model="minor.items">
+            <field name="name">Tempreature Measuring</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="scor_bite" model="minor.items">
+            <field name="name">Scorpion Bite</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+        <record id="snake_sting" model="minor.items">
+            <field name="name">Snake Sting</field>
+            <field name="minor_procedure">nuring_procedures</field>
+        </record>
+
+        <!--   Operations -->
+
+        <record id="abcsess" model="minor.items">
+            <field name="name">Abcsess</field>
+            <field name="minor_procedure">operations</field>
+        </record>
+        <record id="suturing" model="minor.items">
+            <field name="name">Suturing</field>
+            <field name="minor_procedure">operations</field>
+        </record>
+        <record id="wound_cleaning" model="minor.items">
+            <field name="name">Wound Cleaning</field>
+            <field name="minor_procedure">operations</field>
+        </record>
+        <record id="burn_dressing" model="minor.items">
+            <field name="name">Burn Dressing</field>
+            <field name="minor_procedure">operations</field>
+        </record>
+
+        <!--   Services -->
+
+        <record id="can_inseration" model="minor.items">
+            <field name="name">Canula Insertion</field>
+            <field name="minor_procedure">services</field>
+        </record>
+        <record id="iv_injectable" model="minor.items">
+            <field name="name">IV injectable</field>
+            <field name="minor_procedure">services</field>
+        </record>
+        <record id="im_inseration" model="minor.items">
+            <field name="name">IM injectable</field>
+            <field name="minor_procedure">services</field>
+        </record>
+        <record id="s_c_inseration" model="minor.items">
+            <field name="name">S/C injectable</field>
+            <field name="minor_procedure">services</field>
+        </record>
+        <record id="iv_fluids" model="minor.items">
+            <field name="name">IV fluids</field>
+            <field name="minor_procedure">services</field>
+        </record>
+        <record id="hypersensitivity_test" model="minor.items">
+            <field name="name">Hypersensitivity test</field>
+            <field name="minor_procedure">services</field>
+        </record>
+
+        <!--   Follow Up -->
+
+        <record id="burn_exchange" model="minor.items">
+            <field name="name">Burn Exchange Dressing</field>
+            <field name="minor_procedure">follow_up</field>
+        </record>
+        <record id="wound_exchange" model="minor.items">
+            <field name="name">Wound Exchange Dressing</field>
+            <field name="minor_procedure">follow_up</field>
+        </record>
+        <record id="drug_dosing" model="minor.items">
+            <field name="name">Drug Dosing</field>
+            <field name="minor_procedure">follow_up</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_quality_ncr,access_quality_ncr,model_quality_ncr,base.group_user,1,1,0,0
+access_quality_ncr_qhse_mng,access_quality_ncr_qhse_mng,model_quality_ncr,base_rida.rida_group_qhse_manager,1,1,1,1
+access_prod_cat,access_prod_cat,model_procedure_category,base.group_user,1,0,0,0
+access_prod_cat_mng,access_prod_cat_mng,model_procedure_category,base_rida.rida_group_qhse_manager,1,1,1,1
+access_prod,access_prod,model_qhse_procedure,base.group_user,1,0,0,0
+access_prod_mng,access_prod_mng,model_qhse_procedure,base_rida.rida_group_qhse_manager,1,1,1,1
+access_policy,access_policy,model_qhse_policy,base.group_user,1,0,0,0
+access_policy_mng,access_policy_mng,model_qhse_policy,base_rida.rida_group_qhse_manager,1,1,1,1
+access_qhse_form,access_qhse_form,model_qhse_forms,base.group_user,1,0,0,0
+access_qhse_mng_form,access_qhse_mng_form,model_qhse_forms,base_rida.rida_group_qhse_manager,1,1,1,1
+access_qhse_mod_re,access_qhse_mod_re,model_modification_request,base.group_user,1,1,1,0
+access_qhse_mod_re_mng,access_qhse_mod_re_mng,model_modification_request,base_rida.rida_group_qhse_manager,1,1,1,1

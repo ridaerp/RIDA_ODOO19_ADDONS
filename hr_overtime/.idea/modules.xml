@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../attendance_management_AAMAAL/.idea/attendance_management_AAMAAL.iml" filepath="$PROJECT_DIR$/../attendance_management_AAMAAL/.idea/attendance_management_AAMAAL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Alisco Mining/Custome module dev/v10/attendance_management_Alisco/.idea/attendance_management_Alisco.iml" filepath="$PROJECT_DIR$/../../Alisco Mining/Custome module dev/v10/attendance_management_Alisco/.idea/attendance_management_Alisco.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/hr_overtime_AAMAAL.iml" filepath="$PROJECT_DIR$/.idea/hr_overtime_AAMAAL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Alisco Mining/Custome module dev/v10/hr_overtime_Alisco/.idea/hr_overtime_Alisco.iml" filepath="$PROJECT_DIR$/../../Alisco Mining/Custome module dev/v10/hr_overtime_Alisco/.idea/hr_overtime_Alisco.iml" />
+    </modules>
+  </component>
+</project>

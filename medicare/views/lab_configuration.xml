@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="lab_investigations_forms" model="ir.ui.view">
+            <field name="name">Lab Investigations form</field>
+            <field name="model">lab.investigations</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <label for="name" string="Name"/>
+                                <h1>
+                                    <field name="name" required="True"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <group string="Investigations List">
+                        </group>
+                        <field name="invest_list_ids">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="invest_attributes_ids" widget="many2many_tags"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lab_attributes_forms" model="ir.ui.view">
+            <field name="name">Lab attributes form</field>
+            <field name="model">investigations.attributes</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="investigations_list_id" readonly="1"/>
+                                <field name="price"/>
+                            </group>
+                            <group>
+                                <field name="normal_range"/>
+                                <field name="is_selected"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lab_attributes_tree" model="ir.ui.view">
+            <field name="name">Lab attributes Tree</field>
+            <field name="model">investigations.attributes</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="normal_range"/>
+                    <field name="is_selected"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="lab_investigations_tree" model="ir.ui.view">
+            <field name="name">Lab Investigations Tree</field>
+            <field name="model">lab.investigations</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="invest_list_ids" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="lab_investingation_act_window" model="ir.actions.act_window">
+            <field name="name">Lab Investigations</field>
+            <field name="res_model">lab.investigations</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="lab_attribute_act_window" model="ir.actions.act_window">
+            <field name="name">Lab Attribute</field>
+            <field name="res_model">investigations.attributes</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Lab" id="lab_conf" groups="medicare.group_medicare_lab_special" sequence="2" parent="medicare.medicare_menu_conf"/>
+        <menuitem name="Lab Investigations" groups="medicare.group_medicare_lab_special" id="lab_invest_conf" sequence="1" action="lab_investingation_act_window"
+                  parent="lab_conf"/>
+        <menuitem name="Lab Attributes" groups="medicare.group_medicare_lab_special" id="lab_attribute_conf" sequence="2" action="lab_attribute_act_window"
+                  parent="lab_conf"/>
+
+    </data>
+</odoo>

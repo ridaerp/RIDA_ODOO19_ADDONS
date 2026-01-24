@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quant_report_search_view" model="ir.ui.view">
+        <field name="name">stock.quant.report.search</field>
+        <field name="model">stock.quant.report</field>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <search string="Quants">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="categ_id"/>
+                <field name="lot_id" groups="stock.group_production_lot"/>
+                <group expand='0' string='Filters'>
+                    <filter name="negative" string="Negative Stock" domain="[('quantity', '&lt;', 0.0)]"/>
+                    <filter name="positive" string="Available Stock" domain="[('quantity', '&gt;', 0.0)]"/>
+                    <filter name="reserved" string="Reserved" domain="[('reserved_quantity', '&gt;', 0.0)]"/>
+                    <filter string="The cost is greater than the sale price" name="urtug_ih" domain="[('bohir_ashig','&lt;',0)]"/>
+                </group>
+                <group expand='0' string='Group by...'>
+                    <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
+                    <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
+                    <filter string='Category' name="categgroup" domain="[]" context="{'group_by': 'categ_id'}"/>
+                    <filter string='Lot/Serial Number' name="Lot_Serial_number" context="{'group_by': 'lot_id'}" groups="stock.group_production_lot"/>
+                    <filter string='Company' name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+               </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_report_form">
+        <field name="name">stock.quant.report.form</field>
+        <field name="model">stock.quant.report</field>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <form string="Inventory Valuation" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="location_id" options="{'no_create': True}"/>
+                            <field name="lot_id" groups="stock.group_production_lot"/>
+                        </group>
+                        <group>
+                            <label for="quantity" string="Quantity On Hand"/>
+                            <div class="o_row">
+                                <field name="quantity"/>
+                                <field name="product_uom_id" groups="uom.group_uom"/>
+                            </div>
+                            <label for="reserved_quantity" string="Quantity Reserved"/>
+                            <div class="o_row">
+                                <field name="reserved_quantity"/>
+                                <field name="product_uom_id" groups="uom.group_uom"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_report_tree">
+        <field name="name">stock.quant.report.tree</field>
+        <field name="model">stock.quant.report</field>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <tree decoration-danger="quantity &lt; 0" editable="bottom"
+                  create="0" edit="0" import="0">
+                <field name="barcode" optional="show"/>
+                <field name="default_code" optional="show"/>
+                <field name="product_id" optional="show"/>
+                <field name="product_tmpl_id" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="lot_id" groups="stock.group_production_lot"
+                       optional="show"/>
+                <field name="quantity" optional="show" sum="SUM"/>
+                <field name="reserved_quantity" optional="show" sum="SUM"/>
+                <field name="forecast_quantity" optional="show" sum="SUM"/>
+                <field name="product_uom_id" groups="uom.group_uom" optional="show"/>
+
+                <field name="value" optional="hide"/>
+                <field name="value_sum" optional="show" sum="SUM"/>
+                <field name="zarah_negj_price" optional="show"/>
+                <field name="zarah_niit_price" optional="show" sum="SUM"/>
+                <field name="bohir_ashig" optional="show" sum="SUM"/>
+                
+                <field name="categ_id" optional="show"/>
+                <field name='company_id' groups="base.group_multi_company" optional="show"/>
+                <field name="tracking" optional="hide"/>
+                <button name="view_bb_reserved_quantity" string="View resverve"  type="object"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_report_pivot">
+        <field name="name">stock.quant.report.pivot</field>
+        <field name="model">stock.quant.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Inventory">
+                <field name="product_id" type="row"/>
+                <!-- <field name="location_id" type="col"/> -->
+                <field name="quantity" type="measure"/>
+
+                <field name="value_sum" type="measure"/>
+                <field name="zarah_negj_price" type="measure"/>
+                <field name="zarah_niit_price" type="measure"/>
+                <field name="bohir_ashig" type="measure"/>
+
+            </pivot>
+        </field>
+    </record>
+
+    <record id="stock_quant_report_view_graph" model="ir.ui.view">
+        <field name="name">stock.quant.report.graph</field>
+        <field name="model">stock.quant.report</field>
+        <field name="arch" type="xml">
+            <graph string="Stock Quant">
+                <field name="location_id"/>
+                <field name="quantity" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="stock_quant_report_action" model="ir.actions.act_window">
+        <field name="name">Balance Details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.quant.report</field>
+        <field name="view_mode">tree,pivot,graph,form</field>
+        <field name="context">{'search_default_locationgroup': 1}</field>
+        <field name="domain">[('location_id.usage','=', 'internal')]</field>
+    </record>
+
+    <menuitem id="menu_stock_quant_report" parent="stock.menu_warehouse_report" sequence="101" action="stock_quant_report_action"/>
+</odoo>

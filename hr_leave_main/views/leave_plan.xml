@@ -1,0 +1,200 @@
+<odoo>
+    <data>
+
+
+        <!-- Form -->
+
+        <record id="view_leave_plan_form" model="ir.ui.view">
+			<field name="name">hr.leave.plan.form</field>
+			<field name="model">hr.leave.plan</field>
+			<field name="arch" type="xml">
+                <form string="Leave Plan">
+                    <header>
+                        <button name="generate_plan" string="Generate" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+                        <button name="action_approve" string="Approve" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+
+                        <button name="action_draft" string="Set As Draft" invisible="state != 'approve'" type="object" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                       <group>
+                           <field name="name" required="1"/>
+                           <field name="department_id" required="1"/>
+                           <field name="company_id"/>
+                        </group>
+                        <group col="1">
+                            <field name="line_ids" nolabel="1">
+                                <tree create="false">
+                                    <field name="employee_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                        <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+               </form>
+            </field>
+        </record>
+
+        <!-- Tree -->
+        <record id="view_hr_leave_plan_tree" model="ir.ui.view">
+			<field name="name">hr.leave.plan.tree</field>
+			<field name="model">hr.leave.plan</field>
+			<field name="arch" type="xml">
+               <tree string="Leave Plan">
+                   <field name="name"/>
+                   <field name="department_id"/>
+                   <field name="company_id"/>
+               </tree>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_hr_leave_plan" model="ir.actions.act_window">
+			<field name="name">Leave Plan</field>
+			<field name="res_model">hr.leave.plan</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+        <!--  Menu -->
+        <menuitem name="Leave Plan"
+                parent="hr_holidays.menu_hr_holidays_root"
+                id="menu_hr_leave_plan"
+                groups="hr_holidays.group_hr_holidays_user"
+                sequence="4"/>
+
+        <menuitem name="Leave Plan"
+			parent="menu_hr_leave_plan"
+			id="menu_hr_leave_plan_main"
+            groups="hr_holidays.group_hr_holidays_user"
+			action="action_hr_leave_plan"
+			sequence="1"/>
+    <!-- Plan Line  -->
+    <!-- Form -->
+        <record id="view_leave_plan_line_form" model="ir.ui.view">
+			<field name="name">hr.leave.plan.line_form</field>
+			<field name="model">hr.leave.plan.line</field>
+			<field name="arch" type="xml">
+                <form string="Employee Leave Plan">
+                    <header>
+                        <button name="action_approve" invisible="state != 'draft'" string="Approve" type="object" class="oe_highlight"/>
+                        <button name="action_draft" string="Set As Draft" invisible="state != 'approve'" type="object" groups="hr_holidays.group_hr_holidays_user"/>
+
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                       <group>
+                           <field name="employee_id" readonly="1"/>
+                           <field name="date_from" readonly="state != 'draft'"/>
+                           <field name="date_to" readonly="state != 'draft'"/>
+                           <field name="plan_id" readonly="state != 'draft'"/>
+                           <field name="company_id"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+
+        <!-- Tree -->
+
+        <record id="view_hr_leave_plan_line_tree" model="ir.ui.view">
+			<field name="name">hr.leave.plan.line.tree</field>
+			<field name="model">hr.leave.plan.line</field>
+			<field name="arch" type="xml">
+               <tree string="Employee Leave Plan">
+                    <field name="employee_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="plan_id"/>
+                    <field name="company_id"/>
+               </tree>
+            </field>
+        </record>
+
+        <!-- Calender -->
+        
+        <record id="view_hr_leave_plan_line_calender" model="ir.ui.view">
+			<field name="name">hr.leave.plan.line.calender</field>
+			<field name="model">hr.leave.plan.line</field>
+			<field name="arch" type="xml">
+                <calendar string="Employee Leave Plan"
+                    date_start="date_from"
+                    date_stop="date_to"
+                    event_open_popup="true"
+                    mode="month"
+                    color="employee_id"
+                    quick_add="False">
+                    <field name="employee_id"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <!-- Action -->
+        <record id="action_hr_leave_plan_line" model="ir.actions.act_window">
+			<field name="name">Employee Leave Plan</field>
+			<field name="res_model">hr.leave.plan.line</field>
+			<field name="view_mode">calendar,tree,form</field>
+            <field name="domain">[('employee_id.parent_id.user_id','=',uid)]</field>
+		</record>
+
+        <menuitem name="Employee Leave Plan"
+			parent="hr_holidays.hr_holidays_menu_manager_all"
+			id="menu_hr_leave_plan_employee"
+			action="action_hr_leave_plan_line"
+			sequence="5"/>
+            <!-- groups="base_opal.group_department_manager" -->
+
+         <!-- My Plan -->
+        <record id="action_hr_leave_plan_my" model="ir.actions.act_window">
+			<field name="name">My Leave Plan</field>
+			<field name="res_model">hr.leave.plan.line</field>
+            <field name="domain">[('employee_id.user_id','=',uid)]</field>
+			<field name="view_mode">calendar,tree,form</field>
+		</record>
+
+        <menuitem name="My Leave Plan"
+			parent="hr_holidays.menu_hr_holidays_my_leaves"
+			id="menu_hr_leave_plan_my"
+			action="action_hr_leave_plan_my"
+			sequence="5"/>
+        
+        <!-- All -->
+        <record id="action_hr_leave_plan_line_all" model="ir.actions.act_window">
+			<field name="name">All Employee Leave Plan</field>
+			<field name="res_model">hr.leave.plan.line</field>
+			<field name="view_mode">calendar,tree,form</field>
+		</record>
+
+        <menuitem name="All Employee Leave Plan"
+			parent="menu_hr_leave_plan"
+			id="menu_hr_leave_plan_employee_all"
+			action="action_hr_leave_plan_line_all"
+            groups="hr_holidays.group_hr_holidays_user"
+			sequence="4"/>
+
+         <!-- multi company rule -->
+        <record id="hr_leave_plan_line_comp_rule" model="ir.rule">
+            <field name="name">hr leave plan line multi-company</field>
+            <field name="model_id" ref="model_hr_leave_plan_line"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force"> ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+            <field name="active" eval="True"/>
+        </record>
+        
+        <!-- multi company rule -->
+        <record id="hr_leave_plan_comp_rule" model="ir.rule">
+            <field name="name">hr leave plan multi-company</field>
+            <field name="model_id" ref="model_hr_leave_plan"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force"> ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

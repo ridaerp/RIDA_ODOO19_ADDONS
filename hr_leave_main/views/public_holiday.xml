@@ -1,0 +1,73 @@
+<odoo>
+    <data>
+
+
+        <!-- Form -->
+
+        <record id="view_public_holidays_form" model="ir.ui.view">
+			<field name="name">hr.public.holidays.form</field>
+			<field name="model">hr.public.holidays</field>
+			<field name="arch" type="xml">
+               <form string="Public Holidays">
+                   <sheet>
+                       <group>
+                           <field name="name"/>
+                           <field name="date_from"/>
+                           <field name="date_to"/>
+                           <field name="days"/>
+                           <field name="company_id"/>
+                       </group>
+                   </sheet>
+               </form>
+            </field>
+        </record>
+
+
+        <!-- Tree -->
+
+        <record id="view_public_holidays_tree" model="ir.ui.view">
+			<field name="name">hr.public.holidays.tree</field>
+			<field name="model">hr.public.holidays</field>
+			<field name="arch" type="xml">
+               <tree string="Public Holidays">
+                   <field name="name"/>
+                   <field name="date_from"/>
+                   <field name="date_to"/>
+                   <field name="days"/>
+                   <field name="company_id"/>
+               </tree>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_public_holiday" model="ir.actions.act_window">
+			<field name="name">Public Holidays</field>
+			<field name="res_model">hr.public.holidays</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+        <!--  Menu -->
+        <menuitem name="Public Holidays" groups="hr_holidays.group_hr_holidays_user"
+                parent="hr_holidays.menu_hr_holidays_configuration"
+                id="menu_public_holidays_root"
+                sequence="8"/>
+
+        <menuitem name="Public Holidays"
+			parent="menu_public_holidays_root"
+			id="menu_leave_clear"
+			action="action_public_holiday"
+			sequence="1"/>
+
+
+         <!-- multi company rule -->
+        <record id="hr_public_holidays_comp_rule" model="ir.rule">
+            <field name="name">hr public holidays multi-company</field>
+            <field name="model_id" ref="model_hr_public_holidays"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force"> ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
