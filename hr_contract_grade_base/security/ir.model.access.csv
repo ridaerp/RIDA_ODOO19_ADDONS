@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+hr_grade_conf_management_employee,Hr grade conf management  employee access,model_hr_grade_configuration,base.group_user,1,0,0,0
+hr_grade_conf_management_admin,Hr grade conf management  manager access,model_hr_grade_configuration,hr.group_hr_manager,1,1,1,1
+hr_grade_conf_management_officer,Hr grade conf management  officer access,model_hr_grade_configuration,hr.group_hr_manager,1,1,1,1
+hr_grade_line_management_employee,Hr grade line management  employee access,model_hr_grade_line,base.group_user,1,0,0,0
+hr_grade_line_management_admin,Hr grade line management  manager access,model_hr_grade_line,hr.group_hr_manager,1,1,1,1
+hr_grade_line_management_officer,Hr grade line management  officer access,model_hr_grade_line,hr.group_hr_manager,1,1,1,1
+hr_job_band_manager,Job Band manager access,model_job_band,hr.group_hr_manager,1,1,1,1
+hr_job_band_user,Job Band user acccess,model_job_band,base.group_user,1,0,0,0
+access_travel_zone,access_travel_zone,model_travel_zone,hr.group_hr_user,1,1,1,1
+access_travel_zone_line,access_travel_zone_line,model_travel_zone_line,hr.group_hr_user,1,1,1,1
+
+

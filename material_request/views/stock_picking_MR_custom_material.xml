@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Stockpicking.type-->
+
+    <record id="view_picking_MR_rida_type_form" model="ir.ui.view">
+        <field name="name">stock.picking_MR_rida.type.form.view</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='sequence_code']" position="after">
+                    <field name="issued"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+    <record id="view_warehouse_MR_rida_form" model="ir.ui.view">
+        <field name="name">stock.warehouse_MR_rida.form.view</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <data>
+
+                <xpath expr="//field[@name='out_type_id']" position="after">
+                    <field name="issuance_location"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+
+
+    <record id="view_move_stock_inherit_form" model="ir.ui.view">
+        <field name="name">stock.move.form.view</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="category_id"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+
+    <record id="view_move_search_inherit_form" model="ir.ui.view">
+        <field name="name">stock.move.form.view</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="category_id"/>
+                </xpath>
+                <xpath expr="//filter[@name='groupby_date']" position="after">
+                    <filter string="Product Category" name="category_id_name" domain="[]"
+                            context="{'group_by': 'category_id'}"/>
+                </xpath>
+
+
+            </data>
+        </field>
+    </record>
+
+
+    <record id="stock_landed_account_inherit_custom" model="ir.ui.view">
+        <field name="name">stock.landed.form.view</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='picking_ids']" position="after">
+                    <field name="purchase_order_id" readonly="1"/>
+
+                </xpath>
+
+                <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="amount_total_currency"/>
+                </xpath>
+
+
+                <xpath expr="//field[@name='target_model']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                    <attribute name="groups">stock.group_stock_manager,purchase.group_purchase_user</attribute>
+                </xpath>
+
+
+                <xpath expr="//header" position="inside">
+
+                    <button string="Advance Payment" type="object" name="action_advance_payment"
+                            groups="account.group_account_user"/>
+
+                    <button string="Create Bill" type="object" name="create_transporter_invoices"
+                            groups="purchase.group_purchase_user"/>
+
+
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Account Payment" groups="account.group_account_user,purchase.group_purchase_user">
+                        <field name="payment_line" mode="list" readonly="1">
+                            <list editable="bottom">
+                                <field name="purchase_id" invisible="1"/>
+                                <field name="memo"/>
+                                <field name="partner_id"/>
+                                <field name="date"/>
+                                <field name="create_uid"/>
+                                <field name="create_date"/>
+                                <field name="state" invisible="1"/>
+                                <field name="journal_id"/>
+                                <field name="payment_method_id"/>
+                                <field name="amount" sum="amount"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//field[@name='picking_ids']" position="replace">
+                
+
+   <field name="picking_ids" widget="many2many_tags"
+                           options="{'no_create_edit': True}"  invisible="target_model != 'picking'"
+                           domain="[('company_id', '=', company_id),('picking_type_id.code', '=', 'incoming')]"/>
+
+                </xpath>
+
+
+            </data>
+        </field>
+    </record>
+
+
+    <menuitem action="stock_landed_costs.action_stock_landed_cost" name="Landed Costs"
+              parent="purchase.menu_procurement_management" id="menu_purchase_stock_landed_cost"/>
+
+
+</odoo>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="emp_delegartion_privilege" model="res.groups.privilege">
+            <field name="name">Employees Delegation</field>
+            <field name="category_id" ref="base_rida.module_base_rida_category"/>
+        </record>
+
+        <record id="del_manager" model="res.groups">
+            <field name="name">Delegation Manager</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="privilege_id" ref="emp_delegartion_privilege"/>
+        </record>
+
+
+        <!--ODOO RECORED RULES-->
+        <record id="del_emp_rule" model="ir.rule">
+            <field name="name">Employee</field>
+            <field ref="model_hr_delegation" name="model_id"/>
+            <field name="domain_force">['|',('create_uid', '=', user.id),'|',('employee_id.user_id.id', '=',
+                user.id),('employee_grant_id.user_id.id', '=',
+                user.id)]
+            </field>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+        </record>
+
+        <!--  Line Manager Delegation request -->
+        <record model="ir.rule" id="rule_check_del_manager_l_mng">
+            <field name="name">Line Manager Delegation Request</field>
+            <field name="model_id" ref="model_hr_delegation"/>
+            <field name="domain_force">[('create_uid.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+        </record>
+
+
+            
+
+        <record id="del_manager_rule" model="ir.rule">
+            <field name="name">Delegation Manager</field>
+            <field ref="model_hr_delegation" name="model_id"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="groups" eval="[(4,ref('del_manager'))]"/>
+        </record>
+    </data>
+</odoo>

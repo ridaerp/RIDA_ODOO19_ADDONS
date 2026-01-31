@@ -1,0 +1,194 @@
+<odoo>
+    <data>
+      <record id="product_template_rida_mr_form_view" model="ir.ui.view">
+        <field name="name">product.template.product.rida.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//page[@name='general_information']/group" position="inside">
+            <group name="rida_custom">
+              <!-- comment by ekhlas-->
+              <field name="brand"/>
+              <field name="model"/>
+              <field name="is_profit_percentage" groups="base.group_erp_manager"/>
+
+                    <field name="is_company_percentage" groups="base.group_erp_manager"/>
+
+              <field name="custom_sequence" string="Custom Sequence" groups="base.group_erp_manager"/>
+<field name="custom_analytic_account_id" string="Analytic Account for Landed Cost Transportation" groups="base.group_erp_manager"/>
+            </group>
+                </xpath>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="pr_res_partner_creation_form">
+        <field name="name">product.template.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='categ_id']" position="after">
+              <field name="product_type"/>
+              <field name="part_number"/>
+              <field name="custom_sequence" string="Custom Sequence" groups="base.group_erp_manager"/>
+              <field name="custom_analytic_account_id" string="Analytic Account for Landed Cost Transportation" groups="base.group_erp_manager"/>
+          </xpath>
+        </field>
+      </record>
+      <record id="product_product_rida_mr_form_view" model="ir.ui.view">
+        <field name="name">product.product.rida.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='categ_id']" position="after">
+              <field name="part_number"/>
+              <field name="last_delivery_date"/>
+            </xpath>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="pr_res_partner_creation_tree">
+        <field name="name">product.template.list</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='categ_id']" position="after">
+            <field name="part_number"/>
+          </xpath>
+        </field>
+      </record>
+      <record id="product_product_rida_mr_tree_view" model="ir.ui.view">
+        <field name="name">product.product.rida.list</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='categ_id']" position="after">
+              <field name="part_number"/>
+              <field name="is_profit_percentage" groups="base.group_erp_manager"/>
+              <field name="custom_sequence" string="Custom Sequence" groups="base.group_erp_manager"/>
+              <field name="custom_analytic_account_id" string="Analytic Account for Landed Cost Transportation" groups="base.group_erp_manager"/>
+            </xpath>
+        </field>
+      </record>
+
+      <!-- ekhlas code -->
+      <record id="product_product_rida_search_view" model="ir.ui.view">
+        <field name="name">product.product.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='categ_id']" position="after">
+              <field name="part_number"/>
+            </xpath>
+        </field>
+      </record>
+
+
+    <record id="product_supplierinfo_tree_view_inherit1" model="ir.ui.view">
+        <field name="name">product.template.product.form.inherit</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='product_id']" position="after">
+              <field name="purchase_contract_id" readonly="1" optional="hide"/>
+          </xpath>
+        </field>
+    </record>
+
+    <record id="supplier_info_form_inherit1" model="ir.ui.view">
+        <field name="name">product.supplierinfo.requisition.view</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="priority">20</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <field name="product_code" position="after">
+                <field name="purchase_contract_id"
+                    invisible="purchase_contract_id == False"/>
+            </field>
+        </field>
+    </record>
+
+
+
+       <record id="product_template_form_view_inherit1" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>
+        <field name="arch" type="xml">
+            <group name="bill" position="before">
+                <group string="Reordering" invisible="type == 'service'">
+                    <field name="purchase_contract" widget="radio"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <record id="act_res_partner_2_purchase_order1" model="ir.actions.act_window">
+        <field name="name">Purchase orders</field>
+        <field name="res_model">purchase.order</field>
+        <field name="domain">[('contract_id', '=', active_id)]</field>
+        <field name="context">{'default_contract_id': active_id}</field>
+        <field name="binding_model_id" ref="model_purchase_contract"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+
+    <!-- <record id="product_template_inheti_form" model="ir.ui.view">
+        <field name="name">product.template.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+          <xpath expr="//button[@name='action_update_quantity_on_hand']" position="replace">  
+            <button string="Update Quantity" type="object" groups="base.group_system" name="action_update_quantity_on_hand" invisible="type != 'product'"/>
+          </xpath>
+        </field>
+    </record> -->
+
+
+
+    <!-- <record id="product_product_inheti_form" model="ir.ui.view">
+        <field name="name">product.product.view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+        <xpath expr="//button[@name='action_update_quantity_on_hand']" position="replace">  
+        <button string="Update Quantity" type="object" groups="base.group_system" name="action_update_quantity_on_hand" invisible="type != 'product'"/>
+        </xpath>
+        </field>
+    </record> -->
+
+    <record id="product_tree_view_inherit1" model="ir.ui.view">
+        <field name="name">Products</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+          <list create="false" edit="false">
+                <field name="default_code" optional="show"/>
+                <field name="name" string="Product Name"/>
+                <field name="company_id" options="{'no_create_edit': True}" groups="base.group_multi_company" optional="hide"/>
+                <field name="categ_id" optional="show"/>
+                <field name="type" />
+                    <field name="qty_available" invisible="type != 'product'" optional="show" decoration-danger="qty_available &lt; 0"/>
+                <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>
+                <field name="active" invisible="1"/>
+          </list>
+        </field>
+      </record>
+
+
+        <record model="ir.actions.act_window" id="product_action_view_inherit1">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">list</field>
+        </record>
+
+      <record id="product_action_view_inherit_view" model="ir.actions.act_window.view">
+          <field name="view_mode">list</field>
+          <field name="view_id" ref="material_request.product_tree_view_inherit1"/>
+          <field name="act_window_id" ref="material_request.product_action_view_inherit1"/>
+        </record>
+
+
+  <menuitem id="product_memu" sequence="4" parent="material_request.menu_material_request_main" action="product_action_view_inherit1" groups="base.group_user"/>
+</data>
+</odoo>
+

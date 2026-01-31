@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_view_form_external_service_management" model="ir.ui.view">
+        <field name="name">account.move.view.form.inherit.external.service.management</field>
+        <field name="model">account.move</field>
+        <!-- <field name="priority" eval="25"/> -->
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="contract_state" widget="statusbar" options="{'clickable': '1'}" />
+            </xpath>      
+            <!-- <xpath expr="//header" position="inside">
+                <button string="Approve"
+                            type="object" name="button_store_supervisor_approve"
+                            attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                <button string="Approve"
+                            type="object" name="button_store_manager_approve" 
+                            attrs="{'invisible': [('state', '!=', 'store_supervisor')]}"/>
+                <button string="Approve"
+                            type="object" name="button_site_manager_approve" 
+                            attrs="{'invisible': [('state', '!=', 'store_manager')]}"/>
+           </xpath> -->
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="currency_id"  />
+                <field name="curr_rate"   force_save="1"/>
+                <field name="risk_cost" />
+                
+            </xpath>
+        </field>
+    </record> 
+    <record id="purchase_view_tree_external_service_management" model="ir.ui.view">
+        <field name="name">account.move.view.tree.inherit.external.service.management</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_state']" position="after">
+                <field name="contract_state" string="Contract State "  widget="amount" />
+                
+            </xpath>
+        </field>
+    </record>
+    <!-- <record id="purchase_view_tree_external_service_management" model="ir.ui.view">
+        <field name="name">account.move.view.tree.inherit.external.service.management</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total_signed']" position="after">
+                <field name="invoice_payments_widget" string="actual payment "  widget="amount" />
+                
+            </xpath>
+        </field>
+    </record> -->
+    
+    
+</odoo>

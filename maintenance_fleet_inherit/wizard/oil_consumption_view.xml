@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="oil_consumption_report_wizard_wizard_form" model="ir.ui.view">
+            <field name="name">Oil Consumption Report Wizard</field>
+            <field name="model">oil.consumption.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Oil Consumption Report">
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="department_id" />
+                        </group>
+                        <group>
+                            <field name="date_to"/>
+                            <field name="product_cat"/>
+                        </group>
+                    </group>
+<!--                    <group>-->
+<!--                        <field name="department_id"/>-->
+<!--                    </group>-->
+                    <footer>
+                        <button name="action_export_excel"
+                        string="Generate Oil consumption Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_oil_consumption_report_wizard" model="ir.actions.act_window">
+            <field name="name">Oil consumption Report</field>
+            <field name="res_model">oil.consumption.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <menuitem id="menu_oil_consumption_report_report"
+                  name="Oil consumption Report" parent="maintenance.maintenance_reporting"
+                  action="action_oil_consumption_report_wizard"
+                  sequence="51"/>
+
+    </data>
+</odoo>

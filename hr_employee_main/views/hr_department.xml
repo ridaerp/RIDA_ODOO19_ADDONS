@@ -1,0 +1,150 @@
+<odoo>
+	<data>
+
+	        <!-- Hr Department Form -->
+	    <record id="rida_hr_department_inherit_form" model="ir.ui.view">
+	        <field name="name">Department Inherit</field>
+	        <field name="model">hr.department</field>
+	        <field name="inherit_id" ref="hr.view_department_form"/>
+	        <field name="arch" type="xml">
+	        			<!-- Department Form - adding new fields -->
+	          		<!-- Change name label on form according to type -->
+	          	<xpath expr="//form/sheet/group[1]" position="replace">
+	          		<group>
+	          			<group>
+		        			<field name="dep_type" invisible="1"/>
+					            <div class="o_form_label">
+					                <label for="name" string="Division"  invisible="dep_type != 'division'" style="font-weight:bold;"/>
+					                <label for="name" string="Department" invisible="dep_type != 'department'" style="font-weight:bold;"/>
+					                <label for="name" string="Section" invisible="dep_type != 'section'"  style="font-weight:bold;"/>
+					                <label for="name" string="Business Unit" invisible="dep_type != 'unit'" style="font-weight:bold;"/>
+					            </div>
+					        <field name="name" nolabel="1"/>
+
+                            <field name="div_manager"  invisible="dep_type != 'division'"/>
+                            <field name="manager_id" invisible="dep_type != 'department'"/>
+                            <field name="section_head" invisible="dep_type != 'section'"/>
+                            <field name="rig_manager" invisible="dep_type != 'unit'"/>
+                            <field name="dep_type" invisible="1"/>
+          					<field name="location_id"/>
+          					<field name="director_id" options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+          					<field name="c_level_id" options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+		                </group>
+                        <group>
+							<field name="parent_id" options="{'no_quick_create': True, 'no_create_edit' : True}" invisible="dep_type != 'department'"/>
+                            <field name="div_parent_id" options="{'no_quick_create': True, 'no_create_edit' : True}" invisible="dep_type != 'section'"/>
+                            <field name="section_parent_id" options="{'no_quick_create': True, 'no_create_edit' : True}" invisible="dep_type != 'unit'"/>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+	          	</xpath>
+	      	</field>
+		</record>
+
+		<!-- Hr Department Tree -->
+	    <record id="rida_hr_department_inherit_tree" model="ir.ui.view">
+	        <field name="name">Department Tree Inherit</field>
+	        <field name="model">hr.department</field>
+	        <field name="inherit_id" ref="hr.view_department_tree"/>
+	        <field name="arch" type="xml">
+	        			<!-- Department Form - adding new fields -->
+	          		<!-- Change name label on form according to type -->
+	          	<xpath expr="//list" position="replace">
+	          		<list string="Companies" sample="1">
+                    <field name="display_name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="manager_id" invisible="1"/>
+                    <field name="dep_type" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                </list>
+	          	</xpath>
+	      	</field>
+		</record>
+
+		<menuitem
+		id="hr.menu_hr_department_tree"
+		action="hr.hr_department_tree_action"
+		parent="hr.menu_hr_root"
+		sequence="3"
+		/>
+
+ 
+		<menuitem
+		id="hr.menu_hr_department_kanban"
+		action="hr.hr_department_kanban_action"
+		parent="hr.menu_human_resources_configuration"
+		sequence="7"/>
+
+
+
+		<record id="hr.hr_department_kanban_action" model="ir.actions.act_window">
+		    <field name="name">Department</field>
+            <field name="res_model">hr.department</field>
+            <field name="context">{'default_dep_type':'department'}</field>
+		    <field name="domain">[('dep_type','=','department')]</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="hr.view_department_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new department
+              </p><p>
+                Odoo's department structure is used to manage all documents
+                related to employees by departments: expenses, timesheets,
+                time off, recruitments, etc.
+              </p>
+            </field>
+		</record>
+	
+
+
+		<record id="action_division" model="ir.actions.act_window">
+		    <field name="name">Division</field>
+		    <field name="res_model">hr.department</field>
+		    <field name="context">{'default_dep_type':'division'}</field>
+		    <field name="domain">[('dep_type','=','division')]</field>
+		    <field name="view_mode">kanban,list,form</field>
+		</record>
+
+
+		<record id="action_section" model="ir.actions.act_window">
+		    <field name="name">Sections</field>
+		    <field name="res_model">hr.department</field>
+		    <field name="context">{'default_dep_type':'section'}</field>
+		    <field name="domain">[('dep_type','=','section')]</field>
+		    <field name="view_mode">kanban,list,form</field>
+		</record>
+
+
+
+		<record id="action_unit" model="ir.actions.act_window">
+		    <field name="name">Business Units</field>
+		    <field name="res_model">hr.department</field>
+		    <field name="context">{'default_dep_type':'unit'}</field>
+		    <field name="domain">[('dep_type','=','unit')]</field>
+		    <field name="view_mode">kanban,list,form</field>
+		</record>
+
+
+		<menuitem
+        id="action_configration_sub_menu_department"
+        action="action_division"
+        parent="hr.menu_human_resources_configuration"
+        name="Divisions"
+        sequence="6"/>
+		
+		<menuitem
+        id="action_configration_sub_menu_section"
+        action="action_section"
+        parent="hr.menu_human_resources_configuration"
+        name="Sections"
+        sequence="8"/>
+
+		<menuitem
+        id="action_configration_sub_menu_unit"
+        action="action_unit"
+        parent="hr.menu_human_resources_configuration"
+        name="Business Units"
+        sequence="9"/>
+
+	</data>
+</odoo>
