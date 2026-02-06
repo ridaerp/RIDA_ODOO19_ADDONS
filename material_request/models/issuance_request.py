@@ -141,10 +141,9 @@ class IssuanceRequest(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            seq = self.env['ir.sequence'].next_by_code('issuance_request.sequence') or "/"
-            val['name'] = seq
-            request = super(IssuanceRequest, self).create(val)
-            return request
+            val['name'] = self.env['ir.sequence'].next_by_code('issuance_request.sequence') or "/"
+
+        return super(IssuanceRequest, self).create(vals)
 
     @api.model
     def _get_default_picking_type(self):
@@ -381,7 +380,7 @@ class IssuanceRequestLine(models.Model):
             product_id = self.env['product.product'].browse(val.get('product_id'))
             qty = product_id.warehouse_quantity
             val['qty_available'] = qty
-            return super(IssuanceRequestLine, self).create(val)
+        return super(IssuanceRequestLine, self).create(vals)
 
     @api.depends('product_id')
     def get_qty_available(self):

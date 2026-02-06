@@ -1,0 +1,189 @@
+<odoo>
+  <data>
+
+
+
+<record model="ir.ui.view" id="view_transportation_request_tree">
+            <field name="name">transportation.request.tree</field>
+            <field name="model">transportation.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name_seq" />
+                    <!-- ekhlas code -->
+                    <field name="date_request" />
+                    <field name="requested_by" />
+                    <field name="department_id" />
+                    <field name="company_id" />
+                    <!-- ekhlas code -->
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+<record id="view_transportation_request_form" model="ir.ui.view">
+            <field name="name">Transportation Request</field>
+            <field name="model">transportation.request</field>
+            <field name="arch" type="xml">
+            <form string="Transportation Request">
+                    <header>
+                        
+                   <!--                    Set to Draft-->
+                        <button name="button_draft"  invisible="state not in ['cancel','reject']"  string="Set as Draft" type="object" />
+
+                        <!--                    MR User-->
+                        <button name="button_to_department_manger"  invisible="state != 'draft'" string="Submit" type="object" class="oe_highlight" groups="base.group_user"/>
+
+                        <button name="button_cancel"  invisible="state != 'draft'"  string="Cancel" type="object" groups="base.group_user" class="" />
+
+
+
+
+
+<!--                    Line Manager-->
+                        <button name="button_to_line_manager" string="Approve" type="object"  invisible="state != 'line_approve'"   groups="base_rida.rida_group_line_manager" class="oe_highlight" />
+
+
+                        <button name="button_to_Adm_man" string="Approve" type="object"   invisible="state != 'Adm_man_approve'"  class="oe_highlight" />
+
+
+                        <button name="button_lm_reject"  type="object" invisible="state != 'line_approve'"  groups="base_rida.rida_group_line_manager" string="Reject"/>
+
+
+                        <button name="button_Adm_man_reject"  type="object" invisible="state != 'Adm_man_approve'"  string="Reject"/>
+
+
+                        <button name="button_cancel" state="done"  string="Cancel" type="object"
+                                confirm="You are about to cancel this request and its related records. Please confirm!"
+
+                                invisible="state !=  'done'"
+                                class=""/>
+
+
+
+                        <field name="state" widget="statusbar" tatusbar_visible="draft,done" statusbar_colors='{"manager_approved":"blue"}'/>
+
+
+                    </header>
+
+
+                  
+<br /> 
+    <b><p align="center">Doc. No. UMC-ADM-QP-ADM/20  
+-            
+Issue/Rev 02/00</p></b>
+
+    <sheet>
+
+
+
+                    <h1 class="oe_title">
+                        <field name="name_seq" readonly="1" class="oe_inline"/>
+                    </h1>
+                    
+                    
+
+
+
+<!-- <div class="oe_edit_only"> -->
+                                      
+                        
+
+            <group colspan="4" col="4">
+
+           <!--  <field name="time_request" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
+            
+
+            <field name="date_request"   readonly="state !=   'draft'"/>
+
+             <field name="requested_by" readonly="state !=   'draft'"/>
+
+
+             <field name="destination_from"  readonly="state !=  'draft'"/>
+             <field name="department_id"/>
+
+             <field name="destination_to"  readonly="state !=  'draft'"/>
+             
+             <field name="job_id"/>
+
+
+             <field name="expected_departure" readonly="state !=  'draft'"/>
+
+
+        <field name="company_id" readonly="state !=  'draft'" />
+
+
+                          <field name="purpose" widget="radio" readonly="state != 'draft'" />
+                      </group>
+
+
+
+                     <group >
+
+
+                        <!-- </div> -->
+                            <field name="reason" readonly="state !=  'draft'"/>
+                    </group>
+            <group colspan="4" col="4">
+
+             <separator  colspan="4"/>
+             <separator  colspan="4"/>
+
+
+             <field name="other_requirements" readonly="state !=  'draft'"/>
+            
+            
+             <field name="admin_comment" readonly="state !=   'draft'"/>
+             
+
+
+
+    
+  
+</group>
+
+
+
+              
+
+              </sheet>
+                <chatter/>
+           </form>
+
+
+
+
+
+                        
+            
+            </field>
+          </record>
+
+
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="transportation_request">
+      <field name="name">Transportation Request</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">transportation.request</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem name="Transportation Request" id="menu_6_list" sequence="3"  parent="gs_admin_form" action="rida_forms.transportation_request"/>
+
+
+
+
+
+
+  </data>
+</odoo>

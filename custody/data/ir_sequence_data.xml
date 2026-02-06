@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for sale.order -->
+        <record id="seq_custody" model="ir.sequence">
+            <field name="name">Custodies</field>
+            <field name="code">account.custody</field>
+            <field name="prefix">CUS</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- Sequences for sale.order -->
+        <record id="seq_clearance" model="ir.sequence">
+            <field name="name">PC Clearance</field>
+            <field name="code">custody.clear</field>
+            <field name="prefix">PC-CL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

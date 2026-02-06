@@ -79,7 +79,7 @@ class PurchaseOrder(models.Model):
     x_studio_many2one_field_t3bCi = fields.Many2one("x_area",)
     x_studio_vendor_invoice_no = fields.Char()
     x_studio_delivery_period = fields.Char()
-    x_studio_supplier_bank_details_1 = fields.Char()
+    x_studio_supplier_bank_details_1 = fields.One2many("res.partner.bank", "partner_id", related="partner_id.bank_ids")
 
 
 
@@ -1419,20 +1419,17 @@ class AccountPayment(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountPayment, self).create(vals)
-        if 'ref' in vals:
-            purchase_id = self.env["purchase.order"].search([("name", "=", vals['ref'])], limit=1)
-            landed_cost_id = self.env["stock.landed.cost"].search([("name", "=", vals['ref'])], limit=1)
-            if purchase_id and not res.purchase_id:
-                res.purchase_id = purchase_id.id
+        for val in vals:
+            if 'ref' in val:
+                purchase_id = self.env["purchase.order"].search([("name", "=", val['ref'])], limit=1)
+                landed_cost_id = self.env["stock.landed.cost"].search([("name", "=", val['ref'])], limit=1)
+                if purchase_id and not res.purchase_id:
+                    res.purchase_id = purchase_id.id
 
-            if landed_cost_id and not res.landed_cost_id:
-                res.landed_cost_id = landed_cost_id.id
+                if landed_cost_id and not res.landed_cost_id:
+                    res.landed_cost_id = landed_cost_id.id
 
-            invoice_id = self.env["account.move"].search([("name", "=", vals['ref'])], limit=1)
-            # if invoice_id and not res.purchase_id:
-            #     purchase_id = self.env["purchase.order"].search([("name", "=", invoice_id.origin)], limit=1)
-            #     if purchase_id:
-            #         res.purchase_id = purchase_id.id
+                invoice_id = self.env["account.move"].search([("name", "=", val['ref'])], limit=1)
         return res
 
 

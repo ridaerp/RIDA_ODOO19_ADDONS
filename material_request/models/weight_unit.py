@@ -157,7 +157,7 @@ class WeightRequest(models.Model):
     lot_id = fields.Many2one(comodel_name="stock.lot", string="Lots Batch")
     landed_costs_count = fields.Integer(string="Count", compute='compute_landed_costs_count')
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
-    x_studio_supplier_type = fields.Selection([],)
+    x_studio_supplier_type = fields.Many2many("res.partner.category",)
 
 
     @api.depends('x_studio_supplier_type')
@@ -406,18 +406,18 @@ class WeightRequest(models.Model):
 
     @api.model
     def create(self, vals):
-        seq = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
-        vals['name'] = seq
-        request = super(WeightRequest, self).create(vals)
-        product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
+            request = super(WeightRequest, self).create(vals)
+            product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
 
-        if product:
-            self.env['weight.request.landedcost.line'].create({
-                'product_id': product.id,
-                'weight_id': request.id,
-            })
-        if  product.custom_analytic_account_id:
-          request.analytic_account_id = product.custom_analytic_account_id
+            if product:
+                self.env['weight.request.landedcost.line'].create({
+                    'product_id': product.id,
+                    'weight_id': request.id,
+                })
+            if  product.custom_analytic_account_id:
+              request.analytic_account_id = product.custom_analytic_account_id
         return request
 
     def get_requested_by(self):
@@ -1090,20 +1090,12 @@ class ChemicalSamples(models.Model):
 
             rec.pregnant_result.write({'state': 'done'})
 
-
-
-
     @api.model
     def create(self, vals):
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('cheimcal_request.sequence') or "/"
 
-        seq = self.env['ir.sequence'].next_by_code('cheimcal_request.sequence') or "/"
-        # seq_l = rec.lab_reference_no=self.name+self.department_id.name.split(' ',2)[0]+self.env['ir.sequence'].next_by_code('lab_reference.sequence') or "/"
-        vals['name'] = seq
-        request = super(ChemicalSamples, self).create(vals)
-        return request
-
-
-
+        return super(ChemicalSamples, self).create(vals)
 
 
     def button_to_db_reject(self):
@@ -2669,10 +2661,11 @@ class StockLot(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        if 'name' in vals and vals['name']:
-            if re.search(r'[a-z]', vals['name']):  # Check for lowercase letters
-                raise ValidationError(_("Lot/Serial Number must be in UPPERCASE letters only."))
-            vals['name'] = vals['name'].upper()  # Ensure it's stored in uppercase
+        for val in vals:
+            if 'name' in val and val['name']:
+                if re.search(r'[a-z]', val['name']):  # Check for lowercase letters
+                    raise ValidationError(_("Lot/Serial Number must be in UPPERCASE letters only."))
+                val['name'] = val['name'].upper()  # Ensure it's stored in uppercase
 
         return super(StockLot, self).create(vals)
 

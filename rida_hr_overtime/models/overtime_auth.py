@@ -117,8 +117,7 @@ class OvertimeAuth(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('overtime.auth.code') or ' '
-            res = super(OvertimeAuth, self).create(val)
-            return res
+        return super(OvertimeAuth, self).create(vals)
 
     def unlink(self):
         for rec in self:

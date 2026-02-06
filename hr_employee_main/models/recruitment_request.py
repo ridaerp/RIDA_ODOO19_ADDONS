@@ -90,8 +90,7 @@ class RecruitmentRequest(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('reur.requisition.code') or ' '
-            res = super(RecruitmentRequest, self).create(val)
-            return res
+        return super(RecruitmentRequest, self).create(vals)
 
     def unlink(self):
         for rec in self:

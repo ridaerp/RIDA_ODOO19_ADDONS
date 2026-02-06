@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem name="QHSE" id="qhse_menu" web_icon="qhse,static/description/icon.png"/>
+    </data>
+</odoo>

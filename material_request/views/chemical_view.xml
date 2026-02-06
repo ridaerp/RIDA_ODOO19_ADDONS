@@ -62,10 +62,8 @@
 
                     <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
                     <filter name="group_sample_type" string="Sample Type" context="{'group_by':'sample_type'}"/>
-                    <!-- <group expand="0" string="Group By..."> -->
-                        <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
-                                context="{'group_by':'requested_by'}"/>
-                    <!-- </group> -->
+                    <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'requested_by'}"/>
                 </search>
             </field>
         </record>
@@ -552,13 +550,10 @@
                     <field name="request_id"/>
                     <field name="partner_id"/>
                     <field name="sample_no"/>
-
-                    <!-- <group expand="1" string="Group By"> -->
-                        <filter string="Weight Request" name="group_by_chemical_request"
-                                context="{'group_by': 'request_id'}"/>
-                        <filter string="Partner" name="group_by_partner"
-                                context="{'group_by': 'partner_id', 'group_by_partner': True}"/>
-                    <!-- </group> -->
+                    <filter string="Weight Request" name="group_by_chemical_request"
+                            context="{'group_by': 'request_id'}"/>
+                    <filter string="Partner" name="group_by_partner"
+                            context="{'group_by': 'partner_id', 'group_by_partner': True}"/>
                 </search>
             </field>
         </record>

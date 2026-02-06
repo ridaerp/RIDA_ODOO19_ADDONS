@@ -65,14 +65,6 @@ class LowestPriceEvaluation(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id)
 
 
-    # material_request_ids = fields.Many2many(
-    #     'material.request',  # Related model
-    #     'material_request_weight_score_rel',  # Relation table name
-    #     'ws_id',  # Column for this model
-    #     'mr_id',  # Column for related model
-    #     string='Material Requests'
-    # )
-
     def compute_purchase_count(self):
         self.purchase_count = self.env['purchase.order'].search_count(
             [('request_id', '=', self.material_request_id.id)])
@@ -95,23 +87,6 @@ class LowestPriceEvaluation(models.Model):
     def action_w_proc_manager(self):
         if self.material_request_id:
             self.material_request_id.sudo().write({'state': 'waiting_po'})
-        
-
-        # Find RFQs linked to this Material Request and awarded supplier only
-        # rfqs = self.env['purchase.order'].search([
-        #     ('request_id', '=', self.material_request_id.id),
-        #     ('partner_id', '=', self.award_supplier.id),
-        # ])
-
-        # if not rfqs:
-        #     raise UserError(
-        #         f"No RFQ found for the awarded supplier '{rec.award_supplier.name}'. "
-        #         "Please ensure an RFQ exists for this supplier."
-        #     )
-
-        # Update only the RFQ(s) that match the awarded supplier
-        # rfqs.sudo().write({'state': 'sum'})
-
 
         return self.write({'state': 'approved'})
 
@@ -123,10 +98,10 @@ class LowestPriceEvaluation(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('lowest.price.evaluation') or ' '
-        res = super(LowestPriceEvaluation, self).create(vals)
-        res.fill_prices_from_rfq()
-
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('lowest.price.evaluation') or ' '
+            res = super(LowestPriceEvaluation, self).create(vals)
+            res.fill_prices_from_rfq()
         return res
 
 

@@ -142,11 +142,9 @@
                    <filter domain="[('state', '=', 'draft')]" string="To Submit" name="to_report" help="New Requests"/>
                     <filter domain="[('state','in',['hr_officer','hrm_approval','ceo'])]" string="To Approve" name="submitted" help="Submitted Requests"/>
                    <filter domain="[('state', '=', 'confirm')]" string="Approved" name="approved" help="Approved Requests"/>
-                    <!-- <group expand="0" string="Group By"> -->
                     <filter string="Employee" name="employee" domain="[]" context="{'group_by': 'employee_id'}"/>
                     <filter name="State" string="State" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Date" name="date" domain="[]" context="{'group_by':'date'}"/>
-                    <!-- </group> -->
                </search>
             </field>
         </record>

@@ -49,43 +49,78 @@ class StockCardReport(models.TransientModel):
         help="Use compute fields, so there is nothing store in database",
     )
 
+    def _column_exists(self, table, column):
+        self.env.cr.execute(
+            """
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_name = %s AND column_name = %s
+            """,
+            (table, column),
+        )
+        return bool(self.env.cr.fetchone())
+
+    def _get_move_line_qty_column(self):
+        # Try the common names in order
+        for col in ("qty_done", "quantity_done", "quantity", "qty", "done_qty"):
+            if self._column_exists("stock_move_line", col):
+                return col
+        return None
+
     def _compute_results(self):
         self.ensure_one()
+
         date_from = self.date_from or "0001-01-01"
-        self.date_to = self.date_to or fields.Date.context_today(self)
+        date_to = self.date_to or fields.Date.context_today(self)
+
         locations = self.env["stock.location"].search(
             [("id", "child_of", [self.location_id.id])]
         )
-        self._cr.execute(
-            """
-            SELECT move.date, move.product_id, move.product_qty,
-                move.product_uom_qty, move.product_uom, move.reference,
-                move.location_id, move.location_dest_id,
-                case when move.location_dest_id in %s
-                    then move.product_qty end as product_in,
-                case when move.location_id in %s
-                    then move.product_qty end as product_out,
-                case when move.date < %s then True else False end as is_initial,
-                move.picking_id
-            FROM stock_move move
-            WHERE (move.location_id in %s or move.location_dest_id in %s)
-                and move.state = 'done' and move.product_id in %s
-                and CAST(move.date AS date) <= %s
-            ORDER BY move.date, move.reference
-        """,
-            (
-                tuple(locations.ids),
-                tuple(locations.ids),
-                date_from,
-                tuple(locations.ids),
-                tuple(locations.ids),
-                tuple(self.product_ids.ids),
-                self.date_to,
-            ),
+
+        loc_ids = tuple(locations.ids) or (0,)
+        prod_ids = tuple(self.product_ids.ids) or (0,)
+
+        qty_col = self._get_move_line_qty_column()
+        if not qty_col:
+            raise ValueError(
+                "Cannot find done quantity column on stock_move_line. "
+                "Tried: qty_done, quantity_done, quantity, qty, done_qty"
+            )
+
+        qty_expr = f"COALESCE(SUM(ml.{qty_col}), 0.0)"
+
+        cr = self.env.cr
+        cr.execute(
+            f"""
+            SELECT
+                m.date,
+                m.product_id,
+                {qty_expr} AS product_qty,
+                m.product_uom_qty,
+                m.product_uom,
+                m.reference,
+                m.location_id,
+                m.location_dest_id,
+                CASE WHEN m.location_dest_id IN %s THEN {qty_expr} END AS product_in,
+                CASE WHEN m.location_id IN %s THEN {qty_expr} END AS product_out,
+                CASE WHEN CAST(m.date AS date) < %s THEN TRUE ELSE FALSE END AS is_initial,
+                m.picking_id
+            FROM stock_move m
+            LEFT JOIN stock_move_line ml ON ml.move_id = m.id
+            WHERE (m.location_id IN %s OR m.location_dest_id IN %s)
+              AND m.state = 'done'
+              AND m.product_id IN %s
+              AND CAST(m.date AS date) <= %s
+            GROUP BY
+                m.id, m.date, m.product_id, m.product_uom_qty, m.product_uom,
+                m.reference, m.location_id, m.location_dest_id, m.picking_id
+            ORDER BY m.date, m.reference
+            """,
+            (loc_ids, loc_ids, date_from, loc_ids, loc_ids, prod_ids, date_to),
         )
-        stock_card_results = self._cr.dictfetchall()
-        ReportLine = self.env["stock.card.view"]
-        self.results = [ReportLine.new(line).id for line in stock_card_results]
+
+        stock_card_results = cr.dictfetchall()
+        self.results = [(5, 0, 0)] + [(0, 0, line) for line in stock_card_results]
 
     def _get_initial(self, product_line):
         product_input_qty = sum(product_line.mapped("product_in"))
@@ -104,12 +139,18 @@ class StockCardReport(models.TransientModel):
     def _get_html(self):
         result = {}
         rcontext = {}
+
         report = self.browse(self._context.get("active_id"))
         if report:
             rcontext["o"] = report
-            result["html"] = self.env.ref(
-                "stock_card_report.report_stock_card_report_html"
-            )._render(rcontext)
+
+            html = self.env["ir.qweb"]._render(
+                "stock_card_report.report_stock_card_report_html",  # QWeb template XML ID
+                rcontext,
+            )
+
+            result["html"] = html
+
         return result
 
     @api.model

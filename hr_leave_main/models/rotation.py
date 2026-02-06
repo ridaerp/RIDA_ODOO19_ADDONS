@@ -62,27 +62,26 @@ class RotationBatch(models.Model):
 
     @api.model
     def create(self, vals):
-        # التحقق من وجود type في القيم
-        if 'type' in vals and vals['type'] in ['in', 'out']:
-            # التحقق من القيد الزمني
-            # إنشاء سجل مؤقت للتحقق
-            new_record = self.new(vals)
+        for val in vals:
+            # التحقق من وجود type في القيم
+            if 'type' in val and val['type'] in ['in', 'out']:
+                # التحقق من القيد الزمني
+                # إنشاء سجل مؤقت للتحقق
+                new_record = self.new(val)
 
-            # تعيين التاريخ إذا لم يكن موجوداً
-            if 'date' not in vals or not vals['date']:
-                new_record.date = fields.Date.today()
+                # تعيين التاريخ إذا لم يكن موجوداً
+                if 'date' not in val or not val['date']:
+                    new_record.date = fields.Date.today()
 
-            if not new_record._check_rotation_date_constraint():
-                raise UserError(
-                    _("Rotation Leave Request (Type 'in'/'out') can only be created between the 1st and 4th, or between the 8th and 19th day of the month."))
+                if not new_record._check_rotation_date_constraint():
+                    raise UserError(
+                        _("Rotation Leave Request (Type 'in'/'out') can only be created between the 1st and 4th, or between the 8th and 19th day of the month."))
 
-            vals['name'] = self.env['ir.sequence'].next_by_code('rotation.request') or ' '
-        else:
-            vals['name'] = self.env['ir.sequence'].next_by_code('arrival.request') or ' '
+                val['name'] = self.env['ir.sequence'].next_by_code('rotation.request') or ' '
+            else:
+                val['name'] = self.env['ir.sequence'].next_by_code('arrival.request') or ' '
 
-
-        res = super(RotationBatch, self).create(vals)
-        return res
+        return super(RotationBatch, self).create(vals)
 
 
     def action_correct_ticket(self):

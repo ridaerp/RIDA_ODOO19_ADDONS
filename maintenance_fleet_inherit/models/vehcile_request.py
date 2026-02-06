@@ -309,23 +309,17 @@ class VehicleEquipmentRequest(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('name_seq', 'New') == 'New':
-            vals['name_seq'] = self.env['ir.sequence'].next_by_code('vehicle.equipment.request') or 'New'
-        result = super(VehicleEquipmentRequest, self).create(vals)
+        for val in vals:
+            if val.get('name_seq', 'New') == 'New':
+                val['name_seq'] = self.env['ir.sequence'].next_by_code('vehicle.equipment.request') or 'New'
 
-        return result
+        return super(VehicleEquipmentRequest, self).create(vals)
 
     @api.constrains('to')
     def check_non_zero_end(self):
         if self.to:
             if self.started_from > self.to:
                 raise ValidationError("End time should be after start time!")
-
-    # @api.constrains('movement_delivery_time')
-    # def check_movement_delivery_time(self):
-
-    #     if self.movement_receiving_request_time >= self.movement_delivery_time:
-    #             raise ValidationError("Delivery time should be after request time!")
 
 
 class MaterialRequest(models.Model):

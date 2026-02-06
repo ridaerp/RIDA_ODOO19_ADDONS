@@ -42,19 +42,10 @@ class Partner(models.Model):
  
     def action_approve(self):
         self.write({'state': 'approved'})
-    #
-    # # Reject
-    # def action_reject(self):
-    #     self.write({'state': 'reject'})
-    #
-    # # Set to Draft
-    # def action_draft(self):
-    #     self.write({'state': 'draft'})
 
     @api.model
     def create(self, values):
         partner = super(Partner, self).create(values)
-        # if not values.get('is_account'):
         partner.state = 'register'
         return partner
 

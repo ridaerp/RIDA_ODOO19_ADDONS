@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <menuitem name="Request Forms" id="menu_root" web_icon="rida_forms,static/description/icon.png" sequence="0"/>
+
+    <menuitem name="Admin-GS " id="form_document_admin" web_icon="rida_forms,static/description/icon.png" sequence="1"/>
+
+    <menuitem name="IMT Services" id="form_document" web_icon="rida_forms,static/description/icon.png" sequence="2"/>
+
+    <menuitem name="HQ" id="hq" parent="rida_forms.menu_root" sequence="1"/>
+
+    <menuitem name="Al Salam Site" id="al_salam_site" parent="rida_forms.menu_root" sequence="2"/>
+
+    <menuitem name="GS &amp; Admin Forms" id="gs_admin_form" sequence="0" parent="form_document_admin"/>
+
+    
+
+</odoo>

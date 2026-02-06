@@ -6,15 +6,13 @@
         <field name="model">report.balance.leave</field>
         <field name="arch" type="xml">
             <search string="Leave Balance Report">
-                <group expand="0" string="Group By">
-                    <filter name="group_employee" string="Employee" context="{'group_by': 'emp_id'}"/>
-                    <filter name="group_department" string="Department"
-                            context="{'group_by': 'department_id'}"/>
-                    <filter name="group_leave_type" string="Leave Type"
-                            context="{'group_by': 'leave_type_id'}"/>
-                    <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
-                    <filter name="group_gender" string="Gender" context="{'group_by': 'gender'}"/>
-                </group>
+                <filter name="group_employee" string="Employee" context="{'group_by': 'emp_id'}"/>
+                <filter name="group_department" string="Department"
+                        context="{'group_by': 'department_id'}"/>
+                <filter name="group_leave_type" string="Leave Type"
+                        context="{'group_by': 'leave_type_id'}"/>
+                <filter name="group_job" string="Job" context="{'group_by': 'job_id'}"/>
+                <filter name="group_gender" string="Gender" context="{'group_by': 'gender'}"/>
             </search>
         </field>
     </record>

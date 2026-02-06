@@ -209,11 +209,6 @@ class MaintenanceEquiement(models.Model):
         pos = self.search(domain + args, limit=limit)
         return pos.name_get()
 
-    # def get_fleet(self):
-    #     for rec in self:
-    #         search_ids = self.env['fleet.vehicle'].search([('equipment_id', '=', self.id)])
-    #         rec.vechicle_id = search_ids.id
-
     def get_fleet(self):
         for record in self:
             search_ids = self.env['fleet.vehicle'].search([('equipment_id', '=', record.id)])
@@ -241,10 +236,6 @@ class MaintenanceEquiement(models.Model):
         # if not search_ids:
         if result.equipment_type == 'vechicles':
             equipment_id = self.env['fleet.vehicle'].create(fleet_vals)
-            print("############################", equipment_id)
-
-        # else:
-        #     pass
 
         return result
 
@@ -596,12 +587,12 @@ class MaintenanceRequest(models.Model):
         return rec
 
     def write(self, vals):
-        res = super().write(vals)
-        if vals.get('location'):
-            loc = self.env['vehicle.location'].search([('name', '=', vals['location'])], limit=1)
-            if not loc:
-                self.env['vehicle.location'].create({'name': vals['location']})
-        return res
+        for val in vals:
+            if val.get('location'):
+                loc = self.env['vehicle.location'].search([('name', '=', val['location'])], limit=1)
+                if not loc:
+                    self.env['vehicle.location'].create({'name': val['location']})
+        return super().write(vals)
 
     @api.constrains('std_durattion', 'stage_id', 'team_id')
     def _check_std_duration_required(self):

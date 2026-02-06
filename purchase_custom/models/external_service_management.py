@@ -191,37 +191,26 @@ class external_service_management(models.Model):
     
     def action_reject(self):
         self.write({'state': 'reject'})
-        
     
     @api.model
     def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('external_service_management.sequence') or _('New')
-        result = super(external_service_management, self).create(vals)
-        return result
+        for val in vals:
+            if val.get('name', _('New')) == _('New'):
+                val['name'] = self.env['ir.sequence'].next_by_code('external_service_management.sequence') or _('New')
+
+        return super(external_service_management, self).create(vals)
    
    
-    # def _send_reminder_mail(self, send_single=False):
     @api.model
     def _send_reminder_mail(self):
-    #     if not self.user_has_groups('purchase.group_send_reminder'):
-    #         return
-        # _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@ " )
         template = self.env.ref('purchase_custom.email_template_purchase_custom_contract_reminder', raise_if_not_found=False)
-        # _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@ "+str(template) )
 
         orders = self.env['external.service.management'].search([])
-        _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@   self    "+str(orders.finish_date) )
         if template:
-            # orders = self if send_single else self._get_orders_to_remind()
             for order in self.env['external.service.management'].search(['finish_date','=',datetime.today().date()]):
-                _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@   order   "+str(order.finish_date) )
                 date = order.finish_date
-                _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@   date   "+str(date) )
-                _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@  today   "+str(datetime.today().date()) )
                 if date == datetime.today().date():
                         order.message_post_with_template(template.id, email_layout_xmlid="mail.mail_notification_paynow", composition_mode='comment')
-                        _logger.info("@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@send " )
 
     
 class external_service_managementLine(models.Model):
@@ -236,7 +225,6 @@ class external_service_managementLine(models.Model):
     currency_id = fields.Many2one(related='work_id.currency_id')  
     estimated_cost = fields.Float('Estimated Cost', related='work_id.contract_number.order_line.price_unit')
     account_id = fields.Many2one(comodel_name='account.move', string="Account")
-    # analytic_account_account = fields.Many2one(string='Cost center', related="work_id.department_id.analytic_account_id", readonly=True)
     analytic_account_account = fields.Many2one('account.analytic.account', string='Cost center', readonly=True)
     
     

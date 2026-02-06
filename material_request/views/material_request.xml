@@ -653,22 +653,12 @@
                     <filter domain="[('state','in', ['line_line_approve','warehouse_sup'])]" name="to_approve"
                             help="To Approve"/>
                     <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
-                    <!-- <group expand="0" string="Group By..."> -->
-                        <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
-                                context="{'group_by':'requested_by'}"/>
-                    <!-- </group> -->
-
-
-                    <!-- <group expand="0" string="Group By..."> -->
-                        <filter string="Product" icon="terp-personal" name="request_by" domain="[]"
-                                context="{'group_by':'product_id'}"/>
-                    <!-- </group> -->
-
-
-                    <!-- <group expand="0" string="Group By..."> -->
-                        <filter string="Approved by" icon="terp-personal" name="approve_by" domain="[]"
-                                context="{'group_by':'approve_by'}"/>
-                    <!-- </group> -->
+                    <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'requested_by'}"/>
+                    <filter string="Product" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'product_id'}"/>
+                    <filter string="Approved by" icon="terp-personal" name="approve_by" domain="[]"
+                            context="{'group_by':'approve_by'}"/>
                 </search>
             </field>
         </record>

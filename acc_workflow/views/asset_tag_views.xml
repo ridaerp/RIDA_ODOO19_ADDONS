@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Define the Tree View -->
+        <record id="view_asset_tag_tree" model="ir.ui.view">
+            <field name="name">asset.tag.tree</field>
+            <field name="model">asset.tag</field>
+            <field name="arch" type="xml">
+                <list string="Asset Tags">
+                    <field name="name"/>
+                    <field name="asset_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Define the Form View -->
+        <record id="view_asset_tag_form" model="ir.ui.view">
+            <field name="name">asset.tag.form</field>
+            <field name="model">asset.tag</field>
+            <field name="arch" type="xml">
+                <form string="Asset Tag">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="asset_ids" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Define the Action -->
+        <record id="action_asset_tags" model="ir.actions.act_window">
+            <field name="name">Asset Tags</field>
+            <field name="res_model">asset.tag</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Define the Menu Item -->
+        <menuitem id="menu_asset_tags"
+            name="Asset Tags"
+            parent="account.account_account_menu" 
+            action="action_asset_tags"
+            sequence="11"
+            />
+    </data>
+</odoo>

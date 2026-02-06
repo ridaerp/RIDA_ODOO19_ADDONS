@@ -121,8 +121,6 @@ class MetallurgicalRequest(models.Model):
             self.activity_update()
             rec.state = 'operation_director'
 
-    # return self.write({'state': 'metallurgist'})
-
     def get_requested_by(self):
         user = self.env.user.id
         self.email = self.env.user.email
@@ -136,12 +134,10 @@ class MetallurgicalRequest(models.Model):
 
     @api.model
     def create(self, vals):
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('metallurgical.sequence') or "/"
 
-        seq = self.env['ir.sequence'].next_by_code('metallurgical.sequence') or "/"
-        vals['name'] = seq
-        request = super(MetallurgicalRequest, self).create(vals)
-
-        return request
+        return super(MetallurgicalRequest, self).create(vals)
 
     def button_receive(self):
         for rec in self:

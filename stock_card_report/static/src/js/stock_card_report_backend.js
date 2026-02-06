@@ -1,119 +1,113 @@
 /** @odoo-module **/
 
-throw new Error("stock_card_report_backend.js LOADED");
-
-
+import { Component, xml, onWillStart, useState, markup } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { AbstractAction } from "@web/legacy/js/core/abstract_action";
-import { Widget } from "@web/legacy/js/core/widget";
+import { useService } from "@web/core/utils/hooks";
 
-const ReportWidget = Widget;
+class StockCardReportBackend extends Component {
+    setup() {
+        this.orm = useService("orm");
+        this.actionService = useService("action");
+        this.notification = useService("notification");
 
-const StockCardReportBackend = AbstractAction.extend({
-    hasControlPanel: true,
+        // action context from ir.actions.client
+        const ctx = (this.props && this.props.action && this.props.action.context) || {};
 
-    events: {
-        "click .o_stock_card_reports_print": "print",
-        "click .o_stock_card_reports_export": "export",
-    },
+        this.state = useState({
+            loading: true,
+            html: "",
+        });
 
-    init(parent, action) {
-        this._super(...arguments);
-        this.actionManager = parent;
-        this.given_context = {};
-        this.odoo_context = action.context || {};
-        this.controller_url = this.odoo_context.url;
+        // Build the same given_context you used before
+        this.given_context = (ctx.context || {});
+        this.given_context.active_id = ctx.active_id || (this.props.action.params && this.props.action.params.active_id);
+        this.given_context.model = ctx.active_model || "report.stock.card.report";
+        this.given_context.ttype = ctx.ttype || false;
 
-        if (this.odoo_context.context) {
-            this.given_context = this.odoo_context.context;
+        this.odoo_context = ctx;
+
+        onWillStart(async () => {
+            await this.loadHtml();
+        });
+    }
+
+    async loadHtml() {
+        try {
+            this.state.loading = true;
+            const model = this.given_context.model;
+
+            // calls: model.get_html([given_context])
+            const result = await this.orm.call(model, "get_html", [this.given_context], {
+                context: this.odoo_context,
+            });
+
+            this.state.html = markup(result?.html || "");
+
+        } catch (e) {
+            this.notification.add(`Failed to load report HTML: ${e.message || e}`, { type: "danger" });
+            throw e;
+        } finally {
+            this.state.loading = false;
+        }
+    }
+
+    async printPdf() {
+        await this._print("qweb-pdf");
+    }
+
+    async exportXlsx() {
+        await this._print("xlsx");
+    }
+
+    async _print(reportType) {
+
+        const model = this.given_context.model;
+        const activeId = this.given_context.active_id;
+
+        if (!activeId) {
+            this.notification.add("No active_id found for this report.", { type: "warning" });
+            return;
         }
 
-        this.given_context.active_id =
-            this.odoo_context.active_id || (action.params && action.params.active_id);
+        const action = await this.orm.call(model, "print_report", [activeId, reportType], {
+            context: this.odoo_context || {},
+        });
 
-        this.given_context.model = this.odoo_context.active_model || false;
-        this.given_context.ttype = this.odoo_context.ttype || false;
-    },
-
-    willStart() {
-        return Promise.all([this._super(...arguments), this.get_html()]);
-    },
-
-    set_html() {
-        const self = this;
-        let def = Promise.resolve();
-        if (!this.report_widget) {
-            this.report_widget = new ReportWidget(this, this.given_context);
-            def = this.report_widget.appendTo(this.$(".o_content"));
+        if (!action) {
+            this.notification.add("No action returned from server.", { type: "danger" });
+            return;
         }
-        def.then(function () {
-            self.report_widget.$el.html(self.html);
-        });
-    },
 
-    start() {
-        this.set_html();
-        return this._super(...arguments);
-    },
+        action.context = action.context || this.odoo_context || {};
 
-    get_html() {
-        const self = this;
-        const defs = [];
-        return this._rpc({
-            model: this.given_context.model,
-            method: "get_html",
-            args: [self.given_context],
-            context: self.odoo_context,
-        }).then(function (result) {
-            self.html = result.html;
-            defs.push(self.update_cp());
-            return $.when.apply($, defs);
-        });
-    },
+        await this.actionService.doAction(action, { context: this.odoo_context || {} });
+    }
+}
 
-    update_cp() {
-        if (this.$buttons) {
-            const status = {
-                breadcrumbs: this.actionManager.get_breadcrumbs(),
-                cp_content: { $buttons: this.$buttons },
-            };
-            return this.update_control_panel(status);
-        }
-    },
+StockCardReportBackend.template = xml`
+    <div class="o_stock_card_report_backend">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="m-0">Stock Card Report</h3>
 
-    do_show() {
-        this._super(...arguments);
-        this.update_cp();
-    },
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" t-on-click="printPdf" t-att-disabled="state.loading">
+                    Export PDF
+                </button>
+                <button type="button" class="btn btn-primary" t-on-click="exportXlsx" t-att-disabled="state.loading">
+                    Export XLSX
+                </button>
+            </div>
+        </div>
 
-    print() {
-        const self = this;
-        this._rpc({
-            model: this.given_context.model,
-            method: "print_report",
-            args: [this.given_context.active_id, "qweb-pdf"],
-            context: self.odoo_context,
-        }).then(function (result) {
-            self.do_action(result);
-        });
-    },
-
-    export() {
-        const self = this;
-        this._rpc({
-            model: this.given_context.model,
-            method: "print_report",
-            args: [this.given_context.active_id, "xlsx"],
-            context: self.odoo_context,
-        }).then(function (result) {
-            self.do_action(result);
-        });
-    },
-
-    canBeRemoved() {
-        return Promise.resolve();
-    },
-});
+        <t t-if="state.loading">
+            <div class="o_view_nocontent_smiling_face">Loading…</div>
+        </t>
+        <t t-else="">
+            <!-- Render html returned from python -->
+            <div class="o_stock_card_report_content" t-out="state.html"/>
+        </t>
+    </div>
+`;
 
 registry.category("actions").add("stock_card_report_backend", StockCardReportBackend);
 

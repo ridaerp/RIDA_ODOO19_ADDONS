@@ -111,11 +111,11 @@ class ChangeContract(models.Model):
         
     @api.model
     def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code(
-                'change_contract.sequence') or _('New')
-        result = super(ChangeContract, self).create(vals)
-        return result
+        for val in vals:
+            if val.get('name', _('New')) == _('New'):
+                val['name'] = self.env['ir.sequence'].next_by_code('change_contract.sequence') or _('New')
+
+        return super(ChangeContract, self).create(vals)
     
 class ContractLines(models.Model):
     _name = 'contract.lines'

@@ -254,8 +254,7 @@ class TripPermission(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('trip.permission.code')
-            res = super(TripPermission, self).create(val)
-            return res
+        return super(TripPermission, self).create(vals)
 
     def unlink(self):
         for rec in self:

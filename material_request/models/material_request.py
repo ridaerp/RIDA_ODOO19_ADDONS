@@ -275,11 +275,9 @@ class PaymentRequest(models.Model):
 
     @api.model
     def create(self, vals):
-
-        s_seq = self.env['ir.sequence'].next_by_code('paymentrequest.sequence')
-        vals['name'] = s_seq
-        request = super(PaymentRequest, self).create(vals)
-        return request
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('paymentrequest.sequence')
+        return super(PaymentRequest, self).create(vals)
 
     def fm(self):
         for rec in self:
@@ -463,7 +461,7 @@ class MaterialRequest(models.Model):
         default='local'
     )
 
-    x_studio_purchase_order = fields.Many2one("purchase.order", string="Selected Purchase Order", readonly=True)
+    x_studio_purchase_order = fields.One2many("purchase.order", "request_id",string="Selected Purchase Order",)
     is_selected = fields.Boolean(related='x_studio_purchase_order.is_selected', string="Is Select", readonly=True)
 
     mai_po_state = fields.Char(string="Purchase Status", compute="_compute_purchase_status", store=True)
@@ -1605,7 +1603,7 @@ class MaterialRequestLine(models.Model):
             product_id = self.env['product.product'].browse(val.get('product_id'))
             qty = product_id.warehouse_quantity
             val['qty_available'] = qty
-            return super(MaterialRequestLine, self).create(val)
+        return super(MaterialRequestLine, self).create(vals)
 
     @api.constrains('product_qty', 'unit_price')
     def check_non_zero(self):

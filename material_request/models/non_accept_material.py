@@ -13,12 +13,10 @@ class NonAcceptMaterial(models.Model):
 
     @api.model
     def create(self, vals):
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('non_accept_material.sequence') or "/"
 
-        seq = self.env['ir.sequence'].next_by_code('non_accept_material.sequence') or "/"
-        vals['name'] = seq
-
-        request = super(NonAcceptMaterial, self).create(vals)
-        return request
+        return super(NonAcceptMaterial, self).create(vals)
 
     name = fields.Char('Reference', default=lambda self: _('New'), copy=False, readonly=True, required=True)
     state = fields.Selection(string='Status', default='draft', selection=[('draft', 'Draft'), (

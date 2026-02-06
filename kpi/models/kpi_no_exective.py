@@ -264,8 +264,7 @@ class KpiNonExective(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('kpi.non.person.code') or ' '
-            res = super(KpiNonExective, self).create(val)
-            return res
+        return super(KpiNonExective, self).create(vals)
 
 
     def unlink(self):

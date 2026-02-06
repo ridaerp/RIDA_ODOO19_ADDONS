@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_employee_service_root" name="Employee Services" sequence="10" web_icon="employee_service,static/sec/icon.png"/>
+        <!--    Employee    -->
+        <menuitem id="menu_employee_service_employee"
+              name="Employees"
+              parent="menu_employee_service_root"
+              action="action_employee_list_in_service"
+              sequence="1"/>
+        <!--        Leave-->
+        <menuitem id="menu_employee_service_leaves"
+              name="Leaves"
+              parent="menu_employee_service_root"
+              sequence="2"/>
+
+        <menuitem id="menu_employee_service_leaves_1"
+              name="My Time Off"
+              parent="menu_employee_service_leaves"
+              action="action_employee_leaves_in_service_1"
+              sequence="1"/>
+        <menuitem id="action_employee_leaves_in_service_2"
+              name="My Allocations"
+              parent="menu_employee_service_leaves"
+              action="action_employee_leaves_in_service_all"
+              sequence="2"/>
+
+        <menuitem id="action_employee_leaves_in_service_5"
+              name="Management"
+              parent="menu_employee_service_leaves"
+              sequence="3"/>
+        <menuitem id="action_employee_leaves_in_service_3"
+              name="Time Off Management"
+              parent="action_employee_leaves_in_service_5"
+              action="action_employee_leaves_in_service_tim_mang"
+              sequence="1"/>
+
+        <menuitem id="action_employee_leaves_in_service_4"
+              name="allocation Management"
+              parent="action_employee_leaves_in_service_5"
+              action="action_employee_leaves_in_service_all_mang"
+              sequence="2"/>
+
+        <menuitem id="action_employee_leaves_in_service_6"
+              name="Reporting"
+              parent="menu_employee_service_leaves"
+              sequence="4"/>
+        <menuitem id="action_employee_leaves_in_service_7"
+              name="Balance Leave Report"
+              parent="action_employee_leaves_in_service_6"
+              action="action_employee_leaves_in_service_report"
+              sequence="1"/>
+
+        <menuitem id="action_employee_leaves_in_service_8"
+              name="Rotation Leave"
+              parent="menu_employee_service_leaves"
+              sequence="5"/>
+        <menuitem id="action_employee_leaves_in_service_9"
+              name="Rotation Leave Request"
+              parent="action_employee_leaves_in_service_8"
+              action="action_employee_leaves_in_service_rotation"
+              sequence="1"/>
+
+        <menuitem id="action_employee_leaves_in_service_10"
+              name="Arrival Tickets"
+              parent="action_employee_leaves_in_service_8"
+              action="action_employee_leaves_in_service_arrival"
+              sequence="2"/>
+
+        <!--  Delegations  -->
+        <menuitem id="menu_employee_service_delegations"
+              name="Delegations"
+              parent="menu_employee_service_root"
+              action="action_employee_delegations"
+              sequence="3"/>
+        <!--  Overtime  -->
+        <menuitem id="menu_employee_service_overtime"
+                  name="Over Time"
+                  parent="menu_employee_service_root"
+                  sequence="4"/>
+        <menuitem id="menu_employee_service_overtime_1"
+                  name="Overtime Authorization Request"
+                  parent="menu_employee_service_overtime"
+                  action="action_employee_overtime"
+                  sequence="1"/>
+        <menuitem id="menu_employee_service_overtime_2"
+                  name="OverTime By Batch"
+                  parent="menu_employee_service_overtime"
+                  action="action_employee_overtime_by_batch"
+                  sequence="2"/>
+        <menuitem id="menu_employee_service_overtime_3"
+                  name="Overtime Bank Sheet"
+                  parent="menu_employee_service_overtime"
+                  action="action_employee_overtime_bank_batch"
+                  sequence="3"/>
+        <!-- Loans   -->
+        <menuitem id="menu_employee_service_loans"
+                  name="Loans"
+                  parent="menu_employee_service_root"
+                  sequence="6"/>
+        <menuitem id="menu_employee_service_loans_1"
+                  name="My Loans"
+                  parent="menu_employee_service_loans"
+                  action="action_employee_loans"
+                  sequence="1"/>
+        <menuitem id="menu_employee_service_loans_2"
+                  name="Loans To Approve"
+                  parent="menu_employee_service_loans"
+                  action="action_employee_loans_to_approve"
+                  sequence="2"/>
+
+         <!-- Salary Advance   -->
+        <menuitem id="menu_employee_service_salary_advance"
+                  name="Salary Advance"
+                  parent="menu_employee_service_root"
+                  sequence="7"/>
+
+        <menuitem id="menu_employee_service_salary_advance_1"
+                  name="My Salary Advance"
+                  parent="menu_employee_service_salary_advance"
+                  action="action_employee_salary_advance"
+                  sequence="1"/>
+
+        <!--    Trip Permission Request    -->
+        <menuitem id="menu_employee_service_trip_permission"
+                  name="Trip Permission"
+                  parent="menu_employee_service_root"
+                  action="action_employee_trip_permission"
+                  sequence="8"/>
+
+        <!--    Site Visit Request    -->
+        <menuitem id="menu_employee_service_site_visit"
+                  name="Site Visit Request"
+                  parent="menu_employee_service_root"
+                  action="action_employee_site_visit"
+                  sequence="9"/>
+
+    </data>
+</odoo>

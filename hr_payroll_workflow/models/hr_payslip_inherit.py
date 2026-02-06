@@ -41,6 +41,7 @@ class hr_payroll_workflow(models.Model):
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
+    
     @api.model
     def create(self, vals):
         res = super(hr_payroll_workflow, self).create(vals)

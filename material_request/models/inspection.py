@@ -61,9 +61,10 @@ class MaterialInspection(models.Model):
                         break  # Exit line loop - catering found
     @api.model
     def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('material.inspection') or ' '
-        res = super(MaterialInspection, self).create(vals)
-        return res
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('material.inspection') or ' '
+
+        return super(MaterialInspection, self).create(vals)
 
     def action_draft(self):
         for rec in self:

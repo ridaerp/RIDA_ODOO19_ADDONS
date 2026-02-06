@@ -122,8 +122,7 @@ class hr_loan(models.Model):
     def create(self, values):
         for val in values:
             val['name'] = self.env['ir.sequence'].next_by_code('hr.loan.req.seq')
-            res = super(hr_loan, self).create(val)
-            return res
+        return super(hr_loan, self).create(vals)
 
     def action_submit(self):
         for rec in self:

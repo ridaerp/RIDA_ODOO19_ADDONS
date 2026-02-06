@@ -95,8 +95,7 @@ class SalaryAdvancePayment(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('salary.advance.seq') or ' '
-            res_id = super(SalaryAdvancePayment, self).create(val)
-            return res_id
+        return super(SalaryAdvancePayment, self).create(vals)
 
 
 

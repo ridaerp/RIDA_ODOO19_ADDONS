@@ -568,24 +568,6 @@ class WeightedScoringEvaluation(models.Model):
     def action_w_proc_manager(self):
         if  self.material_request_id:
               self.material_request_id.sudo().write({'state': 'waiting_po'})
-        
-
-        # Find RFQs linked to this Material Request and awarded supplier only
-        # rfqs = self.env['purchase.order'].search([
-        #     ('request_id', '=', self.material_request_id.id),
-        #     ('partner_id', '=', self.awarded_supplier.id),
-        # ])
-
-        # if not rfqs:
-        #     raise UserError(
-        #         f"No RFQ found for the awarded supplier '{self.awarded_supplier.name}'. "
-        #         "Please ensure an RFQ exists for this supplier."
-        #     )
-
-        # # Update only the RFQ(s) that match the awarded supplier
-        # rfqs.sudo().write({'state': 'sum'})
-
-
 
         return self.write({'state': 'approved'})
 
@@ -603,9 +585,10 @@ class WeightedScoringEvaluation(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('weight.scoring.evaluation') or ' '
-        res = super(WeightedScoringEvaluation, self).create(vals)
-        return res
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('weight.scoring.evaluation') or ' '
+
+        return super(WeightedScoringEvaluation, self).create(vals)
 
     def unlink(self):
         for rec in self:

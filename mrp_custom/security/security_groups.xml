@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--ADR USER CAN SHOW ASSGIN PUMP-->
+        <record id="pump_adr_user_rule" model="ir.rule">
+            <field name="name">Pump: only assigned user can read</field>
+            <field name="model_id" ref="model_pump_management"/> <!-- غيّري باسم الموديل -->
+            <field name="groups" eval="[(4, ref('mrp_custom.group_adr_user'))]"/> <!-- أو ممكن تحددي قروب معين -->
+            <field name="domain_force">[('assigned_user_id', '=', user.id)]</field>
+        </record>
+
+        <!-- ADR USER SHOW ASSGEN FLOWMETER-->
+        <record id="flowmeter_adr_user_rule" model="ir.rule">
+            <field name="name">Flowmeter: only assigned user can read</field>
+            <field name="model_id" ref="model_flowmeter_flowmeter"/> <!-- غيّري باسم الموديل -->
+            <field name="groups" eval="[(4, ref('mrp_custom.group_adr_user'))]"/> <!-- أو ممكن تحددي قروب معين -->
+            <field name="domain_force">[('assigned_user_id', '=', user.id)]</field>
+        </record>
+
+        <!--STRIPPING USER CAN SHOW ASSGIN PUMP-->
+        <record id="pump_stripping_user_rule" model="ir.rule">
+            <field name="name">Pump: only assigned user can read</field>
+            <field name="model_id" ref="model_pump_management"/>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_stripping_user'))]"/>
+            <field name="domain_force">[('assigned_user_id', '=', user.id)]</field>
+        </record>
+
+        <!-- STRIPPING USER SHOW ASSGEN FLOWMETER-->
+        <record id="flowmeter_stripping_user_rule" model="ir.rule">
+            <field name="name">Flowmeter: only assigned user can read</field>
+            <field name="model_id" ref="model_flowmeter_flowmeter"/>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_stripping_user'))]"/>
+            <field name="domain_force">[('assigned_user_id', '=', user.id)]</field>
+        </record>
+
+        <!--   ADR User Show ONLY Read flowmeter     -->
+        <record id="rule_flowmeter_reading_user_only_own" model="ir.rule">
+            <field name="name">Flowmeter Reading: user sees own records</field>
+            <field name="model_id" ref="model_flowmeter_reading_sheet"/>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_adr_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+        !-- Stripping User Show ONLY Read Flowmeter -->
+        <record id="rule_flowmeter_reading_user_only_own" model="ir.rule">
+            <field name="name">Flowmeter Reading: user sees own records</field>
+            <field name="model_id" ref="model_flowmeter_reading_sheet"/>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_stripping_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+        <!-- MRP Manager  All read Flowmeter-->
+        <record id="rule_flowmeter_k_reading_manager_all" model="ir.rule">
+            <field name="name">Flowmeter Reading: manager sees all</field>
+            <field name="model_id" ref="model_flowmeter_reading_sheet"/>
+            <field name="groups" eval="[(4, ref('mrp.group_mrp_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!--  MRP Manager  All Pump -->
+        <record id="rule_pump_reading_manager_all" model="ir.rule">
+            <field name="name">Pump : manager sees all</field>
+            <field name="model_id" ref="model_pump_management"/>
+            <field name="groups" eval="[(4, ref('mrp.group_mrp_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+         <!--  MRP Manager  All Flowmeter -->
+        <record id="rule_flowmeter_reading_manager_all" model="ir.rule">
+            <field name="name">Flowmeter : manager sees all</field>
+            <field name="model_id" ref="model_flowmeter_flowmeter"/>
+            <field name="groups" eval="[(4, ref('mrp.group_mrp_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+
+        <!--   for limitted      -->
+        <record id="product_rule_full_access_product" model="ir.rule">
+            <field name="name">Full Access - All Product Variants</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_product_full_access'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- 5. Product Variants: Restricted Users -->
+        <record id="product_rule_hide_variants_from_others" model="ir.rule">
+            <field name="name">Hide Product Variants for Other Users</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="domain_force">[("product_tmpl_id.is_hidden_from_limited_group", "=", False)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- 6. Product Template: Full Access Rule -->
+        <record id="product_rule_full_access_template" model="ir.rule">
+            <field name="name">Full Access - All Product Templates</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('mrp_custom.group_product_full_access'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- 7. Product Template: Restricted Users -->
+        <record id="product_rule_hide_templates_from_others" model="ir.rule">
+            <field name="name">Hide Product Templates for Other Users</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="domain_force">[("is_hidden_from_limited_group", "=", False)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+
+        <!-- Master Admin Can Change on Workcenter -->
+        <record id="rule_edit_workcenter_master" model="ir.rule">
+            <field name="name">Edit Workcenter - Master Admin</field>
+            <field name="model_id" ref="mrp.model_mrp_workcenter"/>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_master_data_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!--        Master Admin Can Change on BOM-->
+        <record id="rule_edit_bom_master" model="ir.rule">
+            <field name="name">Edit BoM - Master Admin</field>
+            <field name="model_id" ref="mrp.model_mrp_bom"/>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_master_data_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!--        Master Admin Can Change on BOM LIne-->
+        <record id="rule_edit_bom_line_master" model="ir.rule">
+            <field name="name">Edit BoM LINE - Master Admin</field>
+            <field name="model_id" ref="mrp.model_mrp_bom_line"/>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_master_data_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+    </data>
+</odoo>

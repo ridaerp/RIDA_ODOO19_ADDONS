@@ -194,12 +194,10 @@
                 <search>
                     <field name="name"/>
                     <field name="employee_id"/>
-                    <!-- <group expand="1" string="Group By"> -->
                         <filter string="Device Type" name="group_type" domain="[]"
                                 context="{'group_by':'cust_id'}"/>
                         <filter string="Provided By" name="group_prov_id" domain="[]"
                                 context="{'group_by':'prov_id'}"/>
-                    <!-- </group> -->
                 </search>
             </field>
         </record>
@@ -211,12 +209,10 @@
                 <search>
                     <field name="name"/>
                     <field name="employee_id"/>
-                    <!-- <group expand="1" string="Group By"> -->
-                        <filter string="Device Type" name="group_type" domain="[]"
-                                context="{'group_by':'cust_id'}"/>
-                        <filter string="Provided By" name="group_prov_id" domain="[]"
-                                context="{'group_by':'prov_id'}"/>
-                    <!-- </group> -->
+                    <filter string="Device Type" name="group_type" domain="[]"
+                            context="{'group_by':'cust_id'}"/>
+                    <filter string="Provided By" name="group_prov_id" domain="[]"
+                            context="{'group_by':'prov_id'}"/>
                 </search>
             </field>
         </record>

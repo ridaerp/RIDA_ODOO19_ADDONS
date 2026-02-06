@@ -38,10 +38,11 @@ class PaymentRequest(models.Model):
     invoice_count = fields.Integer(string="Count", compute='compute_invoice_count')
     @api.model
     def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('payment.request.sequence') or _('New')
-        result = super(PaymentRequest, self).create(vals)
-        return result    
+        for val in vals:
+            if val.get('name', _('New')) == _('New'):
+                val['name'] = self.env['ir.sequence'].next_by_code('payment.request.sequence') or _('New')
+
+        return super(PaymentRequest, self).create(vals)    
 
     @api.model
     def _get_default_currency_rate(self):

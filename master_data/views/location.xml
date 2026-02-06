@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="request_location_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.location</field>
+            <field name="default" eval="True"/>
+            <field name="description">Request Location Has been created</field>
+        </record>
+        <record id="request_location_rej_status" model="mail.message.subtype">
+            <field name="name">Status Changed</field>
+            <field name="res_model">request.location</field>
+            <field name="default" eval="True"/>
+            <field name="description">Request Location Has been Rejected</field>
+        </record>
+
+
+        <record id="view_request_location_form" model="ir.ui.view">
+            <field name="name">stock.request.location.form</field>
+            <field name="model">request.location</field>
+            <field name="arch" type="xml">
+                <form string="Stock Location" create="false">
+                    <header>
+                        <button string="Submit" name="set_confirm" type="object" invisible="state not in 'draft'"
+                                class="oe_highlight" groups="stock.group_stock_user"/>
+
+                        <button string="Create Location" name="create_location" type="object" invisible="state not in ['md']"
+                                class="oe_highlight" groups="base_rida.rida_group_master_data_manager"/>
+
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state not in ['md']" string="Reject" groups="base_rida.rida_group_master_data_manager"
+                        />
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,md,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="code_seq"/>
+                            </h1>
+                        </div>
+
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" readonly="state == 'done'"/>
+                        </h1>
+                        <label for="location_id" class="oe_edit_only"/>
+                        <h2>
+                            <field name="location_id" readonly="state == 'done'"
+                                   options="{'no_create': True}"/>
+                        </h2>
+                        <br/>
+                        <group>
+                            <field name="new_location" invisible="state != 'done'"/>
+                        </group>
+                        <group>
+                            <group string="Additional Information" name="additional_info">
+                                <field name="active" invisible="1"/>
+                                <field name="usage" readonly="state == 'done'" />
+                                <field name="company_id" readonly="state == 'done'"
+                                      
+                                       options="{'no_create': True}"/>
+                                <field name="scrap_location"
+                                   invisible="usage not in ('inventory', 'internal')"  readonly="state == 'done'" />
+                                <field name="return_location" readonly="state == 'done'"/>
+                            </group>
+                            <group string="Logistics" groups="stock.group_adv_location">
+                                <field name="removal_strategy_id" readonly="state == 'done'"
+                                       options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                        <field name="comment" placeholder="External note..."
+                           readonly="state == 'done'" />
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="master_location_tree_view" model="ir.ui.view">
+            <field name="name">master location tree</field>
+            <field name="model">request.location</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="code_seq"/>
+                    <field name="date"/>
+                    <field name="req_id"/>
+                    <field name="name"/>
+                    <field name="usage"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="location_request_form_search" model="ir.ui.view">
+            <field name="name">location.request.search</field>
+            <field name="model">request.location</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_seq"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="location_request_act_window" model="ir.actions.act_window">
+            <field name="name">Stock Location</field>
+            <field name="res_model">request.location</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem name="Stock Location" id="location_request_menu" parent="master_data"
+                  action="location_request_act_window"
+                  groups="stock.group_stock_user,base_rida.rida_group_master_data_manager"/>
+
+    </data>
+</odoo>

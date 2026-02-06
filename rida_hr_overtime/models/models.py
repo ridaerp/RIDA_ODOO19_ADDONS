@@ -73,8 +73,8 @@ class HrOvertimeBatch(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('hr.overtime.batch') or ' '
-            res = super(HrOvertimeBatch, self).create(val)
-            return res
+
+            return super(HrOvertimeBatch, self).create(vals)
 
     def unlink(self):
         for rec in self:

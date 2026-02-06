@@ -91,12 +91,10 @@
                     <field name="employee_id"/>
                     <field name="employee_grant_id"/>
                     <field name="state"/>
-                    <!-- <group expand="0" string="Group By"> -->
-                        <filter string="Employee" name="employee" domain="[]" context="{'group_by': 'employee_id'}"/>
-                        <filter string="Designated" name="employee_grant" domain="[]"
-                                context="{'group_by':'employee_grant_id'}"/>
-                        <filter string="Status" name="type" domain="[]" context="{'group_by':'state'}"/>
-                    <!-- </group> -->
+                    <filter string="Employee" name="employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Designated" name="employee_grant" domain="[]"
+                            context="{'group_by':'employee_grant_id'}"/>
+                    <filter string="Status" name="type" domain="[]" context="{'group_by':'state'}"/>
                 </search>
             </field>
         </record>

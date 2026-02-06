@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Inherit account move to add extra fields.-->
+    <record id="view_material_request_form" model="ir.ui.view">
+        <field name="name">account.move.view.form.inherit.account.budget.limit.alert</field>
+        <field name="model">material.request</field>
+        <field name="inherit_id" ref="material_request.view_material_request_form"/>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <widget name="web_ribbon"
+                        title="Budget Exceeded"
+                        bg_color="text-bg-danger"
+                        invisible="not has_budget_overrun"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_send_to_cost_control"
+                        string="Approve"
+                        type="object"
+                        class="oe_highlight" groups="base_rida.rida_group_line_manager"
+                        invisible="state != 'line_line_approve'"/>
+
+                <button name="action_cost_control_reject"
+                        string="Reject"
+                        type="object"
+                        class="btn-danger" groups="base_rida.budget_costing_manager"
+                        invisible="state != 'cost_control'"/>
+
+                <button name="button_to_transfer"
+                        string="Budget Transfer"
+                        type="object"
+                        class="btn-warning"
+                        groups="base_rida.rida_group_line_manager"
+                        invisible="not has_budget_overrun or not has_reject"/>
+
+                <button name="button_to_amendment"
+                        string="Budget Amendment"
+                        type="object"
+                        class="btn-primary"
+                        groups="base_rida.rida_group_line_manager"
+                        invisible="not has_budget_overrun or not has_reject"/>
+            </xpath>
+
+            <xpath expr="//button[@name='button_to_warehouse_supervisor']" position="attributes">
+                <attribute name="invisible">state != 'cost_control'</attribute>
+                <attribute name="groups">base_rida.budget_costing_manager</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="has_budget_overrun" invisible="1"/>
+                <field name="has_reject" invisible="1"/>
+            </xpath>
+            <field name="unit_price" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Budget Analysis" name="budget_analysis">
+                    <field name="line_ids" readonly="1">
+                        <tree decoration-danger="budget_remaining &lt; 0">
+                            <field name="product_id"/>
+                            <field name="expense_account_id" string="Expense Account"/>
+                            <field name="budget_post_id" string="Budget Position"/>
+
+                            <field name="budget_planned" string="Planned" sum="Total Planned"/>
+                            <field name="budget_spent" string="Actual Spent" sum="Total Spent"/>
+                            <field name="budget_reserved" string="Reserved" sum="Total Reserved"/>
+                            <field name="budget_remaining" string="Available" widget="monetary" decoration-bf="1"/>
+
+                            <field name="company_currency_id" column_invisible="True"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -347,11 +347,9 @@
                         domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
                         domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Purchase Representative" name="representative" domain="[]" context="{'group_by': 'user_id'}"/>
-                        <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
-                        <filter string="Ordering Date" name="ordering_date" domain="[]" context="{'group_by': 'ordering_date'}"/>
-                    </group>
+                    <filter string="Purchase Representative" name="representative" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Ordering Date" name="ordering_date" domain="[]" context="{'group_by': 'ordering_date'}"/>
                 </search>
             </field>
         </record>

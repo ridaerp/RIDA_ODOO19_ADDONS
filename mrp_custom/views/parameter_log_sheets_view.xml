@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View for Flowmeters -->
+    <record id="view_form_flowmeter_custom" model="ir.ui.view">
+        <field name="name">flowmeter.flowmeter.form</field>
+        <field name="model">flowmeter.flowmeter</field>
+        <field name="arch" type="xml">
+            <form string="Flowmeter">
+                <header>
+                    <button name="action_update_last_reading"
+                            string="Run Schedule"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons Section -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_flowmeter_readings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-tint">
+                            <field name="flowmeter_reading_sheet_count"
+                                   widget="statinfo"
+                                   string="Readings"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="serial_number"/>
+                            <field name="area"/>
+                            <field name="last_total_meter_reading" readonly="1"/>
+                            <field name="total_flow_today" readonly="1"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="workcenter_id"/>
+                            <field name="equipment_id"/>
+                            <field name="assigned_user_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Pumps">
+                            <field name="pump_relation_ids">
+                                <list editable="bottom">
+                                    <field name="pump_id"/>
+                                    <field name="is_running" widget="boolean_toggle"/>
+                                    <field name="today_time" readonly="1"/>
+                                    <field name="total_time" readonly="1"/>
+                                    <!-- Start Button -->
+                                    <button name="action_start_pump" string="Start" type="object" class="btn-success"
+                                            show="not is_running"/>
+                                    <!-- Stop Button -->
+                                    <button name="action_stop_pump" string="Stop" type="object" class="btn-danger"
+                                            show="is_running"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Child Flowmeter">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="location"/>
+                                    <field name="active"/>
+                                    <field name="area"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Flowmeters -->
+    <record id="view_flowmeter_tree" model="ir.ui.view">
+        <field name="name">flowmeter.flowmeter.tree</field>
+        <field name="model">flowmeter.flowmeter</field>
+        <field name="arch" type="xml">
+            <list string="Flowmeters">
+                <field name="name"/>
+                <field name="serial_number"/>
+                <field name="location"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!--   FLow meter sub action -->
+    <record id="action_flowmeter_sub_readings" model="ir.actions.act_window">
+        <field name="name">Sub Flowmeter Readings</field>
+        <field name="res_model">flowmeter.reading</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('parent_flowmeter_id', '=', id)]</field>
+    </record>
+
+    <!-- Form View for Readings -->
+    <record id="view_flowmeter_reading_form" model="ir.ui.view">
+        <field name="name">flowmeter.reading.form</field>
+        <field name="model">flowmeter.reading.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Flowmeter Reading">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_done" type="object" string="Mark as Done" invisible="state != 'running'"
+                            class="btn-success"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"/>
+                    <button name="action_create_sub_reading" type="object" string="Create Child Reading"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons Section -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_sub_readings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-tachometer">
+                            <field name="child_ids" widget="statinfo" string="Child Readings"/>
+                        </button>
+                    </div>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <!--                            <field name="name" readonly="1"/>-->
+                            <field name="flowmeter_id"/>
+                        </group>
+                        <group>
+                            <field name="area"/>
+                            <field name="stripping_id"/>
+                            <field name="parent_flowmeter_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Readings">
+                            <field name="reading_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="timestamp"/>
+                                    <field name="total_meter_reading"/>
+                                    <field name="rate"/>
+                                    <field name="hourly_flow" readonly="1"/>
+                                    <field name="daily_flow" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Readings -->
+    <record id="view_flowmeter_reading_tree" model="ir.ui.view">
+        <field name="name">flowmeter.reading.tree</field>
+        <field name="model">flowmeter.reading.sheet</field>
+        <field name="arch" type="xml">
+            <list string="Flowmeter Sheet">
+                <field name="name"/>
+                <field name="flowmeter_id" readonly="1"/>
+                <field name="date"/>
+                <field name="area"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Action maintenance Request -->
+    <record id="action_maintenance_request_custom" model="ir.actions.act_window">
+        <field name="name">Maintenance Requests</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('pump_id', '=', id)]</field>
+    </record>
+
+    <!-- Action  Flowmeter Reading for smart button   -->
+    <record id="action_flow_reading_stripping_smart" model="ir.actions.act_window">
+        <field name="name">Flowmeter Readings</field>
+        <field name="res_model">flowmeter.reading.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('stripping_id', '=', id)]</field>
+    </record>
+
+    <!-- Form View For Pump -->
+    <record id="view_form_pump_management" model="ir.ui.view">
+        <field name="name">pump.management.form</field>
+        <field name="model">pump.management</field>
+        <field name="arch" type="xml">
+            <form string="Pump">
+                <header>
+                    <button name="action_create_maintenance_request"
+                            type="object"
+                            string="Maintenance Request"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action"
+                                name="%(action_maintenance_request_custom)d"
+                                context="{'search_default_pump_id': id}"
+                                class="oe_stat_button"
+                                icon="fa-wrench">
+                            <field name="maintenance_request_ids"
+                                   widget="statinfo"
+                                   string="Maintenance Requests"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="serial_number"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="lot_ids" widget="many2many_tags"/>
+                            <field name="equipment_id"/>
+                            <field name="assigned_user_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Flow Rate Meter">
+                            <field name="flowmeter_relation_ids">
+                                <list editable="bottom">
+                                    <field name="flowmeter_id"/>
+                                    <field name="is_running" widget="boolean_toggle"/>
+                                    <field name="start_time"/>
+                                    <field name="today_time" readonly="1"/>
+                                    <field name="total_time"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Pump -->
+    <record id="view_tree_pump_management" model="ir.ui.view">
+        <field name="name">pump.management.tree</field>
+        <field name="model">pump.management</field>
+        <field name="arch" type="xml">
+            <list string="Pump Management">
+                <field name="name"/>
+                <field name="location"/>
+                <field name="serial_number"/>
+                <field name="lot_ids"/>
+                <field name="equipment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!--   Form View For ADR log sheet-->
+    <record id="view_form_adr_log_sheet" model="ir.ui.view">
+        <field name="name">adr.log.sheet.form</field>
+        <field name="model">adr.log.sheet</field>
+        <field name="arch" type="xml">
+            <form string="ADR Log Sheet">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_done" type="object" string="Mark as Done" invisible="state != 'running'"
+                            class="btn-success"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <!--                            <field name="name" readonly="1"/>-->
+                            <field name="date" readonly="state not in 'running'"/>
+                        </group>
+                        <group>
+                            <field name="production_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Readings">
+                            <field name="line_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="time"/>
+                                    <field name="barren_cn"/>
+                                    <field name="barren_ph"/>
+                                    <field name="barren_oxygen"/>
+                                    <field name="preg_cn"/>
+                                    <field name="preg_ph"/>
+                                    <field name="preg_oxygen"/>
+                                    <field name="pond_barren"/>
+                                    <field name="pond_preg"/>
+                                    <field name="remarks"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Averages">
+                            <div>
+                                <button name="action_compute_averages" string="Compute Averages" type="object"
+                                        class="btn-primary"/>
+                            </div>
+
+                            <group>
+                                <group string="Barren">
+                                    <field name="avg_barren_cn" readonly="1"/>
+                                    <field name="avg_barren_ph" readonly="1"/>
+                                    <field name="avg_barren_oxygen" readonly="1"/>
+
+
+                                </group>
+                                <group string="Pregnant">
+                                    <field name="avg_preg_cn" readonly="1"/>
+                                    <field name="avg_preg_ph" readonly="1"/>
+                                    <field name="avg_preg_oxygen" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for ADR Log Sheet -->
+    <record id="tree_view_ADR_log_sheet" model="ir.ui.view">
+        <field name="name">adr.log.sheet.tree</field>
+        <field name="model">adr.log.sheet</field>
+        <field name="arch" type="xml">
+            <list string="ADR Log Sheet">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="production_id"/>
+                <field name="avg_barren_cn"/>
+                <field name="avg_preg_cn"/>
+                <field name="avg_barren_ph"/>
+
+                <field name="avg_preg_ph"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Action  Chemical   for smart button   -->
+    <record id="action_chem_sample_smart_button" model="ir.actions.act_window">
+        <field name="name">Chemical Assay</field>
+        <field name="res_model">chemical.samples.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('stripping_id', '=', id)]</field>
+    </record>
+
+    <!-- Form View Stripping Log Sheet   -->
+    <record id="view_stripping_log_sheet_form" model="ir.ui.view">
+        <field name="name">stripping.log.sheet.form</field>
+        <field name="model">stripping.log.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Stripping Log Sheet">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_done" type="object" string="Mark as Done" invisible="state != 'running'" class="btn-success"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"/>
+                    <button string="Chem-Assay" name="create_checmical_lab_assy" type="object" class="oe_highlight" groups="mrp.group_mrp_user"/>
+                    <button string="Flowmeter Reading" name="create_flowmeter_reading" type="object" class="oe_highlight" groups="mrp.group_mrp_user"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action"
+                                name="%(mrp_custom.action_chem_sample_smart_button)d"
+                                class="oe_stat_button"
+                                icon="fa-flask">
+                            <field name="chemical_sample_request_count" widget="statinfo" string="Chemical Samples"/>
+                        </button>
+                        <button type="action" name="%(action_flow_reading_stripping_smart)d"
+                                context="{'search_default_stripping_id': id}" class="oe_stat_button"
+                                icon="fa-tachometer">
+                            <field name="flowmeter_count" widget="statinfo" string="Flowmeter"/>
+                        </button>
+                    </div>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="total_metal_recovery" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="stripping_unit" readonly="1"/>
+                            <field name="production_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Stripping Readings">
+                            <field name="stripping_line_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="time"/>
+                                    <field name="sample_number"/>
+                                    <field name="flow_rate"/>
+                                    <field name="assay_barren"/>
+                                    <field name="assay_pregnant"/>
+                                    <field name="temperature"/>
+                                    <field name="volt"/>
+                                    <field name="ampere"/>
+                                    <field name="metal_recovery"/>
+                                    <field name="recovery_percentage"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Averages">
+                            <div>
+                                <button name="action_compute_averages" type="object" string="Compute Averages"
+                                        class="btn-primary"/>
+                            </div>
+                            <group string="Parameter">
+                                <group>
+                                    <field name="avg_temperature" readonly="1"/>
+                                    <field name="avg_volt" readonly="1"/>
+                                    <field name="avg_ampere" readonly="1"/>
+                                </group>
+                                <group>
+
+                                    <field name="recovery_percentage"/>
+                                </group>
+
+
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tree View for stripping Log Sheet -->
+    <record id="view_tree_ADR_log_sheet" model="ir.ui.view">
+        <field name="name">stripping.log.sheet.tree</field>
+        <field name="model">stripping.log.sheet</field>
+        <field name="arch" type="xml">
+            <list string="ADR Log Sheet">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="production_id"/>
+                <field name="stripping_unit"/>
+                <field name="total_metal_recovery"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Form view crusher log sheet -->
+    <record id="view_crusher_log_sheet_form" model="ir.ui.view">
+        <field name="name">crusher.log.sheet.form</field>
+        <field name="model">crusher.log.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Crusher Log Sheet">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_done" type="object" string="Mark as Done" invisible="state != 'running'"
+                            class="btn-success"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"/>
+                    <button name="action_create_issuance_request" type="object" string="Issuance Request"
+                            class="btn btn-primary"
+                            invisible="issuance_request_id  != False"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action" name="%(material_request.issuance_request_form_approve_action)d"
+                                class="oe_stat_button" icon="fa-truck">
+                            <field name="issuance_request_id" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <!--                            <field name="name" readonly="1"/>-->
+                            <field name="date" readonly="state not in 'running'"/>
+                            <field name="form_type" readonly="state not in 'running'"/>
+                        </group>
+                        <group>
+                            <field name="avg_seiving" readonly="state not in 'running'"/>
+                            <field name="cement_load" invisible="form_type in 'crusher'"
+                                   readonly="state not in 'running'"/>
+                            <field name="production_id" readonly="1"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Crusher Readings" invisible="form_type in 'stacker'">
+                            <field name="line_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="time" readonly="1"/>
+                                    <field name="ph" width="100"/>
+                                    <field name="moisture" string="Crusher Moisture" width="100"/>
+                                    <field name="remarks" width="200"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Stacker Readings" invisible="form_type in 'crusher'">
+                            <field name="line_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="time" readonly="1"/>
+                                    <field name="ph" width="100"/>
+                                    <field name="pile_moisture" width="100"/>
+                                    <field name="agg_moisture" width="100"/>
+                                    <field name="cement_rate" width="100"/>
+                                    <field name="remarks" width="200"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Crusher Parameter Averages" invisible="form_type in 'stacker'">
+                            <div>
+                                <button name="action_compute_averages" type="object" string="Compute Averages"
+                                        class="btn-primary"/>
+                            </div>
+                            <group string="Parameter">
+                                <field name="avg_ph" readonly="1"/>
+                                <field name="avg_moisture" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Stacker Parameter Averages" invisible="form_type in 'crusher'">
+                            <div>
+                                <button name="action_compute_averages" type="object" string="Compute Averages"
+                                        class="btn-primary"/>
+                            </div>
+                            <group string="Parameter">
+                                <field name="avg_ph" readonly="1"/>
+                                <field name="avg_under_crusher_moisture" readonly="1"/>
+                                <field name="avg_agg_moisture" readonly="1"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!--    Tree crusher log sheet-->
+    <record id="view_crusher_log_sheet_tree" model="ir.ui.view">
+        <field name="name">crusher.log.sheet.tree</field>
+        <field name="model">crusher.log.sheet</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="avg_ph"/>
+                <field name="avg_moisture"/>
+                <field name="avg_seiving"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Belt Scale Form View -->
+    <record id="view_belt_scale_reading_form" model="ir.ui.view">
+        <field name="name">belt.scale.reading.form</field>
+        <field name="model">belt.scale.log</field>
+        <field name="arch" type="xml">
+            <form string="Belt Scale reading Sheet">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_done" type="object" string="Mark as Done" invisible="state != 'running'"
+                            class="btn-success"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="form_type" invisible="1"/>
+                            <field name="production_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Readings">
+                            <field name="reading_ids" readonly="state not in 'running'">
+                                <list editable="bottom">
+                                    <field name="timestamp"/>
+                                    <field name="total_ton_reading"/>
+                                    <field name="rate"/>
+                                    <field name="hourly_ton"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Belt Scale Tree View -->
+    <record id="view_belt_scale_log_tree" model="ir.ui.view">
+        <field name="name">belt.scale.reading.tree</field>
+        <field name="model">belt.scale.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date" readonly="1"/>
+                <field name="production_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Action  Chemical   for smart button   -->
+    <record id="action_chem_sample_pregnant_result_button" model="ir.actions.act_window">
+        <field name="name">Chemical Assay Pregnant Result</field>
+        <field name="res_model">chemical.samples.request</field>
+        <field name="view_mode">list,form</field>
+         <field name="domain">[('pregnant_result', '=', id)]</field>
+    </record>
+
+    <!-- Form View pregnant sample result    -->
+    <record id="view_pregnant_sample_result_form" model="ir.ui.view">
+        <field name="name">pregnant.sample.result.form</field>
+        <field name="model">pregnant.sample.result</field>
+        <field name="arch" type="xml">
+            <form string="Pregnant sample result">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button string="Chem-Assay" name="create_checmical_lab_assy" type="object" class="oe_highlight"
+                            groups="mrp.group_mrp_user"/>
+                </header>
+                <sheet>
+                    <h1 class="d-flex">
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action"
+                                name="%(mrp_custom.action_chem_sample_pregnant_result_button)d"
+                                class="oe_stat_button"
+                                icon="fa-flask">
+                            <field name="chemical_sample_result_count" widget="statinfo" string="Chemical Samples"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="pregnant_sample" readonly="1" invisible="type in 'bs'"/>
+                            <field name="barren_sex" readonly="1" invisible="type in 'ps'"/>
+                            <field name="type" readonly="state in 'done'"/>
+                            <field name="production_id" widget='many2many_tags' />
+
+                        </group>
+
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <!--    Pregnant Sample View -->
+    <record id="view_pregnant_sample_tree" model="ir.ui.view">
+        <field name="name">pregnant.sample.tree</field>
+        <field name="model">pregnant.sample.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="pregnant_sample"/>
+                <field name="barren_sex"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Action Pregnant Sample-->
+    <record id="action_pregnant_sample" model="ir.actions.act_window">
+        <field name="name">Pregnant Sample Results</field>
+        <field name="res_model">pregnant.sample.result</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- Action  Belt  Reading -->
+    <record id="action_belt_scale" model="ir.actions.act_window">
+        <field name="name">Belt Scale Readings</field>
+        <field name="res_model">belt.scale.log</field>
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+    <!-- Action  Pump  -->
+    <record id="action_pump_management" model="ir.actions.act_window">
+        <field name="name">Pumps</field>
+        <field name="res_model">pump.management</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Action  Flowmeter -->
+    <record id="action_flowmeter" model="ir.actions.act_window">
+        <field name="name">Flowmeters</field>
+        <field name="res_model">flowmeter.flowmeter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Action  Flowmeter Reading -->
+    <record id="action_flow_rate_reading" model="ir.actions.act_window">
+        <field name="name">Hourly Flowmeter Readings</field>
+        <field name="res_model">flowmeter.reading.sheet</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Action for ADR log sheet  -->
+    <record id="action_adr_log_sheet" model="ir.actions.act_window">
+        <field name="name">ADR Log Sheets</field>
+        <field name="res_model">adr.log.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your daily ADR log sheet here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action  Stripping  -->
+    <record id="action_stripping_management" model="ir.actions.act_window">
+        <field name="name">Stripping Log Sheets</field>
+        <field name="res_model">stripping.log.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your daily Stripping log sheet here.
+            </p>
+        </field>
+    </record>
+
+    <!--    Action crusher log sheet -->
+    <record id="action_crusher_log_sheet" model="ir.actions.act_window">
+        <field name="name">Crusher Log Sheets</field>
+        <field name="res_model">crusher.log.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create Your daily Crusher Log Sheets here.
+            </p>
+        </field>
+    </record>
+
+
+    <!--   Operation Chemistry -->
+
+    <!--    root menu -->
+    <menuitem id="menu_operation_chemistry_root" name="OP Chemical"
+              web_icon="mrp_custom,static/description/icon.png" sequence="50" groups="mrp.group_mrp_user"
+              action="action_crusher_log_sheet"/>
+
+    <!--    main menu -->
+    <menuitem id="menu_crusher_log_sheet_chemistry" name="Crusher Log Sheet" parent="menu_operation_chemistry_root"
+              groups="mrp_custom.group_crusher_user,mrp.group_mrp_manager" sequence="1"/>
+    <menuitem id="menu_pump_flowmeter_chemistry" name="Pump and Flow Control " parent="menu_operation_chemistry_root"
+              groups="mrp_custom.group_stripping_user,mrp_custom.group_adr_user,mrp.group_mrp_manager" sequence="1"/>
+    <menuitem id="menu_log_sheets_chemistry" name="ADR Log Sheet " parent="menu_operation_chemistry_root"
+              groups="mrp_custom.group_adr_user,mrp.group_mrp_manager" sequence="2"/>
+    <menuitem id="menu_stripping_log_sheet_chemistry" name="Stripping Log Sheet"
+              groups="mrp_custom.group_stripping_user,mrp.group_mrp_manager" parent="menu_operation_chemistry_root"
+              sequence="3"/>
+    <!--   Pump -->
+    <menuitem id="menu_custom_pumps_chemistry" name="Pumps" parent="menu_pump_flowmeter_chemistry"
+              action="action_pump_management" sequence="1"/>
+    <!-- Flow Rate Meter -->
+    <menuitem id="menu_flowmeters_chemistry" name="Flow Rate Meter" parent="menu_pump_flowmeter_chemistry" sequence="2"
+              action="action_flowmeter"/>
+    <menuitem id="menu_flow_reading_root_chemistry" name="ADR Flow Reading" parent="menu_pump_flowmeter_chemistry"
+              sequence="30"/>
+    <!-- Flow Reading-->
+    <menuitem id="menu_flow_rate_readings_chemistry" name="Flow Rate Readings" parent="menu_flow_reading_root_chemistry"
+              sequence="40"
+              action="action_flow_rate_reading"/>
+    <menuitem id="menu_cic_log_sheet_root_chemistry" name="ADR Log Sheet" parent="menu_log_sheets_chemistry"
+              sequence="50"/>
+    <!-- menu cic log sheet -->
+    <menuitem id="menu_cic_log_sheet_readings_chemistry" name="Cic Log Sheet Readings"
+              parent="menu_cic_log_sheet_root_chemistry" sequence="10"
+              action="action_adr_log_sheet"/>
+    <!-- menu crusher log sheet  -->
+    <menuitem id="menu_crusher_log_sheet_readings_chemistry" name="Crusher Log Sheet Readings"
+              parent="menu_crusher_log_sheet_chemistry" sequence="10"
+              action="action_crusher_log_sheet"/>
+    <!-- menu crusher log sheet  -->
+    <menuitem id="menu_striping_log_sheet_readings_chemistry" name="Stripping Log Sheet Readings"
+              parent="menu_stripping_log_sheet_chemistry" sequence="10"
+              action="action_stripping_management"/>
+
+    <!-- Belt Scale Menu -->
+
+    <menuitem id="menu_belt_scale_log_reading" name="Belt Scale Reading"
+              parent="menu_crusher_log_sheet_chemistry" action="action_belt_scale"/>
+
+    <!--    Manufacture Module -->
+    <!--    main menu -->
+    <menuitem id="menu_log_sheets_root" name="Log Sheets " parent="mrp.menu_mrp_root" sequence="6"
+              groups="mrp.group_mrp_user"/>
+    <menuitem id="menu_ps_bs_sample_root" name="PS AND BS Sample" parent="mrp.menu_mrp_root" sequence="7"
+              groups="mrp.group_mrp_user"/>
+    <!--   Pump -->
+    <menuitem id="menu_custom_pumps" name="Pumps" parent="menu_log_sheets_root" action="action_pump_management"
+              sequence="10"/>
+    <menuitem id="menu_ps_bs_sample" name="PS AND BS Sample" parent="menu_ps_bs_sample_root" action="action_pregnant_sample"
+              sequence="10"/>
+    <!-- Flow Rate Meter -->
+    <menuitem id="menu_flowmeters" name="Flow Rate Meter" parent="menu_log_sheets_root"
+              sequence="20" action="action_flowmeter"/>
+    <menuitem id="menu_flow_reading_root" name="ADR Flow Reading" parent="menu_log_sheets_root"
+              sequence="30"/>
+    <!-- Flow Reading-->
+    <menuitem id="menu_flow_rate_readings" name="Flow Rate Readings" parent="menu_flow_reading_root" sequence="40"
+              action="action_flow_rate_reading"/>
+    <menuitem id="menu_cic_log_sheet_root" name="ADR Log Sheet" parent="menu_log_sheets_root"
+              sequence="50"/>
+    <!-- menu cic log sheet -->
+    <menuitem id="menu_cic_log_sheet_readings" name="Cic Log Sheet Readings" parent="menu_cic_log_sheet_root"
+              sequence="60"
+              action="action_adr_log_sheet"/>
+    <menuitem id="menu_stripping_log_sheet_readings" name="Stripping Log Sheet Readings"
+              parent="menu_cic_log_sheet_root"
+              sequence="70"
+              action="action_stripping_management"/>
+
+    <menuitem id="menu_crusher_log_sheet_root" name="Crusher Log Sheet" parent="menu_log_sheets_root" sequence="80"/>
+    <!-- menu crusher log sheet  -->
+    <menuitem id="menu_crusher_log_sheet_readings" name="Crusher Log Sheet Readings"
+              parent="menu_crusher_log_sheet_root" sequence="90"
+              action="action_crusher_log_sheet"/>
+    <menuitem id="menu_heap_sample_root" name="Heap " parent="menu_log_sheets_root" groups="mrp_custom.group_adr_user"
+              sequence="100"/>
+
+    <!-- menu heap Samples  -->
+    <menuitem id="menu_manhole_sample" name="Manhole Samples" parent="menu_heap_sample_root" sequence="100"
+              action="action_manhole_sample"/>
+    <menuitem id="menu_heap_samples_root" name="Heap " parent="menu_operation_chemistry_root"
+              groups="mrp_custom.group_adr_user,mrp.group_mrp_manager"/>
+    <menuitem id="menu_manhole_samples" name="Manhole Sample" parent="menu_heap_samples_root"
+              groups="mrp_custom.group_adr_user" action="action_manhole_sample"/>
+
+    <menuitem id="menu_pond_management" name="Cell" parent="menu_log_sheets_root" groups="mrp_custom.group_adr_user"
+              action="action_pond_management" sequence="30"/>
+
+    <menuitem id="menu_pond_op_management" name="Cell" parent="menu_heap_samples_root"
+              groups="mrp_custom.group_adr_user,mrp.group_mrp_manager" action="action_pond_management" sequence="30"/>
+    <menuitem id="menu_pregnant_sample" name="Pregnant Sample Result" parent="menu_heap_samples_root"
+              groups="mrp_custom.group_adr_user"
+              action="action_pregnant_sample" sequence="30"/>
+
+
+</odoo>

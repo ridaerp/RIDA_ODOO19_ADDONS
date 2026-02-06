@@ -41,12 +41,12 @@
 
     <template id="report_buttons">
         <div class="button_row">
-            <button class="o_stock_card_reports_print btn btn-sm oe_button"><span
+            <!-- <button class="o_stock_card_reports_print btn btn-sm oe_button"><span
                     class="fa fa-print"
                 />Print</button>
             <button class="o_stock_card_reports_export btn btn-sm oe_button"><span
                     class="fa fa-download"
-                />Export</button>
+                />Export</button> -->
         </div>
     </template>
 

@@ -301,8 +301,7 @@ class KpiPerson(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('kpi.person.code') or ' '
-            res = super(KpiPerson, self).create(val)
-            return res
+        return super(KpiPerson, self).create(vals)
 
     def unlink(self):
         for rec in self:

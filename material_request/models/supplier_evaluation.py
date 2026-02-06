@@ -235,9 +235,9 @@ class SupplierPerformanceEvaluation(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('supplier.evaluation.code') or ' '
-        res = super(SupplierPerformanceEvaluation, self).create(vals)
-        return res
+        for val in vals:
+            val['name'] = self.env['ir.sequence'].next_by_code('supplier.evaluation.code') or ' '
+        return super(SupplierPerformanceEvaluation, self).create(vals)
 
     def unlink(self):
         for rec in self:

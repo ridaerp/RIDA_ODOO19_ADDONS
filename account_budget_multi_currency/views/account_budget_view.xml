@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="crossovered_budget_view_form_inherit_multi_currency" model="ir.ui.view">
+            <field name="name">crossovered.budget.form.inherit.multi.currency</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form" />
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//field[@name='company_id']" position="after"> -->
+                <xpath expr="//field[@name='user_id']" position="after">
+
+                    <field name="custom_budget_currency_option" widget="radio" readonly="state not in 'draft'"/>
+                    <!-- <field name="custom_currency_id" attrs="{'invisible': [('custom_budget_currency_option', '!=', 'other_currency')]}" groups="base.group_multi_currency"/> -->
+                    <field name="custom_currency_id" groups="base.group_multi_currency" readonly="state not in 'draft'"/>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='currency_id']" position="after">
+                    <field name="custom_currency_id" invisible="1" groups="base.group_multi_currency"/>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='planned_amount']" position="after">
+                    <field name="custom_planned_amount" attrs="{'column_invisible': [('parent.custom_budget_currency_option', '!=', 'other_currency')]}"/>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='practical_amount']" position="after">
+                    <field name="custom_practical_amount" attrs="{'column_invisible': [('parent.custom_budget_currency_option', '!=', 'other_currency')]}"/>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='theoritical_amount']" position="after">
+                    <field name="custom_theoritical_amount" attrs="{'column_invisible': [('parent.custom_budget_currency_option', '!=', 'other_currency')]}"/>
+                </xpath>
+
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='planned_amount']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.custom_budget_currency_option', '=', 'other_currency')]}</attribute>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='practical_amount']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.custom_budget_currency_option', '=', 'other_currency')]}</attribute>
+                </xpath>
+                <xpath expr="//page/field[@name='crossovered_budget_line']/tree/field[@name='theoritical_amount']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.custom_budget_currency_option', '=', 'other_currency')]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</odoo>

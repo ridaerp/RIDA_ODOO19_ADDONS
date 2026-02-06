@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_checkin_camp_request_tree">
+            <field name="name">checkin_camp.request.tree</field>
+            <field name="model">checkin_camp.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name_seq"/>
+                    <field name="date_request"/>
+                    <field name="requested_by"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_checkin_camp_request_form" model="ir.ui.view">
+            <field name="name">checkin_camp.request.form</field>
+            <field name="model">checkin_camp.request</field>
+            <field name="arch" type="xml">
+                <form string="Check-In Camp Request">
+                    <header>
+                        <button name="action_submit" string="Submit" type="object"
+                                class="oe_highlight" groups="base.group_user"
+                                invisible="state != 'draft'"/>
+
+                        <button name="action_site_manager_approve" string="Approve" type="object"
+                                class="oe_highlight"
+                                groups="base_rida.rida_group_COO,base_rida.rida_group_site_manager"
+                                invisible="state != 'c_level_approval'"/>
+
+                        <button name="action_hr_approve" string="Approve" type="object"
+                                class="oe_highlight"
+                                groups="base_rida.rida_hr_manager_notify"
+                                invisible="state != 'hr_approve'"/>
+
+                        <button name="action_close" string="Close" type="object"
+                                class="oe_highlight" invisible="state != 'adm_man_approve'"
+                                groups="maintenance_fleet_inherit.group_admin_user"/>
+
+                        <button name="action_cancel" string="Cancel" type="object"
+                                invisible="state not in ['close','adm_man_approve']"
+                                confirm="You are about to cancel this request. Confirm?"/>
+                        <button name="%(material_request.purchase_order_reject_action)d"
+                                type="action"
+                                string="Reject"
+                                invisible="state not in ['hr_approve', 'c_level_approval', 'adm_man_approve']"
+                                groups="base.group_user"/>
+
+                        <button name="action_draft" string="Set To Draft" type="object"
+                                class="oe_highlight" groups="maintenance_fleet_inherit.group_admin_user"
+                                invisible="state != 'reject'"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,c_level_approval,hr_approve,adm_man_approve,close"/>
+                    </header>
+                    <sheet>
+                        <h1><field name="name_seq" readonly="1"/></h1>
+                        <group>
+                            <group>
+                                <field name="date_request" readonly="1"/>
+                                <field name="requested_by" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="department_id" readonly="state != 'draft'"/>
+                                <field name="job_id" readonly="state != 'draft'"/>
+                                <field name="company_id" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Check-in Camp Lines">
+                                <field name="checkin_camp_line_ids">
+                                    <list editable="bottom">
+                                        <field name="visit_name" required="1"/>
+                                        <field name="department_id" required="1"/>
+                                        <field name="degree"/>
+                                        <field name="block_id" domain="[('zone_id', '=', 19)]" readonly="parent.state not in ('adm_man_approve')"/>
+                                        <field name="room_id" domain="[('block_id', '=', block_id)]" readonly="parent.state not in ('adm_man_approve')"/>
+                                        <field name="date_arrival" required="1"/>
+                                        <field name="duration" required="1"/>
+                                        <field name="remark"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View for checkin_camp Request -->
+        <record model="ir.ui.view" id="view_checkin_camp_request_search">
+            <field name="name">checkin_camp.request.search</field>
+            <field name="model">checkin_camp.request</field>
+            <field name="arch" type="xml">
+                <search string="Search checkin_camp Requests">
+                    <!-- Search fields -->
+                    <field name="name_seq" string="Reference"/>
+                    <field name="requested_by" string="Requested By"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="department_id" string="Department"/>
+                    <field name="company_id" string="Company"/>
+
+                    <!-- Group By options -->
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
+                        <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                        <filter string="Requested By" name="group_by_requested_by" context="{'group_by': 'requested_by'}"/>
+                        <filter string="Date Request" name="group_by_date_request" context="{'group_by': 'date_request:month'}"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="checkin_camp_request_action">
+          <field name="name">Check-In Camp Request</field>
+          <field name="type">ir.actions.act_window</field>
+          <field name="res_model">checkin_camp.request</field>
+          <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem name="Check-In Camp Request" id="checkin_camp_request_menu"
+        parent="rida_forms.form_document_admin" action="checkin_camp_request_action"
+            sequence="8"/>
+    </data>
+</odoo>

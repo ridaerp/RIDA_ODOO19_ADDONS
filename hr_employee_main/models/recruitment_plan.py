@@ -58,8 +58,8 @@ class RecruitmentPlan(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('reur.plan.code') or ' '
-            res = super(RecruitmentPlan, self).create(val)
-            return res
+        
+        return super(RecruitmentPlan, self).create(vals)
 
     def unlink(self):
         for rec in self:

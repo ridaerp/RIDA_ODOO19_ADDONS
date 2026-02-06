@@ -186,10 +186,11 @@ class Contract(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('Contract.sequence') or _('/')
-        result = super(Contract, self).create(vals)
-        return result
+        for val in vals:
+            if val.get('name', _('New')) == _('New'):
+                val['name'] = self.env['ir.sequence'].next_by_code('Contract.sequence') or _('/')
+
+        return super(Contract, self).create(vals)
 
     def button_change_contract(self):
         view_id = self.env.ref('purchase_custom.change_contract_view_form')

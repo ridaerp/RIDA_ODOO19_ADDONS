@@ -3,7 +3,7 @@
 
 
 
-<record model="ir.ui.view" id="view_meeting_request_tree">
+        <record model="ir.ui.view" id="view_meeting_request_tree">
             <field name="name">meeting.request.tree</field>
             <field name="model">meeting.request</field>
             <field name="arch" type="xml">
@@ -25,7 +25,7 @@
 
 
 
-<record id="meeting_request_view_calendar" model="ir.ui.view">
+    <record id="meeting_request_view_calendar" model="ir.ui.view">
         <field name="name">meeting.request.calendar</field>
         <field name="model">meeting.request</field>
         <field name="arch" type="xml">
@@ -41,7 +41,7 @@
 
 
 
-<record id="view_meeting_request_form" model="ir.ui.view">
+        <record id="view_meeting_request_form" model="ir.ui.view">
             <field name="name">Meeting Room Request</field>
             <field name="model">meeting.request</field>
             <field name="arch" type="xml">
@@ -57,23 +57,11 @@
                         <button name="button_cancel" states="draft" string="Cancel" type="object" groups="base.group_user" class="" />
 
 
-
-
-
-<!--                    Line Manager-->
+                    <!--                    Line Manager-->
                         <button name="button_to_line_manager" string="Approve" type="object" states="line_approve" groups="base_rida.rida_group_line_manager" class="oe_highlight" />
-
-
-                   
-
 
                         <button name="button_to_Adm_man" string="Approve" type="object" states="Adm_man_approve"  class="oe_highlight" />
 
-
-
-
-
-                        <!-- <button name="%(rida_forms.order_reject_action)d" string="Reject" states="line_approve" type="object" groups="base_rida.rida_group_line_manager" type="action" /> -->
 
                         <button name="button_lm_reject"  type="object" states="line_approve" groups="base_rida.rida_group_line_manager" string="Reject"/>
 
@@ -81,17 +69,9 @@
                         <button name="button_Adm_man_reject"  type="object" states="Adm_man_approve"  string="Reject"/>
 
 
-
-                        <!-- <button name="%(rida_forms.order_reject_action)d" string="Reject" states="Adm_man_approve" groups="rida_forms.group_department_Adm_manager" type="action" /> -->
-
-
                         <button name="button_cancel" state="done"  string="Cancel" type="object"
                                 confirm="You are about to cancel this request and its related records. Please confirm!" attrs="{'invisible': [('state','!=','done')]}"
                                 class=""/>
-
-                        <!-- <button name="button_Adm_man_cancel" state="done" type="object" string="Cancel" groups="rida_forms.group_department_Adm_manager" attrs="{'invisible': [('state','!=','done')]}"/> -->
-
-
 
 
                         <field name="state" widget="statusbar" tatusbar_visible="draft,done" statusbar_colors='{"manager_approved":"blue"}'/>
@@ -114,15 +94,7 @@ Issue/Rev 02/00</p></b>
                         <field name="name_seq" readonly="1" class="oe_inline"/>
                     </h1>
                     
-                    
-
-
-
-<!-- <div class="oe_edit_only"> -->
-                                      
-                        
-
-            <!-- <group colspan="4" col="4"> -->
+                
             <group>            
 
             <group>
@@ -148,13 +120,7 @@ Issue/Rev 02/00</p></b>
                 <field name="others_electronic_device" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                  <field name="note" string="Purpose" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                 
-               <!--  <field name="return_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-
-                <field name="destination_from" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                <field name="destination_to" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-                
-                
-                
+                            
             </group>
 
 
@@ -174,26 +140,8 @@ Issue/Rev 02/00</p></b>
                  <field name="no_of_attendees" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 
 
-
-
-             <!-- <field name="job_id"/> -->
-
-              <!-- <field name="company_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-
-              <!-- <field name="employee_no" attrs="{'readonly': [('state', '!=', 'draft')]}" readonly="1"/> -->
-
-              
-            </group>
-
-
-
-            
-
-
              
-
-
-
+            </group>
 
 
                           
@@ -202,54 +150,9 @@ Issue/Rev 02/00</p></b>
 
 
                      <group >
-
-
-                        <!-- </div> -->
-                            <!-- <field name="reason" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                     </group>
-
-
-
-            
-           
-           <!--  <h3>Amendment</h3> -->
-            <!-- <group colspan="4" col="4"> -->
-            
-            <!--  <separator  colspan="4"/>
-             <separator  colspan="4"/> -->
-
-
-             <!-- <field name="duty_station" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-            
-             <!-- <field name="travel_for_amended_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-             <field name="travel_amended_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
- -->
-
-             
-
-
-
-    
-  
-<!-- </group> -->
-
-
-
-
-         <!--    <group colspan="4" col="4"> -->
          <group>
 
-            <!--  <separator  colspan="4"/>
-             <separator  colspan="4"/> -->
-
-
-             <!-- <field name="duty_station" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-
-             <!-- <field name="request_received_date" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/> -->
-
-             <!-- <field name="itinerary" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/> -->
-
-            <!--  <field name="itinerary_date" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/> -->
              
              <field name="admin_comment" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/>
 
@@ -257,14 +160,8 @@ Issue/Rev 02/00</p></b>
              <field name="admin_date" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/>
 
              <field name="admin_time" attrs="{'readonly': [('state', '!=', 'Adm_man_approve')]}"/>
-             
-
-
-
-
-    
   
-</group>
+        </group>
 
 
 
@@ -301,19 +198,11 @@ Issue/Rev 02/00</p></b>
 
 
 
-<menuitem name="Request Forms" id="rida_forms.menu_root"
+    <menuitem name="Request Forms" id="rida_forms.menu_root"
         web_icon="rida_forms,static/description/icon.png"
             sequence="0"/>
 
-    <!-- menu categories -->
-
  
-    
-
-
-
-
-
 
 
   </data>
