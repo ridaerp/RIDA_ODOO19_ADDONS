@@ -231,7 +231,7 @@ class AnalyticAccount(models.Model):
     _inherit = "account.analytic.account"
 
     type = fields.Selection(string="", selection=[('dept', 'Department'), ('asset_mach', 'Asset / Machine'),('plant', 'Plant'),('process', 'Process'),('project', 'Project'),('supplier', 'Material Minds/supplier'),('other', 'Others'),], required=False, )
-    analytic_type = fields.Selection(string="", selection=[('ser_cost_center', 'Service Cost Centers'), ('prod_cost_center', 'Productive Cost Center'),('admin_cost_center', 'Administrative Cost Center'),('capitalized', 'Capitalized Cost Centers'),('sale_cost_center', 'Sales & marketing Cost Centers'),
+    analytic_type = fields.Selection(string="", selection=[('ser_cost_center', 'Service Cost Centers'), ('prod_cost_center', 'Productive Cost Center'),('admin_cost_center', 'Administrative Cost Center'),('capitalized', 'Capitalized Cost Centers'),
                                                            ('group_business_dev','Group Business Development '),('group_cost_center', 'Group Cost Centers'),('none', 'None'),], required=False, )
 
 

@@ -439,6 +439,17 @@
                 <field name="wo_receive_datetime" readonly="1"
                     help="Time when the maintenance team received the work order"/>
 
+
+                  <field name="assigned_datetime" readonly="1"
+                    help="Date and time when the request was assigned Tehnican."/>
+
+            <field name="assigned_date" readonly="1"
+                                help="Date when the request was assigned Tehnican."/>
+
+            <field name="assigned_time" readonly="1"
+                                help="Time when the request was assigned Tehnican."/>
+
+
                 <field name="reponse_time" readonly="1"
                        help="Time taken (in minutes) from request creation to assignment."/>
 
@@ -456,6 +467,9 @@
                        help="Date and time when the maintenance order was officially closed."/>
                 <field name="m_e_time" readonly="1"
                        help="Closing time only."/>
+
+                        <field name="maintenance_time" readonly="1"
+                       help="Actual elapsed time from Maintenance Start to completion (minutes)."/>
             </group>
 
             <!-- Duration -->
@@ -467,10 +481,11 @@
                        help="Actual maintenance duration entered by technician."/>
                 <field name="duration_minutes" readonly="1"
                        help="Maintenance duration converted to minutes."/>
-              <field name="assigned_datetime" readonly="1"
-                    help="Date and time when the request was assigned Tehnican."/>
+             
+
                 <field name="actual_duration" readonly="1"
                        help="Actual elapsed time from assignment to completion (minutes)."/>
+              
                
 
             </group>
@@ -478,37 +493,95 @@
             <!-- Equipment -->
             <group string="Equipment">
             <field name="waiting_equipment" readonly="1"/>
+              <field name="equipment_leadtime" readonly="1"
+                       help="Waiting time (minutes) between equipment request and receipt."/>
 
+
+               <separator string="Equipment Request"/>
                 <field name="equipment_request_datetime" readonly="1"
                        help="Date and time when equipment was requested."/>
-                <field name="equipment_recevied_time" readonly="1"
+
+
+                <field name="equipment_request_date" readonly="1"
+                       help="Date when equipment was requested."/>
+
+
+                <field name="equipment_request_time" readonly="1"
+                       help="Time when equipment was requested."/>
+
+                <separator string="Equipment Receipt"/>
+
+                <field name="equipment_recevied_date_time" readonly="1"
                        help="Date and time when equipment was received."/>
-                <field name="equipment_leadtime" readonly="1"
-                       help="Waiting time (minutes) between equipment request and receipt."/>
-            </group>
+
+
+                 <field name="equipment_recevied_date" readonly="1"
+                         help="Date  when equipment was received."/>
+
+                 <field name="equipment_recevied_time" readonly="1"
+                             help="Time when equipment was received."/>
+
+
+              
+        </group>
 
             <!-- Material Request -->
             <group string="Material-Service Request (MR/SR)">
                 <field name="waiting_material" readonly="1"/>
 
-                <field name="mr_request_datetime" readonly="1"
-                       help="Date and time when the Material Request (MR/SR) was created."/>
-                <field name="mr_recevied_time" readonly="1"
-                       help="Date and time when the requested materials-Service were received."/>
                 <field name="mr_leadtime" readonly="1"
                        help="Lead time in minutes: duration between MR/ST request and MR receipt."/>
+
+                   <separator string="MR / SR Request"/>     
+                <field name="mr_request_datetime" readonly="1"
+                       help="Date and time when the Material Request (MR/SR) was created."/>
+
+                <field name="mr_request_date" readonly="1"
+                       help="Date and time when the Material Request (MR/SR) was created."/>
+
+                <field name="mr_request_time" readonly="1"
+                       help="Date when the Material Request (MR/SR) was created."/>
+
+                         <separator string="MR / SR Receipt"/>
+
+                <field name="mr_recevied_date_time" readonly="1"
+                       help="time when the requested materials-Service were received."/>
+
+                <field name="mr_recevied_date" readonly="1"
+                       help="Date and time when the requested materials-Service were received."/>  
+                <field name="mr_recevied_time" readonly="1"
+                       help="Date and time when the requested materials-Service were received."/>
+
             </group>
 
             <!-- Issuance -->
             <group string="Issuance Request">
                 <field name="waiting_issuance" readonly="1"/>
 
+                 <field name="issuance_leadtime" readonly="1"
+                       help="Lead time in minutes: duration between Issuance request and receipt of items."/> 
+
+
+                <separator string="Issuance Request"/> 
                 <field name="issuance_request_datetime" readonly="1"
                        help="Date and time when the Issuance request was submitted."/>
-                <field name="issuance_recevied_time" readonly="1"
+                <field name="issuance_request_date" readonly="1"
+               help="Date  when the Issuance request was submitted."/>
+
+                 <field name="issuance_request_time" readonly="1"
+                help="Time when the Issuance request was submitted."/>
+                       
+
+                     <separator string="Issuance Receipt"/>
+
+                <field name="issuance_recevied_datetime" readonly="1"
                        help="Date and time when the issued items were received."/>
-                <field name="issuance_leadtime" readonly="1"
-                       help="Lead time in minutes: duration between Issuance request and receipt of items."/>
+                <field name="issuance_recevied_date" readonly="1"
+                       help="Date  when the issued items were received."/>
+                       <field name="issuance_recevied_time" readonly="1"
+                       help="Time  when the issued items were received."/>
+
+               
             </group>
 
         </group>

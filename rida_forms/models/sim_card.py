@@ -32,15 +32,46 @@ class SimCardAvailable(models.Model):
     ], string='Status', default='inactive', readonly=True, copy=False,tracking=True)
     sim_card_count = fields.Integer(string='SIM Card History', compute='_compute_sim_card_count')
     employee_id = fields.Many2one('hr.employee', string='Employee',readonly=True,compute='employee_sim_card',tracking=True)
+    guest_name = fields.Char('Name',tracking=True)
+    emp_type = fields.Boolean('Non RIDA Staff')
 
+    # def employee_sim_card(self):
+    #     for rec in self:
+    #         assigned_emp_card = self.env['sim.card'].search(
+    #             [('mobile_number', '=',rec.mobile_number),('it_confirmed', '=', True)],limit=1)
+
+    #         if assigned_emp_card.employee_id:
+    #              self.employee_id = assigned_emp_card.employee_id
+
+    #         else :
+    #              self.employee_id = False
+
+
+    @api.depends('mobile_number', 'emp_type')
     def employee_sim_card(self):
         for rec in self:
+            # ✅ ALWAYS initialize computed field
+            rec.employee_id = False
+
             assigned_emp_card = self.env['sim.card'].search(
-                [('mobile_number', '=',rec.mobile_number),('it_confirmed', '=', True)],limit=1)
-            if assigned_emp_card.employee_id:
-                 self.employee_id = assigned_emp_card.employee_id
-            else :
-                 self.employee_id = False
+                [
+                    ('mobile_number', '=', rec.mobile_number),
+                    ('it_confirmed', '=', True)
+                ],
+                limit=1
+            )
+
+            if not assigned_emp_card:
+                continue
+
+            if assigned_emp_card.employee_id and not rec.emp_type:
+                rec.employee_id = assigned_emp_card.employee_id
+
+            if rec.emp_type== True:
+                assigned_emp_card.emp_type=rec.emp_type
+                assigned_emp_card.guest_name=rec.guest_name
+
+
 
     def _compute_sim_card_count(self):
         for rec in self:
@@ -78,6 +109,8 @@ class SimCardAvailable(models.Model):
         # Create the sim.card record directly
         sim_card_vals = {
             'sim_id': self.id,
+            'emp_type': self.emp_type,
+            'guest_name': self.guest_name if self.emp_type else False,
         }
         res = self.env['sim.card'].create(sim_card_vals)
 
@@ -138,6 +171,8 @@ class SimCard(models.Model):
     notes = fields.Text(string='Notes')
     it_confirmed = fields.Boolean(string='IT Confirmed', default=False)  # New field
     sim_card_count = fields.Integer(string='SIM Card Count', compute='_compute_sim_card_count', store=True)
+    guest_name = fields.Char('Name',tracking=True)
+    emp_type = fields.Boolean('Non RIDA Staff')
 
     @api.depends('employee_id')
     def _compute_sim_card_count(self):
@@ -151,7 +186,7 @@ class SimCard(models.Model):
             'name': 'SIM Card History',
             'res_model': 'sim.card',
             'view_mode': 'tree,form',
-            'domain': [('employee_id', '=', self.employee_id.id)],
+            'domain': ['|',('employee_id', '=', self.employee_id.id),('guest_name', '=', self.guest_name)],
             'context': {'default_employee_id': self.employee_id.id},
         }
 
@@ -175,6 +210,7 @@ class SimCard(models.Model):
                 [('employee_id', '=', record.employee_id.id), ('it_confirmed', '=', True),('sim_type_id','=',record.sim_type_id.id)])
             if assigned_emp_card:
                 raise UserError(_("The Employee Already Have SIM Card"))
+
 
         self.write({'it_confirmed': True, 'sim_status': 'active'}) #Set sim status to active
         available_sim_card = self.env['sim.card.available'].search([('mobile_number', '=', self.mobile_number)], limit=1)

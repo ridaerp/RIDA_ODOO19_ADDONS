@@ -79,7 +79,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-
+permission.request
         <record id="area_request" model="ir.sequence">
             <field name="name">Area Request</field>
             <field name="code">area.request</field>
@@ -114,6 +114,15 @@
             <field name="name">Update trasnportation Prices</field>
             <field name="code">update.transportation.prices</field>
             <field name="prefix">UTF</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="permission_request" model="ir.sequence">
+            <field name="name">permission request</field>
+            <field name="code">permission.request</field>
+            <field name="prefix">PR</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>

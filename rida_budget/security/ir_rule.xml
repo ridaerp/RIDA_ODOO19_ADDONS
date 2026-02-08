@@ -20,8 +20,10 @@
             <field name="domain_force">
                 [
                     '&amp;',
-                    ('department_id', 'parent_of', user.employee_id.department_id.id),
-                    ('department_id', '!=', False)
+                    ('department_id', '!=', False),
+                    '|',
+                    ('department_id', 'child_of', user.employee_id.department_id.id),
+                    ('department_id', 'parent_of', user.employee_id.department_id.id)
                 ]
             </field>
             <field name="groups"

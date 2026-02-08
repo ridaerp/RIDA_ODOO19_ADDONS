@@ -25,6 +25,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/securit_rules.xml',
+        'data/cron.xml',
         'views/views.xml',
         'views/vendor.xml',
         'views/location.xml',
@@ -33,6 +35,7 @@
         'views/product_category.xml',
         'views/equipment.xml',
         'views/area_request.xml',
+        'views/permission_request_views.xml',
         'views/update_area_request.xml',
         'views/update_area_price.xml',
         'views/update_grade_prices.xml',

@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,6 +19,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from werkzeug import urls
 from odoo import api, fields, models, _
 
 GOOGLE_AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth'
@@ -54,5 +55,6 @@ class AuthenticationWizard(models.TransientModel):
         provided authorization code."""
         backup_config = self.env['db.backup.configure'].browse(
             self.env.context.get('active_id'))
-        backup_config.active = backup_config.hide_active= True
+        backup_config.hide_active = True
+        backup_config.active = True
         backup_config.set_dropbox_refresh_token(self.dropbox_authorization_code)

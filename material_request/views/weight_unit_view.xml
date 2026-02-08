@@ -933,7 +933,7 @@
 
         <!-- 
         <record id="action_weight_batch_avg_grade" model="ir.actions.act_window">
-            <field name="name">Mental Content Report</field>
+            <field name="name">Metal Content Report</field>
             <field name="res_model">weight.batch.avg.grade</field>
             <field name="view_mode">tree,pivot</field>
         </record> -->
@@ -949,7 +949,7 @@
 
 
 <menuitem id="menu_weight_batch_avg_grade"
-          name="Mental Content Report"
+          name="Metal Content Report"
 parent="studio_customization.scaling_unit_reporti_c8c9ef64-63ba-4c6d-9a6b-06a90fc6c37a"
           action="action_weight_batch_avg_grade" groups="material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
 

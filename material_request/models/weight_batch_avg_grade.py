@@ -81,7 +81,7 @@ class WeightBatchAvgGrade(models.Model):
     #     """)
 
 
-    ##################### PER MONTH
+
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(f"""
@@ -101,6 +101,31 @@ class WeightBatchAvgGrade(models.Model):
                 FROM weight_request wr
                 JOIN stock_lot sl ON sl.id = wr.lot_id
                 WHERE wr.lot_id IS NOT NULL
+                  AND wr.state = 'done'  -- <-- Only records in Purchase Order state
                 GROUP BY wr.lot_id, sl.name, TO_CHAR(wr.date_request, 'YYYY-MM')
             )
         """)
+
+    ##################### PER MONTH
+    # def init(self):
+    #     tools.drop_view_if_exists(self.env.cr, self._table)
+    #     self.env.cr.execute(f"""
+    #         CREATE OR REPLACE VIEW {self._table} AS (
+    #             SELECT
+    #                 MIN(wr.id) AS id,
+    #                 wr.lot_id,
+    #                 TO_CHAR(wr.date_request, 'YYYY-MM') AS request_month,
+    #                 CASE
+    #                     WHEN sl.name ILIKE '%%H%%' THEN 'cic'
+    #                     WHEN sl.name ILIKE '%%D%%' THEN 'cil'
+    #                     ELSE NULL
+    #                 END AS process_type,
+    #                 SUM(wr.quantity) AS total_qty,
+    #                 SUM(wr.qy_average) AS total_metal_content,
+    #                 SUM(wr.qy_average) / NULLIF(SUM(wr.quantity), 0) AS avg_grade
+    #             FROM weight_request wr
+    #             JOIN stock_lot sl ON sl.id = wr.lot_id
+    #             WHERE wr.lot_id IS NOT NULL
+    #             GROUP BY wr.lot_id, sl.name, TO_CHAR(wr.date_request, 'YYYY-MM')
+    #         )
+    #     """)

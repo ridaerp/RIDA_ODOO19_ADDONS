@@ -34,6 +34,21 @@ class AdjustmentStock(models.Model):
 
     note = fields.Text(string='Note')
 
+    inventory_quantity_onhand = fields.Float(
+        string='On Hand Quantity',
+        digits='Product Unit of Measure',
+        compute='_compute_inventory_quantity_onhand',
+        readonly=True,
+        store=False,
+    )
+
+    @api.depends('quantity')
+    def _compute_inventory_quantity_onhand(self):
+        for quant in self:
+            quant.inventory_quantity_onhand = quant.quantity
+
+
+
     # state = fields.Selection([
     #     ('draft', 'Draft'),
     #     ('warehouse_confirmed', 'Warehouse Manager'),

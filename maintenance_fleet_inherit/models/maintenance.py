@@ -365,15 +365,32 @@ class MaintenanceRequest(models.Model):
     maintenance_defect = fields.Many2one("maintenance.defect", string="Defect Type")
     maintenance_note = fields.Text(string="Maintenance feedback")
     inspect_note = fields.Text(string="Inspection feedback")
-    wo_receive_datetime = fields.Datetime('W.O Receive Date / Time',
+    wo_receive_datetime = fields.Datetime('W.O Received Date / Time',
                                           tracking=True, readonly=True)
 
-    assigned_datetime = fields.Datetime('Date of Assigned ',
+    assigned_datetime = fields.Datetime('DateTime of Assigned ',
                                         tracking=True, readonly=True)
+
+
+    assigned_date = fields.Char(
+        string='Date of Assigned',
+        compute='_compute_assigned_date',
+        store=True
+    )
+
+    assigned_time = fields.Char(
+        string='Time of Assigned ',
+        compute='_compute_assigned_time',
+        store=True
+    )
+
+
+
+
 
     insepect_datetime = fields.Datetime('Started  Inspect date / time',
                                         tracking=True)
-    m_s_datetime = fields.Datetime('Started date / time',
+    m_s_datetime = fields.Datetime('Maintenance Started date / time',
                                    tracking=True)
     m_e_datetime = fields.Datetime('Closing date / time',
                                    tracking=True)
@@ -399,12 +416,18 @@ class MaintenanceRequest(models.Model):
         store=True
     )
 
+
+
     actual_duration = fields.Char(
         string='Actual Duration',
         compute='get_actual_duration',
         store=True
     )
-
+    maintenance_time = fields.Char(
+        string='Maintenance Time',
+        compute='ge_maintenance_time',
+        store=True
+    )
     duration_minutes = fields.Float(
         string='Duration (Minutes)',
         compute='_compute_duration_minutes',
@@ -467,45 +490,117 @@ class MaintenanceRequest(models.Model):
     equipment_leadtime = fields.Float("Equipment Waiting Time", compute=
     "get_equipment_leadtime")
 
-    equipment_recevied_time = fields.Datetime('Equipment Receive DateTime',
+    equipment_recevied_date_time = fields.Datetime('Equipment Received Date Time',
                                         )
+
+
+    equipment_recevied_date = fields.Char(
+        string='Equipment Received Date',
+        compute='_compute_equipment_rec_date',
+        store=True
+    )
+
+    equipment_recevied_time = fields.Char(
+        string='Equipment Received Time',
+        compute='_compute_equipment_rec_time',
+        store=True
+    )
+
     equipment_request_datetime = fields.Datetime('Equipment Request Date Time',
                                        )
+
+    equipment_request_date = fields.Char(
+        string='Equipment Request Date',
+        compute='_compute_equipment_date',
+        store=True
+    )
+
+    equipment_request_time = fields.Char(
+        string='Equipment Request Time',
+        compute='_compute_equipment_time',
+        store=True
+    )
+
+
 
     ################material AS MR
     mr_request_datetime = fields.Datetime('MR Request Date Time',
                                        )
-    mr_recevied_time = fields.Datetime('MR/SR Receive DateTime',
+
+
+    mr_request_date = fields.Char(
+        string='MR Request Date ',
+        compute='_compute_mr_date',
+        store=True
+    )
+
+    mr_request_time = fields.Char(
+        string='MR Request  Time',
+        compute='_compute_mr_time',
+        store=True
+    )
+
+
+    mr_recevied_date_time = fields.Datetime('MR/SR Received Date Time',
                                      )
-    material_recevied_time = fields.Datetime('MR/SR Receive DateTime',
-                                       )
+
+
+    mr_recevied_date = fields.Char(
+        string='MR/SR  Received Date',
+        compute='_compute_mr_rec_date',
+        store=True
+    )
+
+    mr_recevied_time = fields.Char(
+        string='MR/SR Received  Time',
+        compute='_compute_mr_rec_time',
+        store=True
+    )
+
+
     
     mr_leadtime = fields.Float("MR/SR Waiting Time", compute=
     "get_mr_leadtime")
 
 
-    sr_request_datetime = fields.Datetime('SR Request Date Time',
-                                       )
-    sr_recevied_time = fields.Datetime('SR Receive DateTime',
-                                       )
-
-    sr_leadtime = fields.Float("SR Waiting Time", compute=
-    "get_sr_leadtime")
-
-
     issuance_request_datetime = fields.Datetime('Iss Request DateTime',
                                       )
-    issuance_recevied_time = fields.Datetime('Iss Receive DateTime',
+
+    issuance_request_date = fields.Char(
+        string='Iss Request Date',
+        compute='_compute_iss_date',
+        store=True
+    )
+
+    issuance_request_time = fields.Char(
+        string='Iss Request Time',
+        compute='_compute_iss_time',
+        store=True
+    )
+
+    issuance_recevied_datetime = fields.Datetime('Iss Received Date Time',
                                        )
+
+
+    issuance_recevied_date = fields.Char(
+        string='Iss  Received Date',
+        compute='_compute_iss_rec_date',
+        store=True
+    )
+
+    issuance_recevied_time = fields.Char(
+        string='Iss Received  Time',
+        compute='_compute_iss_rec_time',
+        store=True
+    )
+
+
 
     issuance_leadtime = fields.Float("Iss Request Waiting Time", compute=
     "get_issuance_leadtime")
 
 
-
-
     waiting_material = fields.Boolean(default=False,string=" MR/SR Request Pending")
-    # waiting_service = fields.Boolean(default=False,string="Waiting SR Request")
     waiting_issuance = fields.Boolean(default=False,string="Equipment Request Pending")
     waiting_equipment = fields.Boolean(default=False,string="Equipment Request Waiting")
 
@@ -514,8 +609,19 @@ class MaintenanceRequest(models.Model):
         string="Previous Stage"
     )
 
+    ####################################Request Date ##################################
+    @api.depends('request_date_time')
+    def _compute_request_time(self):
+        for record in self:
+            if record.request_date_time:
+                local_dt = fields.Datetime.context_timestamp(record,record.request_date_time
+                 )
+                record.request_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.request_time = False
 
 
+    #################################### Complete Date Time ##################################
 
 
     @api.depends('complete_datetime')
@@ -530,35 +636,7 @@ class MaintenanceRequest(models.Model):
                 record.complete_date = user_dt.date().strftime('%Y-%m-%d')
             else:
                 record.complete_date = False
- 
 
-
-    @api.depends('technican_users')
-    def _compute_techincan_names(self):
-        for record in self:
-            record.technican_users_name = ', '.join(
-                record.technican_users.mapped('name')
-            ) if record.technican_users else False
-
-
-    # @api.depends('request_date_time')
-    # def _compute_request_time(self):
-    #     for record in self:
-    #         if record.request_date_time:
-    #             record.request_time = record.request_date_time.strftime('%H:%M:%S')
-    #         else:
-    #             record.request_time = False
-
-
-    @api.depends('request_date_time')
-    def _compute_request_time(self):
-        for record in self:
-            if record.request_date_time:
-                local_dt = fields.Datetime.context_timestamp(record,record.request_date_time
-                 )
-                record.request_time = local_dt.strftime('%H:%M:%S')
-            else:
-                record.request_time = False
 
 
     @api.depends('complete_datetime')
@@ -571,6 +649,48 @@ class MaintenanceRequest(models.Model):
             else:
                 record.complete_time = False
 
+    #################################### Assigned Date ##################################
+
+    @api.depends('assigned_datetime')
+    def _compute_assigned_date(self):
+        for record in self:
+            if record.assigned_datetime:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.assigned_datetime
+                )
+                record.assigned_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.assigned_date = False
+    
+
+    @api.depends('assigned_datetime')
+    def _compute_assigned_time(self):
+        for record in self:
+            if record.assigned_datetime:
+                local_dt = fields.Datetime.context_timestamp(record,record.assigned_datetime
+                 )
+                record.assigned_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.assigned_time = False
+
+
+ 
+    ###########################################################################
+
+
+    @api.depends('technican_users')
+    def _compute_techincan_names(self):
+        for record in self:
+            record.technican_users_name = ', '.join(
+                record.technican_users.mapped('name')
+            ) if record.technican_users else False
+
+
+
+
+
 
     @api.depends('m_e_datetime')
     def _compute_end_time(self):
@@ -581,6 +701,173 @@ class MaintenanceRequest(models.Model):
                 record.m_e_time = local_dt.strftime('%H:%M:%S')
             else:
                 record.m_e_time = False
+
+
+
+
+  #################################### Equipment Received  Date ##################################
+
+    @api.depends('equipment_recevied_date_time')
+    def _compute_equipment_rec_date(self):
+        for record in self:
+            if record.equipment_recevied_date_time:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.equipment_recevied_date_time
+                )
+                record.equipment_recevied_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.equipment_recevied_date = False
+    
+
+    @api.depends('equipment_recevied_date_time')
+    def _compute_equipment_rec_time(self):
+        for record in self:
+            if record.equipment_recevied_date_time:
+                local_dt = fields.Datetime.context_timestamp(record,record.equipment_recevied_date_time
+                 )
+                record.equipment_recevied_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.equipment_recevied_time = False
+
+  #################################### Equipment Request  Date ##################################
+
+    @api.depends('equipment_request_datetime')
+    def _compute_equipment_date(self):
+        for record in self:
+            if record.equipment_request_datetime:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.equipment_request_datetime
+                )
+                record.equipment_request_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.equipment_request_date = False
+    
+
+    @api.depends('equipment_request_datetime')
+    def _compute_equipment_time(self):
+        for record in self:
+            if record.equipment_request_datetime:
+                local_dt = fields.Datetime.context_timestamp(record,record.equipment_request_datetime
+                 )
+                record.equipment_request_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.equipment_request_time = False
+
+
+ #################################### MR Request  Date ##################################
+
+    @api.depends('mr_request_datetime')
+    def _compute_mr_date(self):
+        for record in self:
+            if record.mr_request_datetime:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.mr_request_datetime
+                )
+                record.mr_request_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.mr_request_date = False
+    
+
+    @api.depends('mr_request_datetime')
+    def _compute_mr_time(self):
+        for record in self:
+            if record.mr_request_datetime:
+                local_dt = fields.Datetime.context_timestamp(record,record.mr_request_datetime
+                 )
+                record.mr_request_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.mr_request_time = False
+
+
+
+ #################################### MR Recevied  Date ##################################
+
+    @api.depends('mr_recevied_date_time')
+    def _compute_mr_rec_date(self):
+        for record in self:
+            if record.mr_recevied_date_time:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.mr_recevied_date_time
+                )
+                record.mr_recevied_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.mr_recevied_date = False
+    
+
+    @api.depends('mr_recevied_date_time')
+    def _compute_mr_rec_time(self):
+        for record in self:
+            if record.mr_recevied_date_time:
+                local_dt = fields.Datetime.context_timestamp(record,record.mr_recevied_date_time
+                 )
+                record.mr_recevied_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.mr_recevied_time = False
+
+
+
+ #################################### Issuance  Date ##################################
+
+    @api.depends('issuance_request_datetime')
+    def _compute_iss_date(self):
+        for record in self:
+            if record.issuance_request_datetime:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.issuance_request_datetime
+                )
+                record.issuance_request_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.issuance_request_date = False
+    
+
+    @api.depends('issuance_request_datetime')
+    def _compute_iss_time(self):
+        for record in self:
+            if record.issuance_request_datetime:
+                local_dt = fields.Datetime.context_timestamp(record,record.issuance_request_datetime
+                 )
+                record.issuance_request_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.issuance_request_time = False
+
+
+
+
+ #################################### Issuance  Date ##################################
+
+    @api.depends('issuance_recevied_datetime')
+    def _compute_iss_rec_date(self):
+        for record in self:
+            if record.issuance_recevied_datetime:
+                # Convert to user's timezone
+                user_dt = fields.Datetime.context_timestamp(
+                    record,
+                    record.issuance_recevied_datetime
+                )
+                record.issuance_recevied_date = user_dt.date().strftime('%Y-%m-%d')
+            else:
+                record.issuance_recevied_date = False
+    
+
+    @api.depends('issuance_recevied_datetime')
+    def _compute_iss_rec_time(self):
+        for record in self:
+            if record.issuance_recevied_datetime:
+                local_dt = fields.Datetime.context_timestamp(record,record.issuance_recevied_datetime
+                 )
+                record.issuance_recevied_time = local_dt.strftime('%H:%M:%S')
+            else:
+                record.issuance_recevied_time = False
 
 
 
@@ -694,7 +981,7 @@ class MaintenanceRequest(models.Model):
     @api.depends('assigned_datetime', 'request_date_time')
     def get_response(self):
         for rec in self:
-            if rec.request_date_time and rec.complete_datetime:
+            if rec.request_date_time and rec.assigned_datetime:
 
                 requested_date = datetime.strptime(rec.request_date_time.strftime('%Y-%m-%d %H:%M:%S'),
                                                    DEFAULT_SERVER_DATETIME_FORMAT)
@@ -719,14 +1006,14 @@ class MaintenanceRequest(models.Model):
 
 
 
-    @api.depends('equipment_recevied_time', 'equipment_request_datetime')
+    @api.depends('equipment_recevied_date_time', 'equipment_request_datetime')
     def get_equipment_leadtime(self):
         for rec in self:
-            if rec.equipment_recevied_time and rec.equipment_request_datetime:
+            if rec.equipment_recevied_date_time and rec.equipment_request_datetime:
 
                 requested_date = datetime.strptime(rec.equipment_request_datetime.strftime('%Y-%m-%d %H:%M:%S'),
                                                    DEFAULT_SERVER_DATETIME_FORMAT)
-                complete_date = datetime.strptime(rec.equipment_recevied_time.strftime('%Y-%m-%d %H:%M:%S'),
+                complete_date = datetime.strptime(rec.equipment_recevied_date_time.strftime('%Y-%m-%d %H:%M:%S'),
                                                   DEFAULT_SERVER_DATETIME_FORMAT)
 
                 diff = complete_date - requested_date
@@ -738,14 +1025,14 @@ class MaintenanceRequest(models.Model):
 
 
 
-    @api.depends('mr_recevied_time', 'mr_request_datetime')
+    @api.depends('mr_recevied_date_time', 'mr_request_datetime')
     def get_mr_leadtime(self):
         for rec in self:
-            if rec.mr_recevied_time and rec.mr_request_datetime:
+            if rec.mr_recevied_date_time and rec.mr_request_datetime:
 
                 requested_date = datetime.strptime(rec.mr_request_datetime.strftime('%Y-%m-%d %H:%M:%S'),
                                                    DEFAULT_SERVER_DATETIME_FORMAT)
-                complete_date = datetime.strptime(rec.mr_recevied_time.strftime('%Y-%m-%d %H:%M:%S'),
+                complete_date = datetime.strptime(rec.mr_recevied_date_time.strftime('%Y-%m-%d %H:%M:%S'),
                                                   DEFAULT_SERVER_DATETIME_FORMAT)
 
                 diff = complete_date - requested_date
@@ -756,32 +1043,16 @@ class MaintenanceRequest(models.Model):
                 rec.mr_leadtime = 0.0
 
 
-    # @api.depends('sr_recevied_time', 'sr_request_datetime')
-    # def get_sr_leadtime(self):
-    #     for rec in self:
-    #         if rec.sr_recevied_time and rec.sr_request_datetime:
-
-    #             requested_date = datetime.strptime(rec.sr_request_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-    #                                                DEFAULT_SERVER_DATETIME_FORMAT)
-    #             complete_date = datetime.strptime(rec.sr_recevied_time.strftime('%Y-%m-%d %H:%M:%S'),
-    #                                               DEFAULT_SERVER_DATETIME_FORMAT)
-
-    #             diff = complete_date - requested_date
-    #             diff_s = diff.total_seconds()
-    #             rec.sr_leadtime = diff_s / 60
-
-    #         else:
-    #             rec.sr_leadtime = 0.0
 
 
-    @api.depends('issuance_recevied_time', 'issuance_request_datetime')
+    @api.depends('issuance_recevied_datetime', 'issuance_request_datetime')
     def get_issuance_leadtime(self):
         for rec in self:
-            if rec.issuance_recevied_time and rec.issuance_request_datetime:
+            if rec.issuance_recevied_datetime and rec.issuance_request_datetime:
 
                 requested_date = datetime.strptime(rec.issuance_request_datetime.strftime('%Y-%m-%d %H:%M:%S'),
                                                    DEFAULT_SERVER_DATETIME_FORMAT)
-                complete_date = datetime.strptime(rec.issuance_recevied_time.strftime('%Y-%m-%d %H:%M:%S'),
+                complete_date = datetime.strptime(rec.issuance_recevied_datetime.strftime('%Y-%m-%d %H:%M:%S'),
                                                   DEFAULT_SERVER_DATETIME_FORMAT)
 
                 diff = complete_date - requested_date
@@ -790,6 +1061,26 @@ class MaintenanceRequest(models.Model):
 
             else:
                 rec.issuance_leadtime = 0.0
+
+
+
+    @api.depends('complete_datetime', 'm_s_datetime')
+    def ge_maintenance_time(self):
+        for rec in self:
+            if rec.m_s_datetime and rec.complete_datetime:
+
+                requested_date = datetime.strptime(rec.m_s_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                                                   DEFAULT_SERVER_DATETIME_FORMAT)
+                complete_date = datetime.strptime(rec.complete_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                                                  DEFAULT_SERVER_DATETIME_FORMAT)
+
+                diff = complete_date - requested_date
+                diff_s = diff.total_seconds()
+                rec.maintenance_time = round(diff_s / 60, 2)  # rounded to 2 decimals
+
+            else:
+                rec.maintenance_time = 0.0
+
 
 
     @api.depends('complete_datetime', 'assigned_datetime')
@@ -850,11 +1141,7 @@ class MaintenanceRequest(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        # for rec in self:
-        #     rec.write({
-        #     'request_date_time':datetime.datetime.now(),
-        #     # 'wo_number':seq
-        #     })
+
         for data in vals_list:
 
             seq = self.env['ir.sequence'].next_by_code('maintenance_request.sequence') or "/"
@@ -867,7 +1154,6 @@ class MaintenanceRequest(models.Model):
                 del data['odometer']
         return super(MaintenanceRequest, self).create(vals_list)
 
-        #################comment by ekhlas code ###########
         # if request.requested_by.id != self.env.user.id:
         #     raise UserError("Sorry you cannot create a request with different user.")
         # # if not request.line_ids:
@@ -1035,7 +1321,7 @@ class MaintenanceRequest(models.Model):
             if self.previous_stage_id.sequence==3 and rec.waiting_equipment:
                 rec.write({
                 'stage_id': self.previous_stage_id.id,
-                'equipment_recevied_time':datetime.now(),
+                'equipment_recevied_date_time':datetime.now(),
                 'previous_stage_id':False,
 
                 })
@@ -1043,19 +1329,19 @@ class MaintenanceRequest(models.Model):
             elif rec.waiting_material:
                 rec.write({
                     'stage_id': stage_obj.id,
-                    'mr_recevied_time':datetime.now(),
+                    'mr_recevied_date_time':datetime.now(),
 
                     })
             elif rec.waiting_issuance:
                 rec.write({
                 'stage_id': stage_obj.id,
-                'issuance_recevied_time':datetime.now(),
+                'issuance_recevied_datetime':datetime.now(),
 
                 })
             elif rec.waiting_equipment:
                 rec.write({
                 'stage_id': stage_obj.id,
-                'equipment_recevied_time':datetime.now(),
+                'equipment_recevied_date_time':datetime.now(),
 
                 })
 

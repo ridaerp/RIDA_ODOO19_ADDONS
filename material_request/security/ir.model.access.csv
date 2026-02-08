@@ -315,6 +315,7 @@ access_overseas_payment_fd,access_overseas_payment,material_request.model_overse
 
 access_overseas_payment_ccso,access_overseas_payment,material_request.model_overseas_payment,base_rida.rida_group_CCSO,1,1,1,0
 
+access_overseas_payment_contr,access_overseas_payment,material_request.model_overseas_payment,material_request.group_contract_manager,1,1,1,1
 
 
 

@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2025-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions (odoo@cybrosys.com)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,8 +19,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from email.policy import default
-
 import boto3
 import dropbox
 import errno
@@ -35,13 +33,13 @@ import shutil
 import subprocess
 import tempfile
 import odoo
-from datetime import datetime, timedelta
+from datetime import timedelta
 from nextcloud import NextCloud
 from requests.auth import HTTPBasicAuth
 from werkzeug import urls
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.misc import find_pg_tool, exec_pg_environ
+from odoo.tools import find_pg_tool, exec_pg_environ
 from odoo.http import request
 from odoo.service import db
 
@@ -50,7 +48,7 @@ ONEDRIVE_SCOPE = ['offline_access openid Files.ReadWrite.All']
 MICROSOFT_GRAPH_END_POINT = "https://graph.microsoft.com"
 GOOGLE_AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth'
 GOOGLE_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token'
-GOOGLE_API_BASE_URL = 'https://www.googleapis.com'  
+GOOGLE_API_BASE_URL = 'https://www.googleapis.com'
 
 
 class DbBackupConfigure(models.Model):
@@ -80,11 +78,6 @@ class DbBackupConfigure(models.Model):
         ('next_cloud', 'Next Cloud'),
         ('amazon_s3', 'Amazon S3')
     ], string='Backup Destination', help='Destination of the backup')
-    backup_frequency = fields.Selection([
-        ('daily', 'Daily'),
-        ('weekly', 'Weekly'),
-        ('monthly', 'Monthly'),
-    ], default='daily', string='Backup Frequency', help='Frequency of Backup Scheduling')
     backup_path = fields.Char(string='Backup Path',
                               help='Local storage directory path')
     sftp_host = fields.Char(string='SFTP Host', help='SFTP host details')
@@ -124,7 +117,6 @@ class DbBackupConfigure(models.Model):
     auto_remove = fields.Boolean(string='Remove Old Backups',
                                  help='Remove old backups')
     days_to_remove = fields.Integer(string='Remove After',
-                                    default=1,
                                     help='Automatically delete stored backups'
                                          ' after this specified number of days')
     google_drive_folder_key = fields.Char(string='Drive Folder ID',
@@ -132,13 +124,13 @@ class DbBackupConfigure(models.Model):
     notify_user = fields.Boolean(string='Notify User',
                                  help='Send an email notification to user when'
                                       'the backup operation is successful'
-                                      ' or failed')
+                                      'or failed')
     user_id = fields.Many2one('res.users', string='User',
                               help='Name of the user')
     backup_filename = fields.Char(string='Backup Filename',
                                   help='For Storing generated backup filename')
     generated_exception = fields.Char(string='Exception',
-                                      help='Exception Encountered while Backup '
+                                      help='Exception Encountered while Backup'
                                            'generation')
     onedrive_client_key = fields.Char(string='Onedrive Client ID', copy=False,
                                       help='Client ID of the onedrive')
@@ -223,7 +215,8 @@ class DbBackupConfigure(models.Model):
                 )
                 response = s3_client.head_bucket(Bucket=self.bucket_file_name)
                 if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-                    self.active = self.hide_active = True
+                    self.active = True
+                    self.hide_active = True
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -239,7 +232,8 @@ class DbBackupConfigure(models.Model):
                     _("Bucket not found. Please check the bucket name and"
                       " try again."))
             except Exception:
-                self.active = self.hide_active = False
+                self.active = False
+                self.hide_active = False
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -261,9 +255,11 @@ class DbBackupConfigure(models.Model):
                 ncx = NextCloud(self.domain,
                                 auth=HTTPBasicAuth(self.next_cloud_user_name,
                                                    self.next_cloud_password))
+
                 data = ncx.list_folders('/').__dict__
                 if data['raw'].status_code == 207:
-                    self.active = self.hide_active = True
+                    self.active = True
+                    self.hide_active = True
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -275,7 +271,8 @@ class DbBackupConfigure(models.Model):
                         }
                     }
                 else:
-                    self.active = self.hide_active = False
+                    self.active = False
+                    self.hide_active = False
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -288,7 +285,8 @@ class DbBackupConfigure(models.Model):
                         }
                     }
             except Exception:
-                self.active = self.hide_active = False
+                self.active = False
+                self.hide_active = False
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -305,8 +303,10 @@ class DbBackupConfigure(models.Model):
     def _compute_redirect_uri(self):
         """Compute the redirect URI for onedrive and Google Drive"""
         for rec in self:
-            rec.onedrive_redirect_uri = self.get_base_url() + '/onedrive/authentication'
-            rec.gdrive_redirect_uri = self.get_base_url() + '/google_drive/authentication'
+            base_url = request.env['ir.config_parameter'].get_param(
+                'web.base.url')
+            rec.onedrive_redirect_uri = base_url + '/onedrive/authentication'
+            rec.gdrive_redirect_uri = base_url + '/google_drive/authentication'
 
     @api.depends('onedrive_access_token', 'onedrive_refresh_token')
     def _compute_is_onedrive_token_generated(self):
@@ -340,50 +340,57 @@ class DbBackupConfigure(models.Model):
         }
 
     def action_get_onedrive_auth_code(self):
-        """Generate OneDrive authorization code."""
-        AUTHORITY = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
-        base_url = self.get_base_url()
-        action_id = self.env["ir.actions.act_window"].sudo()._for_xml_id(
-            "auto_database_backup.db_backup_configure_action")['id']
-        url_return = f"{base_url}/web#id={self.id}&action={action_id}&view_type=form&model=db.backup.configure"
+        """Generate onedrive authorization code"""
+        AUTHORITY = \
+            'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+        action = self.env["ir.actions.act_window"].sudo()._for_xml_id(
+            "auto_database_backup.db_backup_configure_action")
+        base_url = request.env['ir.config_parameter'].get_param('web.base.url')
+        url_return = base_url + \
+                     '/web#id=%d&action=%d&view_type=form&model=%s' % (
+                         self.id, action['id'], 'db.backup.configure')
         state = {
             'backup_config_id': self.id,
-            'url_return': url_return}
-        params = {
+            'url_return': url_return
+        }
+        encoded_params = urls.url_encode({
             'response_type': 'code',
             'client_id': self.onedrive_client_key,
             'state': json.dumps(state),
             'scope': ONEDRIVE_SCOPE,
-            'redirect_uri': f"{base_url}/onedrive/authentication",
+            'redirect_uri': base_url + '/onedrive/authentication',
             'prompt': 'consent',
             'access_type': 'offline'
-        }
+        })
+        auth_url = "%s?%s" % (AUTHORITY, encoded_params)
         return {
             'type': 'ir.actions.act_url',
             'target': 'self',
-            'url': f"{AUTHORITY}?{urls.url_encode(params)}",
+            'url': auth_url,
         }
 
     def action_get_gdrive_auth_code(self):
-        """Generate Google Drive authorization code."""
-        GOOGLE_AUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/auth"
-        base_url = self.get_base_url()
-        action_id = self.env["ir.actions.act_window"].sudo()._for_xml_id(
-            "auto_database_backup.db_backup_configure_action")['id']
-        url_return = f"{base_url}/web#id={self.id}&action={action_id}&view_type=form&model=db.backup.configure"
+        """Generate google drive authorization code"""
+        action = self.env["ir.actions.act_window"].sudo()._for_xml_id(
+            "auto_database_backup.db_backup_configure_action")
+        base_url = request.env['ir.config_parameter'].get_param('web.base.url')
+        url_return = base_url + \
+                     '/web#id=%d&action=%d&view_type=form&model=%s' % (
+                         self.id, action['id'], 'db.backup.configure')
         state = {
             'backup_config_id': self.id,
-            'url_return': url_return }
-        params = {
+            'url_return': url_return
+        }
+        encoded_params = urls.url_encode({
             'response_type': 'code',
             'client_id': self.gdrive_client_key,
             'scope': 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file',
-            'redirect_uri': f"{base_url}/google_drive/authentication",
+            'redirect_uri': base_url + '/google_drive/authentication',
             'access_type': 'offline',
             'state': json.dumps(state),
             'approval_prompt': 'force',
-        }
-        auth_url = f"{GOOGLE_AUTH_ENDPOINT}?{urls.url_encode(params)}"
+        })
+        auth_url = "%s?%s" % (GOOGLE_AUTH_ENDPOINT, encoded_params)
         return {
             'type': 'ir.actions.act_url',
             'target': 'self',
@@ -391,64 +398,70 @@ class DbBackupConfigure(models.Model):
         }
 
     def generate_onedrive_refresh_token(self):
-        """Generate OneDrive access token from refresh token if expired."""
-        base_url = self.get_base_url()
-        token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+        """Generate onedrive access token from refresh token if expired"""
+        base_url = request.env['ir.config_parameter'].get_param('web.base.url')
         headers = {"Content-type": "application/x-www-form-urlencoded"}
         data = {
             'client_id': self.onedrive_client_key,
             'client_secret': self.onedrive_client_secret,
             'scope': ONEDRIVE_SCOPE,
             'grant_type': "refresh_token",
-            'redirect_uri': f"{base_url}/onedrive/authentication",
-            'refresh_token': self.onedrive_refresh_token,
+            'redirect_uri': base_url + '/onedrive/authentication',
+            'refresh_token': self.onedrive_refresh_token
         }
         try:
-            res = requests.post(token_url, data=data, headers=headers)
+            res = requests.post(
+                "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                data=data, headers=headers)
             res.raise_for_status()
-            response = res.json() if res.ok else {}
+            response = res.content and res.json() or {}
             if response:
-                expires_in = response.get('expires_in', 0)
+                expires_in = response.get('expires_in')
                 self.write({
                     'onedrive_access_token': response.get('access_token'),
                     'onedrive_refresh_token': response.get('refresh_token'),
-                    'onedrive_token_validity': fields.Datetime.now() + timedelta(seconds=expires_in),
+                    'onedrive_token_validity': fields.Datetime.now() + timedelta(
+                        seconds=expires_in) if expires_in else False,
                 })
         except requests.HTTPError as error:
-            _logger.exception("Bad Microsoft OneDrive request: %s", error.response.content)
+            _logger.exception("Bad microsoft onedrive request : %s !",
+                              error.response.content)
             raise error
 
     def get_onedrive_tokens(self, authorize_code):
-        """Generate OneDrive tokens from authorization code."""
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        base_url = self.get_base_url()
+        """Generate onedrive tokens from authorization code."""
+        headers = {"content-type": "application/x-www-form-urlencoded"}
+        base_url = request.env['ir.config_parameter'].get_param('web.base.url')
         data = {
             'code': authorize_code,
             'client_id': self.onedrive_client_key,
             'client_secret': self.onedrive_client_secret,
             'grant_type': 'authorization_code',
             'scope': ONEDRIVE_SCOPE,
-            'redirect_uri': f"{base_url}/onedrive/authentication",
+            'redirect_uri': base_url + '/onedrive/authentication'
         }
-        token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
         try:
-            res = requests.post(token_url, data=data, headers=headers)
+            res = requests.post(
+                "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                data=data, headers=headers)
             res.raise_for_status()
-            response = res.json() if res.ok else {}
+            response = res.content and res.json() or {}
             if response:
-                expires_in = response.get('expires_in', 0)
+                expires_in = response.get('expires_in')
                 self.write({
                     'onedrive_access_token': response.get('access_token'),
                     'onedrive_refresh_token': response.get('refresh_token'),
-                    'onedrive_token_validity': fields.Datetime.now() + timedelta(seconds=expires_in),
+                    'onedrive_token_validity': fields.Datetime.now() + timedelta(
+                        seconds=expires_in) if expires_in else False,
                 })
         except requests.HTTPError as error:
-            _logger.exception("Bad Microsoft OneDrive request: %s", error.response.content)
+            _logger.exception("Bad microsoft onedrive request : %s !",
+                              error.response.content)
             raise error
 
     def generate_gdrive_refresh_token(self):
-        """Generate Google Drive access token from refresh token if expired."""
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        """Generate Google Drive access token from refresh token if expired"""
+        headers = {"content-type": "application/x-www-form-urlencoded"}
         data = {
             'refresh_token': self.gdrive_refresh_token,
             'client_id': self.gdrive_client_key,
@@ -456,44 +469,46 @@ class DbBackupConfigure(models.Model):
             'grant_type': 'refresh_token',
         }
         try:
-            res = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers)
+            res = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data,
+                                headers=headers)
             res.raise_for_status()
-            response = res.json() if res.ok else {}
+            response = res.content and res.json() or {}
             if response:
-                expires_in = response.get('expires_in', 0)
+                expires_in = response.get('expires_in')
                 self.write({
                     'gdrive_access_token': response.get('access_token'),
-                    'gdrive_token_validity': fields.Datetime.now() + timedelta(seconds=expires_in),
+                    'gdrive_token_validity': fields.Datetime.now() + timedelta(
+                        seconds=expires_in) if expires_in else False,
                 })
         except requests.HTTPError as error:
-            error_key = error.response.json().get("error", "unknown error")
+            error_key = error.response.json().get("error", "nc")
             error_msg = _(
-                "An error occurred while generating the token. Your "
-                "authorization code may be invalid or has already expired [%s]. "
-                "Please check your Client ID and secret on the Google APIs "
-                "platform or try stopping and restarting your calendar "
-                "synchronization.",
-                error_key
-            )
+                "An error occurred while generating the token. Your"
+                "authorization code may be invalid or has already expired [%s]."
+                "You should check your Client ID and secret on the Google APIs"
+                " plateform or try to stop and restart your calendar"
+                " synchronisation.",
+                error_key)
             raise UserError(error_msg)
 
     def get_gdrive_tokens(self, authorize_code):
-        """Generate Google Drive tokens from authorization code."""
+        """Generate onedrive tokens from authorization code."""
         base_url = request.env['ir.config_parameter'].get_param('web.base.url')
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        headers = {"content-type": "application/x-www-form-urlencoded"}
         data = {
             'code': authorize_code,
             'client_id': self.gdrive_client_key,
             'client_secret': self.gdrive_client_secret,
             'grant_type': 'authorization_code',
-            'redirect_uri': f"{base_url}/google_drive/authentication",
+            'redirect_uri': base_url + '/google_drive/authentication'
         }
         try:
-            res = requests.post(GOOGLE_TOKEN_ENDPOINT, data=data, headers=headers)
+            res = requests.post(GOOGLE_TOKEN_ENDPOINT, params=data,
+                                headers=headers)
             res.raise_for_status()
-            response = res.json() if res.ok else {}
+            response = res.content and res.json() or {}
             if response:
-                expires_in = response.get('expires_in', 0)
+                expires_in = response.get('expires_in')
                 self.write({
                     'gdrive_access_token': response.get('access_token'),
                     'gdrive_refresh_token': response.get('refresh_token'),
@@ -502,9 +517,8 @@ class DbBackupConfigure(models.Model):
                 })
         except requests.HTTPError:
             error_msg = _(
-                "Something went wrong during your token generation. "
-                "Your authorization code may be invalid."
-            )
+                "Something went wrong during your token generation. Maybe your"
+                " Authorization Code is invalid")
             raise UserError(error_msg)
 
     def get_dropbox_auth_url(self):
@@ -559,7 +573,8 @@ class DbBackupConfigure(models.Model):
                 ftp_server.quit()
             except Exception as e:
                 raise UserError(_("FTP Exception: %s", e))
-        self.active = self.hide_active = True
+        self.hide_active = True
+        self.active = True
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -581,18 +596,20 @@ class DbBackupConfigure(models.Model):
         if self.backup_destination == 'local':
             self.hide_active = True
 
-    def _schedule_auto_backup(self, frequency):
+    def _schedule_auto_backup(self):
         """Function for generating and storing backup.
            Database backup for all the active records in backup configuration
            model will be created."""
-        records = self.search([('backup_frequency', '=', frequency)])
+        records = self.search([])
         mail_template_success = self.env.ref(
             'auto_database_backup.mail_template_data_db_backup_successful')
         mail_template_failed = self.env.ref(
             'auto_database_backup.mail_template_data_db_backup_failed')
         for rec in records:
-            backup_time = datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
-            backup_filename = f"{rec.db_name}_{backup_time}.{rec.backup_format}"
+            backup_time = fields.datetime.utcnow().strftime(
+                "%Y-%m-%d_%H-%M-%S")
+            backup_filename = "%s_%s.%s" % (
+                rec.db_name, backup_time, rec.backup_format)
             rec.backup_filename = backup_filename
             # Local backup
             if rec.backup_destination == 'local':
@@ -602,19 +619,20 @@ class DbBackupConfigure(models.Model):
                     backup_file = os.path.join(rec.backup_path,
                                                backup_filename)
                     f = open(backup_file, "wb")
-                    self.dump_data(rec.db_name, f, rec.backup_format, rec.backup_frequency)
+                    self.dump_data(rec.db_name, f, rec.backup_format)
                     f.close()
                     # Remove older backups
                     if rec.auto_remove:
                         for filename in os.listdir(rec.backup_path):
                             file = os.path.join(rec.backup_path, filename)
-                            create_time = datetime.fromtimestamp(
+                            create_time = fields.datetime.fromtimestamp(
                                 os.path.getctime(file))
-                            backup_duration = datetime.utcnow() - create_time
+                            backup_duration = fields.datetime.utcnow() - create_time
                             if backup_duration.days >= rec.days_to_remove:
                                 os.remove(file)
                     if rec.notify_user:
-                        mail_template_success.send_mail(rec.id, force_send=True)
+                        mail_template_success.send_mail(rec.id,
+                                                        force_send=True)
                 except Exception as e:
                     rec.generated_exception = e
                     _logger.info('FTP Exception: %s', e)
@@ -636,17 +654,17 @@ class DbBackupConfigure(models.Model):
                         ftp_server.cwd(rec.ftp_path)
                     with open(temp.name, "wb+") as tmp:
                         self.dump_data(rec.db_name, tmp,
-                                                rec.backup_format, rec.backup_frequency)
+                                                rec.backup_format)
                     ftp_server.storbinary('STOR %s' % backup_filename,
                                           open(temp.name, "rb"))
                     if rec.auto_remove:
                         files = ftp_server.nlst()
                         for file in files:
-                            create_time = datetime.strptime(
+                            create_time = fields.datetime.strptime(
                                 ftp_server.sendcmd('MDTM ' + file)[4:],
                                 "%Y%m%d%H%M%S")
                             diff_days = (
-                                    datetime.now() - create_time).days
+                                    fields.datetime.now() - create_time).days
                             if diff_days >= rec.days_to_remove:
                                 ftp_server.delete(file)
                     ftp_server.quit()
@@ -671,7 +689,7 @@ class DbBackupConfigure(models.Model):
                     temp = tempfile.NamedTemporaryFile(
                         suffix='.%s' % rec.backup_format)
                     with open(temp.name, "wb+") as tmp:
-                        self.dump_data(rec.db_name, tmp, rec.backup_format, rec.backup_frequency)
+                        self.dump_data(rec.db_name, tmp, rec.backup_format)
                     try:
                         sftp.chdir(rec.sftp_path)
                     except IOError as e:
@@ -682,8 +700,8 @@ class DbBackupConfigure(models.Model):
                     if rec.auto_remove:
                         files = sftp.listdir()
                         expired = list(filter(
-                            lambda fl: (fields.Datetime.now()
-                                        - datetime.fromtimestamp(
+                            lambda fl: (fields.datetime.now()
+                                        - fields.datetime.fromtimestamp(
                                         sftp.stat(fl).st_mtime)).days >=
                                        rec.days_to_remove, files))
                         for file in expired:
@@ -708,7 +726,7 @@ class DbBackupConfigure(models.Model):
                         suffix='.%s' % rec.backup_format)
                     with open(temp.name, "wb+") as tmp:
                         self.dump_data(rec.db_name, tmp,
-                                                rec.backup_format, rec.backup_frequency)
+                                                rec.backup_format)
                     try:
                         headers = {
                             "Authorization": "Bearer %s" % rec.gdrive_access_token}
@@ -731,7 +749,8 @@ class DbBackupConfigure(models.Model):
                             files_req = requests.get(
                                 "https://www.googleapis.com/drive/v3/files?q=%s" % query,
                                 headers=headers)
-                            for file in files_req.json()['files']:
+                            files = files_req.json()['files']
+                            for file in files:
                                 file_date_req = requests.get(
                                     "https://www.googleapis.com/drive/v3/files/%s?fields=createdTime" %
                                     file['id'], headers=headers)
@@ -739,7 +758,7 @@ class DbBackupConfigure(models.Model):
                                                   'createdTime'][
                                               :19].replace('T', ' ')
                                 diff_days = (
-                                        fields.Datetime.now() - datetime.strptime(
+                                        fields.datetime.now() - fields.datetime.strptime(
                                     create_time, '%Y-%m-%d %H:%M:%S')).days
                                 if diff_days >= rec.days_to_remove:
                                     requests.delete(
@@ -768,7 +787,7 @@ class DbBackupConfigure(models.Model):
                     suffix='.%s' % rec.backup_format)
                 with open(temp.name, "wb+") as tmp:
                     self.dump_data(rec.db_name, tmp,
-                                            rec.backup_format, rec.backup_frequency)
+                                            rec.backup_format)
                 try:
                     dbx = dropbox.Dropbox(
                         app_key=rec.dropbox_client_key,
@@ -781,7 +800,7 @@ class DbBackupConfigure(models.Model):
                         files = dbx.files_list_folder(rec.dropbox_folder)
                         file_entries = files.entries
                         expired_files = list(filter(
-                            lambda fl: (fields.Datetime.now() -
+                            lambda fl: (fields.datetime.now() -
                                         fl.client_modified).days >=
                                        rec.days_to_remove,
                             file_entries))
@@ -797,85 +816,46 @@ class DbBackupConfigure(models.Model):
                         mail_template_failed.send_mail(rec.id, force_send=True)
             # Onedrive Backup
             elif rec.backup_destination == 'onedrive':
+                if rec.onedrive_token_validity <= fields.Datetime.now():
+                    rec.generate_onedrive_refresh_token()
+                temp = tempfile.NamedTemporaryFile(
+                    suffix='.%s' % rec.backup_format)
+                with open(temp.name, "wb+") as tmp:
+                    self.dump_data(rec.db_name, tmp, rec.backup_format)
+                headers = {
+                    'Authorization': 'Bearer %s' % rec.onedrive_access_token,
+                    'Content-Type': 'application/json'}
+                upload_session_url = MICROSOFT_GRAPH_END_POINT + "/v1.0/me/drive/items/%s:/%s:/createUploadSession" % (
+                    rec.onedrive_folder_key, backup_filename)
                 try:
-                    if rec.onedrive_token_validity <= fields.Datetime.now():
-                        rec.generate_onedrive_refresh_token()
-
-                    with tempfile.NamedTemporaryFile(suffix=f'.{rec.backup_format}') as temp:
-                        with open(temp.name, "wb+") as tmp:
-                            self.dump_data(rec.db_name, tmp, rec.backup_format, rec.backup_frequency)
-
-                        headers = {
-                            'Authorization': f'Bearer {rec.onedrive_access_token}',
-                            'Content-Type': 'application/json'
-                        }
-
-                        upload_session_url = (
-                            f"{MICROSOFT_GRAPH_END_POINT}/v1.0/me/drive/items/"
-                            f"{rec.onedrive_folder_key}:/{backup_filename}:/createUploadSession"
-                        )
-
-                        upload_session = requests.post(upload_session_url, headers=headers)
-                        upload_session.raise_for_status()
-
-                        upload_url = upload_session.json().get('uploadUrl')
-                        if not upload_url:
-                            raise ValueError("Failed to get upload URL from OneDrive")
-
-                        file_size = os.path.getsize(temp.name)
-                        with open(temp.name, 'rb') as f:
-                            headers_upload = {
-                                'Content-Length': str(file_size),
-                                'Content-Range': f'bytes 0-{file_size - 1}/{file_size}'
-                            }
-                            upload_response = requests.put(upload_url, headers=headers_upload, data=f)
-                            upload_response.raise_for_status()
-
-                        if rec.auto_remove:
-                            verify_url = (
-                                f"{MICROSOFT_GRAPH_END_POINT}/v1.0/me/drive/items/"
-                                f"{rec.onedrive_folder_key}:/{backup_filename}"
-                            )
-                            verify_response = requests.get(verify_url, headers=headers)
-
-                            if verify_response.status_code == 200:
-                                list_url = (
-                                    f"{MICROSOFT_GRAPH_END_POINT}/v1.0/me/drive/items/"
-                                    f"{rec.onedrive_folder_key}/children"
-                                )
-                                response = requests.get(list_url, headers=headers)
-                                response.raise_for_status()
-
-                                files = response.json().get('value', [])
-                                current_time = fields.Datetime.now()
-
-                                for file in files:
-                                    if file['name'] == backup_filename:
-                                        continue
-
-                                    create_time_str = file['createdDateTime'][:19].replace('T', ' ')
-                                    create_time = datetime.strptime(create_time_str, '%Y-%m-%d %H:%M:%S')
-                                    diff_days = (current_time - create_time).days
-
-                                    if diff_days >= rec.days_to_remove:
-                                        delete_url = f"{MICROSOFT_GRAPH_END_POINT}/v1.0/me/drive/items/{file['id']}"
-                                        requests.delete(delete_url, headers=headers).raise_for_status()
-
-                        # Notify user on success
-                        if rec.notify_user:
-                            mail_template_success.send_mail(rec.id, force_send=True)
-
-                except requests.exceptions.RequestException as req_error:
-                    rec.generated_exception = str(req_error)
-                    _logger.error('OneDrive API Error: %s', req_error, exc_info=True)
+                    upload_session = requests.post(upload_session_url,
+                                                   headers=headers)
+                    upload_url = upload_session.json().get('uploadUrl')
+                    requests.put(upload_url, data=temp.read())
+                    if rec.auto_remove:
+                        list_url = MICROSOFT_GRAPH_END_POINT + "/v1.0/me/drive/items/%s/children" % rec.onedrive_folder_key
+                        response = requests.get(list_url, headers=headers)
+                        files = response.json().get('value')
+                        for file in files:
+                            create_time = file['createdDateTime'][:19].replace(
+                                'T',
+                                ' ')
+                            diff_days = (
+                                    fields.datetime.now() - fields.datetime.strptime(
+                                create_time, '%Y-%m-%d %H:%M:%S')).days
+                            if diff_days >= rec.days_to_remove:
+                                delete_url = MICROSOFT_GRAPH_END_POINT + "/v1.0/me/drive/items/%s" % \
+                                             file['id']
+                                requests.delete(delete_url, headers=headers)
                     if rec.notify_user:
-                        mail_template_failed.send_mail(rec.id, force_send=True)
-
+                        mail_template_success.send_mail(rec.id,
+                                                        force_send=True)
                 except Exception as error:
-                    rec.generated_exception = str(error)
-                    _logger.error('OneDrive Backup Error: %s', error, exc_info=True)
+                    rec.generated_exception = error
+                    _logger.info('Onedrive Exception: %s', error)
                     if rec.notify_user:
                         mail_template_failed.send_mail(rec.id, force_send=True)
+            # NextCloud Backup
             elif rec.backup_destination == 'next_cloud':
                 try:
                     if rec.domain and rec.next_cloud_password and \
@@ -902,7 +882,7 @@ class DbBackupConfigure(models.Model):
                                     backup_file_name = item.path.split("/")[-1]
                                     backup_date_str = \
                                         backup_file_name.split("_")[1]
-                                    backup_date = datetime.strptime(
+                                    backup_date = fields.datetime.strptime(
                                         backup_date_str, '%Y-%m-%d').date()
                                     if (fields.date.today() - backup_date).days \
                                             >= rec.days_to_remove:
@@ -936,22 +916,22 @@ class DbBackupConfigure(models.Model):
                                 suffix='.%s' % rec.backup_format)
                             with open(temp.name, "wb+") as tmp:
                                 self.dump_data(rec.db_name, tmp,
-                                                        rec.backup_format, rec.backup_frequency)
-                            backup_file_name = temp.name
+                                                        rec.backup_format)
+                            backup_file_path = temp.name
                             remote_file_path = f"/{folder_name}/{rec.db_name}_" \
                                                f"{backup_time}.{rec.backup_format}"
-                            nc.put_file(remote_file_path, backup_file_name)
+                            nc.put_file(remote_file_path, backup_file_path)
                         else:
                             # Dump the database to a temporary file
                             temp = tempfile.NamedTemporaryFile(
                                 suffix='.%s' % rec.backup_format)
                             with open(temp.name, "wb+") as tmp:
                                 self.dump_data(rec.db_name, tmp,
-                                                        rec.backup_format, rec.backup_frequency)
-                            backup_file_name = temp.name
+                                                        rec.backup_format)
+                            backup_file_path = temp.name
                             remote_file_path = f"/{folder_name}/{rec.db_name}_" \
                                                f"{backup_time}.{rec.backup_format}"
-                            nc.put_file(remote_file_path, backup_file_name)
+                            nc.put_file(remote_file_path, backup_file_path)
                 except Exception:
                     raise ValidationError('Please check connection')
             # Amazon S3 Backup
@@ -1001,19 +981,19 @@ class DbBackupConfigure(models.Model):
                                 prefixes.add(prefix)
                         # If the specified folder is present in the bucket,
                         # take a backup of the database and upload it to the
-                        # S3 bucket
+                        #   S3 bucket
                         if rec.aws_folder_name in prefixes:
                             temp = tempfile.NamedTemporaryFile(
                                 suffix='.%s' % rec.backup_format)
                             with open(temp.name, "wb+") as tmp:
                                 self.dump_data(rec.db_name, tmp,
-                                                        rec.backup_format, rec.backup_frequency)
-                            backup_file_name = temp.name
+                                                        rec.backup_format)
+                            backup_file_path = temp.name
                             remote_file_path = f"{rec.aws_folder_name}/{rec.db_name}_" \
                                                f"{backup_time}.{rec.backup_format}"
                             s3.Object(rec.bucket_file_name,
                                       remote_file_path).upload_file(
-                                backup_file_name)
+                                backup_file_path)
                             # If notify_user is enabled, send an email to the
                             # user notifying them about the successful backup
                             if rec.notify_user:
@@ -1029,14 +1009,16 @@ class DbBackupConfigure(models.Model):
                         if rec.notify_user:
                             mail_template_failed.send_mail(rec.id, force_send=True)
 
-    def dump_data(self, db_name, stream, backup_format, backup_frequency):
+    def dump_data(self, db_name, stream, backup_format):
         """Dump database `db` into file-like object `stream` if stream is None
         return a file object with the dump. """
-        cron_user_id = self.env.ref(f'auto_database_backup.ir_cron_auto_db_backup_{backup_frequency}').user_id.id
+
+        cron_user_id = self.env.ref('auto_database_backup.ir_cron_auto_db_backup').user_id.id
         if cron_user_id != self.env.user.id:
             _logger.error(
                 'Unauthorized database operation. Backups should only be available from the cron job.')
             raise ValidationError("Unauthorized database operation. Backups should only be available from the cron job.")
+
         _logger.info('DUMP DB: %s format %s', db_name, backup_format)
         cmd = [find_pg_tool('pg_dump'), '--no-owner', db_name]
         env = exec_pg_environ()

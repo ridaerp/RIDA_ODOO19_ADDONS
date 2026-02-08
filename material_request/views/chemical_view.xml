@@ -166,7 +166,7 @@
                                        groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
 
                                 <field name="cic_samples" readonly="state not in ['draft','generate']"
-                                       required="sample_type in ['cic']" invisible="sample_type not in ['cic']"
+                                       required="sample_type in ['cic','cic_carbon']" invisible="sample_type not in ['cic','cic_carbon']"
                                        groups="material_request.ore_lab_requester,material_request.group_chemical_receiver_user"/>
 
                                 <field name="cic_sub_samples" readonly="state not in ['draft','generate']"

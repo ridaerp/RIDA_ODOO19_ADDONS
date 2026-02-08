@@ -7,7 +7,6 @@
             <field name="model_id" ref="auto_database_backup.model_db_backup_configure"/>
             <field name="subject">Database Backup Successful: {{ object.db_name }}</field>
             <field name="email_to">{{ object.user_id.email_formatted }}</field>
-            <field name="use_default_to" eval="False"/>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px;">
@@ -114,7 +113,6 @@
             <field name="model_id" ref="auto_database_backup.model_db_backup_configure"/>
             <field name="subject">Database Backup Failed: {{ object.db_name }}</field>
             <field name="email_to">{{ object.user_id.email_formatted }}</field>
-            <field name="use_default_to" eval="False"/>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px;">

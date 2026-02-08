@@ -8,7 +8,7 @@ Automatic Database Backup To Local Server, Remote Server, Google Drive, Dropbox,
 
 Configuration
 ============
-- www.odoo.com/documentation/18.0/setup/install.html
+- www.odoo.com/documentation/17.0/setup/install.html
 - Install our custom addon
 
 License
@@ -25,9 +25,7 @@ Credits
 * Developers : (v15) Midilaj,
                (v16) Midilaj,
                (v16 Amazon S3,NextCloud) Anfas Faisal K,
-               (v17) Aslam A K,
-               (v18) Aslam A K,
-               (v19) Ashwin A
+               (v17) Aslam A K
   Contact : odoo@cybrosys.com
 
 Contacts

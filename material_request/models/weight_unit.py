@@ -889,10 +889,29 @@ class ChemicalSamples(models.Model):
     receive_name = fields.Many2one('res.users', 'Receive Name', track_visibility='onchange',
                                    store=True, readonly=True)
 
-    sample_type = fields.Selection([('grade_control','Grade Control'),('rc', 'RC'), ('rock_chips', 'Rock Chips'),
-                                    ('trench', 'Trench'), ('tailing', 'Tailing'), ('crusher', 'Crusher'),
-                                    ('cic', 'CIC'),('cil', 'CIL'), ('meta', 'Metallurgical Lab'), ('other', 'Other')],
-                                   required=True)
+    # sample_type = fields.Selection([('grade_control','Grade Control'),('rc', 'RC'), ('rock_chips', 'Rock Chips'),
+    #                                 ('trench', 'Trench'), ('tailing', 'Tailing'), ('crusher', 'Crusher'),
+    #                                 ('cic', 'CIC'),('cil', 'CIL'), ('meta', 'Metallurgical Lab'), ('other', 'Other')],
+    #                                required=True)
+    sample_type = fields.Selection([
+        ('grade_control', 'Grade Control'),
+        ('rc', 'RC'),
+        ('rock_chips', 'Rock Chips'),
+        ('trench', 'Trench'),
+        ('tailing', 'Tailing'),
+        ('crusher', 'Crusher'),
+        ('cic', 'CIC'),
+        ('cic_carbon', 'CIC-Carbon'),
+        ('cil', 'CIL'),
+        ('solution', 'CIL-Solution'),
+        ('solid', 'CIL-Solid'),
+        ('stripping', 'CIL-Stripping'),
+        ('carbon', 'CIL-Carbon'),
+        ('meta', 'Met-Solution'),
+        ('meta_solid', 'Met-Solid'),
+        ('main', 'Main'),
+        ('other', 'Other')
+    ], required=True)
 
     other = fields.Char("Other")
 
@@ -997,7 +1016,39 @@ class ChemicalSamples(models.Model):
     dibk_total = fields.Float(string="QTY/DIBK",compute="_compute_dibk_total",store=True)
     aliquate_total = fields.Float(string="QTY/Aliquate",compute="_compute_aliquate_total",store=True)
 
+    @api.onchange('sample_type')
+    def _onchange_sample_type_values(self):
+        """تحديث قيم المواد الكيميائية بناءً على نوع العينة"""
+        if self.sample_type:
+            # قاموس يحتوي على القيم لكل نوع (حسب ملف الإكسل)
+            values_map = {
+                'rc': {'hcl': 30.0, 'hno3': 10.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'grade_control': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'rock_chips': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'trench': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'tailing': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'crusher': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'main': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'meta': {'hcl': 1.0, 'hno3': 0.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'meta_solid': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'cic': {'hcl': 1.0, 'hno3': 0.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'cic_carbon': {'hcl': 30.0, 'hno3': 10.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'solution': {'hcl': 1.0, 'hno3': 0.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'solid': {'hcl': 21.0, 'hno3': 7.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'stripping': {'hcl': 1.0, 'hno3': 0.0, 'dibk': 5.0, 'aliquate': 0.1},
+                'carbon': {'hcl': 30.0, 'hno3': 10.0, 'dibk': 10.0, 'aliquate': 0.2},
 
+            }
+
+            vals = values_map.get(self.sample_type)
+            if vals:
+                self.hcl = vals.get('hcl', 0.0)
+                self.hno3 = vals.get('hno3', 0.0)
+                self.dibk = vals.get('dibk', 0.0)
+                self.aliquate = vals.get('aliquate', 0.0)
+            else:
+                # تصفير القيم إذا كان النوع 'Other' أو غير معرف
+                self.hcl = self.hno3 = self.dibk = self.aliquate = 0.0
 
 
 
@@ -1102,6 +1153,7 @@ class ChemicalSamples(models.Model):
         vals['name'] = seq
         request = super(ChemicalSamples, self).create(vals)
         return request
+
 
 
 
@@ -1251,7 +1303,7 @@ class ChemicalSamples(models.Model):
             #         chemical_sample_line_create = self.env['chemical.samples.line'].create(sample_line)
 
 
-            elif rec.sample_type == 'cic':
+            elif rec.sample_type in ['cic','cic_carbon']:
 
                 if rec.cic_samples == 'factory':
 
@@ -1487,7 +1539,7 @@ class ChemicalSamples(models.Model):
 
 
 
-            elif rec.sample_type == 'cil':
+            elif rec.sample_type in ['cil','solution','solid','stripping','carbon']:
                 samples_sequence = self.env['chemical.samples.sequences'].search([('category', '=', 'cil')])
 
                 chemical_samples = []
@@ -1802,6 +1854,12 @@ class ChemicalSamplesLine(models.Model):
             raise UserError("Only draft records can be deleted!")
 
         return super(ChemicalSamplesLine, self).unlink()
+
+    @api.model
+    def create(self, vals):
+        if vals.get('chemical_request_id'):
+            request = self.env['chemical.samples.request'].browse(vals['chemical_request_id'])
+        return super().create(vals)
 
 
 
