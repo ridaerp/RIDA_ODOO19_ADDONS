@@ -579,9 +579,9 @@ class PurchaseOrder(models.Model):
         user = self.env.user.id
         return user
 
-    def submit(self):
-        self.state = 'line_approve'
-        self.activity_update()
+    # def submit(self):
+    #     self.state = 'line_approve'
+    #     self.activity_update()
 
 
     def activity_update(self):
@@ -624,6 +624,7 @@ class PurchaseOrder(models.Model):
             if not self.requested_by.id == self.env.user.id:
                 raise UserError('Sorry, Only requester can submit this document!')
             rec.write({'state': 'line_approve'})
+            self.activity_update()
 
     def go_to_prm(self):
         for rec in self:
@@ -672,6 +673,7 @@ class PurchaseOrder(models.Model):
                     'purchase_order_id': self.id,
                     'purchase_order': self.name,
                     'amount_total': self.amount_total,
+                    'amount_to_pay': self.amount_total,
                     'currency_id': self.currency_id.id,
                     'company_id': self.company_id.id,
                     'payment_company_id': self.payment_company_id.id ,

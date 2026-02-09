@@ -209,7 +209,7 @@ class PaymentRequest(models.Model):
         paying_company = self.payment_company_id
         partner = self.partner_id
 
-        po_ic_account = paying_company.partner_id.property_account_receivable_id
+        po_ic_account = paying_company.partner_id.property_account_payable_id
         if not po_ic_account:
             raise UserError(
                 f"Set intercompany receivable on {paying_company.name}"

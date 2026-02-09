@@ -358,6 +358,7 @@ class PurchaseContract(models.Model):
             'contract_id': self.id,
             'company_id':self.company_id.id,
             'request_id':self.request_id.id,
+            'currency_id': self.currency_id.id,
             
 
         }

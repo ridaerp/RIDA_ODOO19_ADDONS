@@ -14,7 +14,7 @@ class BudgetDepartmentForm(models.Model):
     _order = 'id desc'
 
     name = fields.Char(string="Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    budget_id = fields.Many2one('crossovered.budget', string="Master Budget", readonly=True)
+    budget_id = fields.Many2one('budget.analytic', string="Master Budget", readonly=True)
     department_id = fields.Many2one('hr.department', string="Department", readonly=True)
     manager_id = fields.Many2one('res.users', string="Responsible", readonly=True, tracking=True)
     date_from = fields.Date(string="Start Date", readonly=True, tracking=True)
@@ -155,7 +155,8 @@ class BudgetDepartmentFormLine(models.Model):
     _description = 'Department Budget Line'
 
     form_id = fields.Many2one('budget.department.form')
-    general_budget_id = fields.Many2one('account.budget.post', string="Budgetary Position")
+    # general_budget_id = fields.Many2one('account.budget.post', string="Budgetary Position")
+    account_account_id = fields.Many2one('account.account', string="Account")
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
     planned_amount = fields.Float(string="Planned Amount", digits='Account')
     start_from = fields.Date(string="Start Date", tracking=True)
@@ -173,22 +174,22 @@ class BudgetDepartmentFormLine(models.Model):
     amendment_amount_custom = fields.Float(string="Amending/Transfer Amount (Other Currency)",
                                            compute='_compute_amounts', digits='Account')
 
-    @api.depends('form_id.budget_id', 'general_budget_id', 'analytic_account_id', 'form_id.department_id')
+    @api.depends('form_id.budget_id', 'account_account_id', 'analytic_account_id', 'form_id.department_id')
     def _compute_amounts(self):
         for line in self:
             # البحث عن السطر المقابل في الموازنة الرئيسية
             domain = [
-                ('crossovered_budget_id', '=', line.form_id.budget_id.id),
-                ('general_budget_id', '=', line.general_budget_id.id),
+                ('budget_analytic_id', '=', line.form_id.budget_id.id),
+                ('account_account_id', '=', line.account_account_id.id),
                 ('department_id', '=', line.form_id.department_id.id),
             ]
 
             if line.analytic_account_id:
-                domain.append(('analytic_account_id', '=', line.analytic_account_id.id))
+                domain.append(('account_id', '=', line.analytic_account_id.id))
             else:
-                domain.append(('analytic_account_id', '=', False))
+                domain.append(('account_id', '=', False))
 
-            master_line = self.env['crossovered.budget.lines'].search(domain, limit=1)
+            master_line = self.env['budget.line'].search(domain, limit=1)
 
             if master_line:
                 # جلب القيم بالعملة الأساسية

@@ -50,22 +50,23 @@ class CrossoveredBudgetLines(models.Model):
 
     custom_currency_id = fields.Many2one(
         'res.currency',
-        # related="crossovered_budget_id.custom_currency_id"
+        related="crossovered_budget_id.custom_currency_id"
     )
     custom_planned_amount = fields.Monetary(
         compute='_compute_custom_planned_amount',
         string='Planned Amount (Other Currency)',
         store=True,
+        required=True,
         help="Amount you plan to earn/spend. Record a positive amount if it is a revenue and a negative amount if it is a cost.",
         currency_field='custom_currency_id',
         inverse="_inverse_custom_planned_amount"
     )
-    # custom_practical_amount = fields.Monetary(
-    #     compute='_compute_custom_practical_amount',
-    #     string='Practical Amount (Other Currency)',
-    #     help="Amount really earned/spent.",
-    #     currency_field='custom_currency_id'
-    # )
+    custom_practical_amount = fields.Monetary(
+        compute='_compute_custom_practical_amount',
+        string='Practical Amount (Other Currency)',
+        help="Amount really earned/spent.",
+        currency_field='custom_currency_id'
+    )
     custom_theoritical_amount = fields.Monetary(
         compute='_compute_custom_theoritical_amount',
         string='Theoretical Amount (Other Currency)',
@@ -113,21 +114,21 @@ class CrossoveredBudgetLines(models.Model):
                         group_line['custom_theoritical_amount'] += budget_line_of_group.custom_theoritical_amount
         return result
 
-    @api.depends('budget_amount')
+    @api.depends('planned_amount')
     def _compute_custom_planned_amount(self):
         for line in self:
             line.custom_planned_amount = 0.0
-            if line.budget_amount and line.currency_id.id != line.custom_currency_id.id:
-                line.custom_planned_amount = line.currency_id._convert(line.budget_amount, line.custom_currency_id, line.company_id, line.date_from or fields.Date.today())
+            if line.planned_amount and line.currency_id.id != line.custom_currency_id.id:
+                line.custom_planned_amount = line.currency_id._convert(line.planned_amount, line.custom_currency_id, line.company_id, line.date_from or fields.Date.today())
             else:
-                line.custom_planned_amount = line.budget_amount
+                line.custom_planned_amount = line.planned_amount
 
     def _inverse_custom_planned_amount(self):
         for line in self:
             if line.custom_planned_amount and line.currency_id.id != line.custom_currency_id.id:
-                line.budget_amount = line.custom_currency_id._convert(line.custom_planned_amount, line.currency_id, line.company_id, line.date_from or fields.Date.today())
+                line.planned_amount = line.custom_currency_id._convert(line.custom_planned_amount, line.currency_id, line.company_id, line.date_from or fields.Date.today())
             else:
-                line.budget_amount = line.custom_planned_amount
+                line.planned_amount = line.custom_planned_amount
 
     @api.depends('practical_amount')
     def _compute_custom_practical_amount(self):
@@ -168,8 +169,8 @@ class CrossoveredBudgetLines(models.Model):
         today = fields.Date.today()
         for line in self:
             line.custom_theoritical_amount = 0.0
-            if line.date_from:
-                if today <= line.date_from:
+            if line.paid_date:
+                if today <= line.paid_date:
                     line.custom_theoritical_amount = 0.00
                 else:
                     line.custom_theoritical_amount = line.custom_planned_amount
@@ -190,3 +191,4 @@ class CrossoveredBudgetLines(models.Model):
                     line.custom_theoritical_amount = (elapsed_timedelta.total_seconds() / line_timedelta.total_seconds()) * line.custom_planned_amount
                 else:
                     line.custom_theoritical_amount = line.custom_planned_amount
+

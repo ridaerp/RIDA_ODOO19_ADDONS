@@ -297,7 +297,7 @@ access_overseas_payment_ceo,access_overseas_payment,material_request.model_overs
 access_overseas_payment_user,access_overseas_payment,material_request.model_overseas_payment,base.group_user,1,0,0,0
 
 access_overseas_payment_wiz_user,access_overseas_wiz_payment,material_request.model_overseas_payment_wizard,base.group_user,1,0,0,0
-
+access_overseas_payment_contr,access_overseas_payment,material_request.model_overseas_payment,material_request.group_contract_manager,1,1,1,1,,,1,,,,,1,,,,,,1,,,,,,,1,,,,,,,,access_overseas_payment_contr,,,,,,,,,access_overseas_payment,,,,,,,,,,material_request.model_overseas_payment,,,,,,,,,,,material_request.group_contract_manager,,,,,,,,,,,,1,,,,,,,,,,,,,1,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,access_overseas_payment_contr,,,,,,,,,,,,,,,,,access_overseas_payment,,,,,,,,,,,,,,,,,,material_request.model_overseas_payment,,,,,,,,,,,,,,,,,,,material_request.group_contract_manager,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,,1
 
 
 access_weight_batch_avg_grade_rock,weight.batch.avg.grade user,model_weight_batch_avg_grade,material_request.group_ore_rock_db_geology_user,1,0,0,0

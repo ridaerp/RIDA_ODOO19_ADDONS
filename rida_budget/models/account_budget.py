@@ -7,7 +7,7 @@ import psycopg2
 
 
 class CrossoveredBudget(models.Model):
-    _inherit = 'crossovered.budget'
+    _inherit = 'budget.analytic'
 
     department_form_count = fields.Integer(compute='_compute_department_form_count')
 
@@ -15,9 +15,8 @@ class CrossoveredBudget(models.Model):
         ('fin_approve', 'Finance Manager Approval'),
         ('dir_approve', 'Finance Director Approval'),
         ('ceo_approve', 'CEO Approval'),
-        ('validate',),
-    ], ondelete={'fin_approve': 'set default', 'dir_approve': 'set default', 'ceo_approve': 'set default'})
-
+        ('validate', 'Validate'),
+    ], ondelete={'fin_approve': 'set default', 'dir_approve': 'set default', 'ceo_approve': 'set default', 'validate': 'set default',})
 
     def action_submit_for_approval(self):
         for rec in self:
@@ -91,7 +90,7 @@ class CrossoveredBudget(models.Model):
             'name': _('Department Budget Forms'),
             'type': 'ir.actions.act_window',
             'res_model': 'budget.department.form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('budget_id', '=', self.id)],
             'context': {'default_budget_id': self.id},
             'target': 'current',
@@ -99,7 +98,7 @@ class CrossoveredBudget(models.Model):
 
 
     def action_fill_budget_lines_from_departments(self):
-        BudgetLine = self.env['crossovered.budget.lines']
+        BudgetLine = self.env['budget.line']
 
         for budget in self:
             confirmed_forms = self.env['budget.department.form'].search([
@@ -114,8 +113,8 @@ class CrossoveredBudget(models.Model):
                         continue
 
                     dept_id = form.department_id.id
-                    post_id = f_line.general_budget_id.id
-                    analytic_id = f_line.analytic_account_id.id or False
+                    account_id = f_line.account_account_id.id
+                    analytic_id = f_line.account_id.id or False
                     date_from = f_line.start_from or budget.date_from
                     date_to = f_line.end_to or budget.date_to
 
@@ -131,10 +130,10 @@ class CrossoveredBudget(models.Model):
                         )
 
                     domain = [
-                        ('crossovered_budget_id', '=', budget.id),
-                        ('general_budget_id', '=', post_id),
+                        ('budget_analytic_id', '=', budget.id),
+                        ('account_account_id', '=', account_id),
                         ('department_id', '=', dept_id),
-                        ('analytic_account_id', '=', analytic_id),
+                        ('account_id', '=', analytic_id),
                     ]
 
                     existing_line = BudgetLine.search(domain, limit=1)
@@ -151,10 +150,10 @@ class CrossoveredBudget(models.Model):
                             existing_line.write(vals)
                         else:
                             vals.update({
-                                'crossovered_budget_id': budget.id,
-                                'name': f"{form.department_id.name} - {f_line.general_budget_id.name}",
-                                'general_budget_id': post_id,
-                                'analytic_account_id': analytic_id,
+                                'budget_analytic_id': budget.id,
+                                'name': f"{form.department_id.name} - {f_line.account_account_id.name}",
+                                'account_account_id': account_id,
+                                'account_id': analytic_id,
                                 'department_id': dept_id,
                                 'date_from': date_from,
                                 'date_to': date_to,
@@ -168,7 +167,7 @@ class CrossoveredBudget(models.Model):
                     elif form.budget_type == 'amendment':
                         if not existing_line:
                             raise UserError(
-                                _("No base budget line found to amend for %s") % f_line.general_budget_id.name)
+                                _("No base budget line found to amend for %s") % f_line.account_account_id.name)
 
                         existing_line.write({
                             'planned_amount': existing_line.planned_amount + standard_amount,
@@ -183,7 +182,7 @@ class CrossoveredBudget(models.Model):
                     elif form.budget_type == 'transfer':
                         if not existing_line:
                             raise UserError(
-                                _("Cannot transfer from/to a budget line that does not exist:\n%s") % f_line.general_budget_id.display_name)
+                                _("Cannot transfer from/to a budget account that does not exist:\n%s") % f_line.account_account_id.display_name)
 
                         # تحديث المبالغ (سواء كانت سالبة للمحول منه أو موجبة للمحول إليه)
                         existing_line.write({
@@ -226,11 +225,11 @@ class CrossoveredBudget(models.Model):
                         'company_id': budget.company_id.id,
                     })
 
-                    for post in dept_conf.general_budget_id:
+                    for account in dept_conf.account_account_ids:
                         for analytic in dept_conf.analytic_account_id:
                             FormLineObj.create({
                                 'form_id': form.id,
-                                'general_budget_id': post.id,
+                                'account_account_id': account.id,
                                 'analytic_account_id': analytic.id,
                                 'planned_amount': 0.0,
                                 'start_from': budget.date_from,
@@ -241,18 +240,18 @@ class CrossoveredBudget(models.Model):
                         if not existing_form.company_id:
                             existing_form.write({'company_id': budget.company_id.id})
 
-                        for post in dept_conf.general_budget_id:
+                        for account in dept_conf.account_account_ids:
                             for analytic in dept_conf.analytic_account_id:
                                 line_exists = FormLineObj.search([
                                     ('form_id', '=', existing_form.id),
-                                    ('general_budget_id', '=', post.id),
+                                    ('account_account_id', '=', account.id),
                                     ('analytic_account_id', '=', analytic.id)
                                 ], limit=1)
 
                                 if not line_exists:
                                     FormLineObj.create({
                                         'form_id': existing_form.id,
-                                        'general_budget_id': post.id,
+                                        'account_account_id': account.id,
                                         'analytic_account_id': analytic.id,
                                         'planned_amount': 0.0,
                                         'start_from': existing_form.date_from,
@@ -284,8 +283,9 @@ class CrossoveredBudget(models.Model):
 
 
 class CrossoveredBudgetLines(models.Model):
-    _inherit = 'crossovered.budget.lines'
+    _inherit = 'budget.line'
 
+    account_account_id = fields.Many2one('account.account', string='Account')
     department_id = fields.Many2one('hr.department', string="Department")
     amendment_amount = fields.Float(string="Amending/Transfer Amount", help="Amending/Transfer Amount")
     amendment_amount_custom = fields.Float(string="Amending/Transfer Amount(Other currency)", help="Amending/Transfer Amount")

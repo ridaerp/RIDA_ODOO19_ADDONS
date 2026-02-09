@@ -134,7 +134,8 @@ class StockLandedCost(models.Model):
                 move_vals['line_ids'] += line._create_accounting_entries(move, qty_out)
 
             # batch standard price computation avoid recompute quantity_svl at each iteration
-            products = self.env['product.product'].browse(p.id for p in cost_to_add_byproduct.keys())
+            products = self.env['product.product'].browse(p.id for p in cost_to_add_byproduct.keys()).with_company(
+                cost.company_id)
             for product in products:  # iterate on recordset to prefetch efficiently quantity_svl
                 if not float_is_zero(product.quantity_svl, precision_rounding=product.uom_id.rounding):
 

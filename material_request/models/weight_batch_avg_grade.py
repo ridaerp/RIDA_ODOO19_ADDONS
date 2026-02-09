@@ -101,6 +101,7 @@ class WeightBatchAvgGrade(models.Model):
                 FROM weight_request wr
                 JOIN stock_lot sl ON sl.id = wr.lot_id
                 WHERE wr.lot_id IS NOT NULL
+                    AND wr.state = 'done'  -- <-- Only records in Purchase Order state
                 GROUP BY wr.lot_id, sl.name, TO_CHAR(wr.date_request, 'YYYY-MM')
             )
         """)

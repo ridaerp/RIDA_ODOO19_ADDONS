@@ -12,17 +12,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account_accountant', 'account_budget', 'hr','material_request','hr_employee_main'],
+    'depends': ['base','account_accountant', 'account_budget', 'hr','material_request','hr_employee_main', 'account_budget_multi_currency'],
 
     # always loaded
     'data': [
-        # 'security/groups.xml',
-        # 'security/ir.model.access.csv',
-        # 'security/ir_rule.xml',
-        # 'wizards/budget_transfer_wizard_views.xml',
-        # 'views/account_budget_views.xml',
-        # 'views/account_budget_department_form_views.xml',
-        # 'views/budget_department_views.xml',
+        'security/groups.xml',
+        'security/ir.model.access.csv',
+        'security/ir_rule.xml',
+        'views/account_budget_views.xml',
+        'views/account_budget_department_form_views.xml',
+        'views/budget_department_views.xml',
 
     ],
     'installable': True,

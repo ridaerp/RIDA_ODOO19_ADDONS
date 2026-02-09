@@ -271,7 +271,7 @@ class IssuanceRequest(models.Model):
                 'issuance_request_id': self.id,
                 'location_id': location_id.id,
                 'location_dest_id': location_dest_id.id,
-                'analytic_account_id': self.analytic_account_id.id
+                'analytic_account_id': line.analytic_account_id.id
             }
             deliver_picking = self.env['stock.picking'].sudo().create(deliver_pick)
             moves = order.line_ids.filtered(lambda r: r.qty_issued)._create_stock_moves_transfer(deliver_picking,
