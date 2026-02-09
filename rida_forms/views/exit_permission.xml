@@ -130,14 +130,12 @@
                     <field name="name"/>
                     <field name="employee_id"/>
                     <field name="req_id"/>
-                    <!-- <group string="Group By"> -->
-                        <filter name="today_request" string="Today Exit Permission"
-                                domain="[('exit_date', '=', context_today())]"/>
-                        <filter name="by_state" string="By State" domain="[]" context="{'group_by':'state'}"/>
-                        <filter name="department_id" string="By Department" domain="[]"
-                                context="{'group_by':'department_id'}"/>
-                        <filter name="by_company" string="By Company" context="{'group_by':'company_id'}"/>
-                    <!-- </group> -->
+                    <filter name="today_request" string="Today Exit Permission"
+                            domain="[('exit_date', '=', context_today())]"/>
+                    <filter name="by_state" string="By State" domain="[]" context="{'group_by':'state'}"/>
+                    <filter name="department_id" string="By Department" domain="[]"
+                            context="{'group_by':'department_id'}"/>
+                    <filter name="by_company" string="By Company" context="{'group_by':'company_id'}"/>
                 </search>
             </field>
         </record>

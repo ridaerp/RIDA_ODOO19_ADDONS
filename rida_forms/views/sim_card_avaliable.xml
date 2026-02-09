@@ -36,6 +36,8 @@
                         <group>
                             <field name="mobile_number"/>
                             <field name="employee_id"/>
+                            <field name="emp_type" />
+                            <field name="guest_name" invisible="emp_type == False"/>
                             <field name="name"/>
                             <field name="carrier_id" required="1"/>
                             <field name="sim_type_id" required="1"/>
@@ -59,7 +61,7 @@
                       decoration-muted="state == 'inactive'" decoration-bf="state">
                     <field name="mobile_number"/>
                     <field name="name"/>
-                   <field name="employee_id"/>
+                    <field name="employee_id"/>
 
                     <field name="carrier_id"/>
                     <field name="sim_type_id"/>

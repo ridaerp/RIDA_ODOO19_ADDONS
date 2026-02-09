@@ -31,6 +31,10 @@
                     <group>
                         <field name="area_id" options="{'no_create': True,'no_open':True}"/>
                     </group>
+
+                 
+
+
                 </group>
                 <group string="Grade From (0.0 - 100)"
                        groups="base_rida.group_department_ict_hod_manager,material_request.group_ore_rock_db_geology_user">
@@ -47,6 +51,7 @@
                     <button name="print_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
 <!--                    <button name="view_print" string="View Report" type="object" default_focus="1"-->
 <!--                            class="oe_highlight"/>-->
+                    <button name="print_xlsx" string="Print Excel" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn btn-secondary" special="cancel"/>
                 </footer>
             </form>
@@ -125,61 +130,81 @@
                                 <th>العدد</th>
                                 <th>أسم العميل</th>
                                 <th>منطقة الخام</th>
+                                <th>الولاية</th>
+                                <th>CIC/CIL</th>
                                 <th>تاريخ الأستلام</th>
                                 <th>وزن الحمولة بالطن</th>
-                                <th>سعر الشراء للطن</th>
                                 <t t-if="form.get('show_average')">
-                                    <th>سعر الطن</th>
-                                </t>
-                                <th>تحمل العميل</th>
-                                <th>سعر الشراء</th>
-                                <th>ملحوظة</th>
+                                    <th>سعر الشراء للطن</th> </t>
+                                <th>سعر الطن</th> <th>تحمل العميل</th> <th>سعر الشراء</th> <t t-if="form.get('show_average')">
+                                    <th>ملحوظة</th> </t>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="form.get('list_ore_purchases', [])" t-as="rec">
                                 <tr>
-                                    <td t-esc="rec[0]"/>
-                                    <td t-esc="rec[1]"/>
-                                    <td t-esc="rec[2]"/>
-                                    <td t-esc="rec[3]"/>
-                                    <td t-esc="rec[4]"/>
-                                    <td t-esc="rec[5]"/>
-                                    <t t-if="form.get('show_average')">
-                                        <td t-esc="rec[6]"/>
-                                    </t>
-                                    <td t-esc="rec[7]"/>
-                                    <td t-esc="rec[8]"/>
-                                    <td t-esc="rec[9]"/>
+                                    <td t-esc="rec[0]"/> <td t-esc="rec[1]"/> <td t-esc="rec[2]"/> <td t-esc="rec[3]"/> <td t-esc="rec[4]"/> <td t-esc="rec[5]"/> <td t-esc="rec[6]"/> <t t-if="form.get('show_average')">
+                                        <td t-esc="rec[7]"/> </t>
+                                    <td t-esc="rec[8]"/> <td t-esc="rec[9]"/> <td t-esc="rec[10]"/> <t t-if="form.get('show_average')">
+                                        <td t-esc="rec[11]"/> </t>
                                 </tr>
                             </t>
                         </tbody>
                     </table>
                     <h4></h4>
-                    <table class="custom-table">
+                    <table class="custom-table" style="width: 100%; border-collapse: collapse; border: 1px solid black;">
                         <thead>
-                            <tr>
-                                <th>عدد المعاملات</th>
-                                <th>الوزن الكلي (طن)</th>
+                            <tr style="background-color: #f2f2f2; text-align: center;">
+                                <th style="border: 1px solid black; padding: 5px;">عدد المعاملات</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 200px;">الولايات (طن)</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">متوسط تركيز الولاية</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">CIC/CIL (طن)</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">متوسط تركيز النوع</th>
+                                <th style="border: 1px solid black; padding: 5px;">الوزن الكلي (طن)</th>
                                 <t t-if="form.get('show_average')">
-                                    <th>متوسط التركيز</th>
+                                    <th style="border: 1px solid black; padding: 5px;">متوسط التركيز العام</th>
                                 </t>
-                                <th>سعر الشراء</th>
-                                <th>إجمالي كمية الشهر</th>
-                                <th>إجمالي سعر الشهر</th>
+                                <th style="border: 1px solid black; padding: 5px;">سعر الشراء</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="form.get('list_totals_ore_purchase', [])" t-as="total">
                                 <tr>
-                                    <td t-esc="total[0]"/>
-                                    <td t-esc="total[1]"/>
+                                    <td style="border: 1px solid black; text-align: center;" t-esc="total[0]"/>
+
+                                    <td style="border: 1px solid black; text-align: right; padding: 5px;">
+                                        <t t-foreach="form.get('state_details', [])" t-as="state">
+                                            <div style="border-bottom: 1px dashed #ccc;">
+                                                <span t-esc="state['name']"/>: <span style="float: left; font-weight: bold;" t-esc="state['weight']"/>
+                                            </div>
+                                        </t>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; padding: 5px; background-color: #f9f9f9;">
+                                        <t t-foreach="form.get('state_details', [])" t-as="state">
+                                            <div style="border-bottom: 1px dashed #ccc;">
+                                                <span style="font-weight: bold;" t-esc="state['average']"/>
+                                            </div>
+                                        </t>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: right; padding: 5px;">
+                                        <div>CIL: <span style="float: left; font-weight: bold;" t-esc="form.get('cil_weight')"/></div>
+                                        <div style="margin-top: 5px; border-top: 1px solid #eee;">
+                                            CIC: <span style="float: left; font-weight: bold;" t-esc="form.get('cic_weight')"/>
+                                        </div>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; padding: 5px; background-color: #f9f9f9;">
+                                        <div t-esc="form.get('cil_avg')"/>
+                                        <div style="margin-top: 5px; border-top: 1px solid #eee;" t-esc="form.get('cic_avg')"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; font-weight: bold;" t-esc="total[1]"/>
                                     <t t-if="form.get('show_average')">
-                                        <td t-esc="total[2]"/>
+                                        <td style="border: 1px solid black; text-align: center;" t-esc="total[2]"/>
                                     </t>
-                                    <td t-esc="total[3]"/>
-                                    <td t-esc="total[4]"/>
-                                    <td t-esc="total[5]"/>
+                                    <td style="border: 1px solid black; text-align: center;" t-esc="total[3]"/>
                                 </tr>
                             </t>
                         </tbody>

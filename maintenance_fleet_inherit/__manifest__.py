@@ -21,6 +21,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base','hr_employee_main','fleet','maintenance','maintenance_equipment_status','material_request','base_maintenance','base_maintenance_group','mrp','account_asset'],
 
+
     # always loaded
     'data': [
         'data/ir_cron.xml',

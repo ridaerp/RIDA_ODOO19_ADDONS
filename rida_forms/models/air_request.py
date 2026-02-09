@@ -25,12 +25,16 @@ _STATES = [
 
 
 # air_booking_request_amendment
+
+
 class AirBookingRequestAmendment(models.Model):
     _name = 'air.request'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'image.mixin']
     _description = 'Air Booking Request'
     _rec_name = "name_seq"
 
+    
+    
     name_seq = fields.Char("Number", required=True, index=True, default=lambda self: _('New'), copy=False) 
     date_request = fields.Date("Request Date",default=fields.Date.context_today, required=True)
     destination_from = fields.Char("Destination From", required=True)
@@ -68,6 +72,7 @@ class AirBookingRequestAmendment(models.Model):
      self.state = "draft"
 
     def button_to_department_manger(self):
+
         if self.travel_date:
             d = dateutil.parser.parse(str(self.travel_date)).date()
             checked_day=self.date_request+relativedelta(days =+ 14)
@@ -78,6 +83,8 @@ class AirBookingRequestAmendment(models.Model):
                 raise UserError("The date of departure must be Fourteen days after date of request")
 
         self.state="line_approve"
+
+
 
     def button_cancel(self):
      self.state="cancel"
@@ -104,8 +111,14 @@ class AirBookingRequestAmendment(models.Model):
 
             rec.state = "c-level_approval"
 
+
+
+
     def button_to_c_level_approval(self):
             self.state = "Adm_man_approve"
+
+
+
 
     def button_lm_reject(self):
         for rec in self:
@@ -123,23 +136,28 @@ class AirBookingRequestAmendment(models.Model):
                 if not line_manager or line_manager !=rec.env.user :
                     raise UserError("Sorry. Your are not authorized to approve this document!")
 
-            rec.state = "reject"
+            rec.state = "reject"        
 
     def button_Adm_man_reject(self):
      self.state="reject"   
 
+
     def button_c_level_reject(self):
      self.state="reject" 
 
+
     def button_to_Adm_man(self):
      self.state="done"
+
 
     def get_requested_by(self):
         user = self.env.user.id
         return user
 
+
     def _get_default_department(self):
         return self.env.user.department_id.id if self.env.user.department_id else False
+
 
     def _get_default_Job(self):
         return self.env.user.job.id if self.env.user.job_id else False
@@ -160,10 +178,15 @@ class AirBookingRequestAmendment(models.Model):
             if val.get('name_seq', 'New') == 'New':
                 val['name_seq'] = self.env['ir.sequence'].next_by_code('air.request') or 'New'
 
-        return super(AirBookingRequestAmendment, self).create(vals) 
+        return super(AirBookingRequestAmendment, self).create(vals)
+
+
+
 
     @api.constrains('travel_details')
     def check_non_travel_details(self):
-        for rec in self:
-            if rec.travel_details is False:
-                raise UserError("Please add Travel Details!")
+        if self.travel_details is False:
+            raise UserError("Please add Travel Details!")
+
+
+

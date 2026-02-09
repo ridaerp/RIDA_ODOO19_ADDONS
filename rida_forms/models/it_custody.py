@@ -38,7 +38,7 @@ class ItCustody(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('it.custody.code') or ' '
+            vals['name'] = self.env['ir.sequence'].next_by_code('it.custody.code') or ' '
 
         return super(ItCustody, self).create(vals)
 

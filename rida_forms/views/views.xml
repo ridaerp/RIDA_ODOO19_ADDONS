@@ -1,6 +1,9 @@
 <odoo>
   <data>
 
+
+
+
 <record model="ir.ui.view" id="view_material_request_tree">
             <field name="name">material.request.tree</field>
             <field name="model">ict.device.request</field>
@@ -103,6 +106,21 @@ Issue/Rev 02/00</p></b>
                     <h1 class="oe_title">
                         <field name="name_seq" readonly="1" class="oe_inline"/>
                     </h1>
+                    
+                    
+
+
+
+
+        
+
+
+
+
+
+
+
+
 
         <group>
 
@@ -124,8 +142,8 @@ Issue/Rev 02/00</p></b>
        <field name="date_request" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
        <field name="service_ids" widget="one2many_list" attrs="{'readonly': [('state', '!=', 'draft')]}" required="1">
                 <list editable="bottom">
-                <field name="ict_service_id" required="1"/>
-                <field name="service_type_id"  domain="[('service_id','=',ict_service_id)]"/>
+                    <field name="ict_service_id" required="1"/>
+                    <field name="service_type_id"  domain="[('service_id','=',ict_service_id)]"/>
                 </list>
             </field>
             
@@ -179,7 +197,7 @@ Issue/Rev 02/00</p></b>
               
 
               </sheet>
-              <chatter/>
+                <chatter/>
            </form>
 
 
@@ -200,7 +218,7 @@ Issue/Rev 02/00</p></b>
       <field name="name">Device Request</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.device.request</field>
-      <field name="view_mode">list,form</field>
+      <field name="view_mode">tree,form</field>
     </record>
 
 
@@ -210,7 +228,7 @@ Issue/Rev 02/00</p></b>
       <field name="name">ICT Service</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.service</field>
-      <field name="view_mode">list,form</field>
+      <field name="view_mode">tree,form</field>
     </record>
 
 
@@ -219,8 +237,51 @@ Issue/Rev 02/00</p></b>
       <field name="name">Template Service</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.template.service</field>
-      <field name="view_mode">list,form</field>
+      <field name="view_mode">tree,form</field>
     </record>
+
+
+           
+
+           
+
+
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="test.action_server">
+      <field name="name">test server</field>
+      <field name="model_id" ref="model_test_test"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="test" id="test.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="test.menu_1" parent="test.menu_root"/>
+    <menuitem name="Menu 2" id="test.menu_2" parent="test.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="test.menu_1_list" parent="test.menu_1"
+              action="test.action_window"/>
+    <menuitem name="Server to list" id="test" parent="test.menu_2"
+              action="test.action_server"/>
+-->
+
+
 
 <menuitem name="Request Forms" id="rida_forms.menu_root"
         web_icon="rida_forms,static/description/icon.png"

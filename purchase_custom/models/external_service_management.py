@@ -20,9 +20,6 @@ class external_service_management(models.Model):
     duration = fields.Char(string='Contract Duration' , compute='compute_contract_duration')
     start_date = fields.Date(string='Start Date')
     finish_date = fields.Date(string='Finish Date')
-    # state = fields.Selection(string='Status', selection=[('draft', 'Draft'), ('department_manger', 'Department Manager'),
-    #                                                     ('approved', 'Approved'),
-    #                                                     ('reject', 'Rejected')],default='draft')
     state = fields.Selection(string='Status', selection=[('draft', 'Draft'), ('waiting', 'Waiting For Approval'),
                                                         ('approved', 'Approved'),
                                                         ('reject', 'Rejected')],default='draft')
@@ -33,23 +30,6 @@ class external_service_management(models.Model):
     pr_type = fields.Selection(string='Pr type', selection=[('material', 'Material'), ('service', 'Service'),], default='service')
     source_document = fields.Char(string='Source Document')
     company_id = fields.Many2one(comodel_name='res.company', default=lambda self: self.env.company)
-    #Lgistic purchase_custom fields
-    # logistic = fields.Boolean(string='Logistic', default=False)
-    # number_of_loads = fields.Integer(string='No. of loads')
-    # estimated_distance = fields.Float(string='Estimated Distance')
-    # service_type = fields.Selection(string='Service Type', selection=[('transportation', 'Transportation'), 
-    #                                                                   ('backload', 'Backload'),
-    #                                                                   ('custom_clearance', 'Custom Clearance'),
-    #                                                                   ('rig_move', 'Rig Move')])
-    # current_location = fields.Many2one(comodel_name='stock.location', string='Current Location', related='company_id.current_location', store=True, readonly=False)
-    # new_location = fields.Many2one(comodel_name='stock.location', string='New Location', related='company_id.new_location', store=True, readonly=False)
-    # collection_point = fields.Many2one(comodel_name='stock.location', string='Collection point', related='company_id.collection_point', store=True, readonly=False)
-    # release_date = fields.Date(string='Release Date')
-    # collection_mobile_number = fields.Float(string='Collection person Mobile Number')
-    # delivery_mobile_number = fields.Float(string='Delivery person Mobile Number')
-    # scope = fields.Text(string='Scope')
-    # logistic_attatchment = fields.Binary(string='Attatchment')
-    # delivery_point = fields.Many2one(comodel_name='stock.location', string='Delivery point', related='company_id.delivery_point', store=True, readonly=False)    
     invoice_count = fields.Integer(string="Count", compute='compute_invoice_count')
     store_invoice = fields.Many2one(comodel_name='account.move')
     original_contract_sum = fields.Monetary(string='Original contract sum')
@@ -58,8 +38,6 @@ class external_service_management(models.Model):
     fax_number = fields.Integer(string='Fax number')
     telephone_number = fields.Char(string='Telephone No.')
     email = fields.Char(string='Email')
-    # clicked = fields.Boolean(string='', default=False)
-    # inherit_logistic = fields.Many2one(comodel_name='logistics.logistics')
     #rida new fields
     location_type= fields.Many2one(comodel_name='stock.location')
     project_no = fields.Integer(string='Project No')
@@ -69,13 +47,9 @@ class external_service_management(models.Model):
     contract_type =  fields.Selection(string='Contract Type', selection=[('corporate','Corporate'),('operation','Operation')], readonly=True, compute='get_contract_type')
     t_c = fields.Text(string='Terms and Conditions')
     t_c_attatchment = fields.Binary(string='Terms & conditions Attatchment')
-    # state = fields.Selection(string='Status', selection=[('draft', 'Draft'), ('supply_chain_specific', 'Supply Chain Specific'),('supply_chain_director', 'Supply Chain Director'),
-    #                                                     ('contract_specialist', 'Contract Specialist'),('purchase_manager', 'Purchase Manager'),('supply_chain_manager', 'Supply Chain Manager'),('general_manager', 'Grneral Manager'),
-    #                                                     ('approved', 'Approved'),
-    #                                                     ('reject', 'Rejected')],default='draft')
     corporate_states = fields.Selection( selection=[ ('draft', 'Draft'),('supply_chain_specific', 'Supply Chain Specific'),('supply_chain_director', 'Supply Chain Director')],default='draft')
     operation_states = fields.Selection( selection=[('draft', 'Draft'),  ('contract_specialist', 'Contract Specialist'),('purchase_manager', 'Purchase Manager'),('supply_chain_manager', 'Supply Chain Manager'),('general_manager', 'Grneral Manager')],default='draft')
-    message_main_attachment_id = fields.Many2one('ir.attachment', groups="hr.group_hr_user")
+    message_main_attachment_id = fields.Many2one("ir.attachment", groups="hr.group_hr_user")
  
     @api.constrains( 'start_date', 'finish_date')
     def _check_dates(self):
@@ -144,16 +118,6 @@ class external_service_management(models.Model):
             'domain': [('wo_account_id', '=', self.id)],
         }
     
-    # def button_confirm(self):
-    #     for rec in self:
-    #         rec.write({'state': 'department_manger'})
-    
-    # def button_approve(self):
-    #     for rec in self:
-    #         rec.write({'state': 'approved'})
-    
-
-
     #Rirda workflow
         #croporate workfow
     def button_supplychain_specific(self):
@@ -191,22 +155,24 @@ class external_service_management(models.Model):
     
     def action_reject(self):
         self.write({'state': 'reject'})
+        
     
     @api.model
     def create(self, vals):
-        for val in vals:
-            if val.get('name', _('New')) == _('New'):
-                val['name'] = self.env['ir.sequence'].next_by_code('external_service_management.sequence') or _('New')
-
-        return super(external_service_management, self).create(vals)
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('external_service_management.sequence') or _('New')
+        result = super(external_service_management, self).create(vals)
+        return result
    
    
+    # def _send_reminder_mail(self, send_single=False):
     @api.model
     def _send_reminder_mail(self):
         template = self.env.ref('purchase_custom.email_template_purchase_custom_contract_reminder', raise_if_not_found=False)
 
         orders = self.env['external.service.management'].search([])
         if template:
+            # orders = self if send_single else self._get_orders_to_remind()
             for order in self.env['external.service.management'].search(['finish_date','=',datetime.today().date()]):
                 date = order.finish_date
                 if date == datetime.today().date():
@@ -225,7 +191,8 @@ class external_service_managementLine(models.Model):
     currency_id = fields.Many2one(related='work_id.currency_id')  
     estimated_cost = fields.Float('Estimated Cost', related='work_id.contract_number.order_line.price_unit')
     account_id = fields.Many2one(comodel_name='account.move', string="Account")
-    analytic_account_account = fields.Many2one('account.analytic.account', string='Cost center', readonly=True)
+    # analytic_account_account = fields.Many2one(string='Cost center', related="work_id.department_id.analytic_account_id", readonly=True)
+    analytic_account_account = fields.Many2one("account.analytic.account", string='Cost center', readonly=True)
     
     
 
@@ -235,3 +202,12 @@ class Company(models.Model):
     new_location = fields.Many2one(comodel_name='stock.location', string='New Location', store=True)
     collection_point = fields.Many2one(comodel_name='stock.location', string='Collection point', store=True)
     delivery_point = fields.Many2one(comodel_name='stock.location', string='Delivery point', store=True)
+    #rida configuration field
+    maximum_contract_amount = fields.Integer(string='maximum contract amount', store='True')
+
+    
+
+class ESMConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
+
+    maximum_contract_amount = fields.Integer(related='company_id.maximum_contract_amount',string='maximum contract amount', readonly=False)

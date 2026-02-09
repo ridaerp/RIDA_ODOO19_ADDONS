@@ -1,12 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
-
-
-
-
-
 _STATES = [
     ('draft', 'Draft'),
     ('line_approve', 'Waiting Department Manager Approval'),
@@ -28,6 +22,7 @@ class resBranch(models.Model):
     name = fields.Char()
 
 
+
 class IctDeviceRequest(models.Model):
     _name = 'ict.device.request'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'image.mixin']
@@ -41,8 +36,14 @@ class IctDeviceRequest(models.Model):
                                    default=lambda self: self.get_requested_by(), store=True)
     requested_by = fields.Many2one("res.users",readonly=True, string="Employee", track_visibility='onchange',
                                    default=lambda self: self.get_requested_by(), store=True)
+    # department_id = fields.Many2one('hr.department', string='Department',
+    #                                 default=lambda self: self._get_default_department())
     department_id = fields.Many2one('hr.department', string='Department', related="requested_by.employee_ids.department_id",readonly=True)
     job_id = fields.Many2one('hr.job', related="requested_by.employee_ids.job_id", string='Job Title',readonly=True)
+    # job_id = fields.Many2one('hr.job', string="Job Position")
+    # job_id = fields.Many2one('hr.job', compute='_compute_employee_contract',
+    #     domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", string='Job Position')
+    # company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id)
     company_id = fields.Many2one('res.company', related="requested_by.company_id", store=True,readonly=True)
     email = fields.Char("Requested email")
     phone = fields.Integer("Mobile No")
@@ -56,21 +57,25 @@ class IctDeviceRequest(models.Model):
 
     approve_by = fields.Many2one('res.users', 'Approve by', track_visibility='onchange'
                                    , store=True, readonly=True)
+
+
     reason_reject=fields.Char("Resoan Reject",track_visibility='onchange')
     line_manager_id = fields.Many2one('res.users', string="Line Manager", compute='get_line_manager', store=True)
+    # line_manager_id = fields.Many2one('res.users', string="Line Manager", related="requested_by.line_manager_id")
     branch_id = fields.Many2one('res.branch', )
     section = fields.Many2one('hr.department', string='Section')
     service_ids = fields.One2many('ict.services','product_id','Services', copy=True, track_visibility='onchange')
     
+
     def button_draft(self):
-     self.state = "draft"
+        self.state = "draft"
 
     
     def button_to_department_manger(self):  
-     self.state="line_approve"
+        self.state="line_approve"
 
     def button_cancel(self):
-     self.state="cancel"
+        self.state="cancel"
 
 
     def get_requested_by(self):
@@ -95,21 +100,17 @@ class IctDeviceRequest(models.Model):
                     raise UserError("Sorry. Your are not authorized to approve this document!")
 
             rec.state = "ict_HOD_approve"
-     # self.state="ict_HOD_approve"
 
 
     def button_to_ict_HOD(self):
      self.state="done"
 
-
     def get_requested_by(self):
         user = self.env.user.id
         return user
 
-
     def _get_default_department(self):
         return self.env.user.department_id.id if self.env.user.department_id else False
-
 
     def _get_default_Job(self):
         return self.env.user.job.id if self.env.user.job_id else False
@@ -157,3 +158,5 @@ class IctServices(models.Model):
     ict_service_id = fields.Many2one('ict.service',string="ICT Service", required=True)
     product_id = fields.Many2one('ict.device.request')
     service_type_id = fields.Many2one('ict.template.service',string="Service Type", required=True)
+    
+

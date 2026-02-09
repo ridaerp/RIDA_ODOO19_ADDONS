@@ -117,8 +117,8 @@ class KpiPerson(models.Model):
     overall_weight_kpi = fields.Float(string="WEIGHT (%)", compute='_compute_overall')
     overall_weight_competency = fields.Float(string="WEIGHT (%)", compute='_compute_overall')
     total_overall_weight = fields.Float(string="WEIGHT (%)", compute='_compute_overall')
-    total_weigh_kpi = fields.Integer(string="WEIGHT (%)", default='70', readonly=1)
-    total_weight_competency = fields.Integer(string="WEIGHT (%)", default='30', readonly=1)
+    total_weigh_kpi = fields.Integer(string="WEIGHT (%)", default='60', readonly=1)
+    total_weight_competency = fields.Integer(string="WEIGHT (%)", default='40', readonly=1)
     total_weight_kpi_competenct = fields.Integer(string="WEIGHT (%)", compute='_compute_overall')
     overall_score_kpi = fields.Float(string="SCORE", compute='_compute_kpi2')
     overall_score_competency = fields.Float(string="SCORE", compute='_compute_kpi2')
@@ -270,8 +270,8 @@ class KpiPerson(models.Model):
                 rec.total_overall_weight = rec.overall_weight_kpi + rec.overall_weight_competency
                 if rec.total_weigh_kpi > 0 and rec.total_weight_competency > 0:
                     rec.total_weight_kpi_competenct = rec.total_weigh_kpi + rec.total_weight_competency
-                rec.overall_score_kpi = rec.overall_weight_kpi * 0.70
-                rec.overall_score_competency = rec.overall_weight_competency * 0.30
+                rec.overall_score_kpi = rec.overall_weight_kpi * 0.60
+                rec.overall_score_competency = rec.overall_weight_competency * 0.40
                 rec.total_overall_score = rec.overall_score_kpi + rec.overall_score_competency
 
             else:
@@ -301,6 +301,7 @@ class KpiPerson(models.Model):
     def create(self, vals):
         for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('kpi.person.code') or ' '
+
         return super(KpiPerson, self).create(vals)
 
     def unlink(self):

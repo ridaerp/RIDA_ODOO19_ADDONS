@@ -36,7 +36,7 @@ class AreaRequest(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('area.request') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('area.request') or ' '
 
         return super(AreaRequest, self).create(vals)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import logistic_sr
+# from . import logistic_sr
 from . import external_service_management
 from . import contract
 from . import purchase_bill

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-
     <menuitem name="Request Forms" id="menu_root" web_icon="rida_forms,static/description/icon.png" sequence="0"/>
 
     <menuitem name="Admin-GS " id="form_document_admin" web_icon="rida_forms,static/description/icon.png" sequence="1"/>

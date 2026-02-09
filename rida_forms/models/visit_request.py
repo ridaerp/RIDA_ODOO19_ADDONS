@@ -88,6 +88,19 @@ class VisitRequest(models.Model):
             else:
                 rec.num_of_days = 0
 
+    # @api.constrains('date_request', 'date_from')
+    # def _check_date_from_after_request(self):
+    #     for rec in self:
+    #         if self.ugrently:
+    #             return True
+    #         else:
+    #             if rec.date_request and rec.date_from:
+    #                 min_allowed = rec.date_request + timedelta(hours=72)
+    #                 if rec.date_from < min_allowed:
+    #                     raise ValidationError(
+    #                         _("The 'Date From' must be at least 72 hours (3 days) after the 'Request Date'."))
+
+
     @api.constrains('date_request', 'date_from', 'ugrently')
     def _check_date_from_after_request(self):
         for rec in self:
@@ -138,6 +151,9 @@ class VisitRequest(models.Model):
         if not line_manager or line_manager != self.env.user:
             raise UserError("Sorry. Your are not authorized to approve this document!")
         return self.write({'state': 'hr_approve'})
+        # for rec in self:
+        #     rec.state = 'hr_approve'
+        # self.activity_update()
 
     def action_hr_approve(self):
         for rec in self:
@@ -145,7 +161,15 @@ class VisitRequest(models.Model):
         self.activity_update()
 
     def action_site_manager_approve(self):
+        # c_level_id = False
+        # try:
+        #     c_level_id = self.employee_id.department_id.c_level_id
+        # except:
+        #     c_level_id = False
+        # if not c_level_id or c_level_id != self.env.user:
+        #     raise UserError("Sorry. Your are not authorized to approve this document!")
         return self.write({'state': 'adm_man_approve'})
+
 
     def action_done(self):
         for rec in self:
@@ -183,6 +207,7 @@ class VisitRequest(models.Model):
                 message = "Request waiting for Site Manager approval."
 
             elif rec.state == 'adm_man_approve':
+                # users = self.env.ref('base_rida.rida_group_admin_affirm', raise_if_not_found=False).users
                 message = "Admin affirmation required."
 
             else:
@@ -204,3 +229,5 @@ class VisitRequestLine(models.Model):
     degree = fields.Char('Degree / الدرجة')
     job = fields.Char('Job Position / الوظيفة')
     disease = fields.Char(string='الامراض المزمنه ان وجدت / Chronic disease if any')
+
+

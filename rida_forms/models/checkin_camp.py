@@ -49,6 +49,8 @@ class CheckinCampRequest(models.Model):
 
         return super(CheckinCampRequest, self).unlink()
 
+
+
     @api.model
     def create(self, vals):
         for val in vals:

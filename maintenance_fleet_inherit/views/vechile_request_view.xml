@@ -71,7 +71,7 @@
 
 
         <record model="ir.ui.view" id="view_vehicle_request_tree">
-            <field name="name">vehicle.request.tree</field>
+            <field name="name">vehicle.request.list</field>
             <field name="model">vehicle.equipment.request</field>
             <field name="arch" type="xml">
                 <list>
@@ -96,13 +96,11 @@
             <field name="model">vehicle.equipment.request</field>
             <field name="arch" type="xml">
                 <search>
-                    <!-- <group expand='0' string='Group by...'> -->
-                        <field name="name_seq" string="No Request"/>
-                        <filter string='Department' name="department_group" context="{'group_by': 'department_id'}"/>
-                        <filter string='Equipment' name="equipment_group" domain="[]"
-                                context="{'group_by': 'equipment_id'}"/>
-                        <filter string='Status' name="status_group" domain="[]" context="{'group_by': 'state'}"/>
-                    <!-- </group> -->
+                    <field name="name_seq" string="No Request"/>
+                    <filter string='Department' name="department_group" context="{'group_by': 'department_id'}"/>
+                    <filter string='Equipment' name="equipment_group" domain="[]"
+                            context="{'group_by': 'equipment_id'}"/>
+                    <filter string='Status' name="status_group" domain="[]" context="{'group_by': 'state'}"/>
                 </search>
             </field>
         </record>
@@ -309,7 +307,7 @@
                         </notebook>
 
                     </sheet>
-                    <chatter/>
+                         <chatter/>
                 </form>
 
 

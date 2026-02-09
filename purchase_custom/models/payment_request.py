@@ -29,7 +29,6 @@ class PaymentRequest(models.Model):
                                                          ('reject', 'Reject'),
                                                          ('pending', 'Pending'),
                                                          ('reject_approve', 'Reject Then Approved'),], default='draft', track_visibility='onchange')
-    #     draft,approve-reject-pending) add status( reject then approve
     total = fields.Monetary(string='Total', 
     )
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id.id, )
@@ -38,11 +37,10 @@ class PaymentRequest(models.Model):
     invoice_count = fields.Integer(string="Count", compute='compute_invoice_count')
     @api.model
     def create(self, vals):
-        for val in vals:
-            if val.get('name', _('New')) == _('New'):
-                val['name'] = self.env['ir.sequence'].next_by_code('payment.request.sequence') or _('New')
-
-        return super(PaymentRequest, self).create(vals)    
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('payment.request.sequence') or _('New')
+        result = super(PaymentRequest, self).create(vals)
+        return result    
 
     @api.model
     def _get_default_currency_rate(self):

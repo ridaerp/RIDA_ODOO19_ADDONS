@@ -43,5 +43,6 @@
             action="action_asset_tags"
             sequence="11"
             />
+
     </data>
 </odoo>

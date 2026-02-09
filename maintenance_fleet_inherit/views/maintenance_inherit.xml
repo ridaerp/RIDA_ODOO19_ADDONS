@@ -175,6 +175,7 @@
                 <xpath expr="//templates//field[@name='employee_id']" position="after">
                     <field name="code"/>
                 </xpath>
+
             </field>
         </record>
 

@@ -206,19 +206,9 @@ class MeetingRoomReservation(models.Model):
                     raise UserError("Sorry. Your are not authorized to approve this document!")
 
             rec.state = "reject"
-        # self.mapped('line_ids').do_cancel()
-        # return self.write({'state': 'reject'})
-        
-
-        
 
     def button_Adm_man_reject(self):
      self.state="reject"   
-
-
-    # def button_c_level_reject(self):
-    #  self.state="reject" 
-
 
     def button_to_Adm_man(self):
      self.state="done"
@@ -242,7 +232,7 @@ class MeetingRoomReservation(models.Model):
     def _compute_employee_contract(self):
         for contract in self.filtered('requested_by'):
             contract.job_id = contract.requested_by.job_id
-            
+
 
     @api.depends('department_id')
     def get_line_manager(self):
@@ -257,8 +247,7 @@ class MeetingRoomReservation(models.Model):
             if val.get('name_seq', 'New') == 'New':
                 val['name_seq'] = self.env['ir.sequence'].next_by_code('meeting.request') or 'New'
 
-        return super(MeetingRoomReservation, self).create(vals)  
-
+        return super(MeetingRoomReservation, self).create(vals)
 
     @api.constrains('start_meeting')
     def check_non_zero_start_meeting(self):
@@ -279,11 +268,14 @@ class MeetingRoomReservation(models.Model):
                    _('There cannot be 2  reservations overlapping on the same day at the same start time.'))
 
 
+
+
+
     @api.constrains('end_meeting')
     def check_non_zero_end_meeting(self):
         if self.start_meeting >= self.end_meeting:
                 raise ValidationError("End time should be after start time!")
-
+    
         for rec in self:
             domain = [
                     ('start_meeting', '<=', rec.end_meeting),

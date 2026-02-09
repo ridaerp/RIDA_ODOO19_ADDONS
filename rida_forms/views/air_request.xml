@@ -14,7 +14,7 @@
                     <field name="requested_by"/>
                     <field name="department_id"/>
                     <field name="company_id"/>
-                    <!-- ekhlas code -->                    
+                    <!-- ekhlas code -->
                     <field name="state"/>
                 </list>
             </field>
@@ -88,10 +88,6 @@
                         </h1>
 
 
-                        <!-- <div class="oe_edit_only"> -->
-
-
-                        <!-- <group colspan="4" col="4"> -->
                         <group>
 
                             <group>
@@ -140,10 +136,6 @@
                         <h3>Amendment</h3>
                         <group colspan="4" col="4">
 
-                            <!--  <separator  colspan="4"/>
-                             <separator  colspan="4"/> -->
-
-
                             <field name="travel_for_amended_date" readonly="state != 'draft'"/>
                             <field name="travel_amended_date" readonly="state != 'draft'"/>
 
@@ -177,14 +169,17 @@
 
         <!-- actions opening views on models -->
 
-        <record model="ir.actions.act_window" id="air_request">
+        <record model="ir.actions.act_window" id="rida_forms.air_request">
             <field name="name">Air Booking Request</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">air.request</field>
             <field name="view_mode">list,form</field>
         </record>
 
-        <menuitem name="Air Booking Request / Amendment" id="menu_11_list"  sequence="2"  parent="gs_admin_form" action="rida_forms.air_request"/>
+
+        <menuitem name="Air Booking Request / Amendment" id="rida_forms.menu_11_list"  sequence="2"  parent="rida_forms.gs_admin_form"
+              action="rida_forms.air_request"/>
+
 
     </data>
 </odoo>

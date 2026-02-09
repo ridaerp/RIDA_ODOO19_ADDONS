@@ -55,7 +55,7 @@ class UpdateGradePrices(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('update.grade.prices') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('update.grade.prices') or ' '
 
         return super(UpdateGradePrices, self).create(vals)
 

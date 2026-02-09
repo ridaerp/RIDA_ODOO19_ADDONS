@@ -18,6 +18,9 @@
                                 invisible="state != 'wlm_approve'" groups="base_rida.rida_group_line_manager"
                         />
 
+                          
+
+
                         <button string="Approve" name="action_director_approve" type="object" class="oe_highlight"
                                 invisible="state != 'w_director_approve'" groups="base_rida.rida_group_line_manager"
                         />
@@ -684,10 +687,8 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
-                    <!-- <group string="Group By"> -->
-                        <filter name="by_review_state" string="By Review Period" domain="[]"
+                    <filter name="by_review_state" string="By Review Period" domain="[]"
                                 context="{'group_by':'review_state'}"/>
-                    <!-- </group> -->
                 </search>
             </field>
         </record>

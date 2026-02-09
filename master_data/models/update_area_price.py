@@ -97,7 +97,8 @@ class UpdateAreaPrices(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            vals['name'] = self.env['ir.sequence'].next_code_by('update.area.prices') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('update.area.prices') or ' '
+
         return super(UpdateAreaPrices, self).create(vals)
 
     def unlink(self):

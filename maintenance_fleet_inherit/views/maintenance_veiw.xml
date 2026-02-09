@@ -42,7 +42,7 @@
             </field>
         </record>
         <record id="block_tree_view" model="ir.ui.view">
-            <field name="name">block.tree</field>
+            <field name="name">block.list</field>
             <field name="model">block</field>
             <field name="arch" type="xml">
                 <list>
@@ -71,7 +71,7 @@
             </field>
         </record>
         <record id="office_room_tree_view" model="ir.ui.view">
-            <field name="name">office.room.tree</field>
+            <field name="name">office.room.list</field>
             <field name="model">office.room</field>
             <field name="arch" type="xml">
                 <list>
@@ -124,9 +124,13 @@
 
         <record id="equipment_request_view_form_inherit_custom" model="ir.ui.view">
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+            <field name="inherit_id"
+                   ref="maintenance.hr_equipment_request_view_form"/>
             <field name="arch" type="xml">
+
+
                 <xpath expr="//field[@name='equipment_id']" position="before">
+
                     <field name="block_id" readonly="sequence != 1"/>
                     <field name="office_room_id" readonly="sequence != 1"
                            domain="[('block_id','=',block_id)]"
@@ -219,16 +223,23 @@
                 </xpath>
 
                 <xpath expr="//button[@name='archive_equipment_request']" position="replace">
-                    <button string="Cancel" name="archive_equipment_request" type="object" invisible="archive or sequence not in (1, 2, 3, 5)"/>
+
+                    <button string="Cancel" name="archive_equipment_request" type="object"
+                            invisible="archive or sequence not in (1, 2, 3, 5)"/>
+
                 </xpath>
+
 
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="wo_number"/>
                 </xpath>
 
+
                 <xpath expr="//field[@name='employee_id']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
+
+
 
                 <xpath expr="//field[@name='equipment_id']" position="attributes">
                     <attribute name="required">1</attribute>
@@ -238,6 +249,7 @@
                     <attribute name="readonly">sequence != 1</attribute>
                 </xpath>
 
+
                 <xpath expr="//field[@name='employee_id']" position="attributes">
                     <attribute name="readonly">sequence != 1</attribute>
                 </xpath>
@@ -245,6 +257,7 @@
                 <xpath expr="//field[@name='company_id']" position="attributes">
                     <attribute name="readonly">sequence != 1</attribute>
                 </xpath>
+
 
                 <xpath expr="//field[@name='request_date']" position="after">
                     <field name="request_date_time" readonly="True"/>
@@ -257,12 +270,15 @@
                     <field name="analytic_account_id" required="1" readonly="sequence != 1"/>
                 </xpath>
 
-                <!-- <xpath expr="//field[@name='workcenter_id']" position="replace">
+                <xpath expr="//field[@name='workcenter_id']" position="replace">
+
                     <field name="workcenter_id" invisible="maintenance_for != 'workcenter'"
                            required="maintenance_for == 'workcenter'"/>
-                </xpath> -->
+                </xpath>
+
 
                 <xpath expr="//field[@name='email_cc']" position="after">
+
 
                     <field name="team_users" invisible="1"/>
 
@@ -389,12 +405,15 @@
             <field name="inherit_id"
                    ref="base_maintenance.equipment_request_view_form"/>
             <field name="arch" type="xml">
+
                 <field name="equipment_id" position="attributes">
-                    <attribute name="domain">[('office_room_id','=',office_room_id),]</attribute>
-                         <!--(not workorder_id and 1 or
+                    <attribute name="domain">[('office_room_id','=',office_room_id),'|', (not workorder_id and 1 or
                         0, '=', 1), '|', ('workcenter_id', '=', False), ('workcenter_id.order_ids', 'in',
-                        workorder_id) -->
+                        workorder_id)]
+                    </attribute>
                 </field>
+
+              
               
                 <xpath expr="//field[@name='equipment_id']" position="after">
                     <field name="x_studio_equipment_code" help="Equipment Code" string="Equipment Code"/>
@@ -403,99 +422,174 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <xpath expr="//notebook" position="inside">
-                    <page name="report_element" string="Maintenance Timeline &amp; Lead Times">
-                        <!-- Main container -->
-                        <group col="3">
 
-                            <!-- Request / Completion -->
-                            <group string="Request">
-                                
-                                <field name="request_date_time" readonly="1"
-                                       help="Exact date and time the maintenance request was created."/>
-                                <field name="request_date" readonly="1"
-                                       help="Request date only (local time)."/>
-                                <field name="request_time" readonly="1"
-                                       help="Request time only (local time)."/>
-                               
-                                <field name="wo_receive_datetime" readonly="1"
-                                    help="Time when the maintenance team received the work order"/>
 
-                                <field name="reponse_time" readonly="1"
-                                       help="Time taken (in minutes) from request creation to assignment."/>
+<xpath expr="//notebook" position="inside">
+    <page name="report_element" string="Maintenance Timeline &amp; Lead Times">
+        <!-- Main container -->
+        <group col="3">
 
-                            </group>
+            <!-- Request / Completion -->
+            <group string="Request">
+                
+                <field name="request_date_time" readonly="1"
+                       help="Exact date and time the maintenance request was created."/>
+                <field name="request_date" readonly="1"
+                       help="Request date only (local time)."/>
+                <field name="request_time" readonly="1"
+                       help="Request time only (local time)."/>
+               
+                <field name="wo_receive_datetime" readonly="1"
+                    help="Time when the maintenance team received the work order"/>
 
-                            <group string="Completion / Closing">
-                              
-                                <field name="complete_datetime" readonly="1"
-                                       help="Date and time when the maintenance work was completed."/>
-                                <field name="complete_date" readonly="1"
-                                       help="Completion date only."/>
-                                <field name="complete_time" readonly="1"
-                                       help="Completion time only."/>
-                                <field name="m_e_datetime" readonly="1"
-                                       help="Date and time when the maintenance order was officially closed."/>
-                                <field name="m_e_time" readonly="1"
-                                       help="Closing time only."/>
-                            </group>
 
-                            <!-- Duration -->
-                            <group string="Duration">
-                              
-                                <field name="std_durattion" readonly="1"
-                                       help="Standard expected duration for this maintenance task."/>
-                                <field name="duration" readonly="1"
-                                       help="Actual maintenance duration entered by technician."/>
-                                <field name="duration_minutes" readonly="1"
-                                       help="Maintenance duration converted to minutes."/>
-                              <field name="assigned_datetime" readonly="1"
-                                    help="Date and time when the request was assigned Tehnican."/>
-                                <field name="actual_duration" readonly="1"
-                                       help="Actual elapsed time from assignment to completion (minutes)."/>
-                               
+                  <field name="assigned_datetime" readonly="1"
+                    help="Date and time when the request was assigned Tehnican."/>
 
-                            </group>
+            <field name="assigned_date" readonly="1"
+                                help="Date when the request was assigned Tehnican."/>
 
-                            <!-- Equipment -->
-                            <group string="Equipment">
-                            <field name="waiting_equipment" readonly="1"/>
+            <field name="assigned_time" readonly="1"
+                                help="Time when the request was assigned Tehnican."/>
 
-                                <field name="equipment_request_datetime" readonly="1"
-                                       help="Date and time when equipment was requested."/>
-                                <field name="equipment_recevied_time" readonly="1"
-                                       help="Date and time when equipment was received."/>
-                                <field name="equipment_leadtime" readonly="1"
-                                       help="Waiting time (minutes) between equipment request and receipt."/>
-                            </group>
 
-                            <!-- Material Request -->
-                            <group string="Material-Service Request (MR/SR)">
-                                <field name="waiting_material" readonly="1"/>
+                <field name="reponse_time" readonly="1"
+                       help="Time taken (in minutes) from request creation to assignment."/>
 
-                                <field name="mr_request_datetime" readonly="1"
-                                       help="Date and time when the Material Request (MR/SR) was created."/>
-                                <field name="mr_recevied_time" readonly="1"
-                                       help="Date and time when the requested materials-Service were received."/>
-                                <field name="mr_leadtime" readonly="1"
-                                       help="Lead time in minutes: duration between MR/ST request and MR receipt."/>
-                            </group>
+            </group>
 
-                            <!-- Issuance -->
-                            <group string="Issuance Request">
-                                <field name="waiting_issuance" readonly="1"/>
+            <group string="Completion / Closing">
+              
+                <field name="complete_datetime" readonly="1"
+                       help="Date and time when the maintenance work was completed."/>
+                <field name="complete_date" readonly="1"
+                       help="Completion date only."/>
+                <field name="complete_time" readonly="1"
+                       help="Completion time only."/>
+                <field name="m_e_datetime" readonly="1"
+                       help="Date and time when the maintenance order was officially closed."/>
+                <field name="m_e_time" readonly="1"
+                       help="Closing time only."/>
 
-                                <field name="issuance_request_datetime" readonly="1"
-                                       help="Date and time when the Issuance request was submitted."/>
-                                <field name="issuance_recevied_time" readonly="1"
-                                       help="Date and time when the issued items were received."/>
-                                <field name="issuance_leadtime" readonly="1"
-                                       help="Lead time in minutes: duration between Issuance request and receipt of items."/>
-                            </group>
+                        <field name="maintenance_time" readonly="1"
+                       help="Actual elapsed time from Maintenance Start to completion (minutes)."/>
+            </group>
 
-                        </group>
-                    </page>
-                </xpath>
+            <!-- Duration -->
+            <group string="Duration">
+              
+                <field name="std_durattion" readonly="1"
+                       help="Standard expected duration for this maintenance task."/>
+                <field name="duration" readonly="1"
+                       help="Actual maintenance duration entered by technician."/>
+                <field name="duration_minutes" readonly="1"
+                       help="Maintenance duration converted to minutes."/>
+             
+
+                <field name="actual_duration" readonly="1"
+                       help="Actual elapsed time from assignment to completion (minutes)."/>
+              
+               
+
+            </group>
+
+            <!-- Equipment -->
+            <group string="Equipment">
+            <field name="waiting_equipment" readonly="1"/>
+              <field name="equipment_leadtime" readonly="1"
+                       help="Waiting time (minutes) between equipment request and receipt."/>
+
+
+               <separator string="Equipment Request"/>
+                <field name="equipment_request_datetime" readonly="1"
+                       help="Date and time when equipment was requested."/>
+
+
+                <field name="equipment_request_date" readonly="1"
+                       help="Date when equipment was requested."/>
+
+
+                <field name="equipment_request_time" readonly="1"
+                       help="Time when equipment was requested."/>
+
+                <separator string="Equipment Receipt"/>
+
+                <field name="equipment_recevied_date_time" readonly="1"
+                       help="Date and time when equipment was received."/>
+
+
+                 <field name="equipment_recevied_date" readonly="1"
+                         help="Date  when equipment was received."/>
+
+                 <field name="equipment_recevied_time" readonly="1"
+                             help="Time when equipment was received."/>
+
+
+              
+        </group>
+
+            <!-- Material Request -->
+            <group string="Material-Service Request (MR/SR)">
+                <field name="waiting_material" readonly="1"/>
+
+                <field name="mr_leadtime" readonly="1"
+                       help="Lead time in minutes: duration between MR/ST request and MR receipt."/>
+
+                   <separator string="MR / SR Request"/>     
+                <field name="mr_request_datetime" readonly="1"
+                       help="Date and time when the Material Request (MR/SR) was created."/>
+
+                <field name="mr_request_date" readonly="1"
+                       help="Date and time when the Material Request (MR/SR) was created."/>
+
+                <field name="mr_request_time" readonly="1"
+                       help="Date when the Material Request (MR/SR) was created."/>
+
+                         <separator string="MR / SR Receipt"/>
+
+                <field name="mr_recevied_date_time" readonly="1"
+                       help="time when the requested materials-Service were received."/>
+
+                <field name="mr_recevied_date" readonly="1"
+                       help="Date and time when the requested materials-Service were received."/>  
+                <field name="mr_recevied_time" readonly="1"
+                       help="Date and time when the requested materials-Service were received."/>
+
+            </group>
+
+            <!-- Issuance -->
+            <group string="Issuance Request">
+                <field name="waiting_issuance" readonly="1"/>
+
+                 <field name="issuance_leadtime" readonly="1"
+                       help="Lead time in minutes: duration between Issuance request and receipt of items."/> 
+
+
+                <separator string="Issuance Request"/> 
+                <field name="issuance_request_datetime" readonly="1"
+                       help="Date and time when the Issuance request was submitted."/>
+                <field name="issuance_request_date" readonly="1"
+               help="Date  when the Issuance request was submitted."/>
+
+                 <field name="issuance_request_time" readonly="1"
+                help="Time when the Issuance request was submitted."/>
+                       
+
+                     <separator string="Issuance Receipt"/>
+
+                <field name="issuance_recevied_datetime" readonly="1"
+                       help="Date and time when the issued items were received."/>
+                <field name="issuance_recevied_date" readonly="1"
+                       help="Date  when the issued items were received."/>
+                       <field name="issuance_recevied_time" readonly="1"
+                       help="Time  when the issued items were received."/>
+
+               
+            </group>
+
+        </group>
+    </page>
+</xpath>
 
                     <xpath expr="//notebook/page[1]" position="before">
                       <page name="maintenace_task_page" string="Inspection-Maintenance" invisible="sequence == 1" group="maintenance_fleet_inherit.group_maintenance_supervisor,maintenance_fleet_inherit.group_maintenance_technician">

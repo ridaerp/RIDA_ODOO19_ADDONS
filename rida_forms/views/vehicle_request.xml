@@ -15,17 +15,10 @@
                     <field name="to" />
                     <field name="requested_by" />
                     <field name="department_id" />
-                    <!-- ekhlas code -->
                     <field name="state" />
                 </list>
             </field>
         </record>
-
-
-
-
-
-
 
 
 <record id="view_vehicle_request_form" model="ir.ui.view">
@@ -42,10 +35,6 @@
                         <button name="button_to_officer" states="draft" string="Submit" type="object" class="oe_highlight" groups="base.group_user"/>
 
                         <button name="button_cancel" states="draft" string="Cancel" type="object" groups="base.group_user" class="" />
-
-
-
-
 
 <!--                    Line Manager-->
                         <button name="button_to_operation_officer" string="Approve" type="object" states="operation_officer_approve"  class="oe_highlight" />
@@ -73,6 +62,9 @@
 
                   
 <br /> 
+    <!-- <b><p align="center">Doc. No. UMC-ADM-QP-ADM/15  
+-            
+Issue/Rev 02/00</p></b> -->
 
     <sheet>
 
@@ -84,6 +76,13 @@
                     
                     
 
+
+
+<!-- <div class="oe_edit_only"> -->
+                                      
+                        
+
+            <!-- <group colspan="4" col="4"> -->
             <group>            
 
             <group>
@@ -94,6 +93,11 @@
                 <field name="equipment_code"/>
 
                 <field name="category_id"  attrs="{'readonly': [('state', 'not in',['draft','operation_officer_approve'])]}"/>
+
+
+
+
+
                 
 
 
@@ -106,7 +110,8 @@
                  <field name="capacity" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 
                 <field name="priority" widget="priority" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                <field name="period" attrs="{'readonly': [('state', '!=', 'draft')]}"/>                
+                <field name="period" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                
                 
             </group>
 
@@ -121,35 +126,19 @@
              <field name="department_id"/>
 
              <field name="location" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+
+
               
             </group>
-
-
-
-            
-
-
-             
-
-
-
-
-
-                          
-                      </group>
+        </group>
 
 
 
                      <group >
-
                     </group>
 
-
-
         <group>
-
          <group>
-
 
              <field name="movement_receiving_request_time" attrs="{'readonly': [('state', '!=', 'operation_officer_approve')], 'required': [('state','=','operation_officer_approve')]}"/>
 
@@ -158,8 +147,6 @@
 
              <field name="movement_delivery_time" attrs="{'readonly': [('state', '!=', 'operation_officer_approve')], 'required': [('state','=','operation_officer_approve')]}"/>
 
-
-    
   
 </group>
 
@@ -205,12 +192,6 @@
 <menuitem name="Request Forms" id="rida_forms.menu_root"
         web_icon="rida_forms,static/description/icon.png"
             sequence="0"/>
-
- 
-    
-
-
-
 
 
 

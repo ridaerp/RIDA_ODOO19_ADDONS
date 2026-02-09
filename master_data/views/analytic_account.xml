@@ -69,7 +69,7 @@
                             </group>
                             <group>
                                 <field name="code"
-                                   required="state == 'md'"  readonly="state != 'md'"/>
+                                   required="state == 'md'"  readonly="state not in ['md','w_adv']"/>
 
                                    <field name="type"
                                    required="1"  readonly="state != 'md'"/>

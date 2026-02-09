@@ -59,7 +59,7 @@
                 <xpath expr="//label[@for='date_order']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_to_invoice']" position="after">
+                <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/list/field[@name='qty_to_invoice']" position="after">
                     <field name="rate" readonly="state != 'draft'" />
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='order_line']" position="attributes">
@@ -128,16 +128,6 @@
                     </page>
                 </xpath>
 
-
-
-
-
-
-
-
-
-
-
             </field>
         </record>
 
@@ -153,10 +143,6 @@
             </field>
         </record>
 
-
-        <!-- <menuitem id="purchase.purchase_menu_root" name="Contracting" web_icon="purchase_management,static/description/icon.png" sequence="7"/> -->
-
-        <!-- <menuitem id="purchase.menu_purchase_order" name="purchase Contract" action="purchase.action_orders" parent="purchase.purchase_order_menu" sequence="2" groups="purchases_team.group_purchase_purchasesman"/> -->
         <menuitem id="purchase.menu_purchase_order" name="purchase Contract" action="purchase.action_orders" parent="contract_menu_act" sequence="2"/>
 
 

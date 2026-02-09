@@ -87,7 +87,7 @@ class RequestLocation(models.Model):
             users = []
             message = ""
             if rec.state == 'draft':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').users
+                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
                 message = "Please Create the Stock Location"
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
@@ -105,8 +105,7 @@ class RequestLocation(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['code_seq'] = self.env['ir.sequence'].next_code_by('request.location') or ' '
-
+            val['code_seq'] = self.env['ir.sequence'].next_by_code('request.location') or ' '
         return super(RequestLocation, self).create(vals)
 
     def set_confirm(self):
@@ -134,6 +133,9 @@ class RequestLocation(models.Model):
         })
         return self.write({'state': 'done'})
 
+
+
+
     @api.depends('name', 'location_id.complete_name', 'usage')
     def _compute_complete_name(self):
         for location in self:
@@ -146,6 +148,8 @@ class RequestLocation(models.Model):
     def _onchange_usage(self):
         if self.usage not in ('internal', 'inventory'):
             self.scrap_location = False
+
+
 
     def _get_putaway_strategy(self, product):
         ''' Returns the location where the product has to be put, if any compliant putaway strategy is found. Otherwise returns None.'''

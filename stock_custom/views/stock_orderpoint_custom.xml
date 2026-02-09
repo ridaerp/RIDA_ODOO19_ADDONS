@@ -26,7 +26,6 @@
                 <field name="max_stock" optional="show"/>
                 <field name="order_qty" optional="show"/>
                 <field name="spec_cons" optional="show"/>
-                <!-- <button name="button_store_supervisor_approve" string="Store Supervisor" type="object" class="o_replenish_buttons" icon="fa-truck"/> -->
 
             </xpath>
         </field>

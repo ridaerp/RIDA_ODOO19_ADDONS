@@ -100,7 +100,7 @@ class RequestEquipment(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['code_seq'] = self.env['ir.sequence'].next_code_by('equipment.request') or ' '
+            val['code_seq'] = self.env['ir.sequence'].next_by_code('equipment.request') or ' '
 
         return super(RequestEquipment, self).create(vals)
 

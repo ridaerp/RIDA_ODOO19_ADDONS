@@ -50,8 +50,6 @@ class Contract(models.Model):
     fax_number = fields.Integer(string='Fax number')
     telephone_number = fields.Char(string='Telephone No.')
     email = fields.Char(string='Email')
-    # clicked = fields.Boolean(string='', default=False)
-    # inherit_logistic = fields.Many2one(comodel_name='logistics.logistics')
     # rida new fields
     location_type = fields.Char('Location Type')
     project_no = fields.Integer(string='Project No')
@@ -186,11 +184,10 @@ class Contract(models.Model):
 
     @api.model
     def create(self, vals):
-        for val in vals:
-            if val.get('name', _('New')) == _('New'):
-                val['name'] = self.env['ir.sequence'].next_by_code('Contract.sequence') or _('/')
-
-        return super(Contract, self).create(vals)
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('Contract.sequence') or _('/')
+        result = super(Contract, self).create(vals)
+        return result
 
     def button_change_contract(self):
         view_id = self.env.ref('purchase_custom.change_contract_view_form')
@@ -294,7 +291,7 @@ class ContractLine(models.Model):
                                   default=lambda self: self.env.user.company_id.currency_id.id, )
     estimated_cost = fields.Float('Estimated Cost', )
     account_id = fields.Many2one(comodel_name='account.move', string="Account")
-    analytic_account_account = fields.Many2one('account.analytic.account', string='Cost center', readonly=True)
+    analytic_account_account = fields.Many2one("account.analytic.account", string='Cost center', readonly=True)
     rate = fields.Integer(string='Rate')
 
 
@@ -311,5 +308,6 @@ class Company(models.Model):
 class ESMConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
+    # company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.user.company_id)
     maximum_contract_amount = fields.Integer(related='company_id.maximum_contract_amount',
                                              string='maximum contract amount', readonly=False)

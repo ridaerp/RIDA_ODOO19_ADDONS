@@ -102,9 +102,6 @@
                                         <field name="estimated_cost"/>
                                         <field name="unit_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                                         <field name="total" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                        <!-- <field name="currency_id"/> -->
-
-
                                     </list>
                                 </field>
                             </page>

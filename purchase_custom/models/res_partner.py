@@ -46,6 +46,7 @@ class Partner(models.Model):
     @api.model
     def create(self, values):
         partner = super(Partner, self).create(values)
+        # if not values.get('is_account'):
         partner.state = 'register'
         return partner
 

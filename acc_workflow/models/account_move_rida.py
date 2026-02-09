@@ -30,54 +30,46 @@ class AccountReport(models.AbstractModel):
 
     def open_journal_items(self, options, params):
         action = self.env["ir.actions.actions"]._for_xml_id("account.action_move_line_select")
-
-        if not isinstance(action, dict):
-            action = action.read()[0]
-
-        ctx = dict(self.env.context)
-
-        params = params or {}
-        options = options or {}
-
-        if 'id' in params:
+        ctx = self.env.context.copy()
+        if params and 'id' in params:
             active_id = self._get_caret_option_target_id(params['id'])
             ctx.update({
-                'active_id': active_id,
-                'search_default_account_id': [active_id],
+                    'active_id': active_id,
+                    'search_default_account_id': [active_id],
             })
-
-        if options.get('journals'):
-            selected_journals = [j['id'] for j in options['journals'] if j.get('selected')]
-            if selected_journals:
-                ctx.update({'search_default_journal_id': selected_journals})
-
-        base_domain = ast.literal_eval(action.get('domain') or '[]')
-        domain = expression.normalize_domain(base_domain)
-
-        if options.get('analytic_accounts'):
-            analytic_ids = [int(r) for r in options['analytic_accounts']]
-            domain = expression.AND([domain, [('analytic_account_id', 'in', analytic_ids)]])
-
-        fin_line_id = params.get('financial_group_line_id')
-        if fin_line_id and not (isinstance(fin_line_id, str) and fin_line_id.startswith('hierarchy_')):
-            parent_line = self.env['account.financial.html.report.line'].browse(fin_line_id)
-            parent_domain = ast.literal_eval(parent_line.domain or '[]')
-            domain = expression.AND([domain, expression.normalize_domain(parent_domain)])
-
-        if not options.get('all_entries'):
-            ctx['search_default_posted'] = True
-
-        line_domain = []
-        unfolded = options.get('unfolded_lines') or []
-        numbers = [x for x in unfolded if isinstance(x, (int, float))]
-        number = numbers[-1] if numbers else None
-        if number:
-            current_line = self.env['account.financial.html.report.line'].browse(int(number))
-            if current_line.exists():
-                line_domain = ast.literal_eval(current_line.domain or '[]')
-                domain = expression.AND([domain, expression.normalize_domain(line_domain)])
-
-        action['domain'] = domain
+        if options:
+            if options.get('journals'):
+                selected_journals = [journal['id'] for journal in options['journals'] if journal.get('selected')]
+                if selected_journals: # Otherwise, nothing is selected, so we want to display everything
+                    ctx.update({
+                        'search_default_journal_id': selected_journals,
+                    })
+            domain = expression.normalize_domain(ast.literal_eval(action.get('domain') or '[]'))
+            if options.get('analytic_accounts'):
+                analytic_ids = [int(r) for r in options['analytic_accounts']]
+                domain = expression.AND([domain, [('analytic_account_id', 'in', analytic_ids)]])
+            # In case the line has been generated for a "group by" financial line, append the parent line's domain to the one we created
+            if params.get('financial_group_line_id'):
+                # In case the hierarchy is enabled, 'financial_group_line_id' might be a string such
+                # as 'hierarchy_xxx'. This will obviously cause a crash at domain evaluation.
+                if not (isinstance(params['financial_group_line_id'], str) and 'hierarchy_' in params['financial_group_line_id']):
+                    parent_financial_report_line = self.env['account.financial.html.report.line'].browse(params['financial_group_line_id'])
+                    domain = expression.AND([domain, ast.literal_eval(parent_financial_report_line.domain)])
+            line_domain=False
+            if not options.get('all_entries'):
+                ctx['search_default_posted'] = True
+            if options['unfolded_lines']:
+                numbers = [item for item in options['unfolded_lines'] if
+                           isinstance(item, int) or isinstance(item, float)]
+                number = numbers[-1] if numbers else None
+                if number:
+                    current_report_line = self.env['account.financial.html.report.line'].browse(number)
+                    if current_report_line.exists():
+                        line_domain = ast.literal_eval(current_report_line.domain) or False
+            action['domain'] = domain
+            if line_domain:
+                combined_domain = expression.AND([action['domain'],line_domain])
+                action['domain']=combined_domain
         action['context'] = ctx
         return action
 
@@ -234,7 +226,7 @@ class AnalyticAccount(models.Model):
     _inherit = "account.analytic.account"
 
     type = fields.Selection(string="", selection=[('dept', 'Department'), ('asset_mach', 'Asset / Machine'),('plant', 'Plant'),('process', 'Process'),('project', 'Project'),('supplier', 'Material Minds/supplier'),('other', 'Others'),], required=False, )
-    analytic_type = fields.Selection(string="", selection=[('ser_cost_center', 'Service Cost Centers'), ('prod_cost_center', 'Productive Cost Center'),('admin_cost_center', 'Administrative Cost Center'),('capitalized', 'Capitalized Cost Centers'),('sale_cost_center', 'Sales & marketing Cost Centers'),
+    analytic_type = fields.Selection(string="", selection=[('ser_cost_center', 'Service Cost Centers'), ('prod_cost_center', 'Productive Cost Center'),('admin_cost_center', 'Administrative Cost Center'),('capitalized', 'Capitalized Cost Centers'),
                                                            ('group_business_dev','Group Business Development '),('group_cost_center', 'Group Cost Centers'),('none', 'None'),], required=False, )
 
 

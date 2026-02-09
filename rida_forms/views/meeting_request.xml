@@ -8,17 +8,30 @@
             <field name="model">meeting.request</field>
             <field name="arch" type="xml">
                 <list>
+                    <!-- <field name="message_needaction" invisible="1" /> -->
                     <field name="name_seq" />
+                    <!-- <field name="name" /> -->
                     <!-- ekhlas code -->
+                     <!-- <field name="title" /> -->
                     <field name="date_request" />
                     
                     <field name="meeting_date" />
                     <field name="start_meeting" />
                     <field name="end_meeting" />
+
+                    <!-- <field name="item_type" /> -->
                     <field name="requested_by" />
                     <field name="department_id" />
+                    <!-- <field name="company_id" /> -->
                     <!-- ekhlas code -->
+                    <!-- <field name="assigned_to_supply" />
+                    <field name="assigned_date" />
+                    
+
+                    <field name="priority" /> -->
                     <field name="state" />
+                    <!-- <field name="amount_total" /> -->
+                    <!-- <field name="company_id" /> -->
                 </list>
             </field>
         </record>
@@ -272,7 +285,7 @@ Issue/Rev 02/00</p></b>
               
 
               </sheet>
-                <chatter/>
+               <chatter/>
            </form>
 
 

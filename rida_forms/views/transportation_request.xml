@@ -52,7 +52,6 @@
 
                         <button name="button_to_Adm_man" string="Approve" type="object"   invisible="state != 'Adm_man_approve'"  class="oe_highlight" />
 
-
                         <button name="button_lm_reject"  type="object" invisible="state != 'line_approve'"  groups="base_rida.rida_group_line_manager" string="Reject"/>
 
 
@@ -64,8 +63,6 @@
 
                                 invisible="state !=  'done'"
                                 class=""/>
-
-
 
                         <field name="state" widget="statusbar" tatusbar_visible="draft,done" statusbar_colors='{"manager_approved":"blue"}'/>
 
@@ -95,10 +92,7 @@ Issue/Rev 02/00</p></b>
                                       
                         
 
-            <group colspan="4" col="4">
-
-           <!--  <field name="time_request" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-            
+            <group colspan="4" col="4">            
 
             <field name="date_request"   readonly="state !=   'draft'"/>
 
@@ -170,20 +164,15 @@ Issue/Rev 02/00</p></b>
 
     <!-- actions opening views on models -->
 
-    <record model="ir.actions.act_window" id="transportation_request">
+    <record model="ir.actions.act_window" id="rida_forms.transportation_request">
       <field name="name">Transportation Request</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">transportation.request</field>
-      <field name="view_mode">list,form</field>
+      <field name="view_mode">tree,form</field>
     </record>
 
-
-    <menuitem name="Transportation Request" id="menu_6_list" sequence="3"  parent="gs_admin_form" action="rida_forms.transportation_request"/>
-
-
-
-
-
+    <menuitem name="Transportation Request" id="rida_forms.menu_6_list" sequence="3"  parent="rida_forms.gs_admin_form"
+              action="rida_forms.transportation_request"/>
 
   </data>
 </odoo>

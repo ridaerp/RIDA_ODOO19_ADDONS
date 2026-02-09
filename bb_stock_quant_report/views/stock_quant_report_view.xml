@@ -10,19 +10,15 @@
                 <field name="location_id"/>
                 <field name="categ_id"/>
                 <field name="lot_id" groups="stock.group_production_lot"/>
-                <!-- <group expand='0' string='Filters'> -->
-                    <filter name="negative" string="Negative Stock" domain="[('quantity', '&lt;', 0.0)]"/>
-                    <filter name="positive" string="Available Stock" domain="[('quantity', '&gt;', 0.0)]"/>
-                    <filter name="reserved" string="Reserved" domain="[('reserved_quantity', '&gt;', 0.0)]"/>
-                    <filter string="The cost is greater than the sale price" name="urtug_ih" domain="[('bohir_ashig','&lt;',0)]"/>
-                <!-- </group> -->
-                <!-- <group expand='0' string='Group by...'> -->
-                    <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
-                    <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
-                    <filter string='Category' name="categgroup" domain="[]" context="{'group_by': 'categ_id'}"/>
-                    <filter string='Lot/Serial Number' name="Lot_Serial_number" context="{'group_by': 'lot_id'}" groups="stock.group_production_lot"/>
-                    <filter string='Company' name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
-               <!-- </group> -->
+                <filter name="negative" string="Negative Stock" domain="[('quantity', '&lt;', 0.0)]"/>
+                <filter name="positive" string="Available Stock" domain="[('quantity', '&gt;', 0.0)]"/>
+                <filter name="reserved" string="Reserved" domain="[('reserved_quantity', '&gt;', 0.0)]"/>
+                <filter string="The cost is greater than the sale price" name="urtug_ih" domain="[('bohir_ashig','&lt;',0)]"/>
+                <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
+                <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
+                <filter string='Category' name="categgroup" domain="[]" context="{'group_by': 'categ_id'}"/>
+                <filter string='Lot/Serial Number' name="Lot_Serial_number" context="{'group_by': 'lot_id'}" groups="stock.group_production_lot"/>
+                <filter string='Company' name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
             </search>
         </field>
     </record>

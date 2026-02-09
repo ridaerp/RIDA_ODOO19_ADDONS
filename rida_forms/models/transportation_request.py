@@ -61,8 +61,13 @@ class TransportationRequest(models.Model):
     approve_by = fields.Many2one('res.users', 'Approve by', track_visibility='onchange'
                                    , store=True, readonly=True)
 
+
     reason_reject=fields.Char("Resoan Reject",track_visibility='onchange')
     line_manager_id = fields.Many2one('res.users', string="Line Manager", compute='get_line_manager', store=True)
+    
+    # service_ids = fields.One2many('ict.services','product_id','Services', copy=True, track_visibility='onchange')
+    
+    # company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id)
     company_id = fields.Many2one('res.company', related="requested_by.company_id", store=True,readonly=True)
 
 
@@ -84,6 +89,16 @@ class TransportationRequest(models.Model):
             self.state="line_approve"
         else:
             self.state="line_approve"
+
+
+    # def _compute_time(self):
+    #     for rec in self:
+    #      # if rec.time_request:
+    #      #  rec.datetime.strftime(self.time_request, "%H:%M:%S")
+    #        if rec.date_request:
+    #         rec.time_request = datetime.strftime(rec.date_request, "%H:%M:%S")
+
+
 
     def button_cancel(self):
      self.state="cancel"
@@ -110,6 +125,9 @@ class TransportationRequest(models.Model):
 
             rec.state = "Adm_man_approve"
 
+
+
+
     def button_lm_reject(self):
         for rec in self:
             if self.env.user.has_group('base.group_system'):
@@ -127,43 +145,63 @@ class TransportationRequest(models.Model):
                     raise UserError("Sorry. Your are not authorized to approve this document!")
 
             rec.state = "reject"
+        # self.mapped('line_ids').do_cancel()
+        # return self.write({'state': 'reject'})
+        
+
+        
 
     def button_Adm_man_reject(self):
      self.state="reject"    
 
+
     def button_to_Adm_man(self):
      self.state="done"
+
 
     def get_requested_by(self):
         user = self.env.user.id
         return user
 
+
     def _get_default_department(self):
         return self.env.user.department_id.id if self.env.user.department_id else False
 
+
     def _get_default_Job(self):
         return self.env.user.job.id if self.env.user.job_id else False
+
+
 
     @api.depends('requested_by')
     def _compute_employee_contract(self):
         for contract in self.filtered('requested_by'):
             contract.job_id = contract.requested_by.job_id
+            
+
+
+
+
 
     @api.depends('department_id')
     def get_line_manager(self):
         if self.department_id:
             self.line_manager_id = self.department_id.manager_id.user_id
 
+
+
     @api.model
     def create(self, vals):
         for val in vals:
             if val.get('name_seq', 'New') == 'New':
                 val['name_seq'] = self.env['ir.sequence'].next_by_code('transportation.request') or 'New'
+        
         return super(TransportationRequest, self).create(vals)
+
+
+
 
     @api.constrains('purpose')
     def check_non_purpose(self):
-        for rec in self:
-            if rec.purpose is False:
-                raise UserError("Please add Purpose! - ‫الغرض من وسيلة‬ ‫نقل‬ ‫")
-    
+        if self.purpose is False:
+            raise UserError("Please add Purpose! - ‫الغرض من وسيلة‬ ‫نقل‬ ‫")

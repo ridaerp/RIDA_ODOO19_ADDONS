@@ -99,7 +99,7 @@ class RequestVendor(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('vendor.request') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('vendor.request') or ' '
 
         return super(RequestVendor, self).create(vals)
 

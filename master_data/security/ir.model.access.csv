@@ -78,3 +78,4 @@ access_account_payment_term_scd,account.payment.term.pro.manager,account.model_a
 
 access_account_payment_term_line_procur_manager,account.payment.tlerm.pro.manager,account.model_account_payment_term_line,base_rida.rida_group_supply_chain_manager,1,1,1,1
 access_account_payment_term__linescd,account.payment.term.line.manager,account.model_account_payment_term_line,base_rida.rida_group_supply_chain_director,1,1,1,1
+access_permission_request,access_permission_request,model_permission_request,,1,1,1,1

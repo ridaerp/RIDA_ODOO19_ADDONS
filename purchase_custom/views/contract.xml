@@ -76,8 +76,8 @@
                             <field name="estimated_cost"  readonly="state != 'draft'"/>
                             <field name="finish_date" readonly="state != 'draft'"/>
                             <field name="currency_id" readonly="state != 'draft'"/>
-                        </group>
-                        <group>
+                          </group>
+                            <group>
                             <field name="location_type" invisible="0"/>
                             <field name="project_no"/>
                             <field name="project_description"/>
@@ -178,10 +178,6 @@
 
         <menuitem id="contract_menu_act" name="Contracts" parent="purchase.menu_purchase_root" sequence="17" groups="material_request.group_contract_manager,material_request.group_buyers"/>
         <menuitem id="contract_menu" name="Contract" parent="contract_menu_act" action="contract_action" sequence="1"/>
-
-        <!-- rida configuration menu-->
-        <!-- <menuitem  action="external_service_management_conf_action" id="external_service_management__conf_menu_act"
-           parent="purchase.menu_purchase_config" sequence="1"/> -->
 
     </data>
 </odoo>

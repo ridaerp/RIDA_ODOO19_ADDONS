@@ -277,6 +277,7 @@
                                                "/>
                                         <field name="name" widget="section_and_note_text"
                                                required="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"/>
+                                        
                                         <field name="quantity"/>
                                         <field name="product_uom_category_id" invisible="1"/>
                                         <field name="product_uom_id" string="UoM" groups="uom.group_uom"
@@ -491,6 +492,7 @@
                                         <field name="credit"
                                                sum="Total Credit"
                                                invisible="display_type in ('line_section', 'line_note')"/>
+
                                         <!-- Buttons -->
                                         <button name="action_automatic_entry"
                                                 type="object"
@@ -521,7 +523,6 @@
                                         <field name="tax_group_id" invisible="1"/>
                                         <field name="tax_repartition_line_id" invisible="1" force_save="1"/>
                                         <field name="tax_base_amount" invisible="1" force_save="1"/>
-                                        <!--                                        <field name="tax_exigible" invisible="1" force_save="1"/>-->
                                         <field name="company_id" invisible="1"/>
                                         <field name="company_currency_id" invisible="1"/>
                                         <field name="display_type" force_save="1" invisible="1"/>
@@ -547,6 +548,7 @@
                                                    options="{'no_create': True}"/>
                                             <field name="date_maturity" required="0"
                                                    invisible="context.get('view_no_maturity', False)"/>
+                                            <!--                                        <field name="recompute_tax_line" invisible="1" readonly="1"/>-->
                                         </group>
                                     </form>
                                 </field>
@@ -583,7 +585,7 @@
                                                invisible="move_type not in ('in_invoice', 'in_refund') or invoice_source_email"/>
                                         <field name="auto_post"
                                                readonly="state != 'draft'"/>
-                                        <field name="to_check"/>
+                                        <!-- <field name="to_check"/> -->
                                     </group>
                                 </group>
                             </page>
@@ -595,8 +597,8 @@
                                                invisible="move_type != 'entry'" readonly="state != 'draft'"/>
                                         <field name="reversed_entry_id"
                                                invisible="move_type != 'entry'"/>
-                                        <field name="to_check"
-                                               invisible="move_type != 'entry'"/>
+                                        <!-- <field name="to_check" -->
+                                               <!-- invisible="move_type != 'entry'"/> -->
                                     </group>
                                     <group>
                                         <field name="company_id"  required="1"/>
@@ -611,8 +613,7 @@
                     <div class="o_attachment_preview"
                          invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or state != 'draft'"/>
                     <!-- Chatter -->
-                    <chatter/>
-
+                        <chatter/>
                 </form>
             </field>
         </record>
@@ -645,6 +646,8 @@
                 </xpath>
                 <xpath expr="//page[@id='other_tab_entry']//field[@name='company_id']" position="after">
                     <field name="inalterable_hash" groups="base.group_no_one"/>
+                </xpath>
+                <xpath expr="//sheet" position="before">
                 </xpath>
             </field>
         </record>

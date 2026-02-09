@@ -53,12 +53,14 @@
 
             </group>
             <group col="4" colspan="4">
-                <field name="curr_rate" string="Currency Rate"/>
-                <field name="remark" readonly="state not in ('draft')"/>
-                <field name="pay_date" readonly="state not in ('draft')"/>
-                <field name="risk_cost" readonly="state not in ('draft')"/>
-                <field name="actual_estimated_cost" readonly="state not in ('draft')"/>
-            </group>
+                  <field name="curr_rate" string="Currency Rate"/>
+                  <field name="remark" readonly="state not in ('draft')"/>
+                 <field name="pay_date" readonly="state not in ('draft')"/>
+                 <field name="risk_cost" readonly="state not in ('draft')"/>
+                 <field name="actual_estimated_cost" readonly="state not in ('draft')"/>
+
+              </group>
+
           </sheet>
           <chatter/>
         </form>
@@ -69,7 +71,7 @@
       <field name="name">Payment Request</field>
       <field name="model">payment.request</field>
       <field name="arch" type="xml">
-        <list>
+        <list >
           <!-- Add your fields here -->
           <field name="name"/>
           <field name="vendor_id"/>
@@ -95,7 +97,10 @@
       </field>
     </record>
     <!-- This Menu Item must have a parent and an action -->
+    <!-- <menuitem id="contract_menu_act" name="Contracts" parent="purchase.menu_purchase_root" sequence="17" groups="material_request.group_contract_manager,purchase_custom.material_request.group_buyers"/> -->
     <menuitem id="payment_request" name="Payment Request" parent="contract_menu_act" action="payment_request_action" sequence="3"/>
+
+    <!-- <menuitem id="change_contract_menu_act" name="Change in contracts" parent="contract_menu_act" action="change_contract_action" sequence="18"/> -->
 
   </data>
 </odoo>

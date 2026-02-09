@@ -17,7 +17,6 @@ class ChangeContract(models.Model):
                                                                           ('renewal ', 'Renewal'),
                                                                           ('other ', 'Other')])
     
-    # change_type = fields.Many2one(comodel_name='change.type', string='Type of change', track_visibility='onchange')
     portion_of_agreement_affected = fields.Text(string='Portion of agreement affected')
     reason_for_change = fields.Binary(string='Reason for change',track_visibility='onchange')
     contract_ids = fields.One2many(comodel_name='contract.lines', inverse_name='contract_id')
@@ -35,9 +34,6 @@ class ChangeContract(models.Model):
     start_date = fields.Date(string='Start Date', track_visibility='onchange')
     end_date = fields.Date(string='End Date', track_visibility='onchange')
     description = fields.Text(string='Descriprtion of services')
-    # contract_type = fields.Selection(string='Contract Type', selection=[('minor', 'Minor'), 
-    #                                                                     ('service_order', 'Service Order'),
-    #                                                                     ('service_agreement','Service Agreement')])
     terms_and_conditions = fields.Binary(string='Terms and conditions', )
     buyer = fields.Many2one(comodel_name='res.users', string='Assign buyer', track_visibility='onchange')
     contract_status=fields.Char(string='Contract State' )
@@ -79,11 +75,6 @@ class ChangeContract(models.Model):
         self.inherit_po.start_date = self.start_date
         self.inherit_po.partner_id  = self.vendor_id.id
         self.inherit_po.end_date = self.end_date
-        # self.inherit_po.description = self.description
-        # self.inherit_po.terms_notes = self.terms_note
-        # self.inherit_po.contract_type = self.contract_type
-        # self.inherit_po.scope = self.scope_of_work
-        # self.inherit_po.terms_and_conditions = self.terms_and_conditions
         for contract in contract_lines:
             lines_to_update = self.inherit_po.order_line.filtered(lambda r:r.product_id.id == contract.product_id.id)            
             for line in lines_to_update:
@@ -111,11 +102,11 @@ class ChangeContract(models.Model):
         
     @api.model
     def create(self, vals):
-        for val in vals:
-            if val.get('name', _('New')) == _('New'):
-                val['name'] = self.env['ir.sequence'].next_by_code('change_contract.sequence') or _('New')
-
-        return super(ChangeContract, self).create(vals)
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code(
+                'change_contract.sequence') or _('New')
+        result = super(ChangeContract, self).create(vals)
+        return result
     
 class ContractLines(models.Model):
     _name = 'contract.lines'

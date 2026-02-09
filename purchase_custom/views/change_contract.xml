@@ -85,7 +85,7 @@
               <field name="total" widget="monetary" options="{'currency_field': 'currency_id'}" nolabel="0" class="oe_subtotal_footer_separator" />
             </group>
           </sheet>
-          <chatter/>
+               <chatter/>
         </form>
       </field>
     </record>
@@ -95,16 +95,16 @@
       <field name="name">Changes In Contracts</field>
       <field name="model">change.contract</field>
       <field name="arch" type="xml">
-        <list>
-          <field name="name"/>
-          <field name="vendor_id"/>
-          <field name="contract_number"/>
-          <field name="date"/>
-          <field name="type_of_change"/>
-          <field name="portion_of_agreement_affected"/>
-          <field name="reason_for_change"/>
-          <field name="state"/>
-        </list>
+          <list>
+            <field name="name"/>
+            <field name="vendor_id"/>
+            <field name="contract_number"/>
+            <field name="date"/>
+            <field name="type_of_change"/>
+            <field name="portion_of_agreement_affected"/>
+            <field name="reason_for_change"/>
+            <field name="state"/>
+         </list>
       </field>
     </record>
     <!-- change.contract action window -->

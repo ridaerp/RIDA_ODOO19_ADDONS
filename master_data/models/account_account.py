@@ -83,7 +83,7 @@ class RequestAccountAccount(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['code_seq'] = self.env['ir.sequence'].next_code_by('account.request') or ' '
+            val['code_seq'] = self.env['ir.sequence'].get('account.request') or ' '
         return super(RequestAccountAccount, self).create(vals)
 
 

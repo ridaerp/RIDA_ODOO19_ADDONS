@@ -92,11 +92,11 @@
                     <field name="company_id" string="Company"/>
 
                     <!-- Group By options -->
-                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
-                        <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
-                        <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
-                        <filter string="Requested By" name="group_by_requested_by" context="{'group_by': 'requested_by'}"/>
-                        <filter string="Date Request" name="group_by_date_request" context="{'group_by': 'date_request:month'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Requested By" name="group_by_requested_by" context="{'group_by': 'requested_by'}"/>
+                    <filter string="Date Request" name="group_by_date_request" context="{'group_by': 'date_request:month'}"/>
                 </search>
             </field>
         </record>

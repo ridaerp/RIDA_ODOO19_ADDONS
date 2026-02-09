@@ -547,14 +547,12 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
-                    <!-- <group string="Group By"> -->
-                        <filter name="by_review_state" string="By Review Period" domain="[]"
-                                context="{'group_by':'review_state'}"/>
-                        <filter name="by_department" string="By Department"
-                        domain="[]" context="{'group_by': 'department_id'}"/>
-                        <filter name="by_employee" string="By Employee"
-                                domain="[]" context="{'group_by': 'employee_id'}"/>
-                    <!-- </group> -->
+                    <filter name="by_review_state" string="By Review Period" domain="[]"
+                            context="{'group_by':'review_state'}"/>
+                    <filter name="by_department" string="By Department"
+                    domain="[]" context="{'group_by': 'department_id'}"/>
+                    <filter name="by_employee" string="By Employee"
+                            domain="[]" context="{'group_by': 'employee_id'}"/>
                 </search>
             </field>
         </record>

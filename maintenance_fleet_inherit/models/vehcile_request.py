@@ -321,7 +321,6 @@ class VehicleEquipmentRequest(models.Model):
             if self.started_from > self.to:
                 raise ValidationError("End time should be after start time!")
 
-
 class MaterialRequest(models.Model):
     _inherit = 'material.request'
     euipr_request_id = fields.Many2one('vehicle.equipment.request', "Equipment Request", copy=False)

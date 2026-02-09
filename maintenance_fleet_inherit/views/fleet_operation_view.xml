@@ -1,6 +1,6 @@
 <odoo>
     <record id="view_fleet_operation_tree" model="ir.ui.view">
-        <field name="name">fleet.operation.tree</field>
+        <field name="name">fleet.operation.list</field>
         <field name="model">fleet.operation</field>
         <field name="arch" type="xml">
             <list>

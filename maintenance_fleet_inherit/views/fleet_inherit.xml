@@ -7,9 +7,11 @@
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vin_sn']" position="before">
+<!--                <field name="equipment_id"/>-->
                 <field name="display_name" string="Related Equipment"/>
             </xpath>
             <xpath expr="//field[@name='vin_sn']" position="after">
+<!--                <field name="equipment_id"/>-->
                 <field name="start_odometer" />
             </xpath>
         

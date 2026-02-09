@@ -60,7 +60,6 @@ class StationaryRequest(models.Model):
         for rec in self:
             rec.state = 'adm_man_approve'
 
-
     def action_close(self):
         for rec in self:
             rec.state = 'close'
@@ -83,8 +82,11 @@ class StationaryRequest(models.Model):
 
             users = []
             message = ""
+
             if rec.state == 'adm_man_approve':
+                # users = self.env.ref('base_rida.rida_group_admin_affirm', raise_if_not_found=False).users
                 message = "Admin affirmation required."
+
             else:
                 continue
 
@@ -94,7 +96,6 @@ class StationaryRequest(models.Model):
                     user_id=user.id,
                     note=message,
                 )
-
 class StationaryRequestLine(models.Model):
     _name = 'stationary.request.line'
 

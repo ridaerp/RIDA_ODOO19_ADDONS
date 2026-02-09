@@ -2,29 +2,44 @@
 <odoo>
     <data>
 
-        <record id="view_account_payment_form_inhert" model="ir.ui.view">
+
+
+
+
+   <record id="view_account_payment_form_inhert" model="ir.ui.view">
             <field name="name">account.payment.form_inhert</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form" />
-            <field name="arch" type="xml">
-                <xpath expr='//form' position='attributes'>
-                    <attribute name="create">false</attribute>
-                    <attribute name="edit">false</attribute>
-                </xpath>
-            </field>
-        </record>
 
-        <record id="view_account_payment_tree_inhert" model="ir.ui.view">
+            <field name="arch" type="xml">
+            <xpath expr='//form' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+
+
+            
+
+
+        </field>
+    </record>
+
+  <record id="view_account_payment_tree_inhert" model="ir.ui.view">
             <field name="name">account.payment.tree</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_supplier_payment_tree" />
+
             <field name="arch" type="xml">
-                <xpath expr='//list' position='attributes'>
-                    <attribute name="create">false</attribute>
-                    <attribute name="edit">false</attribute>
-                </xpath>
-            </field>
-        </record>
+            <xpath expr='//list' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+        </field>
+    </record>
 
 <!-- hide create edit vendors payment /-->
 
@@ -32,16 +47,23 @@
             <field name="name">account.payment.form_inhert</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form" />
+
             <field name="arch" type="xml">
-                <xpath expr='//form' position='attributes'>
-                    <attribute name="create">false</attribute>
-                    <attribute name="edit">true</attribute>
-                </xpath>
-            </field>
-        </record>
+            <xpath expr='//form' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">true</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='is_internal_transfer']" position="replace">
+                <field name="is_internal_transfer" readonly="1" />
+            </xpath> -->
+        </field>
+    </record>
 
 
-        <record id="account.view_account_payment_tree" model="ir.ui.view">
+   <record id="account.view_account_payment_tree" model="ir.ui.view">
             <field name="name">account.payment.tree</field>
             <field name="model">account.payment</field>
             <field name="arch" type="xml">
@@ -107,7 +129,9 @@
             </field>
         </record>
 
-    <menuitem id="menu_action_account_payments_payable_new" parent="account.menu_finance_entries" action="action_account_payments_payable_new" sequence="2" groups="account.group_account_manager"/>
+
+        <menuitem id="menu_action_account_payments_payable_new" parent="account.menu_finance_entries" action="action_account_payments_payable_new" sequence="2" groups="account.group_account_manager"/>
+
 
 
 
@@ -195,6 +219,7 @@
                                 <field name="destination_account_id"
                                        options="{'no_create': True}" required="1"
                                        readonly="state != 'draft'"/>
+                                <!-- <field name="is_internal_transfer" readonly="state != 'draft'"/> -->
                                 <field name="company_id" />
                             </group>
                             <group name="group2">
@@ -204,9 +229,13 @@
                                        readonly="state != 'draft'"/>
                                 <field name="partner_bank_id" context="{'default_partner_id': partner_id}"
                                        invisible="show_partner_bank_account == False"
-                                       required="require_partner_bank_account == True"
-                                       readonly="state != 'draft'"/>
+       required="require_partner_bank_account == True"
+       readonly="state != 'draft'"/>
 
+                                <!-- /!\ Required due to the _inherits but must not be required when saving a new
+                                record. Using 'required': [('id', '!=', False)] is not working due to the groups set on
+                                the field.
+                                -->
                                 <field name="move_id"
                                        required="0"
                                        invisible="not id"

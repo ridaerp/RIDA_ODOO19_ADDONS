@@ -44,7 +44,7 @@ class RequestProductCategoty(models.Model):
         """)
     property_stock_account_input_categ_id = fields.Many2one(
         'account.account', 'Stock Input Account', company_dependent=True,
-         check_company=True, domain="[('company_ids', '=', allowed_company_ids[0]), ('active', '=', False)]",
+        domain="[('company_ids', '=', allowed_company_ids[0]), ('active', '=', False)]", check_company=True,
         help="""Counterpart journal items for all incoming stock moves will be posted in this account, unless there is a specific valuation account
                 set on the source location. This is the default value for all products in this category. It can also directly be set on each product.""")
     property_stock_account_output_categ_id = fields.Many2one(
@@ -100,7 +100,8 @@ class RequestProductCategoty(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['code_seq'] = self.env['ir.sequence'].next_code_by('prod.cat.request') or ' '
+            val['code_seq'] = self.env['ir.sequence'].next_by_code('prod.cat.request') or ' '
+
         return super(RequestProductCategoty, self).create(vals)
 
 
@@ -149,3 +150,13 @@ class RequestProductCategoty(models.Model):
             'property_stock_account_output_categ_id': self.property_stock_account_output_categ_id.id,
         })
         return self.write({'state': 'done'})
+
+#
+#
+#
+#
+#
+#
+#
+#
+#

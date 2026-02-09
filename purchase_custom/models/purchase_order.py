@@ -12,6 +12,7 @@ class InheritPurchaseOrder(models.Model):
     validity_date = fields.Date(string='Validity Date')
     buyer = fields.Many2one('res.users', string='Buyer')
     deliver_to = fields.Many2one(comodel_name='stock.warehouse', string='Deliver to')
+    # source_type = fields.Selection(related='request_id.source_type', string="S")
     state = fields.Selection(selection=[('draft', 'RFQ'),
                                         ('sent', 'RFQ Sent'),
                                         # ('buyer', 'Buyer'),
@@ -43,14 +44,9 @@ class InheritPurchaseOrder(models.Model):
     account_id = fields.Many2one(comodel_name='account.budget.department.form')
     procurement_manager_comments = fields.Text(string='Comments')
     managing_director_commecdnts = fields.Text(string='Comments')
-    # requester_description = fields.Text(related='request_id.requester_description', string="Parts /  Items Description")
     dm_date = fields.Datetime(string="Approved date")
-    # check_user = fields.Boolean(related='request_id.check_user', string="Check")
     check_user = fields.Boolean('Check', compute='get_user')
-        # department_id = fields.Many2one(related='request_id.department_id', string="Department")
     department_id = fields.Many2one('hr.department', string="Department")
-    # description = fields.Char(related='request_id_line.name',  size=256,string="Parts /Item Description")
-    # vendor_id = fields.Many2one(related='request_id.vendor_id', string='Buyer')
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor', related='contract_number.partner_id', readonly=True)
     mr_date = fields.Date(string='MR date')
     po_date = fields.Date(string='PO date')
@@ -82,8 +78,6 @@ class InheritPurchaseOrder(models.Model):
     client = fields.Text(string='Comments', default='As indicated by Client. ')
     others = fields.Text(string='Comments',  )
 
-    # def __init__(self):
-    #     self.percentage= 0
     def get_user(self):
         if self.requested_by.id == self.env.user.id:
             self.check_user = True
@@ -107,10 +101,6 @@ class InheritPurchaseOrder(models.Model):
             else:
                 rec.chk_source = False
 
-
-
-
-
     
     def button_submit_to_contract_sh(self):
         for rec in self:
@@ -120,11 +110,6 @@ class InheritPurchaseOrder(models.Model):
     def button_to_user_department(self):
         for rec in self:
             rec.write({'state': 'user_department'}) 
-
-
-
-
-
 
     def action_back(self):
         for rec in self:
@@ -239,9 +224,3 @@ class InheritPurchaseOrder(models.Model):
             else:
                 # raise UserError("there")
                 record.or_percentage = ""
-
-    # def percentage(part, whole):
-    #     percentage = 100 * float(part) / float(whole)
-    #     return str(percentage) + "%"
-    #
-    # print(percentage(3, 5))

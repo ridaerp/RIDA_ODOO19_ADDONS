@@ -17,8 +17,6 @@ class InheritPurchaseOrder(models.Model):
 
     contract_refrence = fields.Char(string='Contract Reference', required=True,
                                     readonly=False, index=True, )
-    # default=lambda self: _('New'),
-    # compute='get_contract_ref')
     title = fields.Char('Title')
     portion_of_agreement_affected = fields.Text(string='Portion of agreement affected')
     description = fields.Text('Description of service')

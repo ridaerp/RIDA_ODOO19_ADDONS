@@ -63,7 +63,8 @@ class EditProduct(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('edit.product') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('edit.product') or ' '
+
         return super(EditProduct, self).create(vals)
 
     @api.onchange('req_id')
@@ -166,11 +167,6 @@ class RequestProduct(models.Model):
             else:
                 continue
 
-
-
-
-
-
     def unlink(self):
         for rec in self:
             if not rec.state == 'draft':
@@ -186,7 +182,8 @@ class RequestProduct(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('item.request') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('item.request') or ' '
+
         return super(RequestProduct, self).create(vals)
 
     @api.onchange('req_id')
