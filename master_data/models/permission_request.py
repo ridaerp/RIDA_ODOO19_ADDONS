@@ -71,12 +71,12 @@ class PermissionRequest(models.Model):
                 'email': self.employee_email,
                 'company_id': self.company_id.id,
                 'company_ids': [(6, 0, self.requested_company_ids.ids)],
-                'groups_id': [(6, 0, self.group_ids.ids)],
+                'group_ids': [(6, 0, self.group_ids.ids)],
             }
 
             # إذا كان النوع Portal يتم استبدال المجموعات بمجموعة البوابة فقط
             if self.user_type == 'portal':
-                user_vals['groups_id'] = [(6, 0, [self.env.ref('base.group_portal').id])]
+                user_vals['group_ids'] = [(6, 0, [self.env.ref('base.group_portal').id])]
 
             target_user = self.env['res.users'].sudo().create(user_vals)
 
@@ -104,13 +104,13 @@ class PermissionRequest(models.Model):
 
             # ب. إضافة المجموعات البرمجية
             if self.group_ids:
-                target_user.sudo().write({'groups_id': [(4, g.id) for g in self.group_ids]})
+                target_user.sudo().write({'group_ids': [(4, g.id) for g in self.group_ids]})
                 log_msg += "➕ Groups Added: %s<br/>" % ", ".join(self.group_ids.mapped('full_name'))
                 changes = True
 
             # ج. حذف المجموعات (إذا تم تحديدها)
             if self.groups_to_remove_ids:
-                target_user.sudo().write({'groups_id': [(3, g.id) for g in self.groups_to_remove_ids]})
+                target_user.sudo().write({'group_ids': [(3, g.id) for g in self.groups_to_remove_ids]})
                 log_msg += "➖ Groups Removed: %s<br/>" % ", ".join(self.groups_to_remove_ids.mapped('full_name'))
                 changes = True
 
@@ -185,7 +185,7 @@ class PermissionRequest(models.Model):
 
                 # إزالة المجموعات التي تمت إضافتها في هذا الطلب
                 if request.group_ids:
-                    vals['groups_id'] = [(3, group.id) for group in request.group_ids]
+                    vals['group_ids'] = [(3, group.id) for group in request.group_ids]
                     log_msg += "➖ Groups Removed: %s<br/>" % ", ".join(request.group_ids.mapped('full_name'))
 
                 # إزالة الشركات التي تمت إضافتها في هذا الطلب

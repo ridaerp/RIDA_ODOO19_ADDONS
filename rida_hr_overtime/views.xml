@@ -288,7 +288,7 @@
             <field name="code">
                 action = records.action_multiple_confirm()
             </field>
-            <field name='groups_id'
+            <field name='group_ids'
                    eval="[(4, ref('base_rida.rida_group_site_manager')),(4, ref('base_rida.rida_group_CCSO'))]"/>
         </record>
 

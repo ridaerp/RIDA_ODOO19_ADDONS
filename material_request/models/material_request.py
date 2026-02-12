@@ -363,7 +363,7 @@ class MaterialRequest(models.Model):
     requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
     assigned_to = fields.Many2one('res.users', 'Approver', track_visibility='onchange')
-    assigned_to_supply = fields.Many2one('res.users', 'Assign To', track_visibility='onchange' , domain= lambda self: [("groups_id", "=", self.env.ref("material_request.group_buyers").id)] )
+    assigned_to_supply = fields.Many2one('res.users', 'Assign To', track_visibility='onchange' , domain= lambda self: [("group_ids", "=", self.env.ref("material_request.group_buyers").id)] )
     
     ##########################add by ekhlas #######################
     assigned_date=fields.Datetime("Date of assigned",readonly=True)

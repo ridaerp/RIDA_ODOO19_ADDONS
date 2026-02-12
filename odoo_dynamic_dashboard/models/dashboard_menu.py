@@ -33,7 +33,7 @@ class DashboardMenu(models.Model):
                               help="Parent Menu Location of New Dashboard",
                               ondelete='cascade')
     group_ids = fields.Many2many('res.groups', string='Groups',
-                                 related='menu_id.groups_id',
+                                 related='menu_id.group_ids',
                                  help="User need to be at least in one of "
                                       "these groups to see the menu")
     client_action_id = fields.Many2one('ir.actions.client',

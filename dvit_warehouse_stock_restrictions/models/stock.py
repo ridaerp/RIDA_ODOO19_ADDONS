@@ -24,25 +24,23 @@ class ResUsers(models.Model):
         restrict_group = self.env.ref('dvit_warehouse_stock_restrictions.stock_restrictions_group')
         current_group = restrict_group
         if self.stock_location_ids:
-            current_group.write({'users':  [(3, self.id)]})
-            self.groups_id =[(3, restrict_group.id)]
+            current_group.write({'user_ids':  [(3, self.id)]})
+            self.group_ids =[(3, restrict_group.id)]
             self.restrict_locations = 0
             ##
-            current_group.write({'users':  [(4, self.id)]})
-            self.groups_id =[(4, restrict_group.id)]
+            current_group.write({'user_ids':  [(4, self.id)]})
+            self.group_ids =[(4, restrict_group.id)]
             self.restrict_locations = 1
 
     @api.constrains('stock_location_ids')
     def tgl_restrict(self):
-        # self.restrict_locations = not self.restrict_locations
-        # res_groups = self.env['res.groups']
         restrict_group = self.env.ref('dvit_warehouse_stock_restrictions.stock_restrictions_group')
         current_group = restrict_group
         if self.stock_location_ids:
             # Due to strange behaviuor, we must remove the user from the group then
             # re-add him again to get restrictions applied
-            current_group.write({'users':  [(3, self.id)]})
-            self.groups_id =[(3, restrict_group.id)]
+            current_group.write({'user_ids':  [(3, self.id)]})
+            self.group_ids =[(3, restrict_group.id)]
             self.default_picking_type_ids = False
             self.restrict_locations = 0
             ## re-add
@@ -53,14 +51,14 @@ class ResUsers(models.Model):
             ('default_location_dest_id','in',[l.id for l in self.stock_location_ids]),
             ('default_location_dest_id.location_id','in',[l.id for l in self.stock_location_ids]),
             ])
-            current_group.write({'users':  [(4, self.id)]})
-            self.groups_id =[(4, restrict_group.id)]
+            current_group.write({'user_ids':  [(4, self.id)]})
+            self.group_ids =[(4, restrict_group.id)]
             self.default_picking_type_ids += pick_types
             self.restrict_locations = 1
 
         else:
-            current_group.write({'users':  [(3, self.id)]})
-            self.groups_id =[(3, restrict_group.id)]
+            current_group.write({'user_ids':  [(3, self.id)]})
+            self.group_ids =[(3, restrict_group.id)]
             self.default_picking_type_ids = False
             self.restrict_locations = 0
 

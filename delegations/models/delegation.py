@@ -197,7 +197,7 @@ class Delegation(models.Model):
             })
 
             return {
-                'domain': {'groups_id': [('id', 'in', new_groups)]}
+                'domain': {'group_ids': [('id', 'in', new_groups)]}
             }
 
     @api.constrains('date_from', 'date_to')
@@ -258,7 +258,7 @@ class Delegation(models.Model):
 
             # Grant new groups to the delegated user
             rec.employee_grant_id.user_id.sudo().write({
-                'groups_id': [(4, group_id) for group_id in rec.groups_id.ids]
+                'group_ids': [(4, group_id) for group_id in rec.groups_id.ids]
             })
 
             # Change the state to 'confirm'
@@ -278,10 +278,10 @@ class Delegation(models.Model):
                     if rec.employee_id.id:
                         dep.expense_manager_id = rec.employee_id.user_id.id
                 to_remove = [group for group in rec.groups_id.ids]
-                groups = rec.sudo().employee_grant_id.user_id.groups_id.ids
+                groups = rec.sudo().employee_grant_id.user_id.group_ids.ids
                 new_groups = list(set(groups) - set(to_remove))
                 new_groups = self.env['res.groups'].search([('id', 'in', new_groups)])
-                rec.sudo().employee_grant_id.user_id.groups_id = new_groups
+                rec.sudo().employee_grant_id.user_id.group_ids = new_groups
                 rec.state = 'revoked'
             else:
                 raise UserError(_(f"{rec.employee_id} Dose Not Have User"))
