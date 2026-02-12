@@ -57,12 +57,12 @@
                             <group>
                                 <field name="equipment_id" readonly="1"
                                        invisible="state != 'done'"/>
-                                <field
+                                <!-- <field
                                         name="parent_id"
                                         readonly="not context.get('parent_id_editable', True) or state == 'done' "
                                         options="{'no_create': True, 'no_create_edit':True}"
 
-                                />
+                                /> -->
                                 <field name="category_id" options="{'no_create': True, 'no_create_edit':True}"
                                        context="{'default_company_id':company_id}" required="1"
                                        readonly="state == 'done'"/>
@@ -93,8 +93,7 @@
                                 <field name="maintenance_team_id" context="{'default_company_id':company_id}"
                                        options="{'no_create': True, 'no_create_edit':True}"
                                        readonly="state == 'done'"/>
-                                <field name="location" string="Used in location"
-                                       readonly="state == 'done'"/>
+                                <!-- <field name="location" string="Used in location" readonly="state == 'done'"/> -->
                             </group>
                         </group>
                         <notebook>

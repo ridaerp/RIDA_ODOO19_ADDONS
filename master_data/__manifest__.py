@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','material_request','stock','maintenance_fleet_inherit','acc_workflow', 'hr_recruitment'],
+    'depends': ['base','product','material_request','stock','maintenance_fleet_inherit','acc_workflow', 'hr_recruitment', 'maintenance_equipment_tags'],
 
     # always loaded
     'data': [

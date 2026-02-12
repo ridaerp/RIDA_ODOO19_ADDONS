@@ -36,7 +36,7 @@ class UpdateAreaRequest(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            vals['name'] = self.env['ir.sequence'].next_by_code('update.area.request') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('update.area.request') or ' '
 
         return super(UpdateAreaRequest, self).create(vals)
 

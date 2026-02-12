@@ -13,8 +13,20 @@ _logger = logging.getLogger(__name__)
 
 class x_area(models.Model):
     _name = "x_area"
+    _rec_name = "x_name"
 
-    name = fields.Char
+    x_name = fields.Char()
+    x_active = fields.Boolean()
+    x_studio_discount_on_ore_price = fields.Float()
+    x_studio_discount_on_transportation = fields.Float()
+    x_studio_distance_1 = fields.Integer()
+    x_studio_gasoline = fields.Float()
+    x_studio_sequence = fields.Integer()
+    x_studio_special_discount_1 = fields.Boolean()
+    x_studio_state = fields.Many2one('res.country.state')
+    x_studio_unit_price = fields.Float()
+    x_studio_vendor = fields.Many2one('res.partner')
+
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"

@@ -112,11 +112,3 @@ class accountAnalyticGroup(models.Model):
     _description = 'Analytic Account Group'
 
     name = fields.Char()
-
-
-
-class maintenanceEquipmentTag(models.Model):
-    _name = 'maintenance.equipment.tag'
-    _description = 'Maintenance Equipment Tag'
-
-    name = fields.Char()
