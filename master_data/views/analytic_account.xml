@@ -71,8 +71,7 @@
                                 <field name="code"
                                    required="state == 'md'"  readonly="state not in ['md','w_adv']"/>
 
-                                   <field name="type"
-                                   required="1"  readonly="state != 'md'"/>
+                                   <field name="type" required="state == 'md'"  readonly="state != 'md'"/>
                                    <field name="plan_id"
                                    required="state == 'w_adv'"  readonly="state not in ['md','w_adv']"/>
                             </group>

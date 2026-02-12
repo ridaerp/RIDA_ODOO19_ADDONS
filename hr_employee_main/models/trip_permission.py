@@ -229,7 +229,7 @@ class TripPermission(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Payment',
             'view_id': tree_view_id,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'account.payment',
             'domain': [('ref', '=', self.name)],
             'context': "{'create': False}"

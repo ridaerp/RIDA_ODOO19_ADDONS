@@ -1,20 +1,15 @@
 <odoo>
-  <data>
+    <data>
         <record model="ir.ui.view" id="view_ict_service_tree">
             <field name="name">ict.service.tree</field>
             <field name="model">ict.service</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="description" />
-                </tree>
+                </list>
             </field>
         </record>
-
-
-
-
-
 
 
         <record model="ir.ui.view" id="view_ict_service_tree">
@@ -27,7 +22,7 @@
                 </list>
             </field>
         </record>
-</data>
+    </data>
 </odoo>
 
 

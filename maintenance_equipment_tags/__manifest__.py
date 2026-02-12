@@ -13,7 +13,7 @@
     "demo": ["demo/maintenance_equipment_tags_demo.xml"],
     "data": [
         "security/ir.model.access.csv",
-        "views/maintenance_equipment.xml",
         "views/maintenance_equipment_tag.xml",
+        "views/maintenance_equipment.xml",
     ],
 }

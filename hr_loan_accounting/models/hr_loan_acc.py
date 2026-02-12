@@ -124,61 +124,36 @@ class HrLoanAcc(models.Model):
             self.write({'state': 'paid'})
         return True
 
-    # def action_approve(self):
-    # 	for rec in self:
-    # 		hr_manager_user = []
-    # 		hr_manager_user = rec.env.ref('base_rida.rida_hr_manager_notify').users
-    # 		for manager_user in hr_manager_user:
-    # 			rec.activity_unlink(['hr_loan_base.mail_loan_request'])
-    # 			rec.activity_schedule('hr_loan_base.mail_loan_request', user_id=manager_user.id)
-    # 		rec.state = 'hr_approve'
-    # 	return
-
     def manager_approve(self):
         for rec in self:
             if rec.rida_employee_type == 'hq':
                 rec.state = 'finance'
-            # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
             else:
                 rec.state = 'site_manager'
-            # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
         return True
 
     def action_site_approve(self):
         for rec in self:
             rec.state = 'finance'
-        # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
         return True
 
     def finance_action_approve(self):
         for rec in self:
             rec.state = 'internal_audit'
-        # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
         return True
 
     def internal_audit_action_approve(self):
         for rec in self:
             rec.state = 'ccso'
-        # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
-
         return True
 
     def ccso_approve(self):
         for rec in self:
-
-            # finance_users = []
-            # finance_users = rec.env.ref('account.group_account_user').users
-            # for finance_user in finance_users:
-            # 	rec.activity_unlink(['hr_loan_base.mail_loan_request'])
-            # 	rec.activity_schedule('hr_loan_base.mail_loan_request', user_id=finance_user.id)
             rec.state = 'accountant'
-
-    # return
 
     def accountant_action_approve(self):
         for rec in self:
             rec.state = 'approve'
-        # rec.activity_unlink(['hr_loan_base.mail_loan_request'])
         return True
 
     def accountnt_action_refuse(self):

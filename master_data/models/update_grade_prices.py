@@ -85,7 +85,7 @@ class UpdateGradePrices(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Update Grade Price List',
                 'view_id': tree_view_id,
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'update.grade.price.line',
                 'domain': [('update_price', '=', self.id)],
             }
@@ -94,7 +94,7 @@ class UpdateGradePrices(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Update Grade Price List',
                 'view_id': tree_view_id,
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'update.grade.price.line',
                 'domain': [('update_price', '=', self.id)],
                 'context': "{'create': False}"

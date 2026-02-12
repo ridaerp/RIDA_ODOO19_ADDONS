@@ -173,18 +173,15 @@ class AccountCustody(models.Model):
     def activity_update(self):
         for rec in self:
             users = []
-            # rec.activity_unlink(['hr_salary_advance.mail_act_approval'])
-            # if rec.state not in ['draft','reject']:
-            #     continue
             message = ""
             if rec.state == 'ccso_approval' and rec.requested_by.user_type=='hq':
-                users = self.env.ref('base_rida.rida_group_CCSO').users
+                users = self.env.ref('base_rida.rida_group_CCSO').user_ids
                 message = "Waiting for Your Approval "
                 for user in users:
                     self.activity_schedule('base_rida.mail_act_notification_approval', user_id=user.id, note=message)
 
             if rec.state == 'site_approval' and rec.requested_by.user_type=='site':
-                users = self.env.ref('base_rida.rida_group_site_manager').users
+                users = self.env.ref('base_rida.rida_group_site_manager').user_ids
                 message = "Waiting for Your Approval "
                 for user in users:
                     self.activity_schedule('base_rida.mail_act_notification_approval', user_id=user.id, note=message)

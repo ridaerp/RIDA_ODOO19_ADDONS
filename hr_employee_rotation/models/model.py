@@ -42,7 +42,7 @@ class employee_rotation(models.Model):
                 continue
             message = ""
             if rec.state == 'hr_manager':
-                users = self.env.ref('base_rida.rida_hr_manager_notify').users
+                users = self.env.ref('base_rida.rida_hr_manager_notify').user_ids
                 message = "Approve"
 
             elif rec.state == 'reject':
@@ -96,7 +96,7 @@ class hrEmployee(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Rotation',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'employee.rotation',
             'domain': [('employee_id', '=', self.id)],
             'context': "{'create': False}"

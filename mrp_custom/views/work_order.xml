@@ -54,7 +54,7 @@
         <record model="ir.actions.act_window" id="mrp_manfacuring_order_production_report_blocked">
             <field name="name">production Losses</field>
             <field name="res_model">mrp.workcenter.productivity</field>
-            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="view_mode">list,form,graph,pivot</field>
 
             <field name="domain">[('production_ref_id', '=', id),
                 ('loss_id.loss_type', 'in', ['availability', 'performance','quality'])]

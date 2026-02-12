@@ -105,34 +105,3 @@ class PurchaseOrderLine(models.Model):
             return
         self.discount = seller.discount
 
-    # def _prepare_account_move_line(self, move=False):
-    #     vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
-    #     vals["discount"] = self.discount
-    #     return vals
-
-    # @api.model
-    # def _prepare_purchase_order_line(
-    #     self, product_id, product_qty, product_uom, company_id, supplier, po
-    # ):
-    #     """Apply the discount to the created purchase order"""
-    #     res = super()._prepare_purchase_order_line(
-    #         product_id, product_qty, product_uom, company_id, supplier, po
-    #     )
-    #     partner = supplier.name
-    #     uom_po_qty = product_uom._compute_quantity(product_qty, product_id.uom_po_id)
-    #     seller = product_id.with_company(company_id)._select_seller(
-    #         partner_id=partner,
-    #         quantity=uom_po_qty,
-    #         date=po.date_order and po.date_order.date(),
-    #         uom_id=product_id.uom_po_id,
-    #     )
-    #     res.update(self._prepare_purchase_order_line_from_seller(seller))
-    #     return res
-    #
-    # @api.model
-    # def _prepare_purchase_order_line_from_seller(self, seller):
-    #     """Overload this function to prepare other data from seller,
-    #     like in purchase_triple_discount module"""
-    #     if not seller:
-    #         return {}
-    #     return {"discount": seller.discount}

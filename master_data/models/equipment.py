@@ -30,10 +30,10 @@ class RequestEquipment(models.Model):
     effective_date = fields.Date('Effective Date', default=fields.Date.context_today, required=True, help="Date at which the equipment became effective. This date will be used to compute the Mean Time Between Failure.")
     warranty_date = fields.Date('Warranty Expiration Date')
     vin = fields.Char('VIN.#')
-    employee_id = fields.Many2one('hr.employee', compute='_compute_equipment_assign',
-        store=True, readonly=False, string='Assigned Employee', tracking=True)
-    department_id = fields.Many2one('hr.department', compute='_compute_equipment_assign',
-        store=True, readonly=False, string='Assigned Department', tracking=True)
+    employee_id = fields.Many2one('hr.employee', store=True, readonly=False, string='Assigned Employee', tracking=True)
+    # compute='_compute_equipment_assign',
+    department_id = fields.Many2one('hr.department', store=True, readonly=False, string='Assigned Department', tracking=True)
+    # compute='_compute_equipment_assign',
     equipment_assign_to = fields.Selection(
         [('department', 'Department'), ('employee', 'Employee'), ('other', 'Other')],
         string='Used By',
@@ -88,7 +88,7 @@ class RequestEquipment(models.Model):
             users = []
             message = ""
             if rec.state == 'draft':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').users
+                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
                 message = "Please Create the Equipment"
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)

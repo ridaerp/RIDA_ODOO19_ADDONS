@@ -8,16 +8,8 @@ _logger = logging.getLogger(__name__)
 
 class RidaStockPiking(models.Model):
     _inherit = 'stock.picking'
-    # from odoo import models, fields
-
-    # class StockPicking(models.Model):
-    #     _inherit = 'stock.picking'
 
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
-    # analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
-
-    analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
-
     inspection_date = fields.Date(string='Date Of Inspection', default=datetime.today())
     security_number = fields.Integer(string='Security Number',copy=False)
     security_number_issuance = fields.Integer(related='issuance_request_id.security_number',copy=False)
@@ -28,40 +20,19 @@ class RidaStockPiking(models.Model):
     driver_mobile = fields.Char(string='Driver Mobile')
     truk_no = fields.Char(string='Truk number')
     truk_cap = fields.Char(string='Truk Capacity')
-    return_state = fields.Selection(string='Returing Status', selection=[('supervice_manager', 'Supervice Manager'),
-                                                                         ('warehouse_manager', 'Warehouse Manager'), (
-                                                                             'user_department_manager',
-                                                                             'User Department Manager'), (
-                                                                             'supply_chain_manager',
-                                                                             'Supply Chain Manager')],
-                                    default='supervice_manager')
+    return_state = fields.Selection(string='Returing Status', selection=[('supervice_manager', 'Supervice Manager'), ('warehouse_manager', 'Warehouse Manager'), ('user_department_manager', 'User Department Manager'), ( 'supply_chain_manager', 'Supply Chain Manager')], default='supervice_manager')
     requirements_sat = fields.Boolean(string='Technical Evaluation Check', default=False, required=True, store=True)
     emp = fields.Many2one('hr.employee', default=lambda self: self.env.user.employee_id, store=True, readonly=True)
-    # request_id = fields.Many2one('hr.employee',  default=lambda self: self.env.user.employee_id, store=True, readonly=True)
     emp_type = fields.Selection(string='Employee type', related="emp.rida_employee_type")
     receipt_id = fields.Many2one('hr.employee', string="Receipt By")
 
     origin_id=fields.Many2one("stock.picking","Source OUT ",readonly=True)
-
-    # @api.constrains('requirements_sat')
-    # def requirements_satisfaction_chick(self):
-    #     for rec in self:
-    #         if rec.requirements_sat != True and rec.state == 'ready' and rec.picking_type_id.issued == False:
-    #             raise ValidationError(_("You Must Confirem Technical Evaluation Check First"))
 
     def button_validate(self):
         """Creating the internal transfer if it is not created from another picking"""
         res = super(RidaStockPiking, self).button_validate()
 
         ############################## Update MEDICARE Products ################################
-        # if self.issuance_request_id :
-        #     for rec in self.move_ids_without_package:
-        #         if 'Medical' in rec.product_id.categ_id.parent_id.name or 'Medical' in rec.product_id.categ_id.name or 'Medical' in rec.product_id.categ_id.parent_id.parent_id.name:
-        #             med_record = self.env['product.medicare'].search([('product_id', '=', rec.product_id.id)], limit=1)
-        #             if med_record and ((med_record.picking_id.id != self.id) or (not med_record.picking_id)):
-        #                 med_record.qty += rec.quantity_done
-        #                 med_record.picking_id = self.id
-
         
         if self.picking_type_id.code == 'outgoing' and self.issuance_request_id :
             if self.issuance_request_id.security_number:
@@ -69,13 +40,6 @@ class RidaStockPiking(models.Model):
                     raise UserError('Please fill the Receipt By !!!')
                 if self.issuance_request_id.security_number != self.security_number:
                     raise UserError(f'Check The Receipt Confirmation Number Of Issuance Request >> {self.issuance_request_id.name}')
-            # for rec in self.move_ids_without_package:
-            #     if 'Medical' in rec.product_id.categ_id.parent_id.name or 'Medical' in rec.product_id.categ_id.name or 'Medical' in rec.product_id.categ_id.parent_id.parent_id.name:
-            #         med_record = self.env['product.medicare'].search([('product_id', '=', rec.product_id.id)], limit=1)
-            #         if med_record and ((med_record.picking_id.id != self.id) or (not med_record.picking_id)):
-            #             med_record.qty += rec.quantity_done
-            #             med_record.picking_id = self.id
-
 
         #############################################################################################
 
@@ -152,17 +116,6 @@ class RidaStockPiking(models.Model):
             if rec.requirements_sat != True and rec.state == 'assigned' and rec.picking_type_id.issued == False:
                 raise ValidationError(_("You Must Confirem Technical Evaluation Check First"))
 
-    # @api.constrains('requirements_sat','state','picking_type_id')
-    # def requirements_satisfaction_chick(self):
-    #     _logger.warning("///////////////////////))))))))))))))))))))))))))///////////")
-    #     for rec in self:
-    #         _logger.warning("//////////////////////////////////////////////////////////////////////////////")
-    #         _logger.warning(rec.requirements_sat)
-    #         _logger.warning(rec.state)
-    #         _logger.warning(rec.picking_type_id.issued)
-    #         if rec.requirements_sat != True and rec.state == 'assigned' and rec.picking_type_id.issued == False:
-    #             raise ValidationError(_("You Must Confirem Technical Evaluation Check First"))
-
     def button_supervice_manager_approve(self):
         for rec in self:
             rec.write({'return_state': 'warehouse_manager'})
@@ -178,42 +131,6 @@ class RidaStockPiking(models.Model):
 
     # #########################ekhlas code###############
     # ################function to update in no entires in finance
-    # def update_in(self):
-    #     # valued_moves = {valued_type: self.env['stock.move'] for valued_type in self._get_valued_types()}
-    #     for rec in self:
-    #         in_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search([('stock_move_id','=',rec.id)])
-
-    #         if rec.origin_id:
-    #             for out in rec.picking_id.origin_id:
-    #                 for out_line in out.move_lines:
-    #                     out_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search([('stock_move_id','=',out_line.id)])
-
-    #                 for out_line in out_stock_valuation_layers:
-    #                     for in_line in in_stock_valuation_layers:
-    #                         in_line.write({
-    #                         'unit_cost':out_line.unit_cost,
-    #                         'value':out_line.value
-    #                         })
-    #                         rec.product_id.sudo().write({
-    #                             'standard_price':out_line.unit_cost
-    #                             })
-
-    #             for svl in in_stock_valuation_layers:
-    #                 if not svl.product_id.valuation == 'real_time':
-    #                     continue
-    #                 if svl.currency_id.is_zero(svl.value):
-    #                     continue
-    #                 if not svl.account_move_id:
-    #                     svl.stock_move_id._account_entry_move(svl.quantity, svl.description, svl.id, svl.value)
-
-    #                 in_stock_valuation_layers._check_company()
-
-    #                 # For every in move, run the vacuum for the linked product.
-    #                 products_to_vacuum = valued_moves['in'].mapped('product_id')
-    #                 company = valued_moves['in'].mapped('company_id') and valued_moves['in'].mapped('company_id')[0] or self.env.company
-    #                 for product_to_vacuum in products_to_vacuum:
-    #                     product_to_vacuum._run_fifo_vacuum(company)
-
 
 class RidaStockPikingBatch(models.Model):
     _inherit = 'stock.picking.batch'
@@ -228,44 +145,44 @@ class StockMoveInherit(models.Model):
     _inherit = 'stock.move'
 
     ########################this function to create stock in based on out to update stock valuation layer and create jounrnal entries in finance same as stock out .
-    def _action_done(self, cancel_backorder=False):
+    # def _action_done(self, cancel_backorder=False):
 
-        res = super(StockMoveInherit, self)._action_done()
-        valued_moves = {valued_type: self.env['stock.move'] for valued_type in self._get_valued_types()}
-        for rec in self:
-            in_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search(
-                [('stock_move_id', '=', rec.id)])
+    #     res = super(StockMoveInherit, self)._action_done()
+    #     valued_moves = {valued_type: self.env['stock.move'] for valued_type in self._get_valued_types()}
+    #     for rec in self:
+    #         in_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search(
+    #             [('stock_move_id', '=', rec.id)])
 
-            if rec.picking_id.origin_id:
-                for out in rec.picking_id.origin_id:
-                    for out_line in out.move_lines:
-                        out_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search(
-                            [('stock_move_id', '=', out_line.id)])
+    #         if rec.picking_id.origin_id:
+    #             for out in rec.picking_id.origin_id:
+    #                 for out_line in out.move_lines:
+    #                     out_stock_valuation_layers = self.env['stock.valuation.layer'].sudo().search(
+    #                         [('stock_move_id', '=', out_line.id)])
 
-                    for out_line in out_stock_valuation_layers:
-                        for in_line in in_stock_valuation_layers:
-                            in_line.write({
-                                'unit_cost': out_line.unit_cost,
-                                'value': out_line.value,
-                            })
+    #                 for out_line in out_stock_valuation_layers:
+    #                     for in_line in in_stock_valuation_layers:
+    #                         in_line.write({
+    #                             'unit_cost': out_line.unit_cost,
+    #                             'value': out_line.value,
+    #                         })
 
 
-                for svl in in_stock_valuation_layers:
-                    if not svl.product_id.valuation == 'real_time':
-                        continue
-                    if svl.currency_id.is_zero(svl.value):
-                        continue
-                    if not svl.account_move_id:
-                        svl.stock_move_id._account_entry_move(svl.quantity, svl.description, svl.id, svl.value)
+    #             for svl in in_stock_valuation_layers:
+    #                 if not svl.product_id.valuation == 'real_time':
+    #                     continue
+    #                 if svl.currency_id.is_zero(svl.value):
+    #                     continue
+    #                 if not svl.account_move_id:
+    #                     svl.stock_move_id._account_entry_move(svl.quantity, svl.description, svl.id, svl.value)
 
-                    in_stock_valuation_layers._check_company()
+    #                 in_stock_valuation_layers._check_company()
 
-                    # For every in move, run the vacuum for the linked product.
-                    products_to_vacuum = valued_moves['in'].mapped('product_id')
-                    company = valued_moves['in'].mapped('company_id') and valued_moves['in'].mapped('company_id')[
-                        0] or self.env.company
-                    for product_to_vacuum in products_to_vacuum:
-                        product_to_vacuum._run_fifo_vacuum(company)
+    #                 # For every in move, run the vacuum for the linked product.
+    #                 products_to_vacuum = valued_moves['in'].mapped('product_id')
+    #                 company = valued_moves['in'].mapped('company_id') and valued_moves['in'].mapped('company_id')[
+    #                     0] or self.env.company
+    #                 for product_to_vacuum in products_to_vacuum:
+    #                     product_to_vacuum._run_fifo_vacuum(company)
 
     ####################################override function to  create journal entries with receviable (fuel issuance external)
     ##############################ekhlas code #####################################################################
@@ -289,10 +206,6 @@ class StockMoveInherit(models.Model):
             acc_src = self._get_src_account(accounts_data)
 
         if self.picking_type_id.issued == True and self.partner_id:
-            # if not contract_obj:
-            #     acc_dest = self.partner_id.property_account_payable_id.id
-            # else:
-            #     acc_dest = self._get_dest_account(accounts_data)
             acc_dest = self.partner_id.property_account_payable_id.id
 
 

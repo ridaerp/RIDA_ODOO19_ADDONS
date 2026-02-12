@@ -18,6 +18,7 @@
             </form>
         </field>
     </record>
+
     <record id="maintenance_equipment_tag_tree_view" model="ir.ui.view">
         <field
             name="name"
@@ -29,6 +30,7 @@
             </list>
         </field>
     </record>
+
     <record id="maintenance_equipment_tag_act_window" model="ir.actions.act_window">
         <field name="name">Equipment Tags</field>
         <field name="res_model">maintenance.equipment.tag</field>
@@ -36,6 +38,7 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
+
     <record id="maintenance_equipment_tag_menu" model="ir.ui.menu">
         <field name="name">Equipment Tags</field>
         <field name="parent_id" ref="maintenance.menu_maintenance_configuration" />

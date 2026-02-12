@@ -129,10 +129,10 @@
                                 <field name="uom_id" readonly="state == 'done'"
                                        options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
                                        required="1"/>
-                                <field name="uom_po_id"
+                                <!-- <field name="uom_po_id"
                                     invisible="state == 'draft'"  readonly="state == 'done'"
                                        options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
-                                       required="1"/>
+                                       required="1"/> -->
                                 <field name="categ_id" readonly="state == 'done'"
                                        options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
                                        required="1"/>

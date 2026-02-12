@@ -9,9 +9,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
                     <page string="Hide Menu">
-                        <tree>
+                        <list>
                             <field name="hide_menu_access_ids" options="{'no_create':1,'no_create_edit':1}"/>
-                        </tree>
+                        </list>
                     </page>
                 </xpath>
             </field>

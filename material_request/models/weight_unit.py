@@ -241,7 +241,7 @@ class WeightRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Landed Costs',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'stock.landed.cost',
             'domain': [('weight_id', '=', self.id)],
             'context': "{'create': False}"
@@ -658,20 +658,13 @@ class WeightRequest(models.Model):
 
         return self.write({'state': 'chem_lab'})
 
-    # def button_chemical(self):
-    # 	for rec in self.request_samples_ids:
-    # 		if not rec.quantity:
-    # 			raise UserError('Please Enter Assay')
-
-    # 	return self.write({'state': 'db_price'})
-
     def action_view_chemical_assay(self):
         return {
             'name': "Samples Assay Request",
             'type': 'ir.actions.act_window',
             'res_model': 'chemical.samples.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.id)],
@@ -681,19 +674,6 @@ class WeightRequest(models.Model):
         self.chemical_assay_request_count = self.env['chemical.samples.request'].search_count(
             [('request_id', '=', self.id)])
 
-    # def action_view_purchase_order(self):
-    # 	view_id = self.env.ref('material_request.action_ore_po_purchase')
-    # 	return {
-    # 		'name': "RFQ/ Order",
-    # 		'type': 'ir.actions.act_window',
-    # 		'res_model': 'purchase.order',
-    # 		'xml_id': view_id,
-    # 		'view_mode': 'tree,form',
-    # 		'view_type': 'form',
-    # 		'target': 'current',
-    # 		'domain': [('weight_request_id', '=', self.id)],
-    #     }
-
     def action_view_purchases_order(self):
         view_id = self.env.ref('material_request.purchase_orde_tree')
         return {
@@ -701,8 +681,7 @@ class WeightRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
             'view_id': view_id.id,
-            'view_mode': 'tree',
-            # 'view_type': 'form',
+            'view_mode': 'list',
             'target': 'current',
             'domain': [('weight_request_id', '=', self.id)],
         }

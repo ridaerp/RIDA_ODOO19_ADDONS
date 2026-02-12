@@ -11,11 +11,7 @@
               <field name="brand"/>
               <field name="model"/>
               <field name="is_profit_percentage" groups="base.group_erp_manager"/>
-
-                    <field name="is_company_percentage" groups="base.group_erp_manager"/>
-
-              <field name="custom_sequence" string="Custom Sequence" groups="base.group_erp_manager"/>
-<field name="custom_analytic_account_id" string="Analytic Account for Landed Cost Transportation" groups="base.group_erp_manager"/>
+              <field name="is_company_percentage" groups="base.group_erp_manager"/>
             </group>
                 </xpath>
         </field>

@@ -79,7 +79,7 @@ class UpdateAreaPrices(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Area',
                 'view_id': tree_view_id,
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'update.area.price.line',
                 'domain': [('update_price', '=', self.id)],
             }
@@ -88,7 +88,7 @@ class UpdateAreaPrices(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Area',
                 'view_id': tree_view_id,
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'update.area.price.line',
                 'domain': [('update_price', '=', self.id)],
                 'context': "{'create': False}"

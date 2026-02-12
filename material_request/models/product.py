@@ -83,13 +83,12 @@ class ProductTemplete(models.Model):
 
     @api.constrains('default_code')
     def _check_name(self):
-        product_no = self.env['product.template'].search([('default_code', '!=', False)])
-        product_ids = product_no.search([('default_code', '=', self.default_code), ('id', '!=', self.id)])
-        print("########################", product_ids)
-        for rec in product_ids:
-            if rec.default_code != False:
-                print("########################", product_ids)
-                raise ValidationError(_('Exists ! The code already exists, please check the Coding Structure'))
+        for rec in self:
+            product_no = self.env['product.template'].search([('default_code', '!=', False)])
+            product_ids = product_no.search([('default_code', '=', rec.default_code), ('id', '!=', rec.id)])
+            for rec in product_ids:
+                if rec.default_code != False:
+                    raise ValidationError(_('Exists ! The code already exists, please check the Coding Structure'))
 
 
 

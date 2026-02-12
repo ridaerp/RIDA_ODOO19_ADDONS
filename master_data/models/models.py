@@ -121,8 +121,6 @@ class RequestProduct(models.Model):
         ('service', 'Service'), 
          ], string='Product Type', default='product', required=True)
 
-
-    # is_storable = fields.Boolean(string="Is Storable?", default=True)
     state_fleet = fields.Selection(related='state')
     categ_id = fields.Many2one(
         'product.category', 'Product Category',
@@ -144,23 +142,12 @@ class RequestProduct(models.Model):
     activity_id = fields.Many2one('mail.activity', 'Linked Activity')
     image_1920 = fields.Image()
 
-    # def _track_subtype(self, init_values):
-    #     self.ensure_one()
-    #     if self.state=='done':
-    #         return self.env.ref('master_data.item_code_status')
-    #     if self.state=='reject':
-    #         return self.env.ref('master_data.item_code_rej_status')
-    #     return super(RequestProduct, self)._track_subtype(init_values)
-
     def activity_update(self):
         for rec in self:
             users = []
-            # rec.activity_unlink(['hr_salary_advance.mail_act_approval'])
-            # if rec.state not in ['draft','reject']:
-            #     continue
             message = ""
             if rec.state == 'scm':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').users
+                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
                 message = "Please Create the Supplier "
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
@@ -174,10 +161,10 @@ class RequestProduct(models.Model):
 
         return super(RequestProduct, self).unlink()
 
-    @api.onchange('uom_id')
-    def _onchange_uom_id(self):
-        if self.uom_id:
-            self.uom_po_id = self.uom_id.id
+    # @api.onchange('uom_id')
+    # def _onchange_uom_id(self):
+    #     if self.uom_id:
+    #         self.uom_po_id = self.uom_id.id
 
     @api.model
     def create(self, vals):
@@ -208,28 +195,31 @@ class RequestProduct(models.Model):
             raise UserError("Please Enter the Product Code")
         self.state = 'md'
 
-        # return self.write({'state': 'md'})
-
     def set_to_draft(self):
         return self.write({'state': 'draft'})
 
     def create_product(self):
         if self.type == 'service' and self.purchase_method != 'purchase':
             raise UserError("The Control Policy for Service must be on ordered quantities")
+        is_storable = False
+        type = 'service'
+        if self.type == 'service':
+            type = 'service'
+        elif self.type == 'product':
+            type = 'consu'
+            is_storable = True
         if self.default_code:
             self.prod_id = self.env["product.product"].create(
                 {
                     "name": self.product_name,
                     "image_1920": self.image_1920,
-                    "type": self.type,
-                    # "is_storable": self.is_storable,
+                    "type": type,
                     "default_code": self.default_code,
                     "purchase_method": self.purchase_method,
                     "part_number": self.part_number,
                     "description": self.description,
                     "categ_id": self.categ_id.id,
                     "uom_id": self.uom_id.id,
-                    "uom_po_id": self.uom_id.id,
                 }
             )
             self.activity_id.action_done()
@@ -246,19 +236,8 @@ class RequestProduct(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Products',
             'view_id': tree_view_id,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'product.product',
             'domain': [('categ_id', '=', self.categ_id.id)],
             'context': "{'create': False}"
         }
-# class CustomActivityType(models.Model):
-#     _inherit = 'mail.activity.type'
-#
-#
-#     static_email_sender = fields.Char(string='Static Email Sender')
-#     @classmethod
-#     def create(cls, values):
-#         if 'static_email_sender' in values:
-#             values['email_from'] = values['static_email_sender']
-#
-#         return super(CustomActivityType, cls).create(values)

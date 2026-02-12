@@ -7,9 +7,6 @@
                 <form string="Custody Clearance">
                     <sheet>
                         <field name="id" invisible="1"/>
-                        <!--<div class="oe_title">-->
-                            <!--<h1>Custody Clearance</h1>-->
-                        <!--</div>-->
                         <group>
                             <group>
                                 <field name="communication"/>
@@ -22,11 +19,11 @@
                         <notebook>
                         <page string="Clearing Accounts">
                             <field name="account_ids" nolabel="1" widget="one2many_list" context="{'wizard_id':active_id}">
-                            <tree editable="bottom" open="false">
+                            <list editable="bottom" open="false">
                                 <field name="account_id" string="Account" required ='1'/>
                                 <field name="amount"/>
                                 <field name="desc"/>
-                           </tree>
+                           </list>
                         </field>
                         </page>
                         </notebook>
@@ -38,15 +35,5 @@
                 </form>
             </field>
         </record>
-
-<!--        &lt;!&ndash; Expenses &ndash;&gt;-->
-<!--        <record id="account_custody_clear_wizard_action" model="ir.actions.act_window">-->
-<!--            <field name="name">Custody Clearance</field>-->
-<!--            <field name="res_model">custody.clear.wizard</field>-->
-<!--            &lt;!&ndash; <field name="view_type">form</field> &ndash;&gt;-->
-<!--            <field name="view_mode">form</field>-->
-<!--            &lt;!&ndash; <field name="view_id" ref="account_custody_clear_view_form"/> &ndash;&gt;-->
-<!--            <field name="target">new</field>-->
-<!--        </record>-->
 
 </odoo>

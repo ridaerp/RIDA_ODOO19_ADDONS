@@ -150,13 +150,13 @@
             <field name="name">modification request tree</field>
             <field name="model">modification.request</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="code_seq"/>
                     <field name="date"/>
                     <field name="department_id"/>
                     <field name="type"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -236,14 +236,14 @@
             <field name="name">Procedure tree</field>
             <field name="model">qhse.procedure</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="code"/>
                     <field name="pr_cat"/>
                     <field name="page"/>
                     <field name="issue_rev"/>
                     <field name="date"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -251,39 +251,39 @@
             <field name="name">Form tree</field>
             <field name="model">qhse.forms</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="code"/>
                     <field name="procedure_id"/>
                     <field name="page"/>
                     <field name="issue_rev"/>
                     <field name="date"/>
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="mod_re_act_window" model="ir.actions.act_window">
             <field name="name">Modification Request</field>
             <field name="res_model">modification.request</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <record id="qhse_forms_act_window" model="ir.actions.act_window">
             <field name="name">Forms</field>
             <field name="res_model">qhse.forms</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <record id="procdure_cat_act_window" model="ir.actions.act_window">
             <field name="name">Procedure Category</field>
             <field name="res_model">procedure.category</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <record id="procdure_act_window" model="ir.actions.act_window">
             <field name="name">Procedure</field>
             <field name="res_model">qhse.procedure</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <menuitem name="QHSE" id="qhse_menu" web_icon="qhse,static/description/icon.jpg"/>

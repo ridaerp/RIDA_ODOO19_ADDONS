@@ -78,7 +78,7 @@ class SalaryAdvancePayment(models.Model):
         return {
             'name': ('Net Salary'),
             'view_type': 'form',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'hr.payslip',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -130,7 +130,7 @@ class SalaryAdvancePayment(models.Model):
                 continue
             message = ""
             if rec.state == 'hr_manager':
-                users = self.env.ref('base_rida.rida_hr_manager_notify').users
+                users = self.env.ref('base_rida.rida_hr_manager_notify').user_ids
                 message = "Approve" 
             elif rec.state == 'reject':
                 users = [self.create_uid]

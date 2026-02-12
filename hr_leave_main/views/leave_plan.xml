@@ -24,12 +24,12 @@
                         </group>
                         <group col="1">
                             <field name="line_ids" nolabel="1">
-                                <tree create="false">
+                                <list create="false">
                                     <field name="employee_id"/>
                                     <field name="date_from"/>
                                     <field name="date_to"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
                     </sheet>
@@ -43,11 +43,11 @@
 			<field name="name">hr.leave.plan.tree</field>
 			<field name="model">hr.leave.plan</field>
 			<field name="arch" type="xml">
-               <tree string="Leave Plan">
+               <list string="Leave Plan">
                    <field name="name"/>
                    <field name="department_id"/>
                    <field name="company_id"/>
-               </tree>
+               </list>
             </field>
         </record>
 
@@ -55,7 +55,7 @@
         <record id="action_hr_leave_plan" model="ir.actions.act_window">
 			<field name="name">Leave Plan</field>
 			<field name="res_model">hr.leave.plan</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">list,form</field>
 		</record>
 
         <!--  Menu -->
@@ -103,13 +103,13 @@
 			<field name="name">hr.leave.plan.line.tree</field>
 			<field name="model">hr.leave.plan.line</field>
 			<field name="arch" type="xml">
-               <tree string="Employee Leave Plan">
+               <list string="Employee Leave Plan">
                     <field name="employee_id"/>
                     <field name="date_from"/>
                     <field name="date_to"/>
                     <field name="plan_id"/>
                     <field name="company_id"/>
-               </tree>
+               </list>
             </field>
         </record>
 
@@ -135,7 +135,7 @@
         <record id="action_hr_leave_plan_line" model="ir.actions.act_window">
 			<field name="name">Employee Leave Plan</field>
 			<field name="res_model">hr.leave.plan.line</field>
-			<field name="view_mode">calendar,tree,form</field>
+			<field name="view_mode">calendar,list,form</field>
             <field name="domain">[('employee_id.parent_id.user_id','=',uid)]</field>
 		</record>
 
@@ -151,7 +151,7 @@
 			<field name="name">My Leave Plan</field>
 			<field name="res_model">hr.leave.plan.line</field>
             <field name="domain">[('employee_id.user_id','=',uid)]</field>
-			<field name="view_mode">calendar,tree,form</field>
+			<field name="view_mode">calendar,list,form</field>
 		</record>
 
         <menuitem name="My Leave Plan"
@@ -164,7 +164,7 @@
         <record id="action_hr_leave_plan_line_all" model="ir.actions.act_window">
 			<field name="name">All Employee Leave Plan</field>
 			<field name="res_model">hr.leave.plan.line</field>
-			<field name="view_mode">calendar,tree,form</field>
+			<field name="view_mode">calendar,list,form</field>
 		</record>
 
         <menuitem name="All Employee Leave Plan"

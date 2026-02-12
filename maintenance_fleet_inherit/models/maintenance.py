@@ -77,7 +77,7 @@ class FleetVechicles(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.equipment',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('id', '=', self.equipment_id.id)],
@@ -89,7 +89,7 @@ class FleetVechicles(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('equipment_id', '=', self.equipment_id.id)],
@@ -266,15 +266,11 @@ class MaintenanceEquiement(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'issuance.request.line',
             'view_id': tree_view_id,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'domain': ['|', ('product_id.categ_id', 'like', 'General Material / Gasoline'),
                        ('equipment_id', '=', self.id), ('analytic_account_id.code', 'ilike', self.code)],
             'context': "{'create': False}"
         }
-
-
-# ('product_id.categ_id', 'like', '	General Material / Gasoline /'),
-# ('analytic_account_id.code', 'ilike', self.code)
 
 class MaintenanceEquitmentCategory(models.Model):
     _inherit = 'maintenance.equipment.category'

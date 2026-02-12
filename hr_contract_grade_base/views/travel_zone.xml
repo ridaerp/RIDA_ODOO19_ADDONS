@@ -43,7 +43,7 @@
     <record id="action_travel_zone" model="ir.actions.act_window">
         <field name="name">Travel Zones</field>
         <field name="res_model">travel.zone</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_travel_zone"

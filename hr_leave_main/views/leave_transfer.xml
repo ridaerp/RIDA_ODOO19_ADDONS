@@ -39,12 +39,12 @@
 			<field name="name">hr.leave.transfer.tree</field>
 			<field name="model">hr.leave.transfer</field>
 			<field name="arch" type="xml">
-               <tree string="Leave Transfer">
+               <list string="Leave Transfer">
                     <field name="employee_id"/>
                     <field name="company_id"/>
                     <field name="leave_type"/>
                     <field name="days"/>
-               </tree>
+               </list>
             </field>
         </record>
 
@@ -52,7 +52,7 @@
         <record id="action_hr_leave_transfer" model="ir.actions.act_window">
 			<field name="name">Leave Transfer Approve</field>
 			<field name="res_model">hr.leave.transfer</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">list,form</field>
             <field name="domain">[('employee_id.parent_id.user_id','=',uid)]</field>
 		</record>
 
@@ -61,7 +61,7 @@
 			<field name="name">My Leave Transfer</field>
 			<field name="res_model">hr.leave.transfer</field>
             <field name="domain">[('employee_id.user_id','=',uid)]</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">list,form</field>
 		</record>
 
         <menuitem name="My Leave Transfer"
@@ -75,7 +75,7 @@
 			<field name="name">Leave Transfer</field>
 			<field name="res_model">hr.leave.transfer</field>
             <field name="domain">[('state','not in', ['draft']),('employee_id.parent_id.user_id','=',uid)]</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">list,form</field>
 		</record>
 
         <menuitem name="Leave Transfer"
@@ -88,7 +88,7 @@
         <record id="action_hr_leave_transfer_all" model="ir.actions.act_window">
 			<field name="name">All Leave Transfer</field>
 			<field name="res_model">hr.leave.transfer</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">list,form</field>
 		</record>
 
         <menuitem name="All Employee Leave Transfer"

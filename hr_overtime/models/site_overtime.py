@@ -253,11 +253,11 @@ class SiteOvertime(models.Model):
             message = ""
 
             if rec.state == 'hr_officer':
-                users = self.env.ref('hr.group_hr_user').users
+                users = self.env.ref('hr.group_hr_user').user_ids
                 message = "Approve"
 
             if rec.state == 'hr_approval':
-                users = self.env.ref('base_rida.rida_hr_manager_notify').users
+                users = self.env.ref('base_rida.rida_hr_manager_notify').user_ids
                 message = "Approve"
 
 

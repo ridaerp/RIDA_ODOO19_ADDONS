@@ -56,11 +56,11 @@ class SalaryAdvanceAccount(models.Model):
                 continue
             message = ""
             if rec.state == 'hr_manager':
-                users = self.env.ref('base_rida.rida_hr_manager_notify').users
+                users = self.env.ref('base_rida.rida_hr_manager_notify').user_ids
                 message = "Approve"
 
             if rec.state == 'finance':
-                users = self.env.ref('account.group_account_user').users
+                users = self.env.ref('account.group_account_user').user_ids
                 message = "Confirm"
 
             elif rec.state == 'reject':

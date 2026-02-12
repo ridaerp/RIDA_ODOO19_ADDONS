@@ -276,10 +276,6 @@ class RotationBatch(models.Model):
                 po = self.env['account.payment'].sudo().with_context(
                     check_move_validity=False).create(create_payment)
                 po.action_post()
-                # po.state = "posted"
-                # self.journal_id=po.move_id
-                # po.move_id.state=='posted'
-                # self.button_action_post()
                 recc.state = "paid"
             return po
 
@@ -296,7 +292,7 @@ class RotationBatch(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Time Off',
             # 'view_id': tree_view_id,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'hr.leave',
             'domain': [('id', 'in', self.leave_ids.ids)],
             'context': "{'create': False}"
@@ -309,7 +305,7 @@ class RotationBatch(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Payment',
             'view_id': tree_view_id,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'account.payment',
             'domain': [('ref', '=', self.name)],
             'context': "{'create': False}"

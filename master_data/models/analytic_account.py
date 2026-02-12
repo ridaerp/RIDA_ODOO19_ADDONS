@@ -50,7 +50,7 @@ class RequestAnalyticAccount(models.Model):
             users = []
             message = ""
             if rec.state == 'w_adv':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').users
+                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
                 message = "Please Create the Analytic Account"
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)

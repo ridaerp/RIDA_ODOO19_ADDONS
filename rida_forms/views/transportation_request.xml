@@ -168,7 +168,7 @@ Issue/Rev 02/00</p></b>
       <field name="name">Transportation Request</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">transportation.request</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
     </record>
 
     <menuitem name="Transportation Request" id="rida_forms.menu_6_list" sequence="3"  parent="rida_forms.gs_admin_form"

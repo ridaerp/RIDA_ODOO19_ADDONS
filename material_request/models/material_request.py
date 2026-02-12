@@ -329,7 +329,7 @@ class PaymentRequest(models.Model):
         return {
             'name': _('Payment'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -495,7 +495,7 @@ class MaterialRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Weighted Scoring Evaluation',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'weight.scoring.evaluation',
             'domain': [('material_request_id.id', '=', self.id)],
             'context': "{'create': False}"
@@ -505,7 +505,7 @@ class MaterialRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Lowest Price Evaluation',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'lowest.price.evaluation',
             'domain': [('material_request_id.id', '=', self.id)],
             'context': "{'create': False}"
@@ -749,7 +749,6 @@ class MaterialRequest(models.Model):
             users = []
             message = ""
             if rec.state == 'supply_approve' or rec.state=='supply_service_approve':
-                # users = self.env.ref('base_rida.rida_group_master_data_manager').users
                 message = "The MR has been Assign To you "
                 # for user in users:
                 self.activity_schedule('material_request.mail_act_material_request_approval', user_id=rec.assigned_to_supply.id, note=message)
@@ -1025,7 +1024,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_ids', 'in', self.ids)],
@@ -1038,8 +1037,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
             'view_id': view_id.id,
-            'view_mode': 'tree',
-            # 'view_type': 'form',
+            'view_mode': 'list',
             'target': 'current',
             'domain': [('request_ids', 'in', self.ids), ('state', '!=', 'draft')],
         }
@@ -1051,7 +1049,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.id)],
@@ -1063,7 +1061,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'service.requisition',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.id)],
@@ -1075,7 +1073,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.requisition',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_ids', 'in', self.ids)],
@@ -1088,7 +1086,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.contract',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.id)],
@@ -1102,7 +1100,7 @@ class MaterialRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'issuance.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.id)],

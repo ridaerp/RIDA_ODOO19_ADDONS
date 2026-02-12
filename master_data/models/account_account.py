@@ -65,7 +65,7 @@ class RequestAccountAccount(models.Model):
             users = []
             message = ""
             if rec.state == 'w_adv':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').users
+                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
                 message = "Please Create the Account"
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
@@ -83,7 +83,7 @@ class RequestAccountAccount(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['code_seq'] = self.env['ir.sequence'].get('account.request') or ' '
+            val['code_seq'] = self.env['ir.sequence'].next_by_code('account.request') or ' '
         return super(RequestAccountAccount, self).create(vals)
 
 
@@ -98,7 +98,7 @@ class RequestAccountAccount(models.Model):
             'name': self.name,
             'code': self.code,
             'account_type': self.user_type_id,
-            'company_id': self.company_id.id,
+            'company_ids': [(6, 0, [self.company_id.id])],
             'reconcile': self.reconcile,
         })
         return self.write({'state': 'done'})

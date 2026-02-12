@@ -192,7 +192,7 @@ class QhseProcedure(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Modification Changes',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'modification.request',
             'domain': [('procedure_id', '=', self.id)],
             'context': "{'create': False}"
@@ -253,7 +253,7 @@ class QhseForms(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Modification Changes',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'modification.request',
             'domain': [('form_id', '=', self.id)],
             'context': "{'create': False}"

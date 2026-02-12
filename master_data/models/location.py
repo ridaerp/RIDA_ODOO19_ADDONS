@@ -118,18 +118,16 @@ class RequestLocation(models.Model):
             'usage': self.usage,
             'complete_name': self.complete_name,
             'location_id': self.location_id.id,
-            # 'child_ids': self.child_ids,
-            'comment': self.comment,
             'barcode': self.barcode,
             'putaway_rule_ids':self.putaway_rule_ids,
             'removal_strategy_id': self.removal_strategy_id.id,
-            'scrap_location': self.scrap_location,
+            # 'scrap_location': self.scrap_location,
             'company_id': self.company_id.id,
-            'posx': self.posx,
+            # 'posx': self.posx,
             'parent_path': self.parent_path,
-            'return_location': self.return_location,
-            'posz': self.posz,
-            'posy': self.posy,
+            # 'return_location': self.return_location,
+            # 'posz': self.posz,
+            # 'posy': self.posy,
         })
         return self.write({'state': 'done'})
 

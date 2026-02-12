@@ -218,7 +218,7 @@ Issue/Rev 02/00</p></b>
       <field name="name">Device Request</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.device.request</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
     </record>
 
 
@@ -228,7 +228,7 @@ Issue/Rev 02/00</p></b>
       <field name="name">ICT Service</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.service</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
     </record>
 
 
@@ -237,50 +237,8 @@ Issue/Rev 02/00</p></b>
       <field name="name">Template Service</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">ict.template.service</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
     </record>
-
-
-           
-
-           
-
-
-
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="test.action_server">
-      <field name="name">test server</field>
-      <field name="model_id" ref="model_test_test"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
-
-    <!-- Top menu item -->
-<!--
-    <menuitem name="test" id="test.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="test.menu_1" parent="test.menu_root"/>
-    <menuitem name="Menu 2" id="test.menu_2" parent="test.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="test.menu_1_list" parent="test.menu_1"
-              action="test.action_window"/>
-    <menuitem name="Server to list" id="test" parent="test.menu_2"
-              action="test.action_server"/>
--->
-
 
 
 <menuitem name="Request Forms" id="rida_forms.menu_root"

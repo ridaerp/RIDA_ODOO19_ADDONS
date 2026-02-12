@@ -98,12 +98,9 @@ class MetallurgicalRequest(models.Model):
     def activity_update(self):
         for rec in self:
             users = []
-            # rec.activity_unlink(['hr_salary_advance.mail_act_approval'])
-            # if rec.state not in ['draft','reject']:
-            #     continue
             message = ""
             if rec.state == 'draft':
-                users = self.env.ref('base_rida.rida_group_site_manager').users
+                users = self.env.ref('base_rida.rida_group_site_manager').user_ids
                 message = "Please approval the request"
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)

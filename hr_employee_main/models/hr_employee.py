@@ -102,7 +102,7 @@ class HrEmployee(models.Model):
         now = datetime.now() + timedelta(days=1)
         date_now = now.date()
         match = self.search([])
-        employees = self.env.ref('hr.group_hr_user').users.mapped('employee_ids')
+        employees = self.env.ref('hr.group_hr_user').user_ids.mapped('employee_ids')
         emails = [employee.work_email for employee in employees]
         for i in match:
             if i.id_expiry_date:
