@@ -215,7 +215,7 @@ class OvertimeAuth(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'OverTime By Batch',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'hr.overtime.batch',
             'domain': [('overtime_auth_id', '=', self.id)],
             'context': "{'create': False}"
@@ -224,19 +224,6 @@ class OvertimeAuth(models.Model):
 
 class OvertimeAuthLine(models.Model):
     _name = 'overtime.auth.line'
-
-    # @api.model
-    # def default_get(self, fields):
-    #     res = super(OvertimeAuthLine, self).default_get(fields)
-    #     start_date = date.today().strftime('%Y-%m-01')
-    #     current_date = date.today()
-    #     default_date = calendar.monthrange(current_date.year, current_date.month)[1]
-    #     end_date = current_date.replace(day=default_date).strftime('%Y-%m-%d')
-    #     res.update({
-    #         'work_from': start_date,
-    #         'work_to': end_date,
-    #     })
-    #     return res
 
     request_id = fields.Many2one("overtime.auth")
     employee_id = fields.Many2one("hr.employee", string="Employee")

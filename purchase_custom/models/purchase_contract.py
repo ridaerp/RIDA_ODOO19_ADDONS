@@ -125,7 +125,7 @@ class InheritPurchaseOrder(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'change.contract',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('inherit_sc', '=', self.id)],

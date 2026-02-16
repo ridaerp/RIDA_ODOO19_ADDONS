@@ -77,10 +77,10 @@
                                      required="property_valuation == 'real_time' and state in ['w_adv','md']"/>
                                 <field name="property_stock_journal"
                                      required="property_valuation == 'real_time' and state in ['w_adv','md']"/>
-                                <field name="property_stock_account_input_categ_id"
+                                <!-- <field name="property_stock_account_input_categ_id"
                                      required="property_valuation == 'real_time' and state in ['w_adv','md']" />
                                 <field name="property_stock_account_output_categ_id"
-                                    required="property_valuation == 'readl_time' and state in ['w_adv','md']"/>
+                                    required="property_valuation == 'readl_time' and state in ['w_adv','md']"/> -->
                             </group>
 
                         </group>

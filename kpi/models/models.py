@@ -512,7 +512,7 @@ class KpiPerson(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'kpi.review',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'domain': [('id', 'in', created_reviews.ids)],
             }
 
@@ -623,7 +623,7 @@ class KpiPerson(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'kpi.review',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'domain': [('id', 'in', created_reviews.ids)],
             }
 
@@ -635,7 +635,7 @@ class KpiPerson(models.Model):
             'name': 'Reviews',
             'type': 'ir.actions.act_window',
             'res_model': 'kpi.review',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [
                 ('person_id.employee_id', '=', self.employee_id.id),
                 ('person_id.year', '=', self.year)
@@ -818,7 +818,7 @@ class HrEmployee(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Employee KPI',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'kpi.person',
             'domain': [('employee_id.id', '=', self.id), ('state', '=', 'approved')],
             'context': "{'create': False}"

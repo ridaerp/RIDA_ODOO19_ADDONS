@@ -119,7 +119,7 @@ class LabRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Lab Consumable',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'medicare.issuance.request',
             'domain': [('lab_id.id', '=', self.id)],
             'context': "{'create': False}"

@@ -340,9 +340,9 @@ class WeightedScoringEvaluation(models.Model):
             'res_model': 'purchase.order',
             'domain': [('request_id', '=', self.material_request_id.id)],
             'target': 'current',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'views': [
-                (False, 'tree'),      # default tree view
+                (False, 'list'),      # default tree view
                 (view_form, 'form'),  # your inherited form view
             ],
         }
@@ -355,7 +355,7 @@ class WeightedScoringEvaluation(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.material_request_id.id)],

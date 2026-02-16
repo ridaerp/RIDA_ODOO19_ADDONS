@@ -47,14 +47,11 @@ class PurchaseOrder(models.Model):
         ('site', 'Operation Director Approval'),
         ('line_approve', 'Waiting Line Manager Approval'),
         ('service_done', 'Service Completed'),
-        # ('approve', 'Approved'),
-        # ('to approve', 'To Approve'),
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('reject', 'Rejected'),
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
-    # user_type_ = fields.Char()
     user_type_ = fields.Selection(related="create_uid.user_type")
 
     request_id = fields.Many2one('material.request', 'Material Request')
@@ -65,8 +62,6 @@ class PurchaseOrder(models.Model):
         'mr_id',  # Column for related model
         string='Material Requests'
     )
-    # priority = fields.Selection([('normal', 'Normal'), ('urgent', 'Urgent'), ('Critical', 'Critical')],
-    #                             string='Priority', required=False)
     priority1 = fields.Selection([('normal', 'Normal'), ('urgent', 'Urgent'), ('Critical', 'Critical')],
                                  string='Priority', required=False)
 
@@ -108,7 +103,7 @@ class PurchaseOrder(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Certificates'),
             'res_model': 'completion.certificate',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('purchase_order_id', '=', self.id)],
             'context': {'default_purchase_order_id': self.id},
         }
@@ -219,7 +214,7 @@ class PurchaseOrder(models.Model):
             'name': "Material Requests",
             'type': 'ir.actions.act_window',
             'res_model': 'material.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('id', 'in', self.request_ids.ids)],
         }
@@ -344,10 +339,7 @@ class PurchaseOrder(models.Model):
         dropshipping_record=self.env['stock.picking'].search([("origin","=",self.name)],limit=1)
         dropshipping_record.button_validate()
         
-
         self.action_create_invoice()  # This returns the invoice(s) created
-
-
 
         return {
             'type': 'ir.actions.act_window',
@@ -356,13 +348,6 @@ class PurchaseOrder(models.Model):
             'res_id': sale_order.id,
             'target': 'current',
         }
-
-
-
-
-
-
-
 
     # processing days
     @api.depends('assigned_data', 'date_approve', 'confirmed')
@@ -421,11 +406,6 @@ class PurchaseOrder(models.Model):
                 order.payment_state = 'partial'
             else:
                 order.payment_state = 'unpaid'
-
-    # # on change for purchase type
-    # @api.onchange('partner_id')
-    # def onchange_partner_id(self):
-    #     self.purchase_type = self.partner_id.partner_type
 
     def _prepare_invoice(self):
         res = super(PurchaseOrder, self)._prepare_invoice()
@@ -591,11 +571,6 @@ class PurchaseOrder(models.Model):
         user = self.env.user.id
         return user
 
-    # def submit(self):
-    #     self.state = 'line_approve'
-    #     self.activity_update()
-
-
     def activity_update(self):
         for rec in self:
             message = ""
@@ -607,9 +582,6 @@ class PurchaseOrder(models.Model):
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=line_manager.id, note=message)
             else:
                 continue
-
-
-
 
 
     def weight(self):
@@ -650,35 +622,13 @@ class PurchaseOrder(models.Model):
 
             if rec.request_id.item_type == 'service' and rec.request_id.user_type == 'hq':
                 rec.state = 'contract_manager'
-            # if rec.ore_purchased:
-            #     rec.state = 'prm'
             else:
-                # rec.state = 'prm'
                 rec.state = 'sum'
-            # if rec.request_id.purchase_type=='overseas':
-            #     rec.make_ovearses()
-
-            # if rec.request_id.purchase_type=='overseas':
-            #     rec.make_ovearses()
-                # return {
-                #     'type': 'ir.actions.act_window',
-                #     'view_type': 'form',
-                #     'view_mode': 'form',
-                #     'res_model': 'overseas.payment',
-                #     'res_id': ovearseas_payment.id,
-                #     'context': {'form_view_initial_mode': 'edit'},
-                # }
 
     def make_ovearses(self):
         for rec in self:
 
             if rec.request_id.purchase_type == 'overseas' or rec.purchase_type =='overseas':
-
-                # ovearseas_obj = self.env['overseas.payment'].search(
-                #     [('purchase_order_id', '=', self.id)])
-                # if ovearseas_obj:
-                #     raise UserError("The Overseas Payment Alrealy createed")
-
                 ovearseas_payment = self.env['overseas.payment'].create({
                     'title': self.request_id.title,
                     'request_id': self.request_id.id,
@@ -700,17 +650,12 @@ class PurchaseOrder(models.Model):
                 rec.ovearseas_id=ovearseas_payment.id
                 rec.ovearseas_id.state='scd'
 
-
-
     def make_ovearses_wizard(self):
         for rec in self:
             default_amount = rec.amount_total if rec.paid_amount == 0 else rec.amount_due
 
-
             if rec.request_id.purchase_type != 'overseas' and not rec.contract_purchased:
                 raise UserError("This purchase payment in MR is not marked as Overseas.")
-
-
 
             if rec.request_id.purchase_type == 'overseas' or rec.purchase_type =='overseas':
                 existing_payment = self.env['overseas.payment'].search(
@@ -735,20 +680,12 @@ class PurchaseOrder(models.Model):
                         }
 
 
-
-
     def go_to_sum(self):
         for rec in self:
 
             if rec.request_id:
-                # if rec.supply_user_type == 'site':
-
-                # if rec.request_id.purchase_type=='overseas':
-                #     rec.make_ovearses()
                 if rec.is_payment_request:
-                    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", rec.is_payment_request)
                     self.button_confirm()
-
                 else:
 
                     if rec.supply_user.user_type == 'site':
@@ -758,7 +695,6 @@ class PurchaseOrder(models.Model):
                         return rec.write({'state': 'sud'})
                     elif rec.ore_purchased:
                         return rec.write({'state': 'site'})
-
                     ###############################add new line##########
                     #####################ekhlas code #############
                     elif rec.supply_user.user_type == 'fleet':
@@ -768,36 +704,13 @@ class PurchaseOrder(models.Model):
                     else:
                         raise UserError("Thr Employee Has No Type")
             else:
-                # if rec.fleet==True:
-                #     return rec.write({'state': 'fleet'})
-                # else:
-                # return rec.write({'state': 'sum'})
                 return rec.write({'state': 'sud'})
-
-
-
-
-            # else:
-            #     if rec.emp_type == 'site':
-            #         return rec.write({'state': 'site'})
-            #     elif rec.emp_type == 'hq':
-            #         return rec.write({'state': 'ccso'})
 
     def go_to_sud(self):
         for rec in self:
             if rec.request_id:
-                # if rec.request_id.purchase_type=='overseas' and rec.ovearseas_id:
-                #     rec.ovearseas_id.state='ccso'
-                #     rec.ovearseas_id.scd_date=datetime.today()
-                #     rec.ovearseas_id.scd_approved_by=rec.env.user.id
-
-
-
-                # if rec.supply_user_type == 'site':
                 if rec.supply_user.user_type == 'site':
-                    # return rec.write({'state': 'site'})
                     return rec.write({'state': 'ccso'})
-                # elif rec.supply_user_type == 'hq':
                 elif rec.supply_user.user_type == 'hq':
                     return rec.write({'state': 'ccso'})
                 ###############################add new line##########
@@ -810,21 +723,7 @@ class PurchaseOrder(models.Model):
 
 
             else:
-                # if rec.fleet==True:
-                #     return rec.write({'state': 'fleet'})
-                # else:
                 return rec.write({'state': 'ccso'})
-
-
-
-
-
-
-            # else:
-            #     if rec.emp_type == 'site':
-            #         return rec.write({'state': 'site'})
-            #     elif rec.emp_type == 'hq':
-            #         return rec.write({'state': 'ccso'})
 
 
     def go_to_fm(self):
@@ -837,10 +736,6 @@ class PurchaseOrder(models.Model):
 
     def go_to_ccso(self):
         for rec in self:
-
-
-
-            # if rec.supply_user_type == 'site':
             if rec.supply_user.user_type == 'site' and rec.ore_purchased == False:
                 return rec.write({'state': 'ccso'})
             #########################add new line #############
@@ -862,14 +757,9 @@ class PurchaseOrder(models.Model):
 
     def button_confirm(self):
         for order in self:
-            # if order.state not in ['draft', 'sent']:
-
-
             # Always call super first (this sets PO state = purchase)
             res = super(PurchaseOrder, self).button_confirm()
-
             for order in self:
-
                 # ------------------------------
                 # 🔷 UPDATE Qty In PO (your requirement)
                 # ------------------------------
@@ -900,26 +790,23 @@ class PurchaseOrder(models.Model):
                 order.write({'state': 'to approve'})
 
             #############################################inspection material##########################
-            # print('>>>>>>>>>>>>>>>>>>>>>>> ', self.company_id.name, self.request_id.company_id.name)
             if not (
                     self.company_id.id != self.request_id.company_id.id and self.request_id.purchase_type == 'overseas') and self.requested_by.user_type != 'rohax':
-                # if (self.company_id.id == self.request_id.company_id.id and self.request_id.purchase_type != 'overseas') or not self.company_id.id == self.request_id.company_id.id:
-                # if self.requested_by.user_type != 'rohax' and self.request_id.purchase_type != 'overseas':
                 if not order.ore_purchased and self.picking_type_id.code == 'incoming':
                     env = self.env(user=1)
                     inspection_line_ids = []
                     if self.order_line:
                         for rec in self.order_line:
-                            if rec.product_template_id.type != 'service' and rec.product_template_id.id:
-                                product_uom = rec.product_uom  # Current UoM in the order line
-                                original_uom = rec.product_template_id.uom_id  # Product's original UoM
+                            if rec.product_id.type != 'service' and rec.product_id.id:
+                                product_uom = rec.product_uom_id  # Current UoM in the order line
+                                original_uom = rec.product_id.uom_id  # Product's original UoM
 
                                 # Convert the ordered quantity to the original UoM
                                 qty_converted = product_uom._compute_quantity(rec.product_qty, original_uom)
 
                                 inspection_line_ids.append(
                                     (0, 0,
-                                     {'product_id': rec.product_template_id.id,
+                                     {'product_id': rec.product_id.product_tmpl_id.id,
                                       'product_uom_id': original_uom.id,
                                       'qty_on_bill': qty_converted, 'qty_received': rec.qty_received}))
                         if inspection_line_ids:
@@ -932,17 +819,8 @@ class PurchaseOrder(models.Model):
                                  'material_request_ids': self.request_ids,
                                  })
 
-            # if self.request_id.purchase_type=='overseas' and self.ovearseas_id:
-            #     self.ovearseas_id.state='fm'
-            #     self.ovearseas_id.ccso_date=datetime.today()
-            #     self.ovearseas_id.ccso_approved_by=self.env.user.id
-
             if self.request_id.purchase_type=='overseas' and self.dest_address_id:
                 self.action_create_sale_order()
-            #     self.ovearseas_id.state='fm'
-            #     self.ovearseas_id.ccso_date=datetime.today()
-            #     self.ovearseas_id.ccso_approved_by=self.env.user.id
-
             ###############################################################################################
             if order.contract_id :
 
@@ -952,23 +830,14 @@ class PurchaseOrder(models.Model):
                 if  self.request_id.purchase_type=='overseas' or self.purchase_type =='overseas':
                     if not self.payment_company_id:
                         raise UserError("Please Enter the Paying Subsidiary")
-                # for oor in order.order_line:
-                #     if oor.product_id.type=='service':
                 order.action_create_invoice()
                 order.make_ovearses()
-
-
-
-
-
-
-
 
 
             if order.ore_purchased:
                 order.weight_request_id.state = 'done'
                 for record in order.order_line:
-                    for recordd in order.picking_ids.move_ids_without_package:
+                    for recordd in order.picking_ids.move_ids:
                         recordd.batch_no = record.batch_No
 
                 if order.weight_request_id:
@@ -977,16 +846,6 @@ class PurchaseOrder(models.Model):
                     ], limit=1)
                     if landed_cost:
                           landed_cost.purchase_order_id = order.id
-                # for record in order.order_line:
-
-                #     for recordd in record.picking_ids:
-                #         recordd.batch_no=record.batch_No
-
-                # for recordd in record.invoice_lines:
-                # if record.product_qty<0  and recordd.product_id.type=='product':
-
-                # print ("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-                # recordd.account_id=record.company_id.property_stock_account_output_categ_id
         if self.request_id:
             self.request_id.sudo().write({'state': 'purchased'})
 
@@ -998,25 +857,15 @@ class PurchaseOrder(models.Model):
         for order in self:
             if order.picking_ids:  # Check if there are related pickings
                 for picking in order.picking_ids:  # Iterate over related stock pickings
-                    for move in picking.move_ids_without_package:  # Iterate over stock moves
+                    for move in picking.move_ids:  # Iterate over stock moves
                         for line in order.order_line:
                             if line.product_id == move.product_id:
                                 move.average = line.average
-
                                 # Propagate lot/batch information
                                 for m in move.move_line_ids:
                                     m.lot_id = line.lot_id.id
                                     m.lot_name = line.lot_id.name
-
-                                # move.write({'batch_no': line.batch_No})
-                                # if move.move_line_ids:
-                                #     move.move_line_ids.write({'lot_id': line.lot_id.id})
-
         ########################################################s
-
-        
-
-
         return True
         super(PurchaseOrder, self).button_confirm()
 
@@ -1041,8 +890,6 @@ class PurchaseOrder(models.Model):
         fpos = FiscalPosition.with_company(self.company_id)._get_fiscal_position(partner)
 
         # fpos = self.env['account.fiscal.position']._get_fiscal_position(self.partner_id)
-
-
         self.partner_id = partner.id
         self.fiscal_position_id = fpos.id
         self.payment_term_id = payment_term.id,
@@ -1075,7 +922,6 @@ class PurchaseOrder(models.Model):
             # Compute taxes
             taxes_ids = fpos.map_tax(
                 line.product_id.supplier_taxes_id.filtered(lambda tax: tax.company_id == contract.company_id)).ids
-
 
             # Compute quantity and price_unit
             if line.product_uom_id != line.product_id.uom_po_id:
@@ -1270,7 +1116,6 @@ class PurchaseOrderLine(models.Model):
                 }))
         date = move and move.date or fields.Date.today()
         res = {
-            # 'display_type': 'line_section',
             'sequence': self.sequence,
             'name': '%s: %s' % (self.order_id.name, self.name),
             'product_id': self.product_id.id,
@@ -1281,7 +1126,6 @@ class PurchaseOrderLine(models.Model):
             'price_unit': self.currency_id._convert(self.price_unit, aml_currency, self.company_id, date, round=False),
             'tax_ids': [(6, 0, self.taxes_id.ids)],
             'analytic_distribution': self.analytic_distribution,
-            # 'analytic_tag_ids': [(6, 0, self.analytic_tag_ids.ids)],
             'purchase_line_id': self.id,
             'is_landed_costs_line': self.is_landed_costs_line,
 
@@ -1322,18 +1166,6 @@ class PurchaseOrderLine(models.Model):
                     )
                     rec.account_analytic_id = default_analytic_account.analytic_id
 
-    # @api.onchange('product_qty', 'product_uom')
-    # def _onchange_quantity(self):
-    #     # res = super(PurchaseOrderLine, self)._onchange_quantity()
-    #     if self.order_id.contract_id:
-    #         for line in self.order_id.contract_id.line_ids.filtered(lambda l: l.product_id == self.product_id):
-    #             # if line.product_uom_id != self.product_uom:
-    #             #     self.price_unit = line.product_uom_id._compute_price(
-    #             #         line.price_unit, self.product_uom)
-    #             # else:
-    #             self.price_unit = line.price_unit
-    #             # break
-    #     # return res
 
     @api.onchange('is_landed_costs_line')
     def _onchange_is_landed_costs_line(self):
@@ -1342,13 +1174,7 @@ class PurchaseOrderLine(models.Model):
         if self.product_id:
             accounts = self.product_id.product_tmpl_id._get_product_accounts()
             if self.product_type != 'service':
-                # self.account_id = accounts['expense']
                 self.is_landed_costs_line = False
-            # # elif self.is_landed_costs_line and self.move_id.company_id.anglo_saxon_accounting:
-            # elif self.is_landed_costs_line:
-            #     # self.account_id = accounts['stock_input']
-            # else:
-            #     # self.account_id = accounts['expense']
 
     @api.onchange('product_id')
     def _onchange_is_landed_costs_line_product(self):
@@ -1362,19 +1188,6 @@ class PurchaseOrderLine(models.Model):
         for rec in self:
             rec.account_analytic_id = order_id.analytic_account_id
 
-    # name = fields.Html()
-
-    # @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.quantity')
-    # def _compute_qty_invoiced(self):
-    #     for line in self:
-    #         qty = 0.0
-    #         for inv_line in line.invoice_lines:
-    #             if inv_line.invoice_id.state in ['open', 'in_payment', 'paid']:
-    #                 if inv_line.invoice_id.type == 'in_invoice':
-    #                     qty += inv_line.uom_id._compute_quantity(inv_line.quantity, line.product_uom)
-    #                 elif inv_line.invoice_id.type == 'in_refund':
-    #                     qty -= inv_line.uom_id._compute_quantity(inv_line.quantity, line.product_uom)
-    #         line.qty_invoiced = qty
 
     def _onchange_eval(self, field_name, onchange, result):
         """Remove the trigger for the undesired onchange method with this field.
@@ -1416,8 +1229,6 @@ class PurchaseLandedCOST(models.Model):
     subprice_total = fields.Float("Total Price", compute="get_total")
     purchase_order_id = fields.Many2one("purchase.order", "Purchase Order")
 
-    # currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
-
     @api.depends('product_qty', 'unit_price')
     def get_total(self):
         for rec in self:
@@ -1445,5 +1256,3 @@ class AccountPayment(models.Model):
 
                 invoice_id = self.env["account.move"].search([("name", "=", val['ref'])], limit=1)
         return res
-
-

@@ -96,7 +96,7 @@ class DoctorVisit(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Doctor Visits',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'res_model': 'doctor.visit',
                 'domain': [('p_employee.id', '=', self.p_employee.id), ('id', '!=', self.id)],
                 'context': "{'create': False}"
@@ -106,7 +106,7 @@ class DoctorVisit(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Doctor Visits',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'res_model': 'doctor.visit',
                 'domain': [('p_contractor.id', '=', self.p_contractor.id), ('id', '!=', self.id)],
                 'context': "{'create': False}"
@@ -116,7 +116,7 @@ class DoctorVisit(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Doctor Visits',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'res_model': 'doctor.visit',
                 'domain': [('p_quest.id', '=', self.p_quest.id), ('id', '!=', self.id)],
                 'context': "{'create': False}"
@@ -238,7 +238,7 @@ class DoctorVisit(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Issuance Request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'medicare.issuance.request',
             'domain': [('doctor_visitor_id.id', '=', self.id)],
             'context': "{'create': False}"
@@ -248,7 +248,7 @@ class DoctorVisit(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Minor Room Requests',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'minor.room',
             'domain': [('doctor_visitor_id.id', '=', self.id)],
             'context': "{'create': False}"
@@ -258,7 +258,7 @@ class DoctorVisit(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Lab Tests',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'lab.request',
             'domain': [('doctor_visitor_id.id', '=', self.id)],
             'context': "{'create': False}"
@@ -461,7 +461,7 @@ class HrEmployee(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Doctor Visits',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'doctor.visit',
             'domain': [('p_employee.id', '=', self.id), ('state', '=', 'close')],
             'context': "{'create': False}"

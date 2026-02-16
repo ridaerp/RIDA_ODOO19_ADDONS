@@ -98,7 +98,7 @@ class PaymentRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'account.move',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('pyment_req_id', '=', self.id)],

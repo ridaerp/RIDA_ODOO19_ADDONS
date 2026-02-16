@@ -55,7 +55,7 @@ class TestStockCard(common.TransactionCase):
             }
         )
         picking.action_confirm()
-        picking.move_ids_without_package.quantity_done = 50.000
+        picking.move_ids.quantity_done = 50.000
         picking.button_validate()
 
         self.model = self._getReportModel()
@@ -176,7 +176,7 @@ class TestStockCardReport(common.TransactionCase):
             }
         )
         picking_1.action_confirm()
-        picking_1.move_ids_without_package.quantity_done = 50.000
+        picking_1.move_ids.quantity_done = 50.000
         picking_1.button_validate()
 
         picking_2 = self.env["stock.picking"].create(
@@ -198,7 +198,7 @@ class TestStockCardReport(common.TransactionCase):
             }
         )
         picking_2.action_confirm()
-        picking_2.move_ids_without_package.quantity_done = 100.000
+        picking_2.move_ids.quantity_done = 100.000
         picking_2.button_validate()
 
     def test_reports(self):

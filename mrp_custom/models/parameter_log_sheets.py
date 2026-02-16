@@ -55,7 +55,7 @@ class Flowmeter(models.Model):
             'name': 'Flowmeter Readings',
             'type': 'ir.actions.act_window',
             'res_model': 'flowmeter.reading.sheet',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('flowmeter_id', '=', self.id)],
             'target': 'current',
         }
@@ -504,7 +504,7 @@ class StrippingLogSheet(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Chem-Assays',
             'res_model': 'chemical.samples.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('stripping', '=', self.id)],
         }

@@ -195,12 +195,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-6" name="div_outgoing_address">
-                                    <div t-if="o.move_ids_without_package and o.move_ids_without_package[0].partner_id and o.move_ids_without_package[0].partner_id.id != o.partner_id.id">
+                                    <div t-if="o.move_ids and o.move_ids[0].partner_id and o.move_ids[0].partner_id.id != o.partner_id.id">
                                         <span><strong>Delivery Address:</strong></span>
-                                        <div t-field="o.move_ids_without_package[0].partner_id"
+                                        <div t-field="o.move_ids[0].partner_id"
                                             t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
                                     </div>
-                                    <div t-if="o.picking_type_id.code != 'internal' and (not o.move_ids_without_package or not o.move_ids_without_package[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
+                                    <div t-if="o.picking_type_id.code != 'internal' and (not o.move_ids or not o.move_ids[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
                                         <span><strong>Warehouse Address:</strong></span>
                                         <div t-field="o.picking_type_id.warehouse_id.partner_id"
                                             t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
@@ -248,7 +248,7 @@
                                 <strong>Receipt By:</strong>
                                 <p t-field="o.receipt_id"/>
                             </div>
-                            <table class="table table-sm" t-if="o.move_line_ids and o.move_ids_without_package">
+                            <table class="table table-sm" t-if="o.move_line_ids and o.move_ids">
                                 <t t-set="has_barcode" t-value="any(move_line.product_id and move_line.product_id.sudo().barcode or move_line.package_id for move_line in o.move_line_ids)"/>
                                 <t t-set="has_serial_number" t-value="any(move_line.lot_id or move_line.lot_name for move_line in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
@@ -284,7 +284,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-foreach="o.move_ids_without_package" t-as="move">
+                                    <t t-foreach="o.move_ids" t-as="move">
                                         <!-- In case you come across duplicated lines, ask NIM or LAP -->
                                         <t t-foreach="move.move_line_ids.sorted(key=lambda ml: ml.location_id.id)" t-as="ml">
                                             <tr>

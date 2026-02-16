@@ -55,7 +55,7 @@ class MinorRoom(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Minor Consumable',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'medicare.issuance.request',
             'domain': [('minor_id.id', '=', self.id)],
             'context': "{'create': False}"

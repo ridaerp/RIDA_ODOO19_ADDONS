@@ -112,7 +112,7 @@ class external_service_management(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'account.move',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('wo_account_id', '=', self.id)],

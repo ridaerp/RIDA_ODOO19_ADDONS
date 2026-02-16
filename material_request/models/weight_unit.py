@@ -1824,8 +1824,9 @@ class ChemicalSamplesLine(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('chemical_request_id'):
-            request = self.env['chemical.samples.request'].browse(vals['chemical_request_id'])
+        for val in vals:
+            if val.get('chemical_request_id'):
+                request = self.env['chemical.samples.request'].browse(val['chemical_request_id'])
         return super().create(vals)
 
 

@@ -158,7 +158,7 @@ class SalaryAdvanceAccount(models.Model):
         return {
             'name': _('Payment'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -171,7 +171,7 @@ class SalaryAdvanceAccount(models.Model):
         return {
             'name': ('Journal Entiry'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.move',
             'view_id': False,
             'type': 'ir.actions.act_window',

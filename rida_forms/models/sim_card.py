@@ -83,7 +83,7 @@ class SimCardAvailable(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'SIM Card History',
             'res_model': 'sim.card',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('sim_id', '=', self.id)],
             'context': {'sim_id': self.id},
         }
@@ -185,7 +185,7 @@ class SimCard(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'SIM Card History',
             'res_model': 'sim.card',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': ['|',('employee_id', '=', self.employee_id.id),('guest_name', '=', self.guest_name)],
             'context': {'default_employee_id': self.employee_id.id},
         }

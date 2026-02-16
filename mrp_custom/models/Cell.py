@@ -80,7 +80,7 @@ class ManholeSample(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Chem-Assays',
             'res_model': 'chemical.samples.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('manhole_id', '=', self.id)],
         }
@@ -101,7 +101,7 @@ class ManholeSample(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Chemical Sample Requests',
             'res_model': 'chemical.samples.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('manhole_id', '=', self.id)],
             'context': {'default_manhole_id': self.id},
         }

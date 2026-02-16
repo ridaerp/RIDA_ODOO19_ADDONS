@@ -71,7 +71,7 @@ class RidaStockPiking(models.Model):
                         ########## Check Quantity When Validate
 
                         for rec in material_insepection_ids.inspection_ids:
-                            for line in self.move_ids_without_package:
+                            for line in self.move_ids:
                                 if rec.product_id.id == line.product_id.product_tmpl_id.id:
                                     if float(format(line.quantity, ".2f")) != float(format(rec.qty_accepted, ".2f")):
                                         raise UserError(
@@ -85,7 +85,7 @@ class RidaStockPiking(models.Model):
     @api.model
     def _update_sale_order_delivered_qty(self, picking):
         # Loop through each move in the stock picking to update the sales order delivered qty
-        for move in picking.move_ids_without_package:
+        for move in picking.move_ids:
             if move.purchase_line_id:
                 purchase_order_line = move.purchase_line_id
 

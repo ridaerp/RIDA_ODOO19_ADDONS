@@ -212,7 +212,7 @@ class SupplierPerformanceEvaluation(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Purchase Orders',
             'res_model': 'purchase.order',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.vendor_name.id)],
             'context': dict(self.env.context),
         }
@@ -227,7 +227,7 @@ class SupplierPerformanceEvaluation(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Purchase Contracts',
             'res_model': 'purchase.contract',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('vendor_id', '=', self.vendor_name.id)],
             'context': dict(self.env.context),
         }

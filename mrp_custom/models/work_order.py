@@ -286,7 +286,7 @@ class MrpProduction(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Quantity Check',
             'res_model': 'quality.check',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('production_id', '=', self.id)],
         }
@@ -296,7 +296,7 @@ class MrpProduction(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Chem-Assays',
             'res_model': 'chemical.samples.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('production_id', '=', self.id)],
         }
@@ -324,7 +324,7 @@ class MrpProduction(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Chem-Assays',
             'res_model': 'metallurgical.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('production_id', '=', self.id)],
         }

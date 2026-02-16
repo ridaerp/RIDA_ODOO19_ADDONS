@@ -112,7 +112,7 @@ class RecruitmentPlan(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Recruitment Request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'recruitment.request',
             'domain': [('reru_plan_id', '=', self.id)],
             'context': "{'create': False}"

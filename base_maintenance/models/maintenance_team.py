@@ -39,7 +39,7 @@ class MaintenanceRequestInhert(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Vehicle Equipment Request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'vehicle.equipment.request',
             'domain': [('mainteance_request_id', '=', self.id)],
             'context': "{'create': False}"
@@ -52,7 +52,7 @@ class MaintenanceRequestInhert(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'material.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('m_request_id', '=', self.id)],
@@ -65,7 +65,7 @@ class MaintenanceRequestInhert(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'issuance.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('m_request_id', '=', self.id)],

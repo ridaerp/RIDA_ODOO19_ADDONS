@@ -75,7 +75,7 @@ class LowestPriceEvaluation(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('request_id', '=', self.material_request_id.id)],

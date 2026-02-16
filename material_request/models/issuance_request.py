@@ -242,19 +242,13 @@ class IssuanceRequest(models.Model):
             ################add line below by ekhlas code############
             warehouse = self.env['stock.warehouse'].search([('id', '=', order.warehouse_id.id)])
 
-            # old code ##########################
-            # pickingType = self.env['stock.picking.type'].sudo().search(
-            #     [('code', '=', 'outgoing'),('issued','=',True),('company_id','=',order.company_id.id)])
-
             ##################add line by ekhlas code 
             pickingType = self.env['stock.picking.type'].sudo().search(
                 [('code', '=', 'outgoing'), ('issued', '=', True), ('warehouse_id', '=', order.warehouse_id.id)])
 
             location_dest_id = warehouse.issuance_location
             if self.issuance_new_location:
-                location_dest_id=self.issuance_new_location
-            # old code######################3
-            # location_id = self.dest_location
+                location_dest_id = self.issuance_new_location
             # ekhlas code ######################3
             location_id = warehouse.lot_stock_id
 
@@ -262,7 +256,6 @@ class IssuanceRequest(models.Model):
                 raise UserError("Stock locations are not properly set.warehouse,pickingType")
             elif not location_id or not location_dest_id:
                 raise UserError("Stock locations are not properly set.location_id,location_dest_id")
-            print('>>>>>>>>>>>>>>>>>>>>. location_dest_id',location_dest_id)
             # pass
             deliver_pick = {
                 'picking_type_id': pickingType.id,
@@ -274,33 +267,14 @@ class IssuanceRequest(models.Model):
                 'analytic_account_id': line.analytic_account_id.id
             }
             deliver_picking = self.env['stock.picking'].sudo().create(deliver_pick)
-            moves = order.line_ids.filtered(lambda r: r.qty_issued)._create_stock_moves_transfer(deliver_picking,
-                                                                                                 'deliver')
-            # move_ids = moves._action_confirm()
-            # move_ids._action_assign()
-
+            moves = order.line_ids.filtered(lambda r: r.qty_issued)._create_stock_moves_transfer(deliver_picking, 'deliver')
             picking = self.env['stock.picking'].sudo().search([('origin', '=', self.name)], limit=1)
-            # picking.sudo().action_assign()
-            # deliver_picking=self.env['stock.immediate.transfer'].sudo()
-            # deliver_picking.sudo().process()
-
-            # deliver_picking_id.button_validate()                                                                              'deliver')
 
             order.write({
                 'state': 'done',
                 'store_keeper': self.env.user.id,
             })
 
-            #############ekhlas code ########################
-            # for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
-            #     for move_line in move.move_line_ids:
-            #         move_line.qty_done = move_line.product_uom_qty
-
-            # pickings_to_validate = self.env.context.get('button_validate_picking_ids')
-            # if pickings_to_validate:
-            #     pickings_to_validate = self.env['stock.picking'].browse(pickings_to_validate)
-            #     pickings_to_validate = pickings_to_validate - pickings_not_to_do
-            # return picking.button_validate()
 
     def button_rejected(self):
         self.mapped('line_ids').do_cancel()
@@ -319,7 +293,7 @@ class IssuanceRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('issuance_request_id', '=', self.id)],
@@ -420,9 +394,7 @@ class IssuanceRequestLine(models.Model):
                 diff_quantity = line.qty_issued
 
             template = {
-                'name': line.name or '',
                 'product_id': line.product_id.id,
-                # old code 'equipment_id': line.request_id.equipment_id.id,
                 'equipment_id': line.equipment_id.id,
                 'product_uom': line.product_id.uom_id.id,
                 'location_id': picking.location_id.id,
@@ -430,10 +402,7 @@ class IssuanceRequestLine(models.Model):
                 'picking_id': picking.id,
                 'state': 'confirmed',
                 'company_id': picking.company_id.id,
-                # 'price_unit': price_unit,
                 'picking_type_id': picking.picking_type_id.id,
-                # 'route_ids': 1 and [
-                #     (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
                 'warehouse_id': picking.picking_type_id.warehouse_id.id,
                 'product_uom_qty': diff_quantity,
                 'issuance_line_id': line.id,

@@ -115,8 +115,6 @@ class RequestProductCategoty(models.Model):
             rec.property_stock_journal=rec.product_category_id.property_stock_journal.id
             rec.property_account_expense_categ_id=rec.product_category_id.property_account_expense_categ_id.id
             rec.property_stock_valuation_account_id=rec.product_category_id.property_stock_valuation_account_id.id
-            rec.property_stock_account_output_categ_id=rec.product_category_id.property_stock_account_output_categ_id.id
-            rec.property_stock_account_input_categ_id=rec.product_category_id.property_stock_account_input_categ_id.id
 
 
 
@@ -146,17 +144,5 @@ class RequestProductCategoty(models.Model):
             'property_account_expense_categ_id': self.property_account_expense_categ_id.id,
             'property_stock_valuation_account_id': self.property_stock_valuation_account_id.id,
             'property_stock_journal': self.property_stock_journal.id,
-            'property_stock_account_input_categ_id': self.property_stock_account_input_categ_id.id,
-            'property_stock_account_output_categ_id': self.property_stock_account_output_categ_id.id,
         })
         return self.write({'state': 'done'})
-
-#
-#
-#
-#
-#
-#
-#
-#
-#

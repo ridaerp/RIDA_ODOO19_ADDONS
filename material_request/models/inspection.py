@@ -119,7 +119,7 @@ class MaterialInspection(models.Model):
             # Target the first picking record
             target_picking = self.purchase_id.picking_ids[0]
             for insp_line in self.inspection_ids:
-                for move_line in target_picking.move_ids_without_package:
+                for move_line in target_picking.move_ids:
                     # Compare Product ID to Product ID (more reliable than Template ID)
                     if insp_line.product_id.id == move_line.product_id.id:
                         move_line.quantity = insp_line.qty_accepted
@@ -159,7 +159,7 @@ class MaterialInspection(models.Model):
     #         if rec.id == x[0]:
     #             if not self.purchase_id.ore_purchased:
     #                 for rec1 in self.inspection_ids:
-    #                     for line in rec.move_ids_without_package:
+    #                     for line in rec.move_ids:
     #                         if rec1.product_id.id == line.product_id.product_tmpl_id.id:
     #                             line.quantity = rec1.qty_accepted
     #     for rec in self:
@@ -236,7 +236,7 @@ class StockPicking(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Material Inspection',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'material.inspection',
             'domain': [('purchase_id', '=', self.purchase_id.id)],
             'context': "{'create': False}"
@@ -256,7 +256,7 @@ class MaterialRequest(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Material Inspection',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'material.inspection',
             'domain': [('material_request_id', '=', self.id), ('state', 'in', ['inspection', 'closed', 'reject'])],
             'context': "{'create': False}"
@@ -276,7 +276,7 @@ class PurchaseOrder(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Material Inspection',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'material.inspection',
             'domain': [('purchase_id', '=', self.id)],
             'context': "{'create': False,'edit':False}"
@@ -321,7 +321,7 @@ class StockBackorderConfirmation(models.TransientModel):
                 pickings_to_validate = pickings_to_validate.with_context(
                     picking_ids_not_to_backorder=pickings_not_to_do.ids)
             if pickings_to_do:
-                for rec in pickings_to_do.move_ids_without_package:
+                for rec in pickings_to_do.move_ids:
                     if rec.quantity < rec.product_uom_qty:
                         if rec.product_tmpl_id.type != 'service' and rec.product_id.product_tmpl_id.id:
                             inspection_line_ids.append(

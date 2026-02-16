@@ -95,7 +95,7 @@
         </record>
 
         <record id="view_weight_request_form" model="ir.ui.view">
-            <field name="name">scaling Request</field>
+            <field name="name">Scaling Request</field>
             <field name="model">weight.request</field>
             <field name="arch" type="xml">
                 <form string="Weight Request">
@@ -524,7 +524,7 @@
 
 
         <record model="ir.actions.act_window" id="weight_request_action">
-            <field name="name">scaling Requests</field>
+            <field name="name">Scaling Requests</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">weight.request</field>
             <field name="view_mode">list,form</field>
@@ -793,20 +793,12 @@
                 <search>
                     <field name="partner_id"/>
                     <field name="incentive_category_id"/>
-
                     <field name="incentive_classes_id"/>
                     <field name="support"/>
                     <field name="date"/>
-
-                    <!-- <group string="Group Supplier"> -->
-                        <filter name="by_supplier" string="By Supplier" domain="[]"
-                                context="{'group_by':'partner_id'}"/>
-                        <filter name="by_incentive" string="By Category"
-                                context="{'group_by':'incentive_category_id'}"/>
-                        <filter name="by_incentive_class" string="By Class"
-                                context="{'group_by':'incentive_classes_id'}"/>
-                    <!-- </group> -->
-
+                    <filter name="by_supplier" string="By Supplier" context="{'group_by':'partner_id'}"/>
+                    <filter name="by_incentive" string="By Category" context="{'group_by':'incentive_category_id'}"/>
+                    <filter name="by_incentive_class" string="By Class" context="{'group_by':'incentive_classes_id'}"/>
                 </search>
             </field>
         </record>
@@ -881,34 +873,29 @@
 
         <!-- end of incentive class -->
 
-<record id="view_weight_batch_avg_grade_tree" model="ir.ui.view">
-    <field name="name">weight.batch.avg.grade.tree</field>
-    <field name="model">weight.batch.avg.grade</field>
-    <field name="arch" type="xml">
-        <list>
-            <field name="request_month" invisible="1"/>
-            <field name="lot_id"/>
-            <field name="process_type"/>
-            <field name="total_qty"/>
-            <field name="total_metal_content"/>
-            <field name="avg_grade"/>
-        </list>
-    </field>
-</record>
+        <record id="view_weight_batch_avg_grade_tree" model="ir.ui.view">
+            <field name="name">weight.batch.avg.grade.tree</field>
+            <field name="model">weight.batch.avg.grade</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="request_month" invisible="1"/>
+                    <field name="lot_id"/>
+                    <field name="process_type"/>
+                    <field name="total_qty"/>
+                    <field name="total_metal_content"/>
+                    <field name="avg_grade"/>
+                </list>
+            </field>
+        </record>
 
 
-<record id="action_weight_batch_avg_grade" model="ir.actions.act_window">
-    <field name="name">Batch Avg Grade Report</field>
-    <field name="res_model">weight.batch.avg.grade</field>
-    <field name="view_mode">list,pivot,graph</field>
-    <field name="view_id" ref="view_weight_batch_avg_grade_tree"/>
-    <field name="context">{'group_by': ['request_month']}</field>
-</record>
-
-
-
-         <!-- <menuitem id="menu_weight_batch_avg_grade"
-          name="Mental Content Report" parent="studio_customization.scaling_unit_reporti_c8c9ef64-63ba-4c6d-9a6b-06a90fc6c37a" action="action_weight_batch_avg_grade" groups="material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/> -->
+        <record id="action_weight_batch_avg_grade" model="ir.actions.act_window">
+            <field name="name">Batch Avg Grade Report</field>
+            <field name="res_model">weight.batch.avg.grade</field>
+            <field name="view_mode">list,pivot,graph</field>
+            <field name="view_id" ref="view_weight_batch_avg_grade_tree"/>
+            <field name="context">{'group_by': ['request_month']}</field>
+        </record>
 
         <!--menu part-->
 
@@ -916,16 +903,9 @@
                   name="Scaling Unit"
                   groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
 
-        <menuitem id="menu_weight_request_menu" sequence="0"
-                  parent="menu_weight_request_main" name="scaling Requests"
+        <menuitem id="menu_weight_request_menu" sequence="0" parent="menu_weight_request_main" name="Scaling Requests" groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning" action="weight_request_action"/>
 
-                  groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"
-                  action="weight_request_action"/>
-
-
-        <menuitem id="menu_weight_requet_configuration" sequence="1" parent="menu_weight_request_main"
-                  name="Configuration"
-                  groups="material_request.group_ore_rock_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"/>
+        <menuitem id="menu_weight_requet_configuration" sequence="1" parent="menu_weight_request_main" name="Configuration" groups="material_request.group_ore_rock_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"/>
 
         <menuitem id="menu_weight_requet_car_conf" sequence="1" parent="menu_weight_requet_configuration"
                   name="Transport Cars"

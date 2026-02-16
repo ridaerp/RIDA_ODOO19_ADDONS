@@ -145,7 +145,7 @@ class Contract(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'account.move',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('wo_account_id', '=', self.id)],
@@ -230,7 +230,7 @@ class Contract(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'change.contract',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('contracts', '=', self.id)],
@@ -242,9 +242,6 @@ class Contract(models.Model):
             'vendor_id': self.vendor_id.id,
             'contract_number': self.id,
             'date': self.start_date,
-            # 'end_date': self.finish_date,
-            # 'contract_duration': self.duration,
-
         }
 
         payment = self.env['payment.request'].create(create_payment_request)
@@ -257,7 +254,7 @@ class Contract(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'payment.request',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'view_type': 'form',
             'target': 'current',
             'domain': [('contract_number', '=', self.id)],

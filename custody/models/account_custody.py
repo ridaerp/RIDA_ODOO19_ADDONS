@@ -16,8 +16,6 @@ class AccountCustody(models.Model):
         if self.env.user.default_analytic_account_id.id:
             return self.env.user.default_analytic_account_id.id
 
-
-
 # custody Workflow (IF user type: HQ ) from requester →line manager→ finance manager → ccso → accountant
 # custody Workflow (IF user type: site ) from requester →line manager→ finance manager → site → accountant
     state = [
@@ -237,17 +235,17 @@ class AccountCustody(models.Model):
         return {
             'name': _('Payment'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('ref', '=', self.name)],
+            'domain': [('memo', '=', self.name)],
         }
     def button_journal_entries(self):
         return {
             'name': _('Journal Entiry'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.move',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -258,7 +256,7 @@ class AccountCustody(models.Model):
         return {
             'name': _('Clearing Journals'),
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'account.move',
             'view_id': False,
             'type': 'ir.actions.act_window',
@@ -277,7 +275,6 @@ class AccountCustody(models.Model):
             ctx = dict(record._context)
             for rec in record:
                 amount = 0.0
-    #            ctx['date'] = date_invoice
                 company_currency = rec.company_id.currency_id
                 if rec.currency_id != company_currency:
                     amount_currency = rec.amount
@@ -314,9 +311,6 @@ class AccountCustody(models.Model):
                 debit_line['debit'] = amount
                 credit_line['amount_currency'] = -amount_currency
                 credit_line['credit'] = amount
-                # if self.analytic_id:
-                #     credit_line['analytic_account_id'] = rec.analytic_id.id
-    #                credit_line['analytic_account_id'] = rec.analytic_id.id
                 AccountMoveLine.create(debit_line)
                 AccountMoveLine.create(credit_line)
                 move.post()
@@ -324,26 +318,6 @@ class AccountCustody(models.Model):
                 rec.move_id = move.id
                 # rec.journal_id = move.id
         return True
-    
-    # comment by ekhlas code
-    #def action_register_payment(self):
-    #     for rec in self:          
-    #         create_payment = {
-    #             'payment_type': 'inbound',
-    #             'partner_type': 'customer',
-    #             'partner_id': rec.employee_id.employee_partner_id.id,
-    #             'destination_account_id':rec.account_id.id,
-    #             'company_id': rec.company_id.id,
-    #             'amount': rec.amount,
-    #             'currency_id': rec.currency_id.id,
-    #             'ref': rec.name,
-    #             'journal_id': rec.journal_id.id,
-    #         } 
-    #         po = self.env['account.payment'].create(create_payment)
-    #         rec.state = "paid"
-    #         return po
-    
-
 
     def action_register_payment(self):
         for rec in self:          
@@ -355,21 +329,18 @@ class AccountCustody(models.Model):
                 'company_id': rec.company_id.id,
                 'amount': rec.amount,
                 'currency_id': rec.currency_id.id,
-                'ref': rec.name,
+                'memo': rec.name,
                 'journal_id': rec.journal_id.id,
 
             } 
             po = self.env['account.payment'].create(create_payment)
-            # po.state = "posted"
             self.account_move_id=po.move_id
-            # po.move_id.state=='posted'
             self.button_action_post()
-            # rec.state = "paid"
         return po
     
     def button_action_post(self):
         for record in self:
-            po = self.env['account.payment'].search([('ref', '=', record.name)])
+            po = self.env['account.payment'].search([('memo', '=', record.name)])
             po.action_post()
             record.state = "paid"
 

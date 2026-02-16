@@ -88,19 +88,6 @@ class VisitRequest(models.Model):
             else:
                 rec.num_of_days = 0
 
-    # @api.constrains('date_request', 'date_from')
-    # def _check_date_from_after_request(self):
-    #     for rec in self:
-    #         if self.ugrently:
-    #             return True
-    #         else:
-    #             if rec.date_request and rec.date_from:
-    #                 min_allowed = rec.date_request + timedelta(hours=72)
-    #                 if rec.date_from < min_allowed:
-    #                     raise ValidationError(
-    #                         _("The 'Date From' must be at least 72 hours (3 days) after the 'Request Date'."))
-
-
     @api.constrains('date_request', 'date_from', 'ugrently')
     def _check_date_from_after_request(self):
         for rec in self:
@@ -195,19 +182,18 @@ class VisitRequest(models.Model):
             message = ""
 
             if rec.state == 'dep_approve':
-                users = self.env.ref('base_rida.rida_group_line_manager', raise_if_not_found=False).users
+                users = self.env.ref('base_rida.rida_group_line_manager', raise_if_not_found=False).user_ids
                 message = "Request waiting for Department Approval."
 
             elif rec.state == 'hr_approve':
-                users = self.env.ref('base_rida.rida_hr_manager_notify', raise_if_not_found=False).users
+                users = self.env.ref('base_rida.rida_hr_manager_notify', raise_if_not_found=False).user_ids
                 message = "Request waiting for HR/Admin Manager approval."
 
             elif rec.state == 'c_level_approval':
-                users = self.env.ref('base_rida.rida_group_site_manager', raise_if_not_found=False).users
+                users = self.env.ref('base_rida.rida_group_site_manager', raise_if_not_found=False).user_ids
                 message = "Request waiting for Site Manager approval."
 
             elif rec.state == 'adm_man_approve':
-                # users = self.env.ref('base_rida.rida_group_admin_affirm', raise_if_not_found=False).users
                 message = "Admin affirmation required."
 
             else:
