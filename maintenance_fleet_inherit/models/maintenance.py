@@ -865,13 +865,12 @@ class MaintenanceRequest(models.Model):
         return rec
 
     def write(self, vals):
-        res = super().write(vals)
-        for val in vals:
-            if val.get('location'):
-                loc = self.env['vehicle.location'].search([('name', '=', val['location'])], limit=1)
-                if not loc:
-                    self.env['vehicle.location'].create({'name': val['location']})
-        return res
+        location_name = vals.get('location')
+        if location_name:
+            loc = self.env['vehicle.location'].search([('name', '=', location_name)], limit=1)
+            if not loc:
+                self.env['vehicle.location'].create({'name': location_name})
+        return super().write(vals)
 
     @api.constrains('std_durattion', 'stage_id', 'team_id')
     def _check_std_duration_required(self):
@@ -1129,66 +1128,40 @@ class MaintenanceRequest(models.Model):
             data['wo_number'] = seq
 
             if 'odometer' in data and not data['odometer']:
-                # if received value for odometer is 0, then remove it from the
-                # data as it would result to the creation of a
-                # odometer log with 0, which is to be avoided
                 del data['odometer']
         return super(MaintenanceRequest, self).create(vals_list)
 
-        # if request.requested_by.id != self.env.user.id:
-        #     raise UserError("Sorry you cannot create a request with different user.")
-        # # if not request.line_ids:
-        #     raise UserError('Please add Issuance lines!')
         return request
-
-    # def button_cancel(self):
-    #     self.state = "cancel"
 
     def button_submit(self):
         for rec in self:
-
-            # team_ids=self.env['maintenance.team'].search([('id','=',rec.maintenance_team_id.id)])
-
-            # team_user_ids=self.env['res.users'].search([('id','in',team_ids.members_ids.ids)])
-            # rec.technican_users=team_user_ids
-
-            if not self.requested_by.id == self.env.user.id:
+            if not rec.requested_by.id == self.env.user.id:
                 raise UserError('Sorry, Only requester can submit this document!')
 
-            if self.analytic_account_id.company_id and self.analytic_account_id.company_id != self.company_id:
+            if rec.analytic_account_id.company_id and rec.analytic_account_id.company_id != rec.company_id:
                 raise UserError('The  Cost Center Incompatible for the Company')
 
             rec.write({
                 'request_date_time': datetime.now(),
-                # 'wo_number':seq
             })
-            if self.equipment_type == 'utilities' or  self.office_room_id:
-                if self.zone_id.admin_approval==True:
-                    stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 15)])
+            if rec.equipment_type == 'utilities' or  rec.office_room_id:
+                if rec.zone_id.admin_approval==True:
+                    stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 15), ], limit=1)
                 else:
-                    stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 14)])
+                    stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 14)], limit=1)
 
             else:
-                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)])
-            # ##################old code###########
-            # stage_fleet_obj = self.env['maintenance.stage'].search([('sequence', '=', 22)])
-            # if rec.equipment_type == 'vechicles':
-            #     rec.write({'stage_id': stage_fleet_obj.id,
-            #                })
-            # else:
-            #     rec.write({'stage_id': stage_obj.id,
-            #                })
-            if self.cat_type == 'GENERATORS' or self.equipment_type == 'vechicles':
-                if self.odometer <= 0:
+                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)], limit=1)
+            if rec.cat_type == 'GENERATORS' or rec.equipment_type == 'vechicles':
+                if rec.odometer <= 0:
                     raise UserError("Odometer Value Must be grather than 0")
-                odometer = self.env['fleet.vehicle.odometer'].create({
-                    'value': self.odometer,
+                odometer = rec.env['fleet.vehicle.odometer'].create({
+                    'value': rec.odometer,
                     'date': fields.Date.context_today(self),
-                    'equipment_id': self.equipment_id.id,
-                    'vehicle_id': self.equipment_id.vechicle_id.id or False
+                    'equipment_id': rec.equipment_id.id,
+                    'vehicle_id': rec.equipment_id.vechicle_id.id or False
                 })
-            rec.write({'stage_id': stage_obj.id,
-                       })
+            rec.write({'stage_id': stage_obj.id,})
 
     def admin_submit(self):
         stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)])
