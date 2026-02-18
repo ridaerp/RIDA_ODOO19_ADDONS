@@ -51,15 +51,6 @@ class HrLoanAcc(models.Model):
         ('refuse', 'Refused'),
     ], string="State", default='draft', track_visibility='onchange', copy=False)
 
-    # @api.onchange('employee_id')
-    # def compute_loan_acount(self):
-    #     for rec in self:
-    #         partner_account_id = rec.employee_id.user_partner_id.property_account_receivable_id.id
-    #         if partner_account_id:
-    #             rec.employee_account_id = partner_account_id
-    #         else:
-    #             False
-
     def compute_entery_count(self):
         count = 0
         entry_count = self.env['account.move.line'].search_count([('loan_id', '=', self.id)])
@@ -267,7 +258,7 @@ class HrLoanAcc(models.Model):
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('ref', '=', self.name)],
+            'domain': [('memo', '=', self.name)],
         }
 
     def button_journal_entries(self):
@@ -283,7 +274,7 @@ class HrLoanAcc(models.Model):
 
     def button_action_post(self):
         for record in self:
-            po = self.env['account.payment'].search([('ref', '=', record.name)])
+            po = self.env['account.payment'].search([('memo', '=', record.name)])
             po.action_post()
             record.state = "paid"
 

@@ -37,36 +37,22 @@ class SalaryAdvancePayment(models.Model):
 
     employee_contract_id = fields.Many2one('hr.version', string='Contract')
     last_salary = fields.Monetary(compute="_compute_last_salary",readonly=True, store=True )
-
-
-
     ######################added by ekhlas code #####################################
     requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
-
-
     user_type = fields.Selection(string='User type', selection=[('hq', 'HQ Staff'),
      ('site', 'Site Staff'),('fleet','Fleet')],required=False,compute="get_user_type")
-
 
     def get_requested_by(self):
         user = self.env.user.id
         return user
 
-
-
     def get_user_type(self):
         for rec in self:
             rec.user_type=rec.requested_by.user_type
 
-
-
-
     ######################END  OF ekhlas code #####################################
-
-
-
     @api.depends('employee_id')
     def _compute_last_salary(self):
         for record in self:
@@ -87,9 +73,6 @@ class SalaryAdvancePayment(models.Model):
             'limit':1,
             'order':'date_from desc'
         }
-        
-        
-        
 
     @api.model
     def create(self, vals):
@@ -143,11 +126,6 @@ class SalaryAdvancePayment(models.Model):
             adv = rec.advance
             amt = rec.employee_id.payroll_wage
 
-            # Comment by ekhlas 
-            #if adv > amt and not rec.exceed_condition:
-            #     raise UserError(amt)
-            #     # raise UserError('Advance amount is greater than allowed amount')
-
             if not rec.advance:
                 raise UserError('You must Enter the Salary Advance amount')
             rec.state = 'hr_officer'
@@ -157,10 +135,6 @@ class SalaryAdvancePayment(models.Model):
         """This Approve the employee salary advance request.
                    """
         emp_obj = self.env['hr.employee']
-        # address = emp_obj.browse([self.employee_id.id]).address_home_id
-        # if not address.id:
-        #     raise except_orm('Error!', 'Define home address for the employee. i.e address under private information of the employee.')
-        # Extract year from current advance's date
         current_year = datetime.strptime(str(self.date), '%Y-%m-%d').date().year
 
         # Count the number of PAID advances in the same year for this employee (excluding current record)
@@ -198,46 +172,33 @@ class SalaryAdvancePayment(models.Model):
                 slip_day = datetime.strptime(str(slip.date_from), '%Y-%m-%d').date().day
                 current_day = datetime.strptime(str(self.date), '%Y-%m-%d').date().day
         self.state = 'hr_manager'
-        # self.update_activities()
-
-
 
     def action_hr_manager(self):
         for rec in self:
             rec.state = 'finance'
 
-  
-
-
     def action_site_manager(self):
         for rec in self:
-            rec.state = 'accountant'
-            # rec.update_activities()
-              
+            rec.state = 'accountant'              
  
     def action_fainance(self):
         for rec in self:
             rec.state = 'internal_audit'
-            # rec.update_activities()
 
     def action_internal_audit(self):
         for rec in self:
             if rec.rida_employee_type=='site':
                 rec.state='site_manager'
             else:
-                rec.state='ccso'
-            # rec.update_activities()
-            
+                rec.state='ccso'            
 
     def action_ccso(self):
         for rec in self:
             rec.state = 'accountant'
-            # rec.update_activities()
             
     def reject_ccso(self):
         for rec in self:
             rec.state = 'internal_audit'
-
 
     def reject_site(self):
         for rec in self:
@@ -251,8 +212,6 @@ class SalaryAdvancePayment(models.Model):
         for rec in self:
             rec.state = 'hr_officer'
 
-
-
     def reject_finance_manager(self):
         for rec in self:
             rec.state = 'hr_manager'
@@ -264,24 +223,20 @@ class SalaryAdvancePayment(models.Model):
             else:
                 rec.state = "ccso"
 
-
     def reject(self):
         for rec in self:
             rec.state = 'reject'
-
-
 
     def cancel(self):
         for rec in self:
             rec.state = 'cancel'
             if rec.state in ['approve','accountant'] and rec.move_id:
-                po = self.env['account.payment'].search([('ref', '=', rec.name)])
+                po = self.env['account.payment'].search([('memo', '=', rec.name)])
                 po.write({'state': 'cancel'})
 
     def set_draft(self):
         for rec in self:
             rec.state = 'draft'
-
 
     def unlink(self):
         for rec in self:

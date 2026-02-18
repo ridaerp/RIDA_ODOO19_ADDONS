@@ -82,25 +82,17 @@ class SalaryAdvanceAccount(models.Model):
             existing_month = datetime.strptime(str(each_advance.date), '%Y-%m-%d').date().month
             if current_month == existing_month:
                 raise UserError('Advance can be requested once in a month')
-         # if not self.journal:
-         #        raise UserError("You must enter Journal to register the payment")
         if not self.account_id:
                 raise UserError('You must enter Account to Employee Address to register the payment')
         if not self.move_id:
                 raise UserError("You must register payment first")
         self.state = 'approve'
 
-
-
     def action_post(self):
         for record in self:
-            po = self.env['account.payment'].search([('ref', '=', record.name)])
+            po = self.env['account.payment'].search([('memo', '=', record.name)])
             po.write({'state': 'posted'})
             record.state = "paid"
-
-
-
-
 
     def action_register_payment(self):
         for rec in self:
@@ -108,9 +100,6 @@ class SalaryAdvanceAccount(models.Model):
                 raise UserError("You must enter Journal to register the payment")
             if not rec.account_id:
                 raise UserError('You must enter Account to Employee Address to register the payment')
-
-
-
 
             create_payment = {
                 'payment_type': 'outbound',
@@ -120,7 +109,7 @@ class SalaryAdvanceAccount(models.Model):
                 'company_id': rec.company_id.id,
                 'amount': rec.advance,
                 'currency_id': rec.currency_id.id,
-                'ref': rec.name,
+                'memo': rec.name,
                 'journal_id': rec.journal.id,
             }
             po = self.env['account.payment'].create(create_payment)
@@ -134,8 +123,6 @@ class SalaryAdvanceAccount(models.Model):
                 line_ids.append(
                     (0, 0, {'debit': 0, 'credit': rec.advance, 'partner_id': rec.employee_id.employee_partner_id.id
                         , 'account_id': rec.account_id.id, 'currency_id': self.company_id.currency_id.id,
-
-
                             }))
                 line_ids.append((0, 0, {'debit': rec.advance, 'credit': 0
                     , 'account_id': rec.account_id.id,
@@ -153,7 +140,6 @@ class SalaryAdvanceAccount(models.Model):
                 })
             return po
 
-
     def button_payment(self):
         return {
             'name': _('Payment'),
@@ -162,10 +148,8 @@ class SalaryAdvanceAccount(models.Model):
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('ref', '=', self.name)],
+            'domain': [('memo', '=', self.name)],
         }
-
-
 
     def button_journal_entries(self):
         return {

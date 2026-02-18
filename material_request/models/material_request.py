@@ -169,7 +169,7 @@ class PaymentRequest(models.Model):
                 'company_id': self.payment_company_id.id,
                 'amount': self.amount_total,
                 'currency_id': rec.currency_id.id,
-                'ref':str(self.name+self.partner_id.name),
+                'memo':str(self.name+self.partner_id.name),
                 'journal_id': rec.sub_journal_id.id,
                 'ovearseas_id':rec.id,
             }
