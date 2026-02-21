@@ -20,10 +20,13 @@ class Pond(models.Model):
         ('stacker_area', 'StaDker work area'),
         ('stop_area', 'irrigation stopped for this area'),
 
+
     ], string='Status', default='under_flipping', tracking=True)
     start_date = fields.Datetime(string ='First Date' , tracking=True)
     last_checked = fields.Datetime(string='Last Checked' , tracking=True)
     notes = fields.Text(string='Notes' ,  tracking=True)
+    stock_move_id = fields.Many2one('stock.move', string='Stock Move', tracking=True)
+
 
 # Manhole Model
 class ManholeSample(models.Model):
@@ -105,6 +108,15 @@ class ManholeSample(models.Model):
             'domain': [('manhole_id', '=', self.id)],
             'context': {'default_manhole_id': self.id},
         }
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+
+
+    pond_management_id = fields.Many2one('pond.management')
+    # x_studio_many2many_field_93a_1ir44spe7 = fields.Many2many('Cell','pond.management', 'stock_move_id' , 'pond_management_id')
+
 
 
 

@@ -43,6 +43,8 @@ class MrpProduction(models.Model):
     pregnant_result_id = fields.Many2one('pregnant.sample.result', string="Pregnant Result")
     pregnant_result_count = fields.Integer(compute='_compute_log_counts', string="Pregnant Sample Result")
 
+    equipment_plan_log_id = fields.Many2one('equipment.plan.log')
+
     def _compute_log_counts(self):
         for record in self:
             record.adr_log_count = self.env['adr.log.sheet'].search_count([('production_id', '=', record.id)])
@@ -1025,3 +1027,9 @@ class ChemicalAssay(models.Model):
     # pregnant_result_sample = fields.Many2one('pregnant.sample.result', string='Pregnant Result')
 
     stripping_id = fields.Many2one('stripping.log.sheet', string='Stripping Sheet', ondelete='cascade')
+
+
+class EquipmentPlan(models.Model):
+    _inherit = 'equipment.plan.log'
+
+    mrp_production_id = fields.Many2one('mrp.production')

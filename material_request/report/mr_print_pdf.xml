@@ -185,7 +185,8 @@
 
 
 
-<template id="stock.report_picking">
+<template id="report_picking_inherit"
+          inherit_id="stock.report_picking">
      <t t-call="web.external_layout">
                         <div class="page">
                             <div class="row justify-content-end mb16">
