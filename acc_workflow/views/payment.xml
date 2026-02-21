@@ -80,6 +80,7 @@
                     <field name="amount" sum="Amount"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'posted'"/>
                     <field name="currency_id"/>
+                    <field name="payment_method_line_id" invisible="1"/>
                 </list>
             </field>
         </record>
