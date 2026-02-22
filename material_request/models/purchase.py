@@ -924,9 +924,9 @@ class PurchaseOrder(models.Model):
                 line.product_id.supplier_taxes_id.filtered(lambda tax: tax.company_id == contract.company_id)).ids
 
             # Compute quantity and price_unit
-            if line.product_uom_id != line.product_id.uom_po_id:
-                product_qty = line.product_uom_id._compute_quantity(line.product_qty, line.product_id.uom_po_id)
-                price_unit = line.product_uom_id._compute_price(line.price_unit, line.product_id.uom_po_id)
+            if line.product_uom_id != line.product_id.uom_id:
+                product_qty = line.product_uom_id._compute_quantity(line.product_qty, line.product_id.uom_id)
+                price_unit = line.product_uom_id._compute_price(line.price_unit, line.product_id.uom_id)
             else:
                 product_qty = line.product_qty
                 price_unit = line.price_unit
@@ -1058,7 +1058,7 @@ class PurchaseOrderLine(models.Model):
                     # Avoid to modify the price unit if there is no price list for this partner and
                     # the line has already one to avoid to override unit price set manually.
                     continue
-                po_line_uom = line.product_uom_id or line.product_id.uom_po_id
+                po_line_uom = line.product_uom_id or line.product_id.uom_id
                 price_unit = line.env['account.tax']._fix_tax_included_price_company(
                     line.product_id.uom_id._compute_price(line.product_id.standard_price, po_line_uom),
                     line.product_id.supplier_taxes_id,

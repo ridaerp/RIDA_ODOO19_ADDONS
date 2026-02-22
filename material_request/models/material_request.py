@@ -784,7 +784,7 @@ class MaterialRequest(models.Model):
                 product = line.product_id
                 account_analytic_id = self.analytic_account_id.id if self.analytic_account_id else False
                 vals = [(0, 0, {'product_id': line.product_id.id,
-                                'product_uom_id': line.product_id.uom_po_id.id,
+                                'product_uom_id': line.product_id.uom_id.id,
                                 'qty_requested': line.product_qty,
                                 'analytic_account_id': line.analytic_account_id.id,
                                 'name': line.name,
@@ -1263,23 +1263,15 @@ class MaterialRequest(models.Model):
 
 
             product_line = (0, 0, {'product_id': line.product_id.id,
-                                   'state': 'draft',
-                                   # 'analytic_distribution': {line.analytic_account_id.id: 100},
-                                   # 'equ_id': self.equipment_id.id,
-                                   'analytic_distribution': analytic_distribution,
-                                   'product_uom': line.product_id.uom_po_id.id,
-                                   'price_unit': 0,
-                                   'date_planned': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                   # 'taxes_id': ((6,0,[taxes_id.id])),
-                                   'product_qty': line.product_qty,
-                                   ########################comment by ekhlas
-                                   # 'name': line.product_id.name,
-
-                                   #########################################
-                                   ########### add by ekhlas########33
-                                   'name': name,
-                                   'request_line_id': line.id
-                                   })
+               'state': 'draft',
+               'analytic_distribution': analytic_distribution,
+               'product_uom': line.product_id.uom_id.id,
+               'price_unit': 0,
+               'date_planned': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+               'product_qty': line.product_qty,
+               'name': name,
+               'request_line_id': line.id
+               })
             order_line1.append(product_line)
 
 
@@ -1328,7 +1320,7 @@ class MaterialRequest(models.Model):
             if self.env.uid == SUPERUSER_ID:
                 company_id = self.env.user.company_id.id
             product_line1 = (0, 0, {'product_id': line.product_id.id,
-                                   'product_uom_id': line.product_id.uom_po_id.id,
+                                   'product_uom_id': line.product_id.uom_id.id,
                                    'schedule_date': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                    'product_qty': line.product_qty,
                                    'qty_ordered': line.product_qty,
@@ -1381,7 +1373,7 @@ class MaterialRequest(models.Model):
             # if self.env.uid == SUPERUSER_ID:
             #     company_id = self.env.user.company_id.id
             product_line = (0, 0, {'product_id': line.product_id.id,
-                                   'product_uom_id': line.product_id.uom_po_id.id,
+                                   'product_uom_id': line.product_id.uom_id.id,
                                    'product_description_variants': line.description,
                                    'schedule_date': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                    'product_qty': line.product_qty,

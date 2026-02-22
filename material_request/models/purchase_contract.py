@@ -340,7 +340,7 @@ class PurchaseContract(models.Model):
             product_line = (0, 0, {
                 'product_id': line.product_id.id,
                 'state': 'draft',
-                'product_uom': line.product_id.uom_po_id.id,
+                'product_uom': line.product_id.uom_id.id,
                 'price_unit': line.price_unit,
                 'date_planned': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 'product_qty': line.product_qty,
@@ -485,7 +485,7 @@ class PurchaseContractLine(models.Model):
     @api.depends('product_id')
     def _onchange_product_id(self):
         if self.product_id:
-            self.product_uom_id = self.product_id.uom_po_id
+            self.product_uom_id = self.product_id.uom_id
             self.product_qty = 1.0
         if not self.schedule_date:
             self.schedule_date = self.contract_id.schedule_date
@@ -502,7 +502,7 @@ class PurchaseContractLine(models.Model):
         return {
             'name': name,
             'product_id': self.product_id.id,
-            'product_uom': self.product_id.uom_po_id.id,
+            'product_uom': self.product_id.uom_id.id,
             'product_qty': product_qty,
             'price_unit': price_unit,
             'taxes_id': [(6, 0, taxes_ids)],

@@ -165,7 +165,7 @@ class StockLandedCost(models.Model):
                 all_amls = cost.vendor_bill_id.line_ids | cost.account_move_id.line_ids
                 for product in cost.cost_lines.product_id:
                     accounts = product.product_tmpl_id.get_product_accounts()
-                    input_account = accounts['stock_input']
+                    input_account = accounts['stock_valuation']
                     all_amls.filtered(lambda aml: aml.account_id == input_account and not aml.reconciled).reconcile()
 
         return True
@@ -426,8 +426,6 @@ class StockLandedCostLines(models.Model):
         aml_currency = move and move.currency_id or self.currency_id
         date = move and move.date or fields.Date.today()
         res = {
-            # 'display_type': self.display_type,
-            # 'sequence': self.sequence,
             'name': '%s: %s' % (self.cost_id.name, self.name),
             'product_id': self.product_id.id,
             'product_uom_id': self.product_id.uom_id.id,
@@ -435,12 +433,7 @@ class StockLandedCostLines(models.Model):
             'is_landed_costs_line': True,
             'price_unit': (self.currency_id._convert(self.currency_price_unit, aml_currency, self.cost_id.company_id,
                                                      date, round=False)) / self.product_qty,
-            # 'tax_ids': [(6, 0, self.taxes_id.ids)],
-            'account_id': accounts['stock_input'],
-
-            # 'analytic_account_id': self.account_analytic_id.id,
-            # 'analytic_tag_ids': [(6, 0, self.analytic_tag_ids.ids)],
-            # 'purchase_line_id': self.purchase_order_id,
+            'account_id': accounts['stock_valuation'],
         }
         if self.cost_id.purchase_order_id.weight_request_id.analytic_account_id:
                 res['analytic_distribution'] = {self.cost_id.purchase_order_id.weight_request_id.analytic_account_id.id: 100}

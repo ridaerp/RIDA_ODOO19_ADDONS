@@ -354,7 +354,7 @@ class WeightRequest(models.Model):
 
             order_line = {
                 'product_id': line.product_id.id,
-                'product_uom': line.product_id.uom_po_id.id,
+                'product_uom': line.product_id.uom_id.id,
                 'price_unit': unit_price+incentive_price,
                 'incentive_price':incentive_price,
                 'product_qty': line.product_qty,

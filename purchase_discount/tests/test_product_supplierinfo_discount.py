@@ -127,7 +127,7 @@ class TestProductSupplierinfoDiscount(common.SavepointCase):
                 "price_unit": 10.0,
                 "product_id": product.id,
                 "product_qty": 1.0,
-                "product_uom": product.uom_po_id.id,
+                "product_uom": product.uom_id.id,
                 "order_id": order.id,
             }
         )
