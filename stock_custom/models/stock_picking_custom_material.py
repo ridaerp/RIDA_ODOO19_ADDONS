@@ -187,7 +187,9 @@ class StockMoveInherit(models.Model):
     ####################################override function to  create journal entries with receviable (fuel issuance external)
     ##############################ekhlas code #####################################################################
 
-    ########################## the function to update journal entries related to stock 
+    ########################## the function to update journal entries related to stock
+
+
     def _get_accounting_data_for_valuation(self):
         """ Return the accounts and journal to use to post Journal Entries for
         the real-time valuation of the quant. """

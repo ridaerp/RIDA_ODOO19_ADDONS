@@ -25,7 +25,7 @@
         </record>
 
 
-        <record id="view_material_request_form" model="ir.ui.view">
+        <record id="view_material_request_form_custom" model="ir.ui.view">
             <field name="name">Material Request</field>
             <field name="model">material.request</field>
             <field name="arch" type="xml">

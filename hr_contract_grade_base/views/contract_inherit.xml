@@ -9,7 +9,7 @@
                     <attribute name="invisible">0</attribute>
                 </xpath> -->
 
-                <xpath expr="//field[@name='rida_employee_type']" position="after">
+                <xpath expr="//field[@name='work_email']" position="after">
                     <field name="is_worker"/>
                     <field name="is_section_head"/>
                     <field name="band_id" invisible="1" />

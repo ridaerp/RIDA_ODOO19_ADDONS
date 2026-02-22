@@ -576,7 +576,7 @@
 
 
     <!-- Belt Scale Form View -->
-    <record id="view_belt_scale_reading_form" model="ir.ui.view">
+    <record id="view_belt_scale_reading_form_custom" model="ir.ui.view">
         <field name="name">belt.scale.reading.form</field>
         <field name="model">belt.scale.log</field>
         <field name="arch" type="xml">

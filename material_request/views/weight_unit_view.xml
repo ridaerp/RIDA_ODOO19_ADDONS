@@ -31,14 +31,15 @@
 
                     <separator/>
 
-                    <filter string="MMU Partners" name="filter_opu_po" domain="[('is_opu_po','=',True)]" groups="material_request.group_opu_user"/>
+                    <filter string="MMU Partners" name="filter_opu_po" domain="[('is_opu_po','=',True)]"
+                            groups="material_request.group_opu_user"/>
                     <field name="requested_by"/>
                     <filter domain="[('requested_by','=', uid)]" name="my_request" help="My requests"/>
 
                     <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
                     <filter name="group_batch" string="Batch" context="{'group_by':'lot_id'}"/>
-                        <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
-                                context="{'group_by':'requested_by'}"/>
+                    <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'requested_by'}"/>
 
 
                 </search>
@@ -67,10 +68,10 @@
 
                     <field name="rock_vendor"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning"/>
-        
+
                     <field name="is_opu_po"
                            groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
-                           
+
 
                     <field name="transporter_id"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_stock"/>
@@ -106,7 +107,8 @@
                         <button name="button_draft" invisible="state not in ['cancel','reject']" string="Set as Draft"
                                 type="object" groups="material_request.group_weight_unit_user"/>
 
-                        <button type="object" name="button_create_landed_costs" class="oe_stat_button" invisible="state != 'db_geologist'"
+                        <button type="object" name="button_create_landed_costs" class="oe_stat_button"
+                                invisible="state != 'db_geologist'"
                                 groups="material_request.group_ore_rock_db_geology_user" string="Create Landed Costs">
                         </button>
 
@@ -129,7 +131,7 @@
                         <button name="%(material_request.purchase_order_reject_action)d" type="action"
                                 invisible="state not in ['db_geologist','chem_lab','db_price']" string="Reject"
                                 groups="material_request.group_ore_rock_purchase_user"/>
-                        
+
 
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,db_geologist,chem_lab,db_price,rock_user,done"
@@ -159,9 +161,11 @@
                             </button>
 
                             <div class="oe_button_box" name="button_box">
-                                <button name="set_landed_costs" invisible="landed_costs_count == False" groups="material_request.group_ore_rock_db_geology_user"
+                                <button name="set_landed_costs" invisible="landed_costs_count == False"
+                                        groups="material_request.group_ore_rock_db_geology_user"
                                         type="object" class="oe_stat_button" icon="fa-list-alt">
-                                    <field name="landed_costs_count" string="Landed Costs" widget="statinfo" groups="material_request.group_ore_rock_db_geology_user"/>
+                                    <field name="landed_costs_count" string="Landed Costs" widget="statinfo"
+                                           groups="material_request.group_ore_rock_db_geology_user"/>
                                 </button>
                             </div>
 
@@ -183,8 +187,8 @@
                                 <field name="date_request" readonly="1"/>
                                 <field name="submit_date" readonly="1"/>
 
-                                 <field name="is_sack" readonly="state not in (['draft','db_geologist'])"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
+                                <field name="is_sack" readonly="state not in (['draft','db_geologist'])"
+                                       groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
 
                                 <field name="car_id"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_rock_purchase_user"
@@ -220,11 +224,11 @@
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_reader_planning"
                                        readonly="state not in (['draft','db_geologist','db_price','waiting_rock'])"/>
 
-                                 <field name="weight_type"
+                                <field name="weight_type"
                                        options="{'no_open':True,'no_create': True, 'no_create_edit':True}"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_reader_planning"
                                        readonly="state not in (['draft','db_geologist','db_price','waiting_rock'])"
-                                        invisible="state in ('chem_lab')"/>
+                                       invisible="state in ('chem_lab')"/>
 
                                 <field name="sample_no_from"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"
@@ -253,7 +257,8 @@
                                        readonly="state not in ['draft','db_geologist','db_price','waiting_rock']"
                                        invisible="state in ('chem_lab')"/>
 
-                                    <field name="is_opu_po"  groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO" />
+                                <field name="is_opu_po"
+                                       groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
 
 
                                 <field name="batch"
@@ -278,12 +283,13 @@
                         </group>
                         <notebook>
 
-                             <page string="Landed Cost"  invisible="form_type == 'external_visit' or state == 'draft'"
+                            <page string="Landed Cost" invisible="form_type == 'external_visit' or state == 'draft'"
                                   groups="material_request.group_ore_rock_db_geology_user">
                                 <group>
                                     <field name="analytic_account_id" required="state == 'db_geologist'"/>
                                 </group>
-                                <field name="landed_cost_line_ids"  groups="material_request.group_ore_rock_db_geology_user">
+                                <field name="landed_cost_line_ids"
+                                       groups="material_request.group_ore_rock_db_geology_user">
                                     <list editable="bottom">
                                         <field name="product_id" required="1"
                                                domain='["|",["categ_id","ilike","ORE"],["categ_id","ilike","Service"]]'
@@ -291,13 +297,13 @@
                                         <field name="product_qty" required="parent.state == 'db_price'"/>
                                         <field name="unit_price" required="parent.state == 'db_price'"/>
 
-                                        
+
                                         <field name="total"/>
                                     </list>
                                 </field>
 
                             </page>
-                            
+
 
                             <page string="Samples" Name="Samples" invisible="state == 'draft'"
                                   groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning">
@@ -484,17 +490,19 @@
                                         <field name="discount" required="parent.state == 'db_price'"/>
 
 
-                                        <field name="percentage" required="parent.state == 'db_price'" groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
-                                       
-                                        <field name="analytic_account_id" required="parent.state == 'db_price'" groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
+                                        <field name="percentage" required="parent.state == 'db_price'"
+                                               groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
 
-                                        <field name="total" required="parent.state == 'db_price'"/> 
+                                        <field name="analytic_account_id" required="parent.state == 'db_price'"
+                                               groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
+
+                                        <field name="total" required="parent.state == 'db_price'"/>
 
                                     </list>
                                 </field>
 
                             </page>
-                           
+
 
                         </notebook>
                         <group>
@@ -847,11 +855,16 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <button name="action_Received" type="object" string="Received" class="oe_highlight" invisible = "state  != 'un_received'" groups="material_request.group_ore_reader_stock" />
-                        <button name="action_water" type="object" string="Water" class="oe_highlight btn-info" invisible = "state  != 'received'"  groups="mrp.group_mrp_manager"/>
-                        <button name="action_tchoin" type="object" string="Tchoin" class="btn-primary" invisible = "state  not in ['received' , 'water']"  groups="mrp.group_mrp_manager"/>
-                        <button name="action_plan" type="object" string="Plan" class="oe_highlight btn-warning" invisible = "state   not in ['water' , 'tchoin']"  groups="mrp.group_mrp_manager"/>
-                        <button name="action_done" type="object" string="Produced" class="btn-success" invisible = "state  != 'plan'"  groups="mrp.group_mrp_manager"/>
+                        <button name="action_Received" type="object" string="Received" class="oe_highlight"
+                                invisible="state  != 'un_received'" groups="material_request.group_ore_reader_stock"/>
+                        <button name="action_water" type="object" string="Water" class="oe_highlight btn-info"
+                                invisible="state  != 'received'" groups="mrp.group_mrp_manager"/>
+                        <button name="action_tchoin" type="object" string="Tchoin" class="btn-primary"
+                                invisible="state  not in ['received' , 'water']" groups="mrp.group_mrp_manager"/>
+                        <button name="action_plan" type="object" string="Plan" class="oe_highlight btn-warning"
+                                invisible="state   not in ['water' , 'tchoin']" groups="mrp.group_mrp_manager"/>
+                        <button name="action_done" type="object" string="Produced" class="btn-success"
+                                invisible="state  != 'plan'" groups="mrp.group_mrp_manager"/>
                         <field name="state" widget="statusbar" invisible="ore_workflow != True"/>
                     </header>
                 </xpath>
@@ -899,13 +912,24 @@
 
         <!--menu part-->
 
+
+        <menuitem id="menu_weight_batch_avg_grade"
+                  name="Metal Content Report"
+                  parent="studio_customization.scaling_unit_reporti_c8c9ef64-63ba-4c6d-9a6b-06a90fc6c37a"
+                  action="action_weight_batch_avg_grade"
+                  groups="material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
+
         <menuitem id="menu_weight_request_main" sequence="0" web_icon="material_request,static/description/22.png"
                   name="Scaling Unit"
                   groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
 
-        <menuitem id="menu_weight_request_menu" sequence="0" parent="menu_weight_request_main" name="Scaling Requests" groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning" action="weight_request_action"/>
+        <menuitem id="menu_weight_request_menu" sequence="0" parent="menu_weight_request_main" name="Scaling Requests"
+                  groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"
+                  action="weight_request_action"/>
 
-        <menuitem id="menu_weight_requet_configuration" sequence="1" parent="menu_weight_request_main" name="Configuration" groups="material_request.group_ore_rock_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"/>
+        <menuitem id="menu_weight_requet_configuration" sequence="1" parent="menu_weight_request_main"
+                  name="Configuration"
+                  groups="material_request.group_ore_rock_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"/>
 
         <menuitem id="menu_weight_requet_car_conf" sequence="1" parent="menu_weight_requet_configuration"
                   name="Transport Cars"

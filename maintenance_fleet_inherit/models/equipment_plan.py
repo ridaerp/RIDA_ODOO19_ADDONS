@@ -21,6 +21,7 @@ class EquipmentPlanLog(models.Model):
 
     equipment_type_id = fields.Many2one("equipment.request.type", string="Equipment Type")
 
+
     state = fields.Selection([
         ('under_production', 'Under Production'),
         ('fleet_approved', 'Fleet Approved'),
