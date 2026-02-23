@@ -4,7 +4,7 @@
         <record id="hr_loan_form_custom_inherited" model="ir.ui.view">
             <field name="name">hr.loan.form.inherited</field>
             <field name="model">hr.loan</field>
-            <field name="inherit_id" ref="hr_loan_base.view_hr_loan_form"/>
+            <field name="inherit_id" ref="hr_loan_base.view_hr_loan_form_custom"/>
             <field name="arch" type="xml">
                 <xpath expr="//header" position="replace">
                     <header invisible="rida_employee_type != 'hq'">

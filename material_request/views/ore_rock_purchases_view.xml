@@ -3,15 +3,14 @@
     <data>
         <!-- ORe Purchase -->
 
-
-        <record id="action_ore_po_purchase" model="ir.actions.act_window">
+        <record id="action_ore_po_purchases" model="ir.actions.act_window">
             <field name="name">Ore/Rock Purcharses</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
-            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
-            <field name="context">{'default_ore_purchased':True}</field>
             <field name="domain">[('ore_purchased','=',True)]</field>
+            <field name="context">{'default_ore_purchased':True}</field>
+            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create ORE/ROCK PURCHASES
@@ -484,18 +483,11 @@
             </field>
         </record>
 
-        <record id="action_po_tree_inerit" model="ir.actions.act_window.view">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">list</field>
-            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
-            <field name="act_window_id" ref="material_request.action_ore_po_purchase"/>
-        </record>
-
         <record id="action_po_form_inerit" model="ir.actions.act_window.view">
             <field eval="2" name="sequence"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="purchase_order_form_inherith"/>
-            <field name="act_window_id" ref="material_request.action_ore_po_purchase"/>
+            <field name="act_window_id" ref="material_request.action_ore_po_purchases"/>
         </record>
 
         <record id="account_move_landed_view" model="ir.ui.view">
@@ -507,9 +499,6 @@
                     <field name="landed_cost_id" readonly="1"/>
                     <field name="landed_cost_po_id" readonly="1"/>
                 </xpath>
-                <!-- <xpath expr="//tree/field[@name='vehicle_id']" position="after">
-                    <field name="equipment_id" optional="hide"/>
-                </xpath> -->
             </field>
         </record>
 
@@ -517,7 +506,7 @@
         <menuitem id="menu_ore_poo_maiin" name="Ore/Rock Purcharses"
                   groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
-        <menuitem id="meniu_ore_poo_root" parent="menu_ore_poo_maiin" action="action_ore_po_purchase"
+        <menuitem id="meniu_ore_poo_root" parent="menu_ore_poo_maiin" action="action_ore_po_purchases"
                   groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
     </data>
