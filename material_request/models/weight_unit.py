@@ -350,11 +350,14 @@ class WeightRequest(models.Model):
                 unit_price = -abs(unit_price)
             else:
                 unit_price = unit_price
-            analytic_distribution = {line.analytic_account_id.id: 100}
+            analytic_distribution = {}
+
+            if line.analytic_account_id:
+                analytic_distribution[line.analytic_account_id.id] = 100
 
             order_line = {
                 'product_id': line.product_id.id,
-                'product_uom': line.product_id.uom_id.id,
+                'product_uom_id': line.product_id.uom_id.id,
                 'price_unit': unit_price+incentive_price,
                 'incentive_price':incentive_price,
                 'product_qty': line.product_qty,
