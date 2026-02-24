@@ -301,7 +301,7 @@
 
                 <xpath expr="//button[@name='button_unbuild']" position="before">
                     <button name="action_create_log" type="object" string="Create Log" class="btn-primary"
-                            invisible="(state not in ['confirmed','progress','to_close'])"/>
+                            invisible="(state  in ['draft'])"/>
                     <button name="action_create_Belt_reading" type="object" string="Belt Scale Reading" class="btn-primary"
                             invisible="(state not in ['confirmed','progress','to_close']) and (workcenter_id.code not in ['WC-CIC-CRSH','WC-CIC-STKR'])"/>
 
