@@ -360,7 +360,7 @@
     </record>
 
     <!-- Form View Stripping Log Sheet   -->
-    <record id="view_stripping_log_sheet_form_custom" model="ir.ui.view">
+    <record id="view_stripping_log_sheet_form" model="ir.ui.view">
         <field name="name">stripping.log.sheet.form</field>
         <field name="model">stripping.log.sheet</field>
         <field name="arch" type="xml">

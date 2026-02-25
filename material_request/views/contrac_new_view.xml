@@ -115,7 +115,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_purchase_contract_custom_form">
+        <record model="ir.ui.view" id="view_purchase_contract_custom_form1">
             <field name="name">purchase.contract.form</field>
             <field name="model">purchase.contract</field>
             <field name="arch" type="xml">
@@ -137,10 +137,6 @@
 
                         <button name="supply_chain_manager" invisible="state != 'contract_manager'" string="Approve"
                                 type="object" class="btn-primary" groups="material_request.group_contract_manager"/>
-                       <!--  <button name="ccso" invisible="state != 'supply_chain_manager'" string="Approve" type="object"
-                                class="btn-primary" groups="base_rida.rida_group_supply_chain_director"/> -->
-                        <!--   <button name="ccso" states="ccso" string="Approve" type="object" class="btn-primary"  groups="base_rida.group_supply_chain_manager"/>
-           -->
 
 
                         <button name="action_in_progress" invisible="state != 'supply_chain_manager'" string="Confirm" type="object"

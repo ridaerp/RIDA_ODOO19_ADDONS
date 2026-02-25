@@ -26,6 +26,17 @@ class ProductTemplate(models.Model):
     """ Class to inherit product.template to add costing method """
     _inherit = 'product.template'
 
+    cost_method = fields.Selection(
+        string="Cost Method",
+        selection=[
+            ('standard', "Standard Price"),
+            ('fifo', "First In First Out (FIFO)"),
+            ('average', "Average Cost (AVCO)"),
+            ('last', 'Last Purchase Price'),
+        ],
+        compute='_compute_cost_method',
+    )
+
     property_cost_method = fields.Selection([
         ('standard', 'Standard Price'),
         ('last', 'Last Purchase Price'),

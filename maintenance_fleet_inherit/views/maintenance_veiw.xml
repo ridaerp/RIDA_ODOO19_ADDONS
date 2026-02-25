@@ -867,7 +867,7 @@
         <record id="view_material_request_form_inherit" model="ir.ui.view">
             <field name="model">material.request</field>
             <field name="inherit_id"
-                   ref="material_request.view_material_request_form"/>
+                   ref="material_request.view_material_request_form_custom"/>
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='currency_id']" position="after">
@@ -879,7 +879,7 @@
         <record id="view_material_request_form_inherit" model="ir.ui.view">
             <field name="model">material.request</field>
             <field name="inherit_id"
-                   ref="material_request.view_material_request_form"/>
+                   ref="material_request.view_material_request_form_custom"/>
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='currency_id']" position="after">

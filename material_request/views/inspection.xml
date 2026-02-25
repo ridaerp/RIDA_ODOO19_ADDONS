@@ -112,7 +112,7 @@
         <record id="material_request_inherit_1" model="ir.ui.view">
             <field name="name">material.request.inherit.1</field>
             <field name="model">material.request</field>
-            <field name="inherit_id" ref="material_request.view_material_request_form"/>
+            <field name="inherit_id" ref="material_request.view_material_request_form_custom"/>
             <field name="arch" type="xml">
                 <div name="button_box" position="inside">
                     <button name="material_inspection" invisible="inspection_count == 0"
