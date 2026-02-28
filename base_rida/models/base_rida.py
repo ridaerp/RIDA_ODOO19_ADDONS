@@ -10,6 +10,12 @@ class HrEmployee(models.Model):
     rida_employee_type = fields.Selection(string='Employee type', selection=[('hq', 'HQ Staff'), ('site', 'Site Staff')], required=True)
     bank_account_id = fields.Many2one("res.partner.bank")
 
+class HrEmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+
+    bank_account_id = fields.Many2one("res.partner.bank")
+    
+
 class User(models.Model):
     _inherit = "res.users"
 

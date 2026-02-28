@@ -3,7 +3,7 @@
     <data>
 
 
-        <record id="trip_permission_form" model="ir.ui.view">
+        <record id="trip_permission_form_view" model="ir.ui.view">
             <field name="name">Trip Permission Request</field>
             <field name="model">trip.permission</field>
             <field name="arch" type="xml">

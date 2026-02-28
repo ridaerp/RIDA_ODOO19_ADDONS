@@ -1265,7 +1265,7 @@ class MaterialRequest(models.Model):
             product_line = (0, 0, {'product_id': line.product_id.id,
                'state': 'draft',
                'analytic_distribution': analytic_distribution,
-               'product_uom': line.product_id.uom_id.id,
+               'product_uom_id': line.product_id.uom_id.id,
                'price_unit': 0,
                'date_planned': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                'product_qty': line.product_qty,
@@ -1308,9 +1308,6 @@ class MaterialRequest(models.Model):
                 raise UserError("Sorry. Only assigned Buyers are authorized to create this document!")
         view_id = self.env.ref('purchase_requisition.view_purchase_requisition_form')
         order_line = []
-        type = self.env['purchase.requisition.type'].search([('exclusive', '=', 'exclusive')], limit=1)
-        ######################add line by ekhlas code 
-        # account_analytic_id = self.analytic_account_id.id if self.analytic_account_id else False
        
         for line in self.line_ids:
             product = line.product_id
@@ -1321,7 +1318,6 @@ class MaterialRequest(models.Model):
                 company_id = self.env.user.company_id.id
             product_line1 = (0, 0, {'product_id': line.product_id.id,
                                    'product_uom_id': line.product_id.uom_id.id,
-                                   'schedule_date': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                    'product_qty': line.product_qty,
                                    'qty_ordered': line.product_qty,
                                     'analytic_distribution': {line.analytic_account_id.id: 100}
@@ -1344,7 +1340,6 @@ class MaterialRequest(models.Model):
                 'default_request_ids': [self.id],
                 'request_id': self.id,
                 'default_item_type': self.item_type,
-                'default_type_id': type.id if type else False,
                 'default_company_id': self.company_id.id,
                 'default_picking_type_id': pick_in.id,
                 'default_purchase_type':self.purchase_type
@@ -1375,7 +1370,6 @@ class MaterialRequest(models.Model):
             product_line = (0, 0, {'product_id': line.product_id.id,
                                    'product_uom_id': line.product_id.uom_id.id,
                                    'product_description_variants': line.description,
-                                   'schedule_date': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                    'product_qty': line.product_qty,
                                    'qty_ordered': line.product_qty,
                                    'account_analytic_id':line.analytic_account_id.id,
@@ -2042,17 +2036,12 @@ class AddToRfqWizard(models.TransientModel):
                     'order_id': purchase_order.id,
                     'product_id': wizard_line.product_id.id,
                     'product_qty': wizard_line.product_qty,
-                    'product_uom': wizard_line.uom_id.id,
+                    'product_uom_id': wizard_line.uom_id.id,
                     'price_unit': 0.0,  # Set a default price
                     'name': wizard_line.product_id.name,  # Or fetch from MR line
                     'date_planned': fields.Date.today(),  # Default date
                 }
                 existing_po_line = self.env['purchase.order.line'].create(vals)
-            print('>>>>>>>>>>>>>>>>>>>>>>>>>.. 1 last', existing_po_line)
-
-            # if existing_po_line:
-            #    self.update_mr_qty_details(existing_po_line,self.material_request_id,wizard_line.product_qty)
-
             # Update the Many2many field in purchase.order with material_request_id
             if self.purchase_order_id and self.material_request_id:
                 self.purchase_order_id.write({

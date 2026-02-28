@@ -61,7 +61,6 @@ class StockLandedCost(models.Model):
         if not self.picking_ids:
             raise UserError(_("Please Enter The Transfers"))
 
-
         ######################landed cost####################
         if  self.purchase_order_id.ore_purchased == False:
             for rec in self.picking_ids:
@@ -69,9 +68,6 @@ class StockLandedCost(models.Model):
                 if rec.state=='assigned':
                     raise UserError(_("Please Validate The Transfer Firstly before validated landed cost"))
 
-
-
-        # if self.purchase_order_id.ore_purchased == False:
         if not self.partner_id :
             raise UserError(_("Please write the Transporter"))
 
@@ -82,93 +78,7 @@ class StockLandedCost(models.Model):
         if not self._check_sum():
             raise UserError(_('Cost and adjustments lines do not match. You should maybe recompute the landed costs.'))
 
-        for cost in self:
-            cost = cost.with_company(cost.company_id)
-            move = self.env['account.move']
-            move_vals = {
-                'journal_id': cost.account_journal_id.id,
-                'date': cost.date,
-                'ref': cost.name,
-                'line_ids': [],
-                'move_type': 'entry',
-            }
-
-            valuation_layer_ids = []
-            cost_to_add_byproduct = defaultdict(lambda: 0.0)
-            for line in cost.valuation_adjustment_lines.filtered(lambda line: line.move_id):
-                remaining_qty = sum(line.move_id.stock_valuation_layer_ids.mapped('remaining_qty'))
-                linked_layer = line.move_id.stock_valuation_layer_ids[:1]
-                print("#########################################", remaining_qty)
-
-                # Prorate the value at what's still in stock
-                cost_to_add = (remaining_qty / line.move_id.product_qty) * line.additional_landed_cost
-                if not cost.company_id.currency_id.is_zero(cost_to_add):
-                    valuation_layer = self.env['stock.valuation.layer'].create({
-                        'value': cost_to_add,
-                        'unit_cost': 0,
-                        'quantity': 0,
-                        'remaining_qty': 0,
-                        'stock_valuation_layer_id': linked_layer.id,
-                        'description': cost.name,
-                        'stock_move_id': line.move_id.id,
-                        'product_id': line.move_id.product_id.id,
-                        'stock_landed_cost_id': cost.id,
-                        'company_id': cost.company_id.id,
-                    })
-                    linked_layer.remaining_value += cost_to_add
-                    valuation_layer_ids.append(valuation_layer.id)
-                # Update the AVCO
-                product = line.move_id.product_id
-                if product.cost_method in ('average', 'last'):
-                    cost_to_add_byproduct[product] += cost_to_add
-                # Products with manual inventory valuation are ignored because they do not need to create journal entries.
-                if product.valuation != "real_time":
-                    continue
-                # `remaining_qty` is negative if the move is out and delivered proudcts that were not
-                # in stock.
-                qty_out = 0
-                if line.move_id._is_in():
-                    qty_out = line.move_id.product_qty - remaining_qty
-                elif line.move_id._is_out():
-                    qty_out = line.move_id.product_qty
-                move_vals['line_ids'] += line._create_accounting_entries(move, qty_out)
-
-            # batch standard price computation avoid recompute quantity_svl at each iteration
-            products = self.env['product.product'].browse(p.id for p in cost_to_add_byproduct.keys()).with_company(
-                cost.company_id)
-            for product in products:  # iterate on recordset to prefetch efficiently quantity_svl
-                if not float_is_zero(product.quantity_svl, precision_rounding=product.uom_id.rounding):
-
-                    ######################landed cost ######3333333333333
-                    if product.categ_id.property_cost_method == 'last':
-                        for line in cost.valuation_adjustment_lines:
-                            if line.product_id.id == product.id:
-                                product.with_company(cost.company_id).sudo().with_context(
-                                    disable_auto_svl=True).standard_price += cost_to_add_byproduct[
-                                                                                 product] / line.quantity
-                    else:
-                        product.with_company(cost.company_id).sudo().with_context(
-                            disable_auto_svl=True).standard_price += cost_to_add_byproduct[
-                                                                         product] / product.quantity_svl
-
-            move_vals['stock_valuation_layer_ids'] = [(6, None, valuation_layer_ids)]
-            # We will only create the accounting entry when there are defined lines (the lines will be those linked to products of real_time valuation category).
-            cost_vals = {'state': 'done'}
-            if move_vals.get("line_ids"):
-                move = move.sudo().create(move_vals)
-                cost_vals.update({'account_move_id': move.id})
-            cost.write(cost_vals)
-            if cost.account_move_id:
-                move.sudo()._post()
-
-            if cost.vendor_bill_id and cost.vendor_bill_id.state == 'posted' and cost.company_id.anglo_saxon_accounting:
-                all_amls = cost.vendor_bill_id.line_ids | cost.account_move_id.line_ids
-                for product in cost.cost_lines.product_id:
-                    accounts = product.product_tmpl_id.get_product_accounts()
-                    input_account = accounts['stock_valuation']
-                    all_amls.filtered(lambda aml: aml.account_id == input_account and not aml.reconciled).reconcile()
-
-        return True
+        return super(StockLandedCost, self).button_validate()
 
     def get_valuation_lines(self):
 
@@ -184,7 +94,7 @@ class StockLandedCost(models.Model):
                 'product_id': move.product_id.id,
                 'move_id': move.id,
                 'quantity': move.product_qty,
-                'former_cost': sum(move.stock_valuation_layer_ids.mapped('value')),
+                # 'former_cost': sum(move.stock_valuation_layer_ids.mapped('value')),
                 'weight': move.product_id.weight * move.product_qty,
                 'volume': move.product_id.volume * move.product_qty
             }
@@ -559,12 +469,6 @@ class StockMove(models.Model):
                                    cost):
         self.ensure_one()
 
-        # stock_valuation_layer_id = self.env['stock.valuation.layer'].sudo().search([('stock_move_id','=',move.id)])
-
-        # if stock_valuation_layer_id:
-        #     for rec in stock_valuation_layer_id:
-        #         if rec.unit_cost==0:
-
         AccountMove = self.env['account.move'].with_context(default_journal_id=journal_id)
 
         move_lines = self._prepare_account_move_line(qty, cost, credit_account_id, debit_account_id, description)
@@ -576,7 +480,7 @@ class StockMove(models.Model):
                 'date': date,
                 'ref': description,
                 'stock_move_id': self.id,
-                'stock_valuation_layer_ids': [(6, None, [svl_id])],
+                # 'stock_valuation_layer_ids': [(6, None, [svl_id])],
                 'move_type': 'entry',
             })
             new_account_move._post()
@@ -616,11 +520,6 @@ class StockPicking(models.Model):
         landed_costs = self.env['stock.landed.cost'].search([('picking_ids', 'in', self.id)])
 
         res = super(StockPicking, self).button_validate()
-        # for rec in landed_costs:
-        #     if rec:
-        #         if rec.state == 'draft' and self.state == 'done':
-        #             rec.button_validate()
-
         return res
 
 

@@ -1,4 +1,5 @@
 /** @odoo-module **/
+
 import {
     condition,
     connector,
@@ -6,7 +7,7 @@ import {
     formatValue,
     normalizeValue,
     treeFromDomain,
-} from "@web/core/tree_editor/condition_tree";
+} from "@web/core/domain_selector/condition_tree";
 
 function addChild(parent, child) {
     if (child.type === "connector" && !child.negate && child.value === parent.value) {

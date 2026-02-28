@@ -5,6 +5,60 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
 
+class HrEmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+
+    id_expiry_date = fields.Date(readonly=True)
+    passport_expiry_date = fields.Date(readonly=True)
+    # age = fields.Integer(readonly=True)
+    line_manager_id = fields.Many2one( related='employee_id.line_manager_id',)
+
+    line_line_manager_id = fields.Many2one( related='employee_id.line_line_manager_id',)
+
+    rida_employee_type = fields.Selection( related='employee_id.rida_employee_type',)
+
+    dep = fields.Selection(selection=[
+            ('division', 'Division'),
+            ('department', 'Department'),
+            ('section', 'Section'),
+            ('unit', 'Unit'),
+        ])
+    location_id = fields.Many2one("locations.detail")
+    residence_area = fields.Many2one("locations.detail",string='Location')
+    arabic_name = fields.Char("Arabic Name")
+    emp_code = fields.Char(string='Employee Code')
+    allow_pasi = fields.Boolean(string='Allow PASI')
+    is_susupend = fields.Boolean(string='Salary Suspend')
+    employee_partner_id=fields.Many2one("res.partner",string= "Employee-Partner")
+    blood_group = fields.Selection([
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ], string='Blood Group')
+
+    address_home_id = fields.Many2one(
+        'res.partner', 'Address', help='Enter here the private address of the employee, not the one linked to your company.',
+        groups="base.group_user", tracking=True,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
+
+    is_worker = fields.Boolean(string='Is Worker')
+    is_section_head = fields.Boolean(string='Is Section head')
+
+    contract_start_date = fields.Date(string='Contract Start Date')
+    contract_end_date = fields.Date(string='Contract end Date')
+
+    project_analytic_account_id = fields.Many2one(comodel_name='account.analytic.account', string='Project Analytic Account')
+    cross_employee = fields.Many2one(comodel_name='hr.employee', string='Cross Employee')
+    passport_expiry_date = fields.Date(readonly=True)
+    birthday = fields.Date('Date of Birth', groups="hr.group_hr_user,base.group_user",
+                           tracking=True)
+
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
     _order = 'emp_code'
@@ -183,63 +237,6 @@ class HrEmployee(models.Model):
             return {
             'domain':{
             'department_id':[('dep_type','=', 'unit')]}}
-
-
-class HrEmployeePublic(models.Model):
-    _inherit = 'hr.employee.public'
-
-    line_manager_id = fields.Many2one( related='employee_id.line_manager_id',)
-
-    line_line_manager_id = fields.Many2one( related='employee_id.line_line_manager_id',)
-
-    rida_employee_type = fields.Selection( related='employee_id.rida_employee_type',)
-
-    dep = fields.Selection(selection=[
-            ('division', 'Division'),
-            ('department', 'Department'),
-            ('section', 'Section'),
-            ('unit', 'Unit'),
-        ])
-    location_id = fields.Many2one("locations.detail")
-    residence_area = fields.Many2one("locations.detail",string='Location')
-    arabic_name = fields.Char("Arabic Name")
-    emp_code = fields.Char(string='Employee Code')
-    allow_pasi = fields.Boolean(string='Allow PASI')
-    is_susupend = fields.Boolean(string='Salary Suspend')
-    employee_partner_id=fields.Many2one("res.partner",string= "Employee-Partner")
-    blood_group = fields.Selection([
-        ('A+', 'A+'),
-        ('A-', 'A-'),
-        ('B+', 'B+'),
-        ('B-', 'B-'),
-        ('AB+', 'AB+'),
-        ('AB-', 'AB-'),
-        ('O+', 'O+'),
-        ('O-', 'O-'),
-    ], string='Blood Group')
-
-    address_home_id = fields.Many2one(
-        'res.partner', 'Address', help='Enter here the private address of the employee, not the one linked to your company.',
-        groups="base.group_user", tracking=True,
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-
-
-    is_worker = fields.Boolean(string='Is Worker')
-    is_section_head = fields.Boolean(string='Is Section head')
-
-    contract_start_date = fields.Date(string='Contract Start Date')
-    contract_end_date = fields.Date(string='Contract end Date')
-
-    project_analytic_account_id = fields.Many2one(comodel_name='account.analytic.account', string='Project Analytic Account')
-
-    cross_employee = fields.Many2one(comodel_name='hr.employee', string='Cross Employee')
-
-    passport_expiry_date = fields.Date(readonly=True)
-
-
-    birthday = fields.Date('Date of Birth', groups="hr.group_hr_user,base.group_user",
-                           tracking=True)
-
 
 
 class EmployeesRotationLine(models.Model):

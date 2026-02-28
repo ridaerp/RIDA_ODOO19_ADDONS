@@ -25,6 +25,16 @@ patch(DomainSelector.prototype, {
         });
     },
 
+    getFieldDef(fieldName) {
+        if (this.props?.getFieldDef) {
+            return this.props.getFieldDef(fieldName);
+        }
+        if (this.fieldDefs && fieldName in this.fieldDefs) {
+            return this.fieldDefs[fieldName];
+        }
+        return undefined;
+    },
+
     async onPropsUpdated(p) {
         await super.onPropsUpdated.apply(this, arguments);
         let domain = null;

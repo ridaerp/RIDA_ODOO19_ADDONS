@@ -4,5 +4,4 @@
 from . import account_custody
 from . import account_move
 from . import account_move_line
-# from . import hr_employee_public
 from . import clearance

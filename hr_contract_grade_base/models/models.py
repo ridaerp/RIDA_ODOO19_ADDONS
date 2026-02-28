@@ -68,8 +68,24 @@ class HRGradeConfiguration(models.Model):
     min = fields.Float(string='Min. Amount')
     max = fields.Float(string='Max. Amount')
 
+class EmployeePublicInherit(models.Model):
+    _inherit = 'hr.employee.public'
 
-class Contract(models.Model):
+    basic = fields.Float(string='Net Salary')
+    total_allowance = fields.Float(string='Total Allowance',)
+    grade_id = fields.Many2one('hr.grade.configuration', string="Grade",)
+    payroll_wage = fields.Float(string='Gross')
+    min = fields.Float(string='Min. Amount',  related='grade_id.min', readonly=True,  store=True)
+    max = fields.Float(string='Max. Amount',  related='grade_id.max',readonly=True,store=True)
+    location = fields.Selection(string='Location', selection=[('site', 'Site'), ('administrative', 'Administrative')])
+    basic_percentage = fields.Float(string='Basic Salary(%)' , default= 61.00)
+    cola_percentage = fields.Float(string='Cola(%)', default= 15.00)
+    housing_percentage = fields.Float(string='Housing(%)', default= 10.00)
+    transportion_percentage = fields.Float(string='Transportion(%)', default= 14.00)
+    wage = fields.Float(string='Take Home',)
+    salary_currency = fields.Many2one("res.currency", string="Contract Currency",)
+
+class Employee(models.Model):
     _inherit = 'hr.employee'
 
     basic = fields.Float(string='Net Salary')

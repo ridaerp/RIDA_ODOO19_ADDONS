@@ -182,12 +182,9 @@
     </record>
 
 
-
-
-
-<template id="report_picking_inherit"
-          inherit_id="stock.report_picking">
-     <t t-call="web.external_layout">
+<template id="report_picking_inherit" inherit_id="stock.report_picking">
+    <xpath expr="//t[@t-call='web.report_layout']" position="replace">
+        <t t-call="web.report_layout">
                         <div class="page">
                             <div class="row justify-content-end mb16">
                                 <div class="col-4" name="right_box">
@@ -363,6 +360,7 @@
                             </table>
                         </div>
                     </t>
+                </xpath>
             </template>
         </odoo>
 

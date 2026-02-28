@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="rotation_request_custom_form" model="ir.ui.view">
+        <record id="rotation_request_form" model="ir.ui.view">
             <field name="name">request.rotation.form</field>
             <field name="model">rotation.batch</field>
             <field name="arch" type="xml">
