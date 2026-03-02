@@ -403,6 +403,7 @@ class WeightRequest(models.Model):
             'view_mode': 'form',
             'res_model': 'purchase.order',
             'res_id': purchase_order.id,
+            'view_id': self.env.ref('material_request.purchase_order_form_inherith').id,
             'context': {'form_view_initial_mode': 'edit'},
         }
 

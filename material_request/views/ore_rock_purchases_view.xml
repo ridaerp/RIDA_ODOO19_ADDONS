@@ -87,18 +87,11 @@
                                 context="{'create_bill':True}"
                                 invisible="state not in ('purchase', 'done') or invoice_status in ('no', 'invoiced')"
                                 groups="purchase.group_purchase_user,material_request.group_ore_rock_purchase_user"/>
-                        <!-- <button name="go_to_sum" type="object" states=",sent,prm" string="Approve" class="oe_highlight" groups="material_request.group_ore_rock_supply_chain_manager"/> -->
-
-
                         <button name="button_draft" invisible="state not in ['reject','cancel']" string="Set to Draft"
                                 type="object"/>
-
-
                         <button name="button_create_landed_costs" string="Create Landed Costs" type="object"
                                 groups="purchase.group_purchase_user,material_request.group_ore_rock_purchase_user"
                                 invisible="state not in ['purchase']"/>
-
-
                         <button name="action_rfq_send" string="Re-Send by Email" type="object"
                                 context="{'send_rfq':True}"
                                 groups="purchase.group_purchase_user,material_request.group_ore_rock_purchase_user"/>
@@ -107,8 +100,6 @@
                         <button name="go_to_prm" type="object" string="Send To Procurement Manager"
                                 groups="purchase.group_purchase_user,material_request.group_ore_rock_purchase_user"
                                 invisible="state not in ('draft','sent')"/>
-
-
                         <button name="%(purchase_order_reject_action)d" type="action" invisible="state != 'prm'"
                                 string="Reject" groups="base.group_user"/>
                         <button name="go_to_ccso" type="object" invisible="state != 'sum'" string="Approve"
@@ -116,14 +107,10 @@
                                 groups="material_request.group_ore_rock_supply_chain_manager"/>
                         <button name="%(purchase_order_reject_action)d" type="action" invisible="state != 'sum'"
                                 string="Reject" groups="material_request.group_ore_rock_supply_chain_manager"/>
-
-
                         <button name="button_confirm" type="object"
                                 invisible="state not in ['site','fleet_director','ccso']" string="Confirm Order"
                                 class="oe_highlight"
                                 groups="base_rida.rida_group_site_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.group_fleet_director"/>
-
-
                         <button name="%(purchase_order_reject_action)d" type="action"
                                 invisible="state not in ('ccso', 'site')" string="Reject"
                                 groups="base_rida.rida_group_site_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO"/>
@@ -178,14 +165,14 @@
                                 <field name="name" readonly="1"/>
                             </h1>
                         </div>
-                        <group>
+                         <group>
                             <group>
-                                <field name="partner_id" widget="res_partner_many2one" string="Vendor"
-                                       domain="['|',('category_id','ilike','rock'),('category_id','ilike','tail')]"
-                                       context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"
-                                       placeholder="Name, TIN, Email, or Reference"
-                                />
+                                <field name="partner_id" readonly="state in ['purchase', 'done', 'cancel']"
+                                   widget="res_partner_many2one"
+                                   context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"
+                                   placeholder="Name, TIN, Email, or Reference" force_save="1"/>
                                 <field name="partner_ref"/>
+                                <field name="requisition_id" domain="[('state', 'in', ('in_progress', 'open', 'ongoing')), ('vendor_id', 'in', (partner_id, False))]"/>
                                 <field name="currency_id" groups="base.group_multi_currency" force_save="1"/>
                                 <field name="is_shipped" invisible="1"/>
                                 <field name="id" invisible="1"/>
@@ -213,11 +200,9 @@
                                 <label for="date_approve" invisible="state not in ('purchase','done')"/>
                                 <div name="date_approve" invisible="state not in ('purchase','done')" class="o_row">
                                     <field name="date_approve"/>
-                                    <!-- <field name="mail_reception_confirmed" invisible="1"/> -->
                                     <span class="text-muted">(confirmed by
                                         vendor)
                                     </span>
-                                    <!-- invisible="not mail_reception_confirmed" -->
                                 </div>
                                 <label for="date_planned"/>
 
@@ -235,11 +220,9 @@
                                     </button>
                                     <field name="date_planned"
                                            readonly="state not in ('draft', 'sent', 'to approve', 'purchase')"/>
-                                    <!-- <field name="mail_reminder_confirmed" invisible="1"/> -->
                                     <span class="text-muted">(confirmed by
                                         vendor)
                                     </span>
-                                    <!-- invisible="mail_reception_confirmed == False" -->
                                 </div>
                                 <label for="receipt_reminder_email" invisible='1'/>
                                 <div name="reminder" class="o_row" groups='purchase.group_send_reminder'
@@ -267,34 +250,26 @@
                                        context="{'default_state': 'draft'}"
                                        readonly="state in ('purchase','done', 'cancel')">
                                     <list string="Purchase Order Lines" editable="bottom">
-                                       <control>
-                                        <create name="add_product_control" string="Add a product"/>
-                                        <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
-                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
-                                    </control>
+                                        <control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
                                         <field name="display_type" column_invisible="1"/>
                                         <field name="currency_id" column_invisible="1"/>
                                         <field name="state" column_invisible="1"/>
                                         <field name="product_type" column_invisible="1"/>
-                                        <!-- <field name="product_uom_category_id" column_invisible="1"/> -->
                                         <field name="invoice_lines" column_invisible="1"/>
                                         <field name="sequence" widget="handle"/>
-
                                         <field name="name" widget="section_and_note_text"/>
-
-
                                         <field name="is_landed_costs_line" string="Landed Costs" optional="show"/>
-
-                                        <field name="date_planned" optional="hide" required="display_type == False"
-                                               force_save="1"/>
+                                        <field name="date_planned" optional="hide" required="display_type == False" force_save="1"/>
                                         <field name="move_dest_ids" column_invisible="1"/>
                                         <field name="product_qty"/>
 
                                         <field name="qty_received_manual" column_invisible="1"/>
                                         <field name="qty_received_method" column_invisible="1"/>
-                                        <field name="qty_received" string="Received"
-                                               readonly="product_type in ('consu', 'product')"
-                                               column_invisible="parent.state not in ('purchase', 'done')"/>
+                                        <field name="qty_received" string="Received" readonly="product_type in ('consu', 'product')" column_invisible="parent.state not in ('purchase', 'done')"/>
                                         <field name="qty_invoiced" string="Billed"/>
                                         <field name="product_uom_id" string="UoM" groups="uom.group_uom"
                                                readonly="state in ['purchase', 'done', 'cancel']"
@@ -316,11 +291,9 @@
                                         <field name="display_type" invisible="1"/>
                                         <group invisible="display_type != False">
                                             <group>
-                                                <!-- <field name="product_uom_category_id" invisible="1"/> -->
                                                 <label for="product_qty"/>
                                                 <div class="o_row">
                                                     <field name="product_qty"/>
-
                                                     <field name="product_uom_id" groups="uom.group_uom"
                                                            required="display_type == False"/>
                                                 </div>
@@ -364,14 +337,11 @@
                                         <field name="price_tax" invisible="1"/>
                                         <field name="price_total" invisible="1"/>
                                         <field name="price_unit"/>
-                                        <field
-                                                name="discount"
-                                                readonly="parent.invoice_status == 'invoiced'"
-                                        />
+                                        <field name="discount" readonly="parent.invoice_status == 'invoiced'" />
                                         <field name="display_type" invisible="1"/>
                                         <field name="tax_ids" invisible="1"/>
                                         <templates>
-                                            <t t-name="kanban-box">
+                                            <t t-name="card">
                                                 <div t-attf-class="oe_kanban_card oe_kanban_global_click {{ record.display_type.raw_value ? 'o_is_' + record.display_type.raw_value : '' }}">
                                                     <t t-if="!record.display_type.raw_value">
                                                         <div class="row">
@@ -456,29 +426,10 @@
                                     </group>
                                 </group>
                             </page>
-                        </notebook>
+                        </notebook> 
                     </sheet>
                     <chatter/>
                 </form>
-            </field>
-        </record>
-
-
-        <record id="purchase_order_form_inheritt_custom2" model="ir.ui.view">
-            <field name="name">purchase.order.form.inherit</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="material_request.purchase_order_form_inherith"/>
-            <field name="arch" type="xml">
-                <field name="partner_id" position="replace">
-                    <field name="partner_id" readonly="state in ['purchase', 'done', 'cancel']"
-                           widget="res_partner_many2one"
-                           context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"
-                           placeholder="Name, TIN, Email, or Reference" force_save="1"/>
-                </field>
-                <field name="partner_ref" position="after">
-                    <field name="requisition_id"
-                           domain="[('state', 'in', ('in_progress', 'open', 'ongoing')), ('vendor_id', 'in', (partner_id, False))]"/>
-                </field>
             </field>
         </record>
 

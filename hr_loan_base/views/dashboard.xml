@@ -17,7 +17,7 @@
                     <field name="color"/>
                     <field name="image"/>
                     <templates>
-                        <t t-name="kanban-box" style="width:250px;height:380px;">
+                        <t t-name="card" style="width:250px;height:380px;">
                             <div t-attf-class="#{kanban_color(record.color.raw_value)} ">
                                 <div class="row" style="margin-left:0px;">
                                     <div class="col-xs-4">

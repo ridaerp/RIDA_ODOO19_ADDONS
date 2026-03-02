@@ -114,7 +114,7 @@
                 </search>
             </field>
         </record>
-        <record model="ir.ui.view" id="view_employee_overtime_kanban">
+        <record model="ir.ui.view" id="view_employee_site_overtime_kanban">
             <field name="name">hr.site.overtime.kanban</field>
             <field name="model">hr.site.overtime</field>
             <field name="arch" type="xml">
@@ -123,7 +123,7 @@
                     <field name="employee_id"/>
                     <field name="state"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <t t-name="card">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_record_top mb16">
                                     <div class="o_kanban_record_headings mt4">

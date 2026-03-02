@@ -70,10 +70,6 @@
                             <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"
                                 placeholder="Name, TIN, Email, or Reference"
                             />
-
-                            <!-- <field name="grid" invisible="1"/> -->
-                            <!-- <field name="grid_product_tmpl_id" invisible="1"/> -->
-                            <!-- <field name="grid_update" invisible="1"/> -->
                             <field name="partner_ref"/>
                                 <field name="contract_id" string="Contract Number"/>
                             <field name="currency_id" groups="base.group_multi_currency" force_save="1"/>
@@ -188,7 +184,6 @@
                                         <field name="display_type" column_invisible="1"/>
                                         <group column_invisible="display_type != False">
                                             <group>
-                                                <!-- <field name="product_uom_category_id" column_invisible="1"/> -->
                                                 <field name="product_id"
                                                        
                                                        widget="many2one_barcode"
@@ -238,7 +233,7 @@
                                      <field name="display_type"/>
                                      <field name="tax_ids" invisible="1"/>
                                      <templates>
-                                         <t t-name="kanban-box">
+                                         <t t-name="card">
                                              <div t-attf-class="oe_kanban_card oe_kanban_global_click {{ record.display_type.raw_value ? 'o_is_' + record.display_type.raw_value : '' }}">
                                                  <t t-if="!record.display_type.raw_value">
                                                      <div class="row">
