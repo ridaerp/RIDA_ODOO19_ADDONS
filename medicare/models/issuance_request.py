@@ -77,8 +77,8 @@ class MedicareIssuanceRequest(models.Model):
     @api.onchange('p_employee', 'p_contractor', 'p_quest')
     def _onchange_employee(self):
         for rec in self:
-            if rec.p_employee.sudo().contract_id:
-                rec.account_analytic_id = rec.p_employee.sudo().contract_id.sudo().analytic_account_id
+            if rec.p_employee.sudo():
+                rec.account_analytic_id = rec.p_employee.sudo().analytic_account_id
             else:
                 rec.account_analytic_id = False
             if rec.p_employee:
@@ -98,7 +98,7 @@ class MedicareIssuanceRequest(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('med.issuance.request') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('med.issuance.request') or ' '
 
         return super(MedicareIssuanceRequest, self).create(vals)
 

@@ -75,8 +75,8 @@ class MinorRoom(models.Model):
             if self.p_employee.company_id:
                 self.company_id = self.p_employee.company_id.id
             self.patient = self.p_employee.name
-            if self.p_employee.sudo().contract_id:
-                self.account_analytic_id = self.sudo().p_employee.sudo().contract_id.sudo().analytic_account_id
+            if self.p_employee.sudo():
+                self.account_analytic_id = self.sudo().p_employee.sudo().analytic_account_id
             else:
                 self.account_analytic_id = False
         if self.p_contractor:
@@ -118,7 +118,7 @@ class MinorRoom(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('room.code') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('room.code') or ' '
 
         return super(MinorRoom, self).create(vals)
 

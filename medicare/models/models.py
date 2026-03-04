@@ -283,8 +283,8 @@ class DoctorVisit(models.Model):
             if rec.p_employee:
                 if rec.p_employee.company_id:
                     rec.company_id = rec.p_employee.company_id.id
-                if rec.p_employee.sudo().contract_id:
-                    rec.account_analytic_id = rec.p_employee.sudo().contract_id.analytic_account_id
+                if rec.p_employee.sudo():
+                    rec.account_analytic_id = rec.p_employee.sudo().analytic_account_id
                 else:
                     rec.account_analytic_id = False
                 rec.age = rec.p_employee.age
@@ -322,7 +322,7 @@ class DoctorVisit(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('doctor.visit') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('doctor.visit') or ' '
 
         return super(DoctorVisit, self).create(vals)
 
@@ -340,8 +340,8 @@ class DoctorVisit(models.Model):
     @api.onchange('p_employee', 'p_contractor', 'p_quest')
     def _onchange_employee(self):
         for rec in self:
-            if rec.sudo().p_employee.sudo().contract_id:
-                rec.account_analytic_id = rec.p_employee.sudo().contract_id.sudo().analytic_account_id
+            if rec.sudo().p_employee.sudo():
+                rec.account_analytic_id = rec.p_employee.sudo().analytic_account_id
             else:
                 rec.account_analytic_id = False
             if rec.p_contractor:

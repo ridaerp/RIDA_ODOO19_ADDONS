@@ -83,7 +83,7 @@ class MedicareProductScrap(models.Model):
     @api.model
     def create(self, vals):
         for val in vals:
-            val['name'] = self.env['ir.sequence'].next_code_by('medicare.product.scrap') or ' '
+            val['name'] = self.env['ir.sequence'].next_by_code('medicare.product.scrap') or ' '
 
         return super(MedicareProductScrap, self).create(vals)
 
