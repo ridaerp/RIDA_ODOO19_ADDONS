@@ -6,7 +6,7 @@
        <record model="ir.ui.view" id="rotation_request_custom_form_custom1">
             <field name="name">request.rotation.form.inherit</field>
             <field name="model">rotation.batch</field>
-            <field name="inherit_id" ref="hr_leave_main.rotation_request_form"/>
+            <field name="inherit_id" ref="hr_leave_main.rotation_request_custom_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='b_account']" position="after">
                     <field name="partner_id"
@@ -50,6 +50,7 @@
                        position="after">
                     <field name="is_susupend"/>
                     <field name="employee_partner_id" groups="hr.group_hr_user"/>
+                    <field name="allowed_department_ids" widget="many2many_tags"/>
                 </xpath>
 
                 <xpath expr="//field[@name='department_id']" position="before">
