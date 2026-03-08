@@ -119,8 +119,8 @@ class hr_loan(models.Model):
                 raise UserError(f'The {rec.sudo().employee_id.name} Dosn\'t Have Contract')
 
     @api.model
-    def create(self, values):
-        for val in values:
+    def create(self, vals):
+        for val in vals:
             val['name'] = self.env['ir.sequence'].next_by_code('hr.loan.req.seq')
         return super(hr_loan, self).create(vals)
 

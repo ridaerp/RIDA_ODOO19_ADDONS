@@ -3,11 +3,11 @@
 import {
     condition,
     connector,
-    domainFromTree,
     formatValue,
     normalizeValue,
-    treeFromDomain,
-} from "@web/core/domain_selector/condition_tree";
+} from "@web/core/tree_editor/condition_tree";
+import { constructDomainFromTree } from "@web/core/tree_editor/construct_domain_from_tree";
+import { constructTreeFromDomain } from "@web/core/tree_editor/construct_tree_from_domain";
 
 function addChild(parent, child) {
     if (child.type === "connector" && !child.negate && child.value === parent.value) {
@@ -25,7 +25,7 @@ export function removeDateRangeOperators(tree) {
         if (!tree.operator.includes("daterange")) {
             return tree;
         }
-        const {negate, path, value} = tree;
+        const { negate, path, value } = tree;
         return connector(
             "&",
             [condition(path, "<=", value[0]), condition(path, ">=", value[1])],
@@ -34,10 +34,9 @@ export function removeDateRangeOperators(tree) {
     }
     const processedChildren = tree.children.map(removeDateRangeOperators);
     if (tree.value === "|") {
-        return {...tree, children: processedChildren};
+        return { ...tree, children: processedChildren };
     }
-    const newTree = {...tree, children: []};
-    // After processing a child might have become a connector "&" --> normalize
+    const newTree = { ...tree, children: [] };
     for (let i = 0; i < processedChildren.length; i++) {
         addChild(newTree, processedChildren[i]);
     }
@@ -50,7 +49,7 @@ function createDateRangeOperators(tree) {
     }
     const processedChildren = tree.children.map(createDateRangeOperators);
     if (tree.value === "|") {
-        return {...tree, children: processedChildren};
+        return { ...tree, children: processedChildren };
     }
     const children = [];
     let operator = "daterange";
@@ -83,15 +82,15 @@ function createDateRangeOperators(tree) {
         }
     }
     if (children.length === 1) {
-        return {...children[0]};
+        return { ...children[0] };
     }
-    return {...tree, children};
+    return { ...tree, children };
 }
 
 export function domainFromTreeDateRange(tree) {
-    return domainFromTree(removeDateRangeOperators(tree));
+    return constructDomainFromTree(removeDateRangeOperators(tree));
 }
 
 export function treeFromDomainDateRange(domain, options = {}) {
-    return createDateRangeOperators(treeFromDomain(domain, options));
+    return createDateRangeOperators(constructTreeFromDomain(domain, options));
 }

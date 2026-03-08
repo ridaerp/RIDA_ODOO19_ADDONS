@@ -216,7 +216,7 @@ class HrLoanAcc(models.Model):
                 'partner_id': rec.employee_id.user_partner_id.id,
                 'destination_account_id': rec.employee_account_id.id,
                 'amount': rec.loan_amount,
-                'ref': rec.name,
+                'memo': rec.name,
                 'journal_id': rec.journal_id.id,
             }
             po = self.env['account.payment'].create(create_payment)

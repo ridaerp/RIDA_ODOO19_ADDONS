@@ -13,8 +13,7 @@ from dateutil.relativedelta import relativedelta
 class FleetVechicles(models.Model):
     _inherit = 'fleet.vehicle'
     _rec_name = 'display_name'
-    equipment_id = fields.Many2one('maintenance.equipment', 'Related Equipment', required=True, ondelete="cascade",
-                                   readonly=True)
+    equipment_id = fields.Many2one('maintenance.equipment', 'Related Equipment', ondelete="cascade", readonly=True)
     display_name = fields.Char(compute='compute_display_name', string="Name", store=False)
 
     maintenance_count = fields.Integer(string="Maintenance Count", compute='compute_mr_count')
@@ -40,11 +39,16 @@ class FleetVechicles(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        for val in vals:
-            if val.get('location'):
-                loc = self.env['vehicle.location'].search([('name', '=', val['location'])], limit=1)
-                if not loc:
-                    self.env['vehicle.location'].create({'name': val['location']})
+
+        if vals.get('location'):
+            loc = self.env['vehicle.location'].search(
+                [('name', '=', vals['location'])], limit=1
+            )
+            if not loc:
+                self.env['vehicle.location'].create({
+                    'name': vals['location']
+                })
+
         return res
 
     def _get_odometer(self):
@@ -99,10 +103,6 @@ class FleetVechicles(models.Model):
 class MaintenanceEquiement(models.Model):
     _inherit = 'maintenance.equipment'
 
-    # works_24_hours = fields.Boolean(
-    #     string='24 Hours Operation',
-    #     help='Equipment works in two shifts (24 hours)'
-    # )
     def _default_equipment_status(self):
         return self.env['maintenance.equipment.status'].search([('sequence', '=', 1)], limit=1).id
 
@@ -363,10 +363,6 @@ class MaintenanceRequest(models.Model):
         store=True
     )
 
-
-
-
-
     insepect_datetime = fields.Datetime('Started  Inspect date / time',
                                         tracking=True)
     m_s_datetime = fields.Datetime('Maintenance Started date / time',
@@ -420,7 +416,6 @@ class MaintenanceRequest(models.Model):
                                   help='Odometer measure of the vehicle at the moment of this log')
     odometer = fields.Float(string='Odometer Value',
                             help='Odometer measure of the vehicle at the moment of this log')
-    # odometer_unit = fields.Selection(related='vehicle_id.odometer_unit', string="Unit", readonly=True)
     equipment_type = fields.Selection(related="equipment_id.equipment_type", string="Machines/Vechicles", required=True)
 
     requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
@@ -667,11 +662,6 @@ class MaintenanceRequest(models.Model):
                 record.technican_users.mapped('name')
             ) if record.technican_users else False
 
-
-
-
-
-
     @api.depends('m_e_datetime')
     def _compute_end_time(self):
         for record in self:
@@ -681,9 +671,6 @@ class MaintenanceRequest(models.Model):
                 record.m_e_time = local_dt.strftime('%H:%M:%S')
             else:
                 record.m_e_time = False
-
-
-
 
   #################################### Equipment Received  Date ##################################
 
@@ -848,12 +835,6 @@ class MaintenanceRequest(models.Model):
                 record.issuance_recevied_time = local_dt.strftime('%H:%M:%S')
             else:
                 record.issuance_recevied_time = False
-
-
-
-
-
-
 
     @api.model
     def create(self, vals):
@@ -1196,55 +1177,26 @@ class MaintenanceRequest(models.Model):
             rec.write({'stage_id': stage_obj.id,
                        })
 
-    # def oper_mov_approval(self):
-    #     for rec in self:
-    #         stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)])
-    #         rec.write({'stage_id': stage_obj.id,
-    #                    'wo_receive_datetime': datetime.now(),
-    #                    })
-
-    # @api.onchange('technican_user')
-    # def set_receive_wo(self):
-    #     for rec in self:
-    #         rec.write({
-    #             'wo_receive_datetime':datetime.datetime.now(),
-    #             })
-
     def button_receive_wo(self):
         for rec in self:
             if not rec.technican_users:
                 raise UserError("Please Assign Technican !")
 
-            # seq = self.env['ir.sequence'].next_by_code('maintenance_request.sequence') or "/"
-            # data['number'] = seq
-
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 3)])
-            equipment_obj = self.env['maintenance.equipment'].search([('id', '=', rec.equipment_id.id)])
-            equipment_status_obj = self.env['maintenance.equipment.status'].search([('sequence', '=', 2)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 3)], limit=1)
+            equipment_obj = self.env['maintenance.equipment'].search([('id', '=', rec.equipment_id.id)], limit=1)
+            equipment_status_obj = self.env['maintenance.equipment.status'].search([('sequence', '=', 2)], limit=1)
 
             if rec.wo_receive_datetime:
                 rec.write({'stage_id': stage_obj.id,
                            'assigned_datetime': datetime.now(),
-                           # 'wo_number':seq
                            })
 
             else:
                 rec.write({'stage_id': stage_obj.id,
                            'wo_receive_datetime': datetime.now(),
                            'assigned_datetime': datetime.now(),
-                           # 'wo_number':seq
                            })
             equipment_obj.write({'status_id': equipment_status_obj.id})
-
-    # def button_inspect(self):
-    #     for rec in self:
-    #         stage_obj=self.env['maintenance.stage'].search([('sequence','=',4)])
-    #         rec.write({'stage_id':stage_obj.id,
-
-    #             # 'insepect_datetime':datetime.datetime.now(),
-    #             'm_s_datetime':datetime.datetime.now(),
-
-    #             })
 
     def button_inspect(self):
         for rec in self:
@@ -1604,8 +1556,9 @@ class FleetVehicleOdometer(models.Model):
 
     def create(self, vals):
         rec = super(FleetVehicleOdometer, self).create(vals)
-        if vals.get('location_id') and rec.equipment_id:
-            rec.equipment_id.location = rec.location_id.name
+        for val in vals:
+            if val.get('location_id') and rec.equipment_id:
+                rec.equipment_id.location = rec.location_id.name
         return rec
 
 
