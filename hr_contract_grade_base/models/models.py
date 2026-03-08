@@ -84,6 +84,7 @@ class EmployeePublicInherit(models.Model):
     transportion_percentage = fields.Float(string='Transportion(%)', default= 14.00)
     wage = fields.Float(string='Take Home',)
     salary_currency = fields.Many2one("res.currency", string="Contract Currency",)
+    is_worker = fields.Boolean(string='Is Worker')
 
 class Employee(models.Model):
     _inherit = 'hr.employee'
@@ -183,3 +184,34 @@ class Employee(models.Model):
                 for line in rec.grade_line_id:
                     total += line.amount
             rec.total_allowance = total 
+
+
+
+
+
+
+
+class EmployeeVersion(models.Model):
+    _inherit = 'hr.version'
+
+    basic = fields.Float(string='Net Salary')
+    band_id = fields.Many2one(comodel_name='job.band', string='Job Band')
+    grade_id = fields.Many2one('hr.grade.configuration', string="Grade")
+    total_allowance = fields.Float(string='Total Allowance')
+    grade_id = fields.Many2one('hr.grade.configuration', string="Grade", readony=True)
+    grade_line_id = fields.One2many(comodel_name='hr.grade.line', inverse_name='contract_id', string='Old Benefits')
+    wage = fields.Monetary(string='Take Home', store=True)
+    payroll_wage = fields.Monetary(string='Gross')
+    min = fields.Float(string='Min. Amount',  readonly=True,  store=True)
+    max = fields.Float(string='Max. Amount', readonly=True,store=True)
+    location = fields.Selection(string='Location', selection=[('site', 'Site'), ('administrative', 'Administrative')])
+    basic_percentage = fields.Float(string='Basic Salary(%)' , default= 61.00)
+    cola_percentage = fields.Float(string='Cola(%)', default= 15.00)
+    housing_percentage = fields.Float(string='Housing(%)', default= 10.00)
+    transportion_percentage = fields.Float(string='Transportion(%)', default= 14.00)
+    basic_salary = fields.Float(string='Basic Salary' , readonly=True )
+    cola = fields.Float(string='Cola', readonly=True)
+    housing = fields.Float(string='Housing' ,readonly=True,)
+    transportion = fields.Float(string='Transportion', readonly=True, )
+    salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
+
