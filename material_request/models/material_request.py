@@ -1359,7 +1359,7 @@ class MaterialRequest(models.Model):
             if self.assigned_to_supply.id != self.env.user.id or not self.user_has_groups(
                     'material_request.group_buyers'):
                 raise UserError("Sorry. Only assigned Buyers are authorized to create this document!")
-        view_id = self.env.ref('material_request.view_purchase_contract_custom_form1')
+        view_id = self.env.ref('material_request.view_purchase_contract_custom_form')
         order_line = []
         account_analytic_id = self.analytic_account_id.id if self.analytic_account_id else False
         type = self.env['purchase.requisition.type'].search([('exclusive', '=', 'exclusive')], limit=1)

@@ -45,7 +45,7 @@
                     <field name="office_room_id" domain="[('block_id','=',block_id)]"
                            options="{'no_quick_create': True, 'no_create_edit' : True}"/>
                 </xpath>
-                <xpath expr="//field[@name='location_id']" position="after">
+                <xpath expr="//field[@name='scrap_date']" position="after">
                     <field name="asset_id"/>
                     <label for="odometer"/>
                     <div class="o_row">

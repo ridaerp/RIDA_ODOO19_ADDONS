@@ -115,7 +115,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_purchase_contract_custom_form1">
+        <record model="ir.ui.view" id="view_purchase_contract_custom_form">
             <field name="name">purchase.contract.form</field>
             <field name="model">purchase.contract</field>
             <field name="arch" type="xml">

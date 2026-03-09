@@ -544,7 +544,7 @@ class PurchaseOrder(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("stock_landed_costs.action_stock_landed_cost")
         domain = [('id', 'in', self.landed_costs_ids.ids)]
         context = dict(self.env.context, default_vendor_bill_id=self.id)
-        views = [(self.env.ref('stock_landed_costs.view_stock_landed_cost_tree2').id, 'tree'), (False, 'form'),
+        views = [(self.env.ref('stock_landed_costs.view_stock_landed_cost_tree2').id, 'list'), (False, 'form'),
                  (False, 'kanban')]
         return dict(action, domain=domain, context=context, views=views)
 
@@ -553,7 +553,7 @@ class PurchaseOrder(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("material_request.payment_request_form_approve_action")
         domain = [('purchase_order_id', '=', self.id)]
         context = dict(self.env.context, default_vendor_bill_id=self.id)
-        views = [(self.env.ref('material_request.view_ovearseas_payment_tree').id, 'tree'), (False, 'form'),
+        views = [(self.env.ref('material_request.view_ovearseas_payment_tree').id, 'list'), (False, 'form'),
                  (False, 'kanban')]
         return dict(action, domain=domain, context=context, views=views)
 
@@ -1206,17 +1206,6 @@ class PurchaseOrderLine(models.Model):
                     self._onchange_methods[field_name].remove(method)
                     break
         return super()._onchange_eval(field_name, onchange, result)
-
-
-class PurchaseReport(models.Model):
-    _inherit = "purchase.report"
-
-    price_unit = fields.Float('Unit Price', readonly=True)
-
-    def _select(self):
-        return super(PurchaseReport, self)._select() + ", l.price_unit as price_unit"
-
-
 
 
 class PurchaseLandedCOST(models.Model):

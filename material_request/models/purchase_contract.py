@@ -472,8 +472,8 @@ class PurchaseContractLine(models.Model):
             for po in line.contract_id.purchase_ids.filtered(
                     lambda purchase_order: purchase_order.state in ['purchase', 'done']):
                 for po_line in po.order_line.filtered(lambda order_line: order_line.product_id == line.product_id):
-                    if po_line.product_uom != line.product_uom_id:
-                        total += po_line.product_uom._compute_quantity(po_line.product_qty, line.product_uom_id)
+                    if po_line.product_uom_id != line.product_uom_id:
+                        total += po_line.product_uom_id._compute_quantity(po_line.product_qty, line.product_uom_id)
                     else:
                         total += po_line.product_qty
             if line.product_id not in line_found:

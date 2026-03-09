@@ -50,6 +50,7 @@
                   <button string="Cut Leave" name="action_cut_leave" invisible="state != 'validate'"  type="object" groups="hr_holidays.group_hr_holidays_manager" class="oe_highlight"/>
                   <button string="Refuse" name="action_refuse" type="object" invisible="not can_approve or state not in ['confirm', 'validate1', 'validate']"/>
                   <!-- <button string="Mark as Draft" name="action_draft" type="object" invisible="not can_reset or state not in ['confirm', 'refuse']"/> -->
+                  <button string="Back to Approval" name="action_back_to_approval" type="object" invisible="True"/>
                   <field name="state" widget="statusbar" statusbar_visible="confirm,validate"/>
                </header>
                <header invisible ="click == 'False'">
