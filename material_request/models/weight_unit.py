@@ -1912,7 +1912,7 @@ class WeightLandedCostLine(models.Model):
                     grade = rec.weight_id.rock_vendor.max_grade
                     ###############################high grade################################
                     if average_qty >= grade:
-                        if rec.product_id.type == 'product':
+                        if rec.product_id.type == 'consu':
                             if average_qty >= price_min and average_qty <= price_max:
                                 rec.unit_price = price
                                 rec.discount = 0.0
@@ -1932,7 +1932,7 @@ class WeightLandedCostLine(models.Model):
                         if area_list.x_studio_discount_on_ore_price:
 
                             if average_qty < area_list.x_studio_discount_on_ore_price:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     price = 0.0
                                     rec.unit_price = price
                                     rec.discount = 0.0
@@ -1944,7 +1944,7 @@ class WeightLandedCostLine(models.Model):
 
                             ###################new code ##########################################
                             elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.unit_price = price
@@ -1958,7 +1958,7 @@ class WeightLandedCostLine(models.Model):
                             ###############################################################
 
                             else:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.unit_price = price
@@ -1974,7 +1974,7 @@ class WeightLandedCostLine(models.Model):
                         if area_list.x_studio_discount_on_transportation:
 
                             if average_qty < area_list.x_studio_discount_on_transportation:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.discount = 0.0
@@ -1986,7 +1986,7 @@ class WeightLandedCostLine(models.Model):
 
 
                             else:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.unit_price = price
@@ -2004,7 +2004,7 @@ class WeightLandedCostLine(models.Model):
                         ############################discount on area#########################
 
                         else:
-                            if rec.product_id.type == 'product':
+                            if rec.product_id.type == 'consu':
                                 if average_qty >= price_min and average_qty <= price_max:
                                     rec.unit_price = price
                                     rec.discount = 0.0
@@ -2023,7 +2023,7 @@ class WeightLandedCostLine(models.Model):
                     ##########################discount for specific area with
                     if area_list.x_studio_discount_on_ore_price:
                         if average_qty < area_list.x_studio_discount_on_ore_price:
-                            if rec.product_id.type == 'product':
+                            if rec.product_id.type == 'consu':
                                 price = 0.0
                                 rec.unit_price = price
                                 rec.discount = 0.0
@@ -2037,7 +2037,7 @@ class WeightLandedCostLine(models.Model):
 
                         #############################new code #######################
                         elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
-                            if rec.product_id.type == 'product':
+                            if rec.product_id.type == 'consu':
                                 if average_qty >= price_min and average_qty <= price_max:
                                     price = line.unit_price
                                     rec.unit_price = price
@@ -2050,7 +2050,7 @@ class WeightLandedCostLine(models.Model):
                         #######################################################################
 
                         else:
-                            if rec.product_id.type == 'product':
+                            if rec.product_id.type == 'consu':
                                 if average_qty >= price_min and average_qty <= price_max:
                                     rec.unit_price = price
                                     rec.discount = 0.0
@@ -2072,7 +2072,7 @@ class WeightLandedCostLine(models.Model):
                         if area_list.x_studio_discount_on_transportation:
 
                             if average_qty < area_list.x_studio_discount_on_transportation:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.discount = 0.0
@@ -2084,7 +2084,7 @@ class WeightLandedCostLine(models.Model):
 
 
                             else:
-                                if rec.product_id.type == 'product':
+                                if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
                                         price = line.unit_price
                                         rec.unit_price = price
@@ -2101,7 +2101,7 @@ class WeightLandedCostLine(models.Model):
 
 
                     else:
-                        if rec.product_id.type == 'product':
+                        if rec.product_id.type == 'consu':
                             if average_qty >= price_min and average_qty <= price_max:
                                 rec.unit_price = price
                                 rec.discount = 0.0
