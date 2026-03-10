@@ -407,6 +407,25 @@ class HrContract(models.Model):
     _inherit = 'hr.employee.public'
 
     transportion_allowance = fields.Float("Transportation Allowance")
+    car_allowance=fields.Float("Car Allowance")
+    fuel_allowance=fields.Float("Fuel Allowance")
+    phone_allowance=fields.Float("Phone Allowance")
+    seconment_allowance=fields.Float("Seconment Allowance")
+    medical_allowance=fields.Float("Medical Allowance")
+    medicine_allowance=fields.Float("Medicine Allowance")
+    other_recevible=fields.Float("Other Receivables")
+    other_deductions=fields.Float("Other Deductions")
+    acting_allowance=fields.Boolean("Acting Allowance")
+    acting_type=fields.Selection([('50','50%'),('30','30%'),('15','15%')],"Acting Allowance")
+    acting_amount=fields.Float("Acting Allowance")
+    has_fuel_allows=fields.Boolean("Fuel Allowance",default=False)
+    has_transport_allows=fields.Boolean("Transportation Allowance",default=False)
+    has_car_allows=fields.Boolean("Car Allowance",default=False)
+    has_phone_allows=fields.Boolean("Phone Allowance",default=False)
+    has_scarcity_allowance=fields.Boolean("Scarcity Allowance",default=False)
+    workeddays=fields.Float("Working Days ")
+
+
 
 class HrPayslipLine(models.Model):
     _inherit = 'hr.payslip.line'

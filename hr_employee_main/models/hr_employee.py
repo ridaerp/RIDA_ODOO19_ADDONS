@@ -241,6 +241,7 @@ class HrEmployeePublic(models.Model):
 
     birthday = fields.Date('Date of Birth', groups="hr.group_hr_user,base.group_user",
                            tracking=True)
+    id_expiry_date = fields.Date(string='ID Expiry Date', help='Expiry date of Identification ID')
 
 
 

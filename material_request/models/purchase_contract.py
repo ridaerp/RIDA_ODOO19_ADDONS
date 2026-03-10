@@ -340,7 +340,7 @@ class PurchaseContract(models.Model):
             product_line = (0, 0, {
                 'product_id': line.product_id.id,
                 'state': 'draft',
-                'product_uom': line.product_id.uom_id.id,
+                'product_uom_id': line.product_id.uom_id.id,
                 'price_unit': line.price_unit,
                 'date_planned': datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 'product_qty': line.product_qty,

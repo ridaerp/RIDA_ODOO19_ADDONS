@@ -901,11 +901,8 @@ class PurchaseOrder(models.Model):
                     self.origin = self.origin + ', ' + contract.name
             else:
                 self.origin = contract.name
-        self.notes = contract.description
+        self.note = contract.description
         self.date_order = fields.Datetime.now()
-
-        if contract.type_id.line_copy != 'copy':
-            return
 
         # Create PO lines if necessary
         order_lines = []
@@ -931,9 +928,6 @@ class PurchaseOrder(models.Model):
                 product_qty = line.product_qty
                 price_unit = line.price_unit
 
-            if contract.type_id.quantity_copy != 'copy':
-                product_qty = 0
-
             # Create PO line
             order_line_values = line._prepare_purchase_order_line(
                 name=name, product_qty=product_qty, price_unit=price_unit,
@@ -949,14 +943,6 @@ class PurchaseOrder(models.Model):
             subtype_id = self.env.ref('mail.mt_note').id  # Correctly fetch the subtype
             purchase.message_post(body=message, subtype_id=subtype_id)
         return purchase
-
-    def write(self, vals):
-        result = super(PurchaseOrder, self).write(vals)
-        if vals.get('contract_id'):
-            self.message_post_with_view('mail.message_origin_link',
-                                        values={'self': self, 'origin': self.contract_id, 'edit': True},
-                                        subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'))
-        return result
 
     def action_register_payment(self):
         ''' Open the account.payment.register wizard to pay the selected journal entries.
@@ -1124,7 +1110,7 @@ class PurchaseOrderLine(models.Model):
             'product_uom_id': self.product_uom_id.id,
             'quantity': self.qty_to_invoice,
             'price_unit': self.currency_id._convert(self.price_unit, aml_currency, self.company_id, date, round=False),
-            'tax_ids': [(6, 0, self.taxes_id.ids)],
+            'tax_ids': [(6, 0, self.tax_ids.ids)],
             'analytic_distribution': self.analytic_distribution,
             'purchase_line_id': self.id,
             'is_landed_costs_line': self.is_landed_costs_line,

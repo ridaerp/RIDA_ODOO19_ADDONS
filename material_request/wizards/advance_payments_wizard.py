@@ -56,7 +56,7 @@ class AdvancePaymentsWizard(models.TransientModel):
             'partner_type': 'supplier',
             'journal_id': self.journal_id.id,
             'payment_method_id': self.payment_method_id.id,
-            'ref': purchase_id.name,
+            'memo': purchase_id.name,
         })
         payment.action_post()
 
