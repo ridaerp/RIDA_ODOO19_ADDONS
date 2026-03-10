@@ -216,6 +216,6 @@ class EmployeeVersion(models.Model):
     housing = fields.Float(string='Housing' ,readonly=True,)
     transportion = fields.Float(string='Transportion', readonly=True, )
     salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
-    contract_date_start = fields.Date(readonly=False, related="version_id.contract_date_start", inherited=True, groups="base.group_user")
-    wage_type = fields.Selection(readonly=False, related="version_id.wage_type", inherited=True, groups="base.group_user")
+    contract_date_start = fields.Date(readonly=False, inherited=True, groups="base.group_user")
+    wage_type = fields.Selection(readonly=False, inherited=True, groups="base.group_user")
 
