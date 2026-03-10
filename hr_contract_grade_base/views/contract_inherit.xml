@@ -16,7 +16,10 @@
                     <attribute name="groups">hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site</attribute>
                 </xpath>
                 <xpath expr="//field[@name='contract_date_start']" position="replace">
-                    <field name="contract_date_start" invisible="1"/>
+                    <field name="contract_date_start"/>
+                </xpath>
+                <xpath expr="//field[@name='wage_type']" position="replace">
+                    <field name="wage_type"/>
                 </xpath>
 
                 <xpath expr="//group[@name='benefits_group']" position="after">
