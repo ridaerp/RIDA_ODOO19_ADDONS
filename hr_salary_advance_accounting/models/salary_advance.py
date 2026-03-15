@@ -115,7 +115,7 @@ class SalaryAdvanceAccount(models.Model):
             po = self.env['account.payment'].create(create_payment)
             rec.move_id = po.move_id.id
             rec.register_payment = True
-            po.action_post()
+            # po.action_post()
 
             rec.state = "paid"
             for rec in self:
