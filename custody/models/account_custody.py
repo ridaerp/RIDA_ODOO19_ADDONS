@@ -320,24 +320,27 @@ class AccountCustody(models.Model):
         return True
 
     def action_register_payment(self):
-        for rec in self:          
-            create_payment = {
+        for rec in self:
+            journal = rec.journal_id
+
+            payment_vals = {
                 'payment_type': 'outbound',
-                'partner_type': 'supplier',
-                'partner_id': rec.employee_id.employee_partner_id.id,
-                'destination_account_id':rec.account_id.id,
-                'company_id': rec.company_id.id,
+                'partner_id': rec.employee_id.work_contact_id.id,
                 'amount': rec.amount,
                 'currency_id': rec.currency_id.id,
-                'memo': rec.name,
-                'journal_id': rec.journal_id.id,
+                'journal_id': journal.id,
+                'payment_method_line_id': journal.inbound_payment_method_line_ids[:1].id,
+                'destination_account_id': rec.account_id.id,
+                'payment_reference': rec.name,
+                'date': fields.Date.today(),
+                'company_id': rec.company_id.id,
+            }
+            payment_id = self.env['account.payment'].create(payment_vals)
+            # payment_id.action_post()
+            rec.move_id = payment_id.move_id.id
+            rec.state = "paid"
+        return True
 
-            } 
-            po = self.env['account.payment'].create(create_payment)
-            self.account_move_id=po.move_id
-            self.button_action_post()
-        return po
-    
     def button_action_post(self):
         for record in self:
             po = self.env['account.payment'].search([('memo', '=', record.name)])
