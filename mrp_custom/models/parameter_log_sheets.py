@@ -218,7 +218,7 @@ class FlowmeterReadingSheet(models.Model):
             "type": "ir.actions.act_window",
             "name": "Sub Readings",
             "res_model": "flowmeter.reading.sheet",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("parent_flowmeter_id", "=", self.id)],
             "context": {"default_parent_flowmeter_id": self.id},
         }

@@ -255,7 +255,7 @@
             <field name="name">crusher Requests</field>
             <field name="res_model">crusher.log.sheet</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('production_id', '=', id)]</field>
+            <field name="domain">[('production_id', '=', active_id)]</field>
         </record>
 
         <!-- Action  adr  for smart button   -->
@@ -263,7 +263,7 @@
             <field name="name">ADR Requests</field>
             <field name="res_model">adr.log.sheet</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('production_id', '=', id)]</field>
+            <field name="domain">[('production_id', '=', active_id)]</field>
         </record>
 
          <!-- Action  stripping   for smart button   -->
@@ -271,7 +271,7 @@
             <field name="name">Stripping Requests</field>
             <field name="res_model">stripping.log.sheet</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('production_id', '=', id)]</field>
+            <field name="domain">[('production_id', '=', active_id)]</field>
         </record>
 
          <!-- Action  Belt Scale  for smart button   -->
@@ -279,7 +279,7 @@
             <field name="name">Belt Scale Reading</field>
             <field name="res_model">belt.scale.log</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('production_id', '=', id)]</field>
+            <field name="domain">[('production_id', '=', active_id)]</field>
         </record>
 
         <!-- Action  Pregnant  Sample  for smart button   -->
@@ -287,7 +287,7 @@
             <field name="name">Pregnant Sample Result</field>
             <field name="res_model">pregnant.sample.result</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('production_id', '=', id)]</field>
+            <field name="domain">[('production_id', '=', active_id)]</field>
         </record>
 
         <!-- Inherit Manufacture Order form  -->
