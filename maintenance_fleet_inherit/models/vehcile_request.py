@@ -118,7 +118,7 @@ class VehicleEquipmentRequest(models.Model):
 
     #  create MR
     def create_sr(self):
-        view_id = self.env.ref('material_request.view_material_request_form')
+        view_id = self.env.ref('material_request.view_material_request_form_custom')
         # for rec in self:
         #   rec.write({
         #       'issuanced_date':datetime.now(),

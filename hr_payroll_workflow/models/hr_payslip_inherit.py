@@ -54,7 +54,7 @@ class hr_payroll_workflow(models.Model):
                     'payslip_id': res.id,
                     'input_type_id': input_type.id,
                     'amount': 0.0,  # Default amount
-                    'contract_id': res.contract_id.id,
+                    'version_id': res.version_id.id,
                 })
         return res
 

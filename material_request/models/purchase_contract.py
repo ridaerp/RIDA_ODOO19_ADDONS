@@ -131,7 +131,6 @@ class PurchaseContract(models.Model):
             if rec.related_contract:
                 rec.vendor_id = rec.related_contract.vendor_id.id
                 rec.date_end = rec.related_contract.date_end
-                rec.type_id = rec.related_contract.type_id.id
                 rec.currency_id = rec.related_contract.currency_id.id
                 rec.request_id = rec.related_contract.request_id.id
                 rec.ordering_date = rec.related_contract.ordering_date
@@ -207,7 +206,7 @@ class PurchaseContract(models.Model):
         self.ensure_one()
         if not self.line_ids:
             raise UserError(_("You cannot confirm agreement '%s' because there is no product line.", self.name))
-        if self.type_id.quantity_copy == 'none' and self.vendor_id:
+        if self.vendor_id:
             for contract_line in self.line_ids:
                 if contract_line.price_unit <= 0.0:
                     raise UserError(_('You cannot confirm the blanket order without price.'))
@@ -217,12 +216,6 @@ class PurchaseContract(models.Model):
             self.write({'state': 'ongoing'})
         else:
             self.write({'state': 'in_progress'})
-        # Set the sequence number regarding the requisition type
-        # if self.name == 'New':
-        #     if self.is_quantity_copy != 'copy':
-        #         self.name = self.env['ir.sequence'].next_by_code('purchase.contract.blanket.order')
-        #     else:
-        #         self.name = self.env['ir.sequence'].next_by_code('purchase.contract.blanket.order')
 
     def action_open(self):
         self.write({'state': 'open'})
