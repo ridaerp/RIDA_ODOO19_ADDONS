@@ -16,110 +16,125 @@ class Expenses(models.Model):
 #     _inherit  = 'hr.expense.sheet'
 
 
-#     state = fields.Selection([
-#         ('draft', 'Draft'),
-#         ('lm', 'line manager Approval'),
-#         ('submit', 'Submitted'),
-#         ('approve', 'Accountant Approval'),
-#         ('finance', 'Finance Manager Approval'),
-#         ('site', 'Operation Director Approval'),
-#         ('internal_audit', 'Internal Audit'),
-#         ('ccso', 'CCSO'),
-#         ('accountant', 'Accountant Approval'),
-#         ('post', 'Posted'),
-#         ('done', 'Paid'),
-#         ('cancel', 'Refused')
-#     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
-#     employee_id = fields.Many2one('hr.employee', string="Employee", required=False)
-#     emp_type = fields.Selection(string='Employee Type', related='employee_id.rida_employee_type')
-#     user_type_ = fields.Selection(related="create_uid.user_type")
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('lm', 'line manager Approval'),
+        ('submit', 'Submitted'),
+        ('approve', 'Accountant Approval'),
+        ('finance', 'Finance Manager Approval'),
+        ('site', 'Operation Director Approval'),
+        ('internal_audit', 'Internal Audit'),
+        ('ccso', 'CCSO'),
+        ('accountant', 'Accountant Approval'),
+        ('post', 'Posted'),
+        ('done', 'Paid'),
+        ('cancel', 'Refused')
+    ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
+    employee_id = fields.Many2one('hr.employee', string="Employee", required=False)
+    emp_type = fields.Selection(string='Employee Type', related='employee_id.rida_employee_type')
+    user_type_ = fields.Selection(related="create_uid.user_type")
 
-#     department_id=fields.Many2one(related="employee_id.department_id",string="Department",    store=True,readonly=True)
-#     number=fields.Char("")
+    department_id=fields.Many2one(related="employee_id.department_id",string="Department",    store=True,readonly=True)
+    number=fields.Char("")
 
-#     def action_approve_expense_sheets(self):
-#         self._check_can_approve()
-#         self._validate_analytic_distribution()
-#         duplicates = self.expense_line_ids.duplicate_expense_ids.filtered(lambda exp: exp.state in {'approved', 'done'})
-#         if duplicates:
-#             action = self.env["ir.actions.act_window"]._for_xml_id('hr_expense.hr_expense_approve_duplicate_action')
-#             action['context'] = {'default_sheet_ids': self.ids, 'default_expense_ids': duplicates.ids}
-#             return action
-#         self._do_approve()
+    # def action_approve_expense_sheets(self):
+    #     self._check_can_approve()
+    #     self._validate_analytic_distribution()
+    #     duplicates = self.expense_line_ids.duplicate_expense_ids.filtered(lambda exp: exp.state in {'approved', 'done'})
+    #     if duplicates:
+    #         action = self.env["ir.actions.act_window"]._for_xml_id('hr_expense.hr_expense_approve_duplicate_action')
+    #         action['context'] = {'default_sheet_ids': self.ids, 'default_expense_ids': duplicates.ids}
+    #         return action
+    #     self._do_approve()
+    def action_approve_expense_sheets(self):
+        for expense in self:
+            # تحقق إذا كان يمكن الموافقة عليه (يمكنك كتابة custom logic هنا)
+            # if expense.state != 'ccso':
+            #     raise UserError("Cannot approve expense not in draft state")
+
+            # الموافقة مباشرة على الـ expense
+            # expense.state = 'approved'
+
+            # يمكن إضافة duplicate check لو لازال مطلوب
+            duplicates = expense.duplicate_expense_ids.filtered(lambda exp: exp.state in {'approved', 'done'})
+            if duplicates:
+                action = self.env["ir.actions.act_window"]._for_xml_id('hr_expense.hr_expense_approve_duplicate_action')
+                action['context'] = {'default_expense_ids': duplicates.ids}
+                return action
 
 #     ###############ekhlas code -odoo 17-journal entreus
-#     def _do_approve(self):
-#         super(ExpensesWorkflow, self)._do_approve()
-#         sheets_to_approve = self.filtered(lambda s: s.state in {'submit', 'draft','ccso','site'})
-#         sheets_to_approve._check_can_create_move()
-#         sheets_to_approve._do_create_moves()
-#         for sheet in sheets_to_approve:
-#             sheet.write({
-#                 'approval_state': 'approve',
-#                 'user_id': sheet.user_id.id or self.env.user.id,
-#                 'approval_date': fields.Date.context_today(sheet),
-#             })
-#         self.activity_update()
+    def _do_approve(self):
+        # super(ExpensesWorkflow, self)._do_approve()
+        sheets_to_approve = self.filtered(lambda s: s.state in {'submit', 'draft','ccso','site'})
+        sheets_to_approve._check_can_create_move()
+        # sheets_to_approve._do_create_moves()
+        for sheet in sheets_to_approve:
+            sheet.write({
+                'approval_state': 'approve',
+                'user_id': sheet.user_id.id or self.env.user.id,
+                'approval_date': fields.Date.context_today(sheet),
+            })
+        # self.activity_update()
 
 #     ###############ekhlas code -odoo 17-journal entreus
 
-#     def _check_can_create_move(self):
-#         pass
+    def _check_can_create_move(self):
+        pass
 
-#     def action_submit_sheet(self):
-#         if self.user_type_=='rohax':
-#             self._do_submit()
-#         else:
-#             self.write({'state': 'lm'})
-#             self.activity_update()
+    def action_submit_sheet(self):
+        if self.user_type_=='rohax':
+            self._do_submit()
+        else:
+            self.write({'state': 'lm'})
+            # self.activity_update()
         
-#     # lm manager buttons
-#     def action_approve_sheets(self):
-#         self.ensure_one()
-#         line_managers = []
-#         today = fields.Date.today()
-#         line_manager = False
-#         try:
-#             if self.employee_id.expense_manager_id:
-#                 line_manager = self.employee_id.expense_manager_id
-#             else:
-#                 line_manager =  self.employee_id.parent_id.user_id
-#         except:
-#             line_manager = False
-#         if not line_manager or line_manager !=self.env.user :
-#                 raise UserError("Sorry. Your are not authorized to approve this document!")
-#         self.write({'state': 'finance'})
-#         self.activity_update()
+    # lm manager buttons
+    def action_approve_sheets(self):
+        self.ensure_one()
+        line_managers = []
+        today = fields.Date.today()
+        line_manager = False
+        try:
+            if self.employee_id.expense_manager_id:
+                line_manager = self.employee_id.expense_manager_id
+            else:
+                line_manager =  self.employee_id.parent_id.user_id
+        except:
+            line_manager = False
+        if not line_manager or line_manager !=self.env.user :
+                raise UserError("Sorry. Your are not authorized to approve this document!")
+        self.write({'state': 'finance'})
+        # self.activity_update()
         
 #     # finance buttons
-#     def action_finance_sheets(self): 
-#         for rec in self:
-#            if rec.emp_type == 'site':  
-#             # old code self.write({'state': 'site'})
-#             self.write({'state': 'internal_audit'})
-#             self.activity_update()
-#            else:
-#             self.write({'state': 'internal_audit'})
-#             self.activity_update()
+    def action_finance_sheets(self):
+        for rec in self:
+           if rec.emp_type == 'site':
+            # old code self.write({'state': 'site'})
+            self.write({'state': 'internal_audit'})
+            # self.activity_update()
+           else:
+            self.write({'state': 'internal_audit'})
+            # self.activity_update()
 
 #     # site manager buttons
-#     def action_site_manager_sheets(self):  
-#         self.write({'state': 'approve'})
-#         self.activity_update()
+    def action_site_manager_sheets(self):
+        self.write({'state': 'approve'})
+        # self.activity_update()
 
 #     # internal audit buttons
-#     def action_internal_audit_sheets(self): 
-#         for rec in self:
-#             if rec.emp_type == 'site':  
-#                 self.write({'state': 'site'})
-#             else:
-#                 self.write({'state': 'ccso'})
-#         self.activity_update()
+    def action_internal_audit_sheets(self):
+        for rec in self:
+            if rec.emp_type == 'site':
+                self.write({'state': 'site'})
+            else:
+                self.write({'state': 'ccso'})
+        # self.activity_update()
 
 #     # ccso buttons
-#     def action_ccso_sheets(self):
-#         self.write({'state': 'approve'})
-#         self.activity_update()
+    def action_ccso_sheets(self):
+        self.write({'state': 'approve'})
+        # self.activity_update()
     
 class ExpensesCustom(models.Model):
     _inherit  = 'hr.expense'
@@ -155,37 +170,40 @@ class ExpensesCustom(models.Model):
 
 
     #######################oveeride function by ekhlas code  to make finance edit the account
-    @api.depends('employee_id')
-    def _compute_is_editable(self):
-        # is_account_manager = self.env.user.has_group('account.group_account_user') or self.env.user.has_group('account.group_account_manager')
-        for expense in self:
-        #     if expense.state == 'draft' or expense.sheet_id.state in ['draft', 'submit','finance','accountant']:
-        #         expense.is_editable = True
-        #     elif expense.sheet_id.state == 'approve':
-        #         expense.is_editable = is_account_manager
-        #     else:
-        #         expense.is_editable = False
-            expense.is_editable = False
 
 
+    # @api.depends('employee_id')
+    # def _compute_is_editable(self):
+    #     is_account_manager = (
+    #             self.env.user.has_group('account.group_account_user') or
+    #             self.env.user.has_group('account.group_account_manager')
+    #     )
+    #
+    #     for expense in self:
+    #         if expense.state == 'draft' or (
+    #                 expense and expense.state in ['draft', 'submit', 'finance', 'accountant']):
+    #             expense.is_editable = True
+    #         elif expense and expense.state == 'approve':
+    #             expense.is_editable = is_account_manager
+    #         else:
+    #             expense.is_editable = False
 
 
+    def write(self, vals):
+        if 'state' in vals or 'approval_state' in vals:
+            # Avoid user with write access on expense sheet in draft state to bypass the validation process
+            valid_states = {'submit', None}
+            if (
+                not self.env.user.has_group('hr_expense.group_hr_expense_manager')
+                and any(state == 'draft' for state in self.mapped('state'))
+                and (vals.get('state') not in valid_states or vals.get('approval_state') not in valid_states)
+            ):
+                pass  # no action
+            elif vals.get('state') == 'approve' or vals.get('approval_state') == 'approve':
+                self._check_can_approve()
+            elif vals.get('state') == 'cancel' or vals.get('approval_state') == 'cancel':
+                self._check_can_refuse()
+        return super(ExpensesCustom, self).write(vals)
 
-def write(self, vals):
-    if 'state' in vals or 'approval_state' in vals:
-        # Avoid user with write access on expense sheet in draft state to bypass the validation process
-        valid_states = {'submit', None}
-        if (
-            not self.user_has_groups('hr_expense.group_hr_expense_manager')
-            and any(state == 'draft' for state in self.mapped('state'))
-            and (vals.get('state') not in valid_states or vals.get('approval_state') not in valid_states)
-        ):
-            pass  # no action
-        elif vals.get('state') == 'approve' or vals.get('approval_state') == 'approve':
-            self._check_can_approve()
-        elif vals.get('state') == 'cancel' or vals.get('approval_state') == 'cancel':
-            self._check_can_refuse()
-    return super(HrExpenseSheet, self).write(vals)
-
-# Monkey patch the method
-# expense_sheet_custom.HrExpenseSheet.write = write
+    # Monkey patch the method
+    # expense_sheet_custom.HrExpenseSheet.write = write
