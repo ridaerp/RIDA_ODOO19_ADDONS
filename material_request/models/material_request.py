@@ -1591,8 +1591,11 @@ class MaterialRequestLine(models.Model):
 
     @api.constrains('product_qty', 'unit_price')
     def check_non_zero(self):
-        if self.product_qty == 0:
-            raise UserError("Quantity should be greater than Zero.\n %s" % self.product_id.display_name)
+        for rec in self:
+            if rec.product_qty == 0:
+                raise ValidationError(
+                    "Quantity should be greater than Zero.\n%s" % rec.product_id.display_name
+                )
         
     @api.constrains('product_id', 'request_id')
     def _check_duplicate_product(self):

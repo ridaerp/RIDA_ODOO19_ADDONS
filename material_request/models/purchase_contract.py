@@ -445,17 +445,26 @@ class PurchaseContractLine(models.Model):
         return super(PurchaseContractLine, self).unlink()
 
     def create_supplier_info(self):
-        purchase_contract = self.contract_id
-        if purchase_contract.type_id.quantity_copy == 'copy' and purchase_contract.vendor_id:
-            # create a supplier_info only in case of blanket order
-            self.env['product.supplierinfo'].create({
-                'partner_id': purchase_contract.vendor_id.id,
-                'product_id': self.product_id.id,
-                'product_tmpl_id': self.product_id.product_tmpl_id.id,
-                'price': self.price_unit,
-                'currency_id': self.contract_id.currency_id.id,
-                'purchase_contract_line_id': self.id,
-            })
+        for line in self:
+            contract = line.contract_id
+            type_rec = contract.type_id
+            is_copy = False
+
+            if type_rec and not isinstance(type_rec, str):
+                if getattr(type_rec, 'quantity_copy', False) == 'copy':
+                    is_copy = True
+            elif isinstance(type_rec, str):
+                if type_rec == 'copy':
+                    is_copy = True
+            if contract and is_copy and contract.vendor_id:
+                self.env['product.supplierinfo'].sudo().create({
+                    'partner_id': contract.vendor_id.id,
+                    'product_id': line.product_id.id,
+                    'product_tmpl_id': line.product_id.product_tmpl_id.id,
+                    'price': line.price_unit,
+                    'currency_id': contract.currency_id.id,
+                    'purchase_contract_line_id': line.id,
+                })
 
     @api.depends('contract_id.purchase_ids.state')
     def _compute_ordered_qty(self):
