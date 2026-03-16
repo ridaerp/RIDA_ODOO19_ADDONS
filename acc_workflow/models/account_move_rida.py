@@ -101,6 +101,31 @@ class Bills_Workflow(models.Model):
     # invoice_date=fields.Date(states=False)
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=False ,
         states=None)
+    status_in_payment = fields.Selection(
+        selection_add=[
+            ('validate', 'Validated'),
+            ('finance', 'Finance Manager'),
+            ('internal_audit', 'Internal Audit'),
+            ('fleet_director', 'Fleet Director'),
+            ('finance_director', 'Finance Director'),
+            ('ccso', 'CCSO'),
+            ('site', 'Operation Director'),
+            ('accountant', 'Accountant'),
+            ('rejected', 'Rejected'),
+        ],
+        # Change 'set default' to 'cascade' or specify 'draft' explicitly
+        ondelete={
+            'validate': 'cascade',
+            'finance': 'cascade',
+            'internal_audit': 'cascade',
+            'fleet_director': 'cascade',
+            'finance_director': 'cascade',
+            'ccso': 'cascade',
+            'site': 'cascade',
+            'accountant': 'cascade',
+            'rejected': 'cascade'
+        }
+    )
 
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
