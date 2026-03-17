@@ -11,23 +11,18 @@ class Expenses(models.Model):
     department_id=fields.Many2one(related="employee_id.department_id",string="Department")
     payment_mode=fields.Selection(default="own_account")
 
-
-# class ExpensesWorkflow(models.Model):
-#     _inherit  = 'hr.expense.sheet'
-
-
     state = fields.Selection([
         ('draft', 'Draft'),
         ('lm', 'line manager Approval'),
         ('submit', 'Submitted'),
-        ('approve', 'Accountant Approval'),
+        ('approved', 'Accountant Approval'),
         ('finance', 'Finance Manager Approval'),
         ('site', 'Operation Director Approval'),
         ('internal_audit', 'Internal Audit'),
         ('ccso', 'CCSO'),
         ('accountant', 'Accountant Approval'),
-        ('post', 'Posted'),
         ('done', 'Paid'),
+        ('posted','Posted'),
         ('cancel', 'Refused')
     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     employee_id = fields.Many2one('hr.employee', string="Employee", required=False)
@@ -39,13 +34,14 @@ class Expenses(models.Model):
 
     # def action_approve_expense_sheets(self):
     #     self._check_can_approve()
-    #     self._validate_analytic_distribution()
+    #     # self._validate_analytic_distribution()
     #     duplicates = self.expense_line_ids.duplicate_expense_ids.filtered(lambda exp: exp.state in {'approved', 'done'})
     #     if duplicates:
     #         action = self.env["ir.actions.act_window"]._for_xml_id('hr_expense.hr_expense_approve_duplicate_action')
     #         action['context'] = {'default_sheet_ids': self.ids, 'default_expense_ids': duplicates.ids}
     #         return action
     #     self._do_approve()
+
     def action_approve_expense_sheets(self):
         for expense in self:
             # تحقق إذا كان يمكن الموافقة عليه (يمكنك كتابة custom logic هنا)
@@ -53,7 +49,7 @@ class Expenses(models.Model):
             #     raise UserError("Cannot approve expense not in draft state")
 
             # الموافقة مباشرة على الـ expense
-            # expense.state = 'approved'
+            expense.state = 'approved'
 
             # يمكن إضافة duplicate check لو لازال مطلوب
             duplicates = expense.duplicate_expense_ids.filtered(lambda exp: exp.state in {'approved', 'done'})
