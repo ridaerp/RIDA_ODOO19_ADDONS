@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_budget_department,access_budget_department,model_budget_department,,1,1,1,1
-access_budget_department_form,access_budget_department_form,model_budget_department_form,,1,1,1,1
-access_budget_department_form_line,access_budget_department_form_line,model_budget_department_form_line,,1,1,1,1
-
