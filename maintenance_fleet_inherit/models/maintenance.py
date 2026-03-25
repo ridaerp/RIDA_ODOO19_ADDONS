@@ -1100,19 +1100,31 @@ class MaintenanceRequest(models.Model):
     def _set_odometer(self):
         pass
 
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #
+    #     for data in vals_list:
+    #
+    #         seq = self.env['ir.sequence'].next_by_code('maintenance_request.sequence') or "/"
+    #         data['wo_number'] = seq
+    #
+    #         if 'odometer' in data and not data['odometer']:
+    #             del data['odometer']
+    #     return super(MaintenanceRequest, self).create(vals_list)
+    #
+    #     return request
+
     @api.model_create_multi
     def create(self, vals_list):
-
         for data in vals_list:
-
             seq = self.env['ir.sequence'].next_by_code('maintenance_request.sequence') or "/"
             data['wo_number'] = seq
-
             if 'odometer' in data and not data['odometer']:
                 del data['odometer']
+            if 'employee_id' in data:
+                employee = self.env['hr.employee'].browse(data['employee_id'])
+                employee = employee.sudo()
         return super(MaintenanceRequest, self).create(vals_list)
-
-        return request
 
     def button_submit(self):
         for rec in self:
