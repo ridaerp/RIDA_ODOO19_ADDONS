@@ -15,7 +15,7 @@
     
     'version': '0.1',
 
-    'depends': ['base','hr_expense','account','accountant', 'hr','hr_holidays','hr_payroll','hr_attendance'],
+    'depends': ['base','purchase','hr_expense','account','accountant', 'hr','hr_holidays','hr_payroll','hr_attendance'],
 
     'data': [
         'security/base_rida_groups.xml',

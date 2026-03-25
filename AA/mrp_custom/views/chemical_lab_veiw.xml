@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record
+         id="view_chemical_request_form_inherit" model="ir.ui.view">
+            <field name="name">chemical Lab</field>
+            <field name="model">chemical.samples.request</field>
+<field name="inherit_id" 
+    ref="material_request.view_chemical_request_form"/>
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='company_id']" position="after">
+                 <field name="pregnant_result"/>
+                 <field name="stripping_id"/>
+                </xpath> 
+            </field>
+        </record>
+    </data>
+</odoo>
+

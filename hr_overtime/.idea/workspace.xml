@@ -1,11 +1,332 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7720f82a-59a9-4a34-9e0b-95ade8df5ba3" name="Default" comment="" />
-    <ignored path="hr_overtime_AAMAAL.iws" />
-    <ignored path=".idea/workspace.xml" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
+    <list default="true" id="7720f82a-59a9-4a34-9e0b-95ade8df5ba3" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../111/material_request/.idea/material_request.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/acc_workflow/.idea/acc_workflow.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/account_customer_checks/.idea/account_pdc.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/base_maintenance/.idea/base_maintenance.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/hr_employee_main/.idea/hr_employee_main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/hr_overtime/.idea/hr_overtime_AAMAAL.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/maintenance_fleet_inherit/.idea/maintenance_fleet_inherit.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/maintenance_fleet_inherit/views/.idea/views.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/master_data/.idea/master_data.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/material_request/.idea/material_request.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/mrp_custom/.idea/mrp_custom.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/odoo_dynamic_dashboard/.idea/odoo_dynamic_dashboard.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AA/stock_custom/.idea/stock_custom.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../base_rida/.idea/base_rida.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bhs_password_policy/.idea/bhs_password_policy.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_contract_grade_base/.idea/hr_contract_grade_base.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_expense_workflow/.idea/hr_expense_workflow.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_loan_accounting/.idea/hr_loan_accounting.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_loan_base/.idea/hr_loan_base.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_salary_advance/.idea/hr_salary_advance.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hr_salary_advance_accounting/.idea/hr_salary_advance_accounting.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../kg_hide_menu/.idea/kg_hide_menu.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../medicare/.idea/medicare.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/RIDA_ODOO19_ADDONS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/RIDA_ODOO19_ADDONS.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/ajmaljk.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/ajmaljk.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup10.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup11.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup12.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup13.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup3.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/auto_database_backup5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/blog-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/blog-icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/copylink.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/copylink.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/whatsapp.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/whatsapp.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/youtube-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/icons/youtube-icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/1.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/3.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/5.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/5.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/6.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/modules/6.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon10.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon12.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon6.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon7.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon9.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/amazon9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/backup_frequency.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/backup_frequency.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/drop4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/drop4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/drop8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/drop8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/failure_mail.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/failure_mail.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/ftp.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/ftp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google 2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google 8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google 8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google6.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/google8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/img_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/local.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/local.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/next_cloud_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/next_cloud_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud_create_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/nextcloud_create_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/notify.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/notify.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive 4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive 4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/onedrive5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/remove.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/remove.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/scheduled_action.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/scheduled_action.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/scheduled_action_form.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/scheduled_action_form.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/sftp.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/sftp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/success_mail.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/assets/screenshots/success_mail.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/banner.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/banner.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Module Out/auto_database_backup/static/description/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acc_workflow/models/account_move_rida.py" beforeDir="false" afterPath="$PROJECT_DIR$/../acc_workflow/models/account_move_rida.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acc_workflow/views/journal_new_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../acc_workflow/views/journal_new_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acc_workflow/views/journal_new_view2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../acc_workflow/views/journal_new_view2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../account_customer_checks/models/account_payment.py" beforeDir="false" afterPath="$PROJECT_DIR$/../account_customer_checks/models/account_payment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/README.rst" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/README.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/data/ir_config_parameter_data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/data/ir_config_parameter_data.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/ar.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/ar.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/ca.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/ca.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/da.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/da.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/de.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/de.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/el_GR.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/el_GR.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/es.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/es.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/es_ES.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/es_ES.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/fi.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/fi.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr_CH.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr_CH.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr_FR.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/fr_FR.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/hr.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/hr.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/hr_HR.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/hr_HR.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/it.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/it.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/nl.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/nl.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/nl_NL.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/nl_NL.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/pt.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/pt.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/pt_BR.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/pt_BR.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/ro.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/ro.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/sl.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/sl.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/tr.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/tr.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/tr_TR.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/tr_TR.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/i18n/zh_CN.po" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/i18n/zh_CN.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/migrations/17.0.1.0.0/pre-migration.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/migrations/17.0.1.0.0/pre-migration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/models/ir_config_parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/models/ir_config_parameter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/models/ir_http.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/models/ir_http.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/models/res_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/models/res_users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/readme/CONFIGURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/readme/CONFIGURE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/readme/CONTRIBUTORS.md" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/readme/CONTRIBUTORS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/readme/DESCRIPTION.md" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/readme/DESCRIPTION.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/readme/USAGE.md" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/readme/USAGE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/static/description/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/static/description/icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/static/description/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/static/description/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/tests/test_ir_config_parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/tests/test_ir_config_parameter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auth_session_timeout/tests/test_res_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/../auth_session_timeout/tests/test_res_users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/ajmaljk.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/ajmaljk.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup10.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup11.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup12.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup13.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup3.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/auto_database_backup5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/blog-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/blog-icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/copylink.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/copylink.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/whatsapp.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/whatsapp.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/youtube-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/icons/youtube-icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/1.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/3.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/5.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/5.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/6.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/modules/6.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon10.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon12.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon6.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon7.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon9.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/amazon9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/backup_frequency.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/backup_frequency.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/drop4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/drop4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/drop8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/drop8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/failure_mail.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/failure_mail.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/ftp.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/ftp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google 2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google 8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google 8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google6.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google8.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/google8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/img_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/local.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/local.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/next_cloud_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/next_cloud_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud_create_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/nextcloud_create_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/notify.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/notify.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive 4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive 4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive4.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive5.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/onedrive5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/remove.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/remove.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/scheduled_action.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/scheduled_action.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/scheduled_action_form.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/scheduled_action_form.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/sftp.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/sftp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/success_mail.png" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/assets/screenshots/success_mail.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/banner.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/banner.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../auto_database_backup/static/description/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../auto_database_backup/static/description/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../base_rida/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../base_rida/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../base_rida/security/base_rida_groups.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../base_rida/security/base_rida_groups.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bhs_password_policy/controllers/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../bhs_password_policy/controllers/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bhs_password_policy/models/res_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/../bhs_password_policy/models/res_users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/ReadME.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/ReadME.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/report/report_journal_entries.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/report/report_journal_entries.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/report/report_journal_entries_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/report/report_journal_entries_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/1_print_menu.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/1_print_menu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/2_entry_report.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/2_entry_report.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/3_print_menu.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/3_print_menu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/Banner.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/Banner.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/2.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/2.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/3.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/3.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/BI_services.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/BI_services.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Functional_QR.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Functional_QR.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Header_Banner.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Header_Banner.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Support_QR.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/Support_QR.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/accounting.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/accounting.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/best_partner.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/best_partner.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/bi_header_logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/bi_header_logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/call.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/call.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/in_flag.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/in_flag.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/mail.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/mail.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/main_background.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/main_background.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/ml_flag.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/ml_flag.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/support_image.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/support_image.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/web_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/web_icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/workflow.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/workflow.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/yoyo.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/assets/yoyo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/bi_logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/bi_logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_customer_overdue_statement.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_customer_overdue_statement.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_generic_import.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_generic_import.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_inter_company_transfer.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_inter_company_transfer.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_loyalty_generic.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/bi_loyalty_generic.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/branch.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/branch.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/car_repair_industry.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/car_repair_industry.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/generic_excel_reports.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/generic_excel_reports.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/margin.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/margin.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/odoo_website_wallet.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/odoo_website_wallet.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/pos_orders_all.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/pos_orders_all.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/product_bundle_all.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/product_bundle_all.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/sales_commission_generic.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/demanded/sales_commission_generic.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/features/1fet.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/features/1fet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/features/2fet.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/features/2fet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/account_statement.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/account_statement.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_account_payable_report.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_account_payable_report.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_account_receivable_report.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_account_receivable_report.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_accounting_report_excel.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_accounting_report_excel.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_all_in_one_invoice_reports.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_all_in_one_invoice_reports.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_create_single_invoice.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_create_single_invoice.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_customer_supplier_approve.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_customer_supplier_approve.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_general_ledger_filter.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_general_ledger_filter.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_invoice_tripple_approval.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_invoice_tripple_approval.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_report_analytic_account_filter.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/bi_report_analytic_account_filter.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/customer_account_payment_followup.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/customer_account_payment_followup.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/website_rental_management.gif" beforeDir="false" afterPath="$PROJECT_DIR$/../bi_print_journal_entries/static/description/related/website_rental_management.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/custody.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/custody.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../custody/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../custody/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_employee_main/models/hr_employee.py" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_employee_main/models/hr_employee.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_employee_main/models/trip_permission.py" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_employee_main/models/trip_permission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_expense_workflow/models/expenses_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_expense_workflow/models/expenses_workflow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_expense_workflow/views/expenses_workflow_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_expense_workflow/views/expenses_workflow_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_loan_accounting/views/res.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_loan_accounting/views/res.config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/hr_employee.xml" beforeDir="false" afterPath="$PROJECT_DIR$/views/hr_employee.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hr_payroll_workflow/models/hr_payslip_inherit.py" beforeDir="false" afterPath="$PROJECT_DIR$/../hr_payroll_workflow/models/hr_payslip_inherit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kg_hide_menu/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../kg_hide_menu/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kg_hide_menu/models/ir_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/../kg_hide_menu/models/ir_module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kg_hide_menu/models/res_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/../kg_hide_menu/models/res_users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kpi/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../kpi/models/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kpi/views/views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kpi/views/views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/fleet_operation.py" beforeDir="false" afterPath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/fleet_operation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/maintenance.py" beforeDir="false" afterPath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/maintenance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/vehcile_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/../maintenance_fleet_inherit/models/vehcile_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../master_data/data/cron.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../master_data/data/cron.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../master_data/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../master_data/models/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../master_data/models/vendor.py" beforeDir="false" afterPath="$PROJECT_DIR$/../master_data/models/vendor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../master_data/security/securit_rules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../master_data/security/securit_rules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../master_data/views/vendor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../master_data/views/vendor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/issuance_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/issuance_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/material_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/material_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/purchase.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/purchase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/purchase_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/purchase_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/weight_batch_avg_grade.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/weight_batch_avg_grade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/models/weight_unit.py" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/models/weight_unit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/report/mr_print_pdf.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/report/mr_print_pdf.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/views/contrac_new_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/views/contrac_new_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/views/issuance_request.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/views/issuance_request.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/views/purchase_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/views/purchase_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../material_request/views/stock_picking_MR_custom_material.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../material_request/views/stock_picking_MR_custom_material.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../medicare/security/security.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../medicare/security/security.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../medicare/views/views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../medicare/views/views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/models/parameter_log_sheets.py" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/models/parameter_log_sheets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/assay_request_button.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/assay_request_button.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/metalab_request_button.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/metalab_request_button.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/pregnant_sample_button.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/static/src/components/assay_request_button/pregnant_sample_button.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/views/parameter_log_sheets_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/views/parameter_log_sheets_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mrp_custom/views/work_order.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mrp_custom/views/work_order.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/odoo_dynamic_dashboard.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/odoo_dynamic_dashboard.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../odoo_dynamic_dashboard/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../qhse/views/menuitems.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../qhse/views/menuitems.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/__manifest__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/__manifest__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/models/account_budget.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/models/account_budget.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/models/account_budget_department_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/models/account_budget_department_form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/models/budget_department.py" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/models/budget_department.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/security/groups.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/security/groups.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/security/ir.model.access.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/security/ir.model.access.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/security/ir_rule.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/security/ir_rule.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/static/description/images.png" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/static/description/images.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/static/description/rida.png" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/static/description/rida.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/views/account_budget_department_form_views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/views/account_budget_department_form_views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/views/account_budget_views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/views/account_budget_views.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rida_budget/views/budget_department_views.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rida_budget/views/budget_department_views.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,10 +335,6 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
-  </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
-  <component name="FavoritesManager">
-    <favorites_list name="hr_overtime_AAMAAL" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -65,6 +382,9 @@
       </file>
     </leaf>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -87,22 +407,16 @@
       </list>
     </option>
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1382" />
     <option name="height" value="744" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
-  </component>
+  <component name="ProjectId" id="3BQbXy60VqvOvc55ofDPtw458A1" />
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -152,11 +466,19 @@
       </pane>
     </panes>
   </component>
-  <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
-    <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Alisco Mining/Custome module dev/v10/hr_overtime_Alisco" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "stage"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Home\Appness projects\AAMAAL\attendance_management_AAMAAL\views" />
@@ -166,23 +488,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="hr_overtime_AAMAAL" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -202,94 +507,14 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Doctests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="hr_overtime_AAMAAL" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Nosetests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="hr_overtime_AAMAAL" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="hr_overtime_AAMAAL" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="py.test">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="hr_overtime_AAMAAL" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="" />
-      <option name="keywords" value="" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="false" />
-      <method />
-    </configuration>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -298,6 +523,7 @@
       <changelist id="7720f82a-59a9-4a34-9e0b-95ade8df5ba3" name="Default" comment="" />
       <created>1480491006906</created>
       <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
       <updated>1480491006906</updated>
     </task>
     <servers />
@@ -363,12 +589,6 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <option name="time" value="1" />
-    </breakpoint-manager>
-    <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/overtime.py">

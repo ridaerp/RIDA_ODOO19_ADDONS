@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <!--  User Overtime By Department -->
+        <record model="ir.rule" id="rule_check_overtime_batch_creator">
+            <field name="name">Check Creator</field>
+            <field name="model_id" ref="model_hr_overtime_batch"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!--  Line Manager Overtime By Department -->
+        <record model="ir.rule" id="rule_check_overtime_batch_l_mng">
+            <field name="name">Line Manager Overtime</field>
+            <field name="model_id" ref="model_hr_overtime_batch"/>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+        </record>
+
+
+        <!--  Manager related to Overtime By Department -->
+        <record model="ir.rule" id="rule_check_overtime_batch_mng">
+            <field name="name">Manager Overtime</field>
+            <field name="model_id" ref="model_hr_overtime_batch"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base_rida.rida_group_site_manager')),(4, ref('base_rida.rida_group_CCSO')),(4, ref('base_rida.rida_internal_audit')),(4, ref('account.group_account_user')),(4, ref('hr.group_hr_user')),(4, ref('base_rida.rida_hr_manager_notify'))]"/>
+        </record>
+
+        <!--  User Overtime Auth -->
+        <record model="ir.rule" id="rule_check_overtime_auth_creator">
+            <field name="name">Check Creator Auth</field>
+            <field name="model_id" ref="model_overtime_auth"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!--  Line Manager Overtime Auth -->
+        <record model="ir.rule" id="rule_check_overtime_auth_l_mng">
+            <field name="name">Line Manager Overtime Auth</field>
+            <field name="model_id" ref="model_overtime_auth"/>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+        </record>
+
+
+        <!--  Manager related to Overtime Auth -->
+        <record model="ir.rule" id="rule_check_overtime_auth_mng">
+            <field name="name">Manager Overtime Auth</field>
+            <field name="model_id" ref="model_overtime_auth"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base_rida.rida_group_site_manager')),(4, ref('base_rida.rida_group_CCSO')),(4, ref('base_rida.rida_internal_audit')),(4, ref('account.group_account_user')),(4, ref('hr.group_hr_user')),(4, ref('base_rida.rida_hr_manager_notify'))]"/>
+        </record>
+
+
+    </data>
+
+
+</odoo>

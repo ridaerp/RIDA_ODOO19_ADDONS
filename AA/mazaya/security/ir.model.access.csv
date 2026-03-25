@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mazaya_user,mazaya.user,model_rida_mazaya,hr.group_hr_user,1,1,1,1
+access_mazaya_line_user,mazaya.line.user,model_rida_mazaya_line,hr.group_hr_user,1,1,1,1
+
+

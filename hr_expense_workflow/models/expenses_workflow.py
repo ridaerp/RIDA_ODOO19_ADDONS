@@ -14,16 +14,16 @@ class Expenses(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('lm', 'line manager Approval'),
-        ('submit', 'Submitted'),
+        ('submitted', 'Submitted'), # أضف هذه القيمة لأنها موجودة في الصورة
         ('approved', 'Accountant Approval'),
         ('finance', 'Finance Manager Approval'),
         ('site', 'Operation Director Approval'),
         ('internal_audit', 'Internal Audit'),
         ('ccso', 'CCSO'),
-        ('accountant', 'Accountant Approval'),
-        ('done', 'Paid'),
+        ('paid', 'Paid'), # أضف هذه القيمة لحل مشكلة KeyError
         ('posted','Posted'),
-        ('cancel', 'Refused')
+        ('in_payment', 'In Payment'), # موجودة أيضاً في الصورة
+        ('refused', 'Refused') # موجودة أيضاً في الصورة
     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     employee_id = fields.Many2one('hr.employee', string="Employee", required=False)
     emp_type = fields.Selection(string='Employee Type', related='employee_id.rida_employee_type')

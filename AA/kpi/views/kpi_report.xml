@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="action_report_kpi" model="ir.actions.report">
+        <field name="name">Print KPI Document</field>
+        <field name="model">kpi.person</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kpi.report_kpi</field>
+        <field name="report_file">kpi.report_kpi</field>
+        <field name="print_report_name">'KPI - %s' % (object.employee_id.name)</field>
+    </record>
+
+    <!-- REPORT WRAPPER -->
+    <template id="report_kpi">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+
+                <!-- ONLY APPROVED KPI DOCUMENT -->
+                <!-- <t t-if="o.state == 'approved'"> -->
+                <t >
+                    <t t-call="kpi.report_kpi_document"/>
+                </t>
+
+                <!-- ERROR MESSAGE IF NOT APPROVED -->
+               <!--  <t t-else="">
+                    <div style="color:red; font-size:18px; font-weight:bold; text-align:center; margin-top:50px;">
+                        ⚠ KPI Document cannot be printed because it is <span t-esc="o.state"/>.
+                    </div>
+                </t> -->
+
+            </t>
+        </t>
+    </template>
+
+    <!-- FULL KPI REPORT TEMPLATE -->
+    <template id="report_kpi_document">
+        <t t-call="web.external_layout">
+
+            <style>
+                .page {
+                    padding-top: 5px !important;
+                    margin-top: 0 !important;
+                    font-family: Arial, sans-serif;
+                    font-size: 13px;
+                    line-height: 1.3;
+                }
+                .left-table { width: 50%; float: left; font-size:11px; margin-right:2%; }
+                .right-table { width: 45%; float: left; font-size:10px; }
+                .clear { clear: both; }
+                .logo { width:50px; height:auto; margin-right:10px; }
+            </style>
+
+            <div class="page">
+
+                <!-- HEADER WITH ICON -->
+                <div style="width:100%; display:flex; align-items:center; margin-bottom:10px;">
+                    <img t-att-src="'/kpi/static/description/icon.png'" class="logo" alt="Module Logo"/>
+                    <h2 style="flex:1; text-align:center; font-weight:bold; margin:0;">
+                        EMPLOYEE PERFORMANCE APPRAISAL
+                    </h2>
+                </div>
+
+                <!-- EMPLOYEE & KPI INFO -->
+                <table style="width:100%; margin-bottom:15px; border-collapse: collapse;">
+                    <tr>
+                        <td><strong>KPI No:</strong></td>
+                        <td t-esc="o.name"/>
+                        <td><strong>Review Period:</strong></td>
+                        <td><span t-esc="o.date_from"/> → <span t-esc="o.date_to"/></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Employee:</strong></td>
+                        <td t-esc="o.employee_id.name"/>
+                        <td><strong>Job Title:</strong></td>
+                        <td t-esc="o.job_id.name"/>
+                    </tr>
+                    <tr>
+                        <td><strong>Department:</strong></td>
+                        <td t-esc="o.emp_department_id.name"/>
+                        <td><strong>Reviewer:</strong></td>
+                        <td t-esc="o.report_emp_id.name"/>
+                    </tr>
+                </table>
+
+                <hr style="margin:10px 0;"/>
+
+                <!-- PART II: KPI TABLE -->
+                <h5>PART II : KEY PERFORMANCE INDICATOR WORKS</h5>
+                <table class="table table-bordered" style="width:100%; border-collapse: collapse;" border="1">
+                    <thead>
+                        <tr style="background-color:#f2f2f2;">
+                            <th>#</th>
+                            <th>KPI Indicator</th>
+                            <th>Measure</th>
+                            <th>Weight</th>
+                            <th>Target</th>
+                            <th>Actual</th>
+                            <th>Rating</th>
+                            <th>Weighted Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o.kpi_ids" t-as="k">
+                            <tr>
+                                <td t-esc="k.sequence"/>
+                                <td t-esc="k.kpi_indicator"/>
+                                <td t-esc="k.performance_measure"/>
+                                <td t-esc="k.kpi2_weight"/>
+                                <td t-esc="k.kpi2_plan_target"/>
+                                <td t-esc="k.kpi2_actual_result"/>
+                                <td t-esc="k.kpi2_rating"/>
+                                <td t-esc="k.kpi2_weight_score"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- KPI GUIDELINES -->
+                <t t-if="o.kpi2_more_info">
+                    <br/>
+                    <h4>KPI Rating Guidelines</h4>
+                    <table border="1" style="width:100%; border-collapse: collapse; text-align:center; font-size:13px;">
+                        <tr style="background-color: #f2f2f2;">
+                            <th>Rating</th>
+                            <th>1<br/>Far Below Expectations</th>
+                            <th>2<br/>Partially Met Expectations</th>
+                            <th>3<br/>Met Expectations</th>
+                            <th>4<br/>Exceed Expectations</th>
+                            <th>5<br/>Outstanding</th>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#f2f2f2; font-weight:bold;">General Guidelines</td>
+                            <td>Well BELOW job requirements. Significant improvement must occur immediately.</td>
+                            <td>MEET SOME performance standards; needs consistency.</td>
+                            <td>FULLY ACCEPTABLE performance/behaviours.</td>
+                            <td>REGULARLY ABOVE EXPECTATION most of the time.</td>
+                            <td>Clearly superior performance; EXCEEDS requirements consistently.</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#f2f2f2; font-weight:bold;">KPI Score = Actual Results / Plan Target × 100</td>
+                            <td>Less than 70%</td>
+                            <td>70% – 90%</td>
+                            <td>91% – 110%</td>
+                            <td>111% – 120%</td>
+                            <td>121% – 130%</td>
+                        </tr>
+                    </table>
+                </t>
+
+                <hr style="margin:10px 0;"/>
+
+                <!-- PART III: COMPETENCY WORKSHEET -->
+                <h5>PART III : COMPETENCY WORKSHEET</h5>
+                <table border="1" style="width:100%; text-align:center; border-collapse: collapse; font-size:13px;">
+                    <thead>
+                        <tr style="background-color:#f2f2f2;">
+                            <th>Competency</th>
+                            <th>Weight</th>
+                            <th>Behavior Evaluation</th>
+                            <th>Rating</th>
+                            <th>Weighted Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o.kpi_competency_ids" t-as="c">
+                            <tr>
+                                <td t-raw="c.name"/>
+                                <td t-esc="c.kpi_weight"/>
+                                <td t-esc="c.behavior_evaluation"/>
+                                <td t-esc="c.kpi2_rating"/>
+                                <td t-esc="c.kpi2_weight_score"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <hr style="margin:10px 0;"/>
+
+                <!-- PART III: BEHAVIOR RATING GUIDELINES -->
+                <h5>COMPETENCY Rating Guidelines</h5>
+                <table border="1" style="width:100%; border-collapse: collapse; text-align:center; font-size:13px;">
+                    <thead>
+                        <tr style="background-color:#f2f2f2;">
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                        </tr>
+                        <tr style="background-color:#f9f9f9;">
+                            <th>RARLY</th>
+                            <th>OCCASIONALLY</th>
+                            <th>CONSISTENCY</th>
+                            <th>EXCEEDS MOST OF THE TIME</th>
+                            <th>EXCEEDS ALL THE TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Did not exhibit/display the behavior in work situations.</td>
+                            <td>Has minimal understanding of the behavior and sometimes exhibits it in routine work situations.</td>
+                            <td>Has a good understanding of the behavior and tries to exhibit it in routine work related situations. Occasionally requires guidance/coaching from superiors.</td>
+                            <td>Exhibits the behavior in a wide variety of work related situations. Does not require extensive guidance/coaching.</td>
+                            <td>Clearly superior behavior/performance contributions; regularly/significantly EXCEED position’s requirements all the time.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr style="margin:10px 0;"/>
+
+
+
+                <div class="left-table">
+                    <h5 style="text-align:center;">Rating Scale</h5>
+                    <table border="1"  class="table-bordered" style="width:100%; border-collapse: collapse; text-align:center;">
+                        <thead>
+                            <tr style="background-color:#f2f2f2;">
+                                <th>Rating</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1<br/>Far Below</td>
+                                <td>Below 1.49</td>
+                            </tr>
+                            <tr>
+                                <td>2<br/>Partially Met</td>
+                                <td>1.50 – 2.49</td>
+                            </tr>
+                            <tr>
+                                <td>3<br/>Met</td>
+                                <td>2.50 – 3.49</td>
+                            </tr>
+                            <tr>
+                                <td>4<br/>Exceeded</td>
+                                <td>3.50 – 4.49</td>
+                            </tr>
+                            <tr>
+                                <td>5<br/>Outstanding</td>
+                                <td>4.50+</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                                <!-- LAST TWO TABLES SIDE BY SIDE -->
+                <div class="right-table">
+                    <h5 style="text-align:center;">Overall Performance</h5>
+                    <table class="table-bordered" border="1" style="width:100%; border-collapse: collapse; text-align:center;">
+                        <tr style="background-color:#f2f2f2;">
+                            <th></th>
+                            <th>Actual</th>
+                            <th>Weight</th>
+                            <th>Indv. Score</th>
+                        </tr>
+                        <tr>
+                            <th style="background-color:#f2f2f2;">Total KPI (A)</th>
+                            <td t-esc="o.overall_weight_kpi"/>
+                            <td><span t-esc="o.total_weigh_kpi"/>%</td>
+                            <td t-esc="o.overall_score_kpi"/>
+                        </tr>
+                        <tr>
+                            <th style="background-color:#f2f2f2;">Total Competency (B)</th>
+                            <td t-esc="o.overall_weight_competency"/>
+                            <td><span t-esc="o.total_weight_competency"/>%</td>
+                            <td t-esc="o.overall_score_competency"/>
+                        </tr>
+                        <tr>
+                            <th style="background-color:#f2f2f2;">Total</th>
+                            <td t-esc="o.total_overall_weight"/>
+                            <td><span t-esc="o.total_weight_kpi_competenct"/>%</td>
+                            <td t-esc="o.total_overall_score"/>
+                        </tr>
+                        <tr>
+                            <th colspan="3" style="text-align:right; font-weight:bold;">Final Rating</th>
+                            <th style="background-color:#875A7B; color:white; font-size:13px;">
+                                Rating <span t-esc="o.last_rating"/>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+
+  <div class="clear"></div>
+
+
+  <!-- LAST PAGE : FINAL APPROVALS -->
+<!-- LAST PAGE : FINAL APPROVALS -->
+<!-- <t t-if="o.state == 'approved'"> -->
+<t>
+    <table class="approval-table">
+        <tr>
+            <!-- Line Manager -->
+            <td class="approval-cell left">
+                <div class="approval-label">Reviewed by <strong>Line Manager</strong>:</div>
+                <div class="approval-name">
+                    <span t-if="o.report_emp_id" t-esc="o.report_emp_id.name"/>
+                    <span t-else="">—</span>
+                </div>
+            </td>
+
+            <!-- HOD -->
+            <td class="approval-cell center">
+                <div class="approval-label">Approved by <strong>HOD</strong>:</div>
+                <div class="approval-name">
+                    <span t-if="o.employee_id.department_id.director_id" t-esc="o.employee_id.department_id.director_id.name"/>
+                    <span t-else="">—</span>
+                </div>
+            </td>
+
+            <!-- Chief / C-Level -->
+            <td class="approval-cell right">
+                <div class="approval-label">Approved by <strong>Chief / C-Level</strong>:</div>
+                <div class="approval-name">
+                    <span t-if="o.employee_id.department_id.c_level_id" t-esc="o.employee_id.department_id.c_level_id.name"/>
+                    <span t-else="">—</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <style>
+        .approval-table {
+            width: 100%;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+        .approval-cell {
+            width: 33%;
+            vertical-align: top;
+        }
+        .approval-cell.left { text-align: left; }
+        .approval-cell.center { text-align: center; }
+        .approval-cell.right { text-align: right; }
+
+        .approval-label {
+            margin-bottom: 5px;
+        }
+        .approval-name {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        /* Optional: Add a subtle dotted signature line under name */
+        .approval-name::after {
+            content: "";
+            display: block;
+            border-bottom: 1px dotted #333;
+            margin-top: 3px;
+        }
+    </style>
+</t>
+
+
+
+
+
+            </div>
+
+
+
+        </t>
+    </template>
+
+</odoo>

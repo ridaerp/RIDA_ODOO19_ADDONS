@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+
+
+   <record id="view_account_payment_form_inhert" model="ir.ui.view">
+            <field name="name">account.payment.form_inhert</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+
+            <field name="arch" type="xml">
+            <xpath expr='//form' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+
+
+            
+
+
+        </field>
+    </record>
+
+  <record id="view_account_payment_tree_inhert" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_supplier_payment_tree" />
+
+            <field name="arch" type="xml">
+            <xpath expr='//list' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+        </field>
+    </record>
+
+<!-- hide create edit vendors payment /-->
+
+        <record id="view_account_payment_form_inhert" model="ir.ui.view">
+            <field name="name">account.payment.form_inhert</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+
+            <field name="arch" type="xml">
+            <xpath expr='//form' position='attributes'>
+            
+
+                <attribute name="create">false</attribute>
+                <attribute name="edit">true</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='is_internal_transfer']" position="replace">
+                <field name="is_internal_transfer" readonly="1" />
+            </xpath> -->
+        </field>
+    </record>
+
+
+   <record id="account.view_account_payment_tree" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <list edit="false" create="false" sample="1">
+                    <header>
+                        <button name="action_post" type="object" string="Confirm"/>
+                    </header>
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="company_id" />
+                    <field name="amount" sum="Amount"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'posted'"/>
+                    <field name="currency_id"/>
+                    <field name="payment_method_line_id" invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+<!-- new payment to restrict adivisor to create direct payment i case nedd-->
+ <record id="view_account_payment_tree_new" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <list  sample="1">
+                    <header>
+                        <button name="action_post" type="object" string="Confirm"/>
+                    </header>
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="company_id" />
+                    <field name="amount" sum="Amount"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'posted'"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                </list>
+            </field>
+        </record>
+
+   
+
+
+    <record id="action_account_payments_payable_new" model="ir.actions.act_window">
+            <field name="name">Payments</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">list,kanban,form,graph</field>
+            <field name="context">{
+                'default_payment_type': 'outbound',
+                'default_partner_type': 'supplier',
+                'search_default_outbound_filter': 1,
+                'default_move_journal_types': ('bank', 'cash'),
+            }</field>
+            <field name="view_id" ref="view_account_payment_tree_new"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                  Register a payment
+                </p><p>
+                  Payments are used to register liquidity movements. You can process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_action_account_payments_payable_new" parent="account.menu_finance_entries" action="action_account_payments_payable_new" sequence="2" groups="account.group_account_manager"/>
+
+
+
+
+           <record id="view_account_payment_form_new" model="ir.ui.view">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <form string="Register Payment">
+                    <header>
+                        <button name="action_post" string="Confirm" type="object" class="oe_highlight"
+                                invisible="state != 'draft'"/>
+                        <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary"
+                          invisible="state not in ['posted', 'cancel']"
+                                groups="account.group_account_invoice"/>
+                        <button name="action_cancel" string="Cancel" type="object"
+                               invisible="state != 'draft'"/>
+                        <button name="mark_as_sent" string="Mark as Sent" type="object"
+                                invisible="state != 'posted' or payment_method_code != 'manual'"/>
+                        <button name="unmark_as_sent"  string="Unmark as Sent" type="object"
+                                invisible="state != 'posted' or payment_method_code != 'manual'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                    </header>
+
+                    <sheet>
+                        <!-- Invisible fields -->
+                        <field name="id" invisible="1"/>
+                        <field name="is_reconciled" invisible="1"/>
+                        <field name="is_matched" invisible="1"/>
+                        <field name="payment_method_code" invisible="1"/>
+                        <field name="show_partner_bank_account" invisible="1"/>
+                        <field name="require_partner_bank_account" invisible="1"/>
+                        <field name="available_partner_bank_ids" invisible="1"/>
+                        <field name="country_code" invisible="1"/>
+
+                        <div class="oe_button_box" name="button_box">
+                            <!-- Invoice stat button -->
+                            <button name="button_open_invoices" type="object"
+                                    class="oe_stat_button" icon="fa-bars"
+                                   invisible="reconciled_invoices_count == 0">
+                                <field name="reconciled_invoices_count"/>
+
+                            <span invisible="reconciled_invoices_count > 1">Invoice</span>
+                            <span invisible="reconciled_invoices_count &lt;=  1">Invoices</span>
+
+
+                            </button>
+
+                            <!-- Bill stat button -->
+                            <button name="button_open_bills" type="object"
+                                    class="oe_stat_button" icon="fa-bars"
+                                   invisible="reconciled_bills_count == 0">
+                                <field name="reconciled_bills_count"/>
+
+
+
+
+
+                            <span invisible="reconciled_bills_count > 1">Bill</span>
+                            <span invisible="reconciled_bills_count  &lt;=  1">Bill</span>
+
+
+
+                            </button>
+
+                        </div>
+
+                        <widget name="web_ribbon" text="Invoicing App Legacy"
+                                bg_color="bg-info"
+                                invisible="state != 'invoicing_legacy'"
+                                tooltip="This payment has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."
+                        />
+
+                        <div class="oe_title" invisible="state == 'draft'">
+                            <h1><field name="name" readonly="state != 'draft'"/></h1>
+                        </div>
+
+                        <group>
+                            <group name="group1">
+                                <field name="payment_type" widget="radio"
+                                       readonly="state != 'draft'"/>
+                                <field name="partner_type" widget="selection"
+                                       readonly="state != 'draft'"/>
+                                <field name="partner_id" context="{'default_is_company': True}"
+                                      readonly="state != 'draft'"/>
+                                <field name="destination_account_id"
+                                       options="{'no_create': True}" required="1"
+                                       readonly="state != 'draft'"/>
+                                <!-- <field name="is_internal_transfer" readonly="state != 'draft'"/> -->
+                                <field name="company_id" />
+                            </group>
+                            <group name="group2">
+                                <field name="journal_id"
+                                       widget="selection"
+                                       domain="[('type', 'in', ('bank', 'cash'))]"
+                                       readonly="state != 'draft'"/>
+                                <field name="partner_bank_id" context="{'default_partner_id': partner_id}"
+                                       invisible="show_partner_bank_account == False"
+       required="require_partner_bank_account == True"
+       readonly="state != 'draft'"/>
+
+                                <!-- /!\ Required due to the _inherits but must not be required when saving a new
+                                record. Using 'required': [('id', '!=', False)] is not working due to the groups set on
+                                the field.
+                                -->
+                                <field name="move_id"
+                                       required="0"
+                                       invisible="not id"
+                                       groups="account.group_account_readonly"/>
+                            </group>
+                            <group name="group3">
+                                <label for="amount"/>
+                                <div name="amount_div" class="o_row">
+                                    <field name="amount"
+                                          readonly="state != 'draft'"/>
+                                    <field name="currency_id"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           required="1"
+                                           readonly="state != 'draft'"
+                                           groups="base.group_multi_currency"/>
+                                </div>
+                                <field name="date"
+                                       readonly="state != 'draft'"/>
+                                <field name="memo" string="Memo"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_account_payment_register_form_inhert" model="ir.ui.view">
+            <field name="name">account.payment.register.form_inhert</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//group[2]" position="after">
+                    <group>
+                        <field name="cheque_formate_id" invisible="payment_method_code != 'check_printing'" required="payment_method_code == 'check_printing'"/>
+                        <field name="check_date"  invisible="payment_method_code != 'check_printing'" required="payment_method_code == 'check_printing'"/>
+                        <field name="partner_text" invisible="payment_method_code != 'check_printing'" />
+                        <field name="cheque_no" invisible="payment_method_code != 'check_printing'" required="payment_method_code == 'check_printing'"/>
+                        <field name="text_free" invisible="payment_method_code != 'check_printing'"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+
+      
+
+
+    </data>
+</odoo>

@@ -68,9 +68,30 @@
         </record>
 
 
+<!--        <record id="purchase_order_form_inheritt_custom2" model="ir.ui.view">-->
+<!--            <field name="name">purchase.order.form.inherit</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="material_request.purchase_order_form_inherith"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="partner_id" position="replace">-->
+<!--                    &lt;!&ndash;                <field name="is_quantity_copy" invisible="1"/>&ndash;&gt;-->
+<!--                    <field name="partner_id" readonly="state in ['purchase', 'done', 'cancel']"-->
+<!--                           widget="res_partner_many2one"-->
+<!--                           context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"-->
+<!--                           placeholder="Name, TIN, Email, or Reference" force_save="1"/>-->
+<!--                </field>-->
+<!--                <field name="partner_ref" position="after">-->
+<!--                    <field name="requisition_id"-->
+<!--                           domain="[('state', 'in', ('in_progress', 'open', 'ongoing')), ('vendor_id', 'in', (partner_id, False))]"/>-->
+<!--                </field>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
         <record id="purchase_order_form_inherith" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
+            <field name="priority">20</field>
             <field name="arch" type="xml">
                 <form string="Purchase Order" class="o_purchase_order">
                     <header>
@@ -187,7 +208,7 @@
                                        readonly="1"/>
 
                                 <field name="weight_request_id" readonly="1"/>
-                                
+
                                 <field name="is_opu_po" string="MMU POs" readonly="1" groups="material_request.group_opu_user"/>
                                 <field name="lot_id" readonly="1" groups="material_request.group_opu_user"/>
 
@@ -426,7 +447,7 @@
                                     </group>
                                 </group>
                             </page>
-                        </notebook> 
+                        </notebook>
                     </sheet>
                     <chatter/>
                 </form>

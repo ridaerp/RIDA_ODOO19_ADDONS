@@ -101,6 +101,7 @@ class Bills_Workflow(models.Model):
     # invoice_date=fields.Date(states=False)
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=False ,
         states=None)
+
     status_in_payment = fields.Selection(
         selection_add=[
             ('validate', 'Validated'),
@@ -113,16 +114,11 @@ class Bills_Workflow(models.Model):
             ('accountant', 'Accountant'),
             ('rejected', 'Rejected'),
         ],
-        # Change 'set default' to 'cascade' or specify 'draft' explicitly
         ondelete={
-            'validate': 'cascade',
-            'finance': 'cascade',
-            'internal_audit': 'cascade',
-            'fleet_director': 'cascade',
-            'finance_director': 'cascade',
-            'ccso': 'cascade',
-            'site': 'cascade',
-            'accountant': 'cascade',
+            'validate': 'cascade', 'finance': 'cascade', 
+            'internal_audit': 'cascade', 'fleet_director': 'cascade',
+            'finance_director': 'cascade', 'ccso': 'cascade',
+            'site': 'cascade', 'accountant': 'cascade',
             'rejected': 'cascade'
         }
     )
@@ -273,3 +269,23 @@ class AccountJournal(models.Model):
         """Override to hide cash journals for users with the `rohax_audit` group."""
         self = self.filtered(lambda j: j.type != 'cash' or not self.env.user.has_group('base_rida.rohax_audit'))
         return super(AccountJournal, self)._compute_journal_dashboard_data()
+
+
+class AccountMoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    state = fields.Selection(selection=[
+        ('draft', 'Draft'),
+        ('validate', 'Validated'),
+        ('finance', 'Finance Manager'),
+        ('internal_audit', 'Internal Audit'),
+        ('fleet_director', 'Fleet Director'),
+        ('finance_director', 'Finance Director'),
+        ('ccso', 'CCSO'),
+        ('site', 'Operation Director'),
+        ('accountant', 'Accountant'),
+        ('posted', 'Posted'),
+        ('cancel', 'Cancelled'),
+        ('rejected', 'Rejected'),
+    ], string='Status', required=True, readonly=True, copy=False, tracking=True,
+        default='draft')

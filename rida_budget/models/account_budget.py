@@ -33,7 +33,7 @@ class CrossoveredBudget(models.Model):
     def action_ceo_approve(self):
         for rec in self:
             rec.action_budget_confirm()
-            forms = self.env['budget.department.form'].search([
+            forms = self.env['budget.department.form'].sudo().search([
                 ('budget_id', '=', rec.id),
                 ('state', '=', 'ceo_approve')
             ])
@@ -66,7 +66,7 @@ class CrossoveredBudget(models.Model):
 
             if target_form_state:
                 for budget in self:
-                    forms = self.env['budget.department.form'].search([
+                    forms = self.env['budget.department.form'].sudo().search([
                         ('budget_id', '=', budget.id)
                     ])
                     if forms:
@@ -101,7 +101,7 @@ class CrossoveredBudget(models.Model):
         BudgetLine = self.env['budget.line']
 
         for budget in self:
-            confirmed_forms = self.env['budget.department.form'].search([
+            confirmed_forms = self.env['budget.department.form'].sudo().search([
                 ('budget_id', '=', budget.id),
                 ('state', 'in', ['approve', 'fin_approve', 'dir_approve', 'ceo_approve', 'confirmed'])
             ])
@@ -114,7 +114,7 @@ class CrossoveredBudget(models.Model):
 
                     dept_id = form.department_id.id
                     account_id = f_line.account_account_id.id
-                    analytic_id = f_line.account_id.id or False
+                    analytic_id = f_line.analytic_account_id.id or False
                     date_from = f_line.start_from or budget.date_from
                     date_to = f_line.end_to or budget.date_to
 
@@ -143,7 +143,7 @@ class CrossoveredBudget(models.Model):
                     # ======================
                     if form.budget_type == 'main':
                         vals = {
-                            'planned_amount': standard_amount,
+                            'budget_amount': standard_amount,
                             'custom_planned_amount': custom_amount,
                         }
                         if existing_line:
@@ -170,7 +170,7 @@ class CrossoveredBudget(models.Model):
                                 _("No base budget line found to amend for %s") % f_line.account_account_id.name)
 
                         existing_line.write({
-                            'planned_amount': existing_line.planned_amount + standard_amount,
+                            'budget_amount': existing_line.planned_amount + standard_amount,
                             'amendment_amount': existing_line.amendment_amount + standard_amount,
                             'amendment_amount_custom': existing_line.amendment_amount_custom + custom_amount,
                             'custom_planned_amount': existing_line.custom_planned_amount + custom_amount,
@@ -186,7 +186,7 @@ class CrossoveredBudget(models.Model):
 
                         # تحديث المبالغ (سواء كانت سالبة للمحول منه أو موجبة للمحول إليه)
                         existing_line.write({
-                            'planned_amount': existing_line.planned_amount + standard_amount,
+                            'budget_amount': existing_line.planned_amount + standard_amount,
                             'amendment_amount': existing_line.amendment_amount + standard_amount,
                             'amendment_amount_custom': existing_line.amendment_amount_custom + custom_amount,
                             'custom_planned_amount': existing_line.custom_planned_amount + custom_amount,

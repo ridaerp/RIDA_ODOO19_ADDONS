@@ -7,7 +7,7 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
-          <xpath expr="//field[@name='emp_code']" position="after">
+          <xpath expr="//field[@name='bank_account_ids']" position="after">
             <field name="cross_employee" invisible="1"/>
           </xpath>
         </field>

@@ -58,10 +58,22 @@
     </record>
 
     <!-- Rida QHSE Manager Group -->
+    <record id="rida_group_safety_officer" model="res.groups">
+        <field name="name">Safety Officer</field>
+        <field name="privilege_id" ref="module_base_rida_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rida_group_senior_officer" model="res.groups">
+        <field name="name">Senior Officer</field>
+        <field name="privilege_id" ref="module_base_rida_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base_rida.rida_group_safety_officer'))]"/>
+    </record>
+
     <record id="rida_group_qhse_manager" model="res.groups">
         <field name="name">QHSE Manager</field>
         <field name="privilege_id" ref="module_base_rida_privilege"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[(4, ref('base_rida.rida_group_senior_officer'))]"/>
     </record>
 
     <!-- Rida QHSE Manager Group -->

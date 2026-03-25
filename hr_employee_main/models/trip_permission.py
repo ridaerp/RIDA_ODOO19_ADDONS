@@ -207,7 +207,7 @@ class TripPermission(models.Model):
                     'company_id': recc.company_id.id,
                     'amount': rec.total,
                     'currency_id': recc.currency_id.id,
-                    'ref': recc.name,
+                    'memo': recc.name,
                     'journal_id': recc.journal_payment_id.id,
 
                 }
@@ -231,7 +231,7 @@ class TripPermission(models.Model):
             'view_id': tree_view_id,
             'view_mode': 'list',
             'res_model': 'account.payment',
-            'domain': [('ref', '=', self.name)],
+            'domain': [('memo', '=', self.name)],
             'context': "{'create': False}"
         }
 

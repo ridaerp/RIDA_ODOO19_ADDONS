@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ppe_receipt_list" model="ir.ui.view">
+        <field name="name">ppe.receipt.list</field>
+        <field name="model">ppe.receipt</field>
+        <field name="arch" type="xml">
+            <list string="PPE Receipts">
+                <field name="name"/>
+                <field name="requester_id"/>
+                <field name="date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('officer', 'senior')"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ppe_receipt_form" model="ir.ui.view">
+        <field name="name">ppe.receipt.form</field>
+        <field name="model">ppe.receipt</field>
+        <field name="arch" type="xml">
+            <form string="PPE Receipt">
+                <header>
+                    <button name="action_officer" string="Submit to Officer" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+
+                    <button name="action_senior" string="Officer Approve" type="object"
+                            invisible="state != 'officer'" groups="base_rida.rida_group_safety_officer" class="oe_highlight"/>
+
+                    <button name="action_done" string="Senior Approve" type="object"
+                            invisible="state != 'senior'" groups="base_rida.rida_group_senior_officer" class="oe_highlight"/>
+                    <button name="make_issuance_request_function"
+                        string="Create Issuance Request"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'done' or issuance_count &gt; 0"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,officer,senior,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_issuance_requests" type="object" class="oe_stat_button" icon="fa-truck" invisible="issuance_count == 0">
+                            <field name="issuance_count" widget="statinfo" string="Issuances"/>
+                        </button>
+                    </div>
+                    <div class="text-center mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h2 style="color: #714B67;">
+                            <field name="doc_no" readonly="1"/>
+                        </h2>
+                        <div class="text-muted text-uppercase fw-bold">PPE RECEIPT DOCUMENT</div>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Receipt Number"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group string="Request Details">
+                        <group>
+                            <field name="requester_id" readonly="1"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="reason_type" required="1" readonly="state != 'draft'"/>
+                            <field name="other" invisible="reason_type != 'others'" required="reason_type == 'others'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Received PPE Details" name="receipt_lines">
+                            <field name="receipt_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="employee_id" required="1" options="{'no_create': True}"
+                                        domain="[('department_id', 'child_of', parent.department_id), ('company_id', '=', parent.company_id)]"/>
+                                    <field name="emp_code" readonly="1" force_save="1" />
+                                    <field name="ppe_type" options="{'no_create': True}" domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
+                                    <field name="brand_sn" readonly="1" force_save="1"/>
+                                    
+                                    <field name="qty_hand" string="Stock On Hand" readonly="1" force_save="1" groups="base_rida.rida_group_safety_officer"/>
+                                    
+                                    <field name="quantity" string="Requested Qty" readonly="parent.state != 'draft'"/>
+                                    
+                                    <field name="qty_approved" 
+                                           string="Approved Qty" 
+                                           column_invisible="parent.state == 'draft'"
+                                           readonly="parent.state == 'done'"/>
+
+                                    <field name="reason_type" column_invisible="True"/>
+                                </list>
+                            </field>
+
+                            <div class="mt-4 p-3 border rounded bg-light" style="font-size: 0.95rem;">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fa fa-info-circle mr-2"/> Employee Declaration &amp; Confirmation
+                                </h5>
+                                <p class="font-weight-bold">
+                                    I confirm that I have received the above noted personal protective equipment (PPE). I also confirm that I have received instruction and training in the:
+                                </p>
+                                <ul style="list-style-type: decimal; padding-left: 20px;">
+                                    <li>Reasons why the PPE is necessary.</li>
+                                    <li>Correct method of using/wearing the PPE.</li>
+                                    <li>Procedures to follow in the event of loss or damage to the PPE.</li>
+                                    <li>Arrangements for cleaning, storage, and repair/replacement of the equipment.</li>
+                                    <li>Recommended times/periods for cleaning, and replacement of the PPE or its components.</li>
+                                    <li>Limitations of the PPE (if any).</li>
+                                    <li>Specific circumstances when the PPE is to be worn (e.g., as detailed in company safe working procedures).</li>
+                                </ul>
+                                <p class="mt-2 italic">
+                                    Also confirm that I have been made aware of my duties under current legislation in relation to the need for me to appropriately use and not abuse the PPE issued to me.
+                                </p>
+
+                                <hr/>
+                                <div class="d-flex align-items-center">
+                                    <field name="confirm_training" required="1" readonly="state != 'draft'" class="mr-2"/>
+                                    <label for="confirm_training" string="I Agree and Confirm the above instructions" class="font-weight-bold text-danger"/>
+                                </div>
+                            </div>
+                        </page>
+
+                        <page string="Approvals &amp; Tracking" name="approvals">
+                            <group>
+                                <group string="Safety Team">
+                                    <field name="officer_user_id" widget="many2one_avatar_user"/>
+                                    <field name="date_of_safety"/>
+                                </group>
+                                <group string="Management">
+                                    <field name="senior_user_id" widget="many2one_avatar_user"/>
+                                    <field name="date_senior"/>
+                                    <field name="done_user_id" widget="many2one_avatar_user"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ppe_receipt" model="ir.actions.act_window">
+        <field name="name">PPE Receipt</field>
+        <field name="res_model">ppe.receipt</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_ppe_receipt"
+              name="PPE Receipts"
+              parent="menu_ppe_root"
+              action="action_ppe_receipt"
+              sequence="6"/>
+</odoo>

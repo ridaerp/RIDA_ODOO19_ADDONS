@@ -182,8 +182,8 @@
     </record>
 
 
-<template id="report_picking_inherit" inherit_id="stock.report_picking">
-    <xpath expr="//t[@t-call='web.report_layout']" position="replace">
+<template id="report_picking_inherit" inherit_id="stock.report_delivery_document">
+    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
         <t t-call="web.report_layout">
                         <div class="page">
                             <div class="row justify-content-end mb16">

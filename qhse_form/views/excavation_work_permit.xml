@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_excavation_permit_list" model="ir.ui.view">
+            <field name="name">excavation.work.permit.list</field>
+            <field name="model">excavation.work.permit</field>
+            <field name="arch" type="xml">
+                <list string="Excavation Permits">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="location"/>
+                    <field name="requester_id"/>
+                    <field name="state" widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-warning="state == 'submitted'"
+                           decoration-success="state in ('authorized', 'issued')"
+                           decoration-danger="state == 'revoked'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_excavation_work_permit_form" model="ir.ui.view">
+            <field name="name">excavation.work.permit.form</field>
+            <field name="model">excavation.work.permit</field>
+            <field name="arch" type="xml">
+                <form string="Excavation Permit">
+                    <header>
+                        <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                                groups="base_rida.rida_group_safety_officer"/>
+                        <button name="action_extend" string="تمديد / Extend" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state != 'pending_extension'"/>
+                        <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                        <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                        <button name="action_close" string="إغلاق / Close" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state not in ['pending_close']"/>
+                        <button name="action_done" string="تم / Done" type="object"
+                                invisible="state not in ['reject']"/>
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state not in ['submitted']"
+                                groups="base_rida.rida_group_safety_officer"
+                                type="action"/>
+                        <button name="action_reactivate"
+                            string="إعادة تنشيط / Reactivate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['suspend', 'revoked']"/>
+                        <button name="action_create_related_ptw"
+                            string="إنشاء التصريح المرتبط"
+                            type="object"
+                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,issued,revoked,suspend,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title text-center">
+                            <h1 style="color: #c53929;">Excavation Work Permission</h1>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_linked_ptw"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-external-link"
+                                    invisible="linked_ptw_count == 0">
+                                <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="رقم التصريح / Permit Number"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group string="Part #01: General Information / معلومات عامة">
+                            <group>
+                                <field name="date" readonly="state != 'draft'"/>
+                                <field name="requester_id" readonly="1" options="{'no_open': True}"/>
+                                <field name="department_id"/>
+                                <field name="performer_id" readonly="state != 'draft'" required="True"/>
+
+                            </group>
+                            <group>
+                                <label for="date_from" string="الصلاحية / Validity"/>
+                                <div class="o_row">
+                                    <field name="date_from" placeholder="من / From" readonly="state != 'draft'" required="True"/>
+                                    <field name="date_to" placeholder="إلى / To" readonly="state != 'draft'" required="True"/>
+                                </div>
+                                <field name="location" placeholder="الموقع الدقيق..." readonly="state != 'draft'"
+                                options="{'no_create': True, 'no_create_edit': True}" required="True" />
+                                <field name="sub_location" required="True" />
+                                <field name="num_workers" readonly="state != 'draft'" required="True"/>
+                                <field name="equipment_type" readonly="state != 'draft'" required="True"/>
+                            </group>
+                            <group>
+                                <field name="is_need_ptw" invisible="state != 'draft'"/>
+                                <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft' or is_need_ptw == False"/>
+                            </group>
+                        </group>
+
+                        <group string="Task &amp; Dimensions / المهمة وأبعاد الحفر">
+                            <field name="task_description" placeholder="وصف العمل المطلوب..." readonly="state != 'draft'"/>
+                            <group>
+                                <field name="exc_length" readonly="state != 'draft'" required="True"/>
+                                <field name="exc_width" readonly="state != 'draft'" required="True"/>
+                                <field name="exc_depth" readonly="state != 'draft'" required="True"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Hazards &amp; Precautions / المخاطر والاحتياطات">
+                                <separator string="Excavation Hazards / مخاطر الحفر والتنقيب" class="mt32"/>
+                                <group col="3">
+                                    <group>
+                                        <field name="hazard_personnel_fall" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_underground_utility" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_biological" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_falling_objects" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="hazard_soil_collapse" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_dust" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_floods" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_structural_damage" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="hazard_heat" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_vibration" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_traffic" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_noise_excavation" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="hazard_excavation_other" placeholder="حدد مخاطر أخرى إن وجدت..."/>
+                                </group>
+
+                                <separator string="الاحتياطات الوقائية المطلوبة لإكمال العمل بأمان / Required Precautions" class="mt32"/>
+                                <p class="text-muted">يرجى تحديد (نعم / لا / لا ينطبق) لكل إجراء وقائي أدناه:</p>
+                                <group>
+                                    <group>
+                                        <field name="prec_jsa_attached" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_underground_checked" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_loto_effective" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_equipment_certified" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_work_obstructions" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_physical_barriers" widget="radio" options="{'horizontal': true}"/>
+                                    </group>
+                                    <group>
+                                        <field name="prec_worker_equipment_interference" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_other_tasks_required" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_fall_trip_hazards" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_ppe_compliance" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="prec_fire_extinguisher_ready" widget="radio" options="{'horizontal': true}"/>
+                                    </group>
+                                </group>
+                                <field name="additional_controls" placeholder="أي إجراءات تحكم إضافية..."/>
+                            </page>
+
+                            <page string="Authorization / الاعتمادات">
+                                <group>
+                                    <group string="Operator Approval / موافقة المنفذ">
+                                        <field name="operator_signature" widget="signature"/>
+                                    </group>
+                                    <group string="Authorizer &amp; Issuer / المصرّح والمصدر">
+                                        <field name="authorizer_id" options="{'no_create': True}"/>
+                                        <field name="authorizer_sig" widget="signature"/>
+                                        <field name="issuer_id" options="{'no_create': True}"/>
+                                        <field name="issuer_sig" widget="signature"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Closure / الإغلاق" invisible="state not in ('issued', 'extended', 'closed')">
+                                <group string="Final Confirmation / التأكيد النهائي">
+                                    <group>
+                                        <field name="close_backfilled" readonly="state == 'closed'"/>
+                                        <field name="close_withdrawn" readonly="state == 'closed'"/>
+                                        <field name="close_loto_removed" readonly="state == 'closed'"/>
+                                    </group>
+                                    <group>
+                                        <field name="closure_date" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <group string="تفاصيل الإجراءات">
+                            <field name="extension_reason" required="state == 'pending_extension'" invisible="state not in ['pending_extension', 'extended']"/>
+                            <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
+                            <field name="reason_reject" invisible="state != 'reject'"/>
+                        </group>
+                        <group string="الموافقة والتعهد / Confirmation" class="mt-3">
+                            <field name="confirmation_check" widget="boolean_toggle"
+                                   string="أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_excavation_work_permit" model="ir.actions.act_window">
+            <field name="name">Excavation Permits / تصاريح الحفر</field>
+            <field name="res_model">excavation.work.permit</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Excavation Work Permit!
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_excavation_permit"
+                  name="Excavation / أعمال الحفر"
+                  parent="menu_safety_root_dual"
+                  action="action_excavation_work_permit"
+                  sequence="5"/>
+    </data>
+</odoo>

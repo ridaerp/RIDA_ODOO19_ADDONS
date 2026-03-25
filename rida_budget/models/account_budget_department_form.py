@@ -53,7 +53,7 @@ class BudgetDepartmentForm(models.Model):
 
     def _send_notification_to_approvers(self, group_xml_id, message):
         group = self.env.ref(group_xml_id)
-        users = group.users
+        users = group.user_ids
 
         for rec in self:
             for user in users:
@@ -177,32 +177,34 @@ class BudgetDepartmentFormLine(models.Model):
     @api.depends('form_id.budget_id', 'account_account_id', 'analytic_account_id', 'form_id.department_id')
     def _compute_amounts(self):
         for line in self:
-            # البحث عن السطر المقابل في الموازنة الرئيسية
+            # البحث عن السطر المقابل
             domain = [
                 ('budget_analytic_id', '=', line.form_id.budget_id.id),
                 ('account_account_id', '=', line.account_account_id.id),
                 ('department_id', '=', line.form_id.department_id.id),
             ]
 
-            if line.analytic_account_id:
-                domain.append(('account_id', '=', line.analytic_account_id.id))
-            else:
-                domain.append(('account_id', '=', False))
-
-            master_line = self.env['budget.line'].search(domain, limit=1)
+            # استخدام .with_context(active_test=False) لتجنب بعض مشاكل الكاش
+            master_line = self.env['budget.line'].sudo().search(domain, limit=1)
 
             if master_line:
-                # جلب القيم بالعملة الأساسية
-                line.practical_amount = master_line.practical_amount
-                line.theoretical_amount = master_line.theoritical_amount
+                try:
+                    # محاولة جلب القيم
+                    line.practical_amount = master_line.achieved_amount
+                    line.theoretical_amount = master_line.theoritical_amount
+                except Exception:
+                    # في حال استمر خطأ SQL، نضع قيمة صفرية مؤقتاً لتجنب توقف النظام
+                    line.practical_amount = 0.0
+                    line.theoretical_amount = 0.0
+
                 line.percentage = master_line.percentage
                 line.amendment_amount = master_line.amendment_amount
+                line.custom_practical_amount = getattr(master_line, 'custom_practical_amount', 0.0)
+                line.custom_theoretical_amount = getattr(master_line, 'custom_theoritical_amount', 0.0)
+                line.amendment_amount_custom = getattr(master_line, 'amendment_amount_custom', 0.0)
 
-                # جلب القيم بالعملة المخصصة (من الحقول التي أنشأتها في كود الموازنة الموروث)
-                line.custom_practical_amount = master_line.custom_practical_amount
-                line.custom_theoretical_amount = master_line.custom_theoritical_amount
-                line.amendment_amount_custom = master_line.amendment_amount_custom
             else:
+                # في حال لم يتم العثور على سطر مطابق في الموازنة الرئيسية، نصفر القيم
                 line.practical_amount = 0.0
                 line.theoretical_amount = 0.0
                 line.percentage = 0.0

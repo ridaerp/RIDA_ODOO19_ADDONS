@@ -52,7 +52,7 @@
         ############added by ekhas code
         'views/ore_rock_purchases_view.xml',
         'report/purchase_contract.xml',
-        'report/mr_print_pdf.xml',
+        # 'report/mr_print_pdf.xml',
         'wizards/advance_payments_wizard_view.xml',
         'views/weight_unit_view.xml',
         'views/chemical_view.xml',

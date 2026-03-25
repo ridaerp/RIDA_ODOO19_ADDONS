@@ -1,0 +1,67 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * mo_connect_as_user
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Mohamed Shaker <me@mohamedshaker.com>\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+
+#. module: mo_connect_as_user
+#: model:res.groups,name:mo_connect_as_user.group_connect_as_user
+msgid "Connect As User"
+msgstr "الدخول كمستخدم"
+
+#. module: mo_connect_as_user
+#: model:res.groups,comment:mo_connect_as_user.group_connect_as_user
+msgid "Users in this group can log in as any other user directly from the user form without a password."
+msgstr "يمكن للمستخدمين في هذه المجموعة تسجيل الدخول كأي مستخدم آخر مباشرةً من نموذج المستخدم بدون كلمة مرور."
+
+#. module: mo_connect_as_user
+#: model:ir.ui.view,arch_db:mo_connect_as_user.view_users_form_connect_as
+msgid "Connect As"
+msgstr "الدخول كـ"
+
+#. module: mo_connect_as_user
+#: code:addons/mo_connect_as_user/models/res_users.py:0
+#, python-format
+msgid "You do not have permission to use the 'Connect As' feature."
+msgstr "ليس لديك صلاحية لاستخدام ميزة «الدخول كمستخدم»."
+
+#. module: mo_connect_as_user
+#: code:addons/mo_connect_as_user/models/res_users.py:0
+#, python-format
+msgid "You are already logged in as this user."
+msgstr "أنت مسجّل الدخول بالفعل بهذا المستخدم."
+
+#. module: mo_connect_as_user
+#: code:addons/mo_connect_as_user/models/res_users.py:0
+#, python-format
+msgid "You cannot connect as an inactive user."
+msgstr "لا يمكنك الدخول كمستخدم غير نشط."
+
+#. module: mo_connect_as_user
+#: code:addons/mo_connect_as_user/controllers/main.py:0
+#, python-format
+msgid "The target user does not exist."
+msgstr "المستخدم المستهدف غير موجود."
+
+#. module: mo_connect_as_user
+#: code:addons/mo_connect_as_user/controllers/main.py:0
+#, python-format
+msgid "The original user no longer exists or is inactive."
+msgstr "المستخدم الأصلي لم يعد موجوداً أو غير نشط."
+
+#. module: mo_connect_as_user
+#: model:ir.ui.view,arch_db:mo_connect_as_user.connect_as_systray
+msgid "Return to"
+msgstr "العودة إلى"

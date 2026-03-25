@@ -1,0 +1,2107 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* mrp_custom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-28 07:51+0000\n"
+"PO-Revision-Date: 2025-07-28 07:51+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "<span class=\"o_stat_text\">Lost</span>"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_flow_reading_root
+#: model:ir.ui.menu,name:mrp_custom.menu_flow_reading_root_chemistry
+msgid "ADR Flow Reading"
+msgstr "قراءة شاشة المصانع"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_adr_log_sheet
+#: model:ir.ui.menu,name:mrp_custom.menu_cic_log_sheet_root
+#: model:ir.ui.menu,name:mrp_custom.menu_cic_log_sheet_root_chemistry
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_tree_ADR_log_sheet
+msgid "ADR Log Sheet"
+msgstr "تقرير المصانع"
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_log_sheets_chemistry
+msgid "ADR Log Sheet "
+msgstr "تقرير المصانع"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_adr_log_sheet_line
+msgid "ADR Log Sheet Line"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_adr_log_sheet
+msgid "ADR Log Sheets"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__adr_log_count
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "ADR Logs"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_flowmeter__area__adr_new
+msgid "ADR New"
+msgstr "المصنع الجديد"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_flowmeter__area__adr_old
+msgid "ADR Old"
+msgstr "المصنع القديم"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "ADR Parameters"
+msgstr "عوامل تشغيل المصنع"
+
+#. module: mrp_custom
+#: model:res.groups,name:mrp_custom.group_adr_user
+msgid "ADR User"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "AU"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__achieved
+msgid "Achieved (%)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_needaction
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_exception_decoration
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_state
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_type_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__ampere
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__ampere
+msgid "Ampere"
+msgstr "الآمبير"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__assay_barren
+msgid "Assay Barren (g/t Au)"
+msgstr "خارج من الخلية"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__assay_pregnant
+msgid "Assay Pregnant (g/t Au)"
+msgstr "داخل إلى الخلية"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_manhole_sample_form
+msgid "Assay Results"
+msgstr "نتائج التحليل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__assigned_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__assigned_user_id
+msgid "Assigned To"
+msgstr "مخصصة لـ"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_attachment_count
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__au
+msgid "Au"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_product_product__automatuact
+#: model:ir.model.fields,field_description:mrp_custom.field_product_template__automatuact
+msgid "Auto MRP Daily"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__availability_percent
+msgid "Availability (%)"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+msgid "Averages"
+msgstr "المتوسط"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_barren_cn
+msgid "Avg Barren CN ppm"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_barren_oxygen
+msgid "Avg Barren Oxygen"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_barren_ph
+msgid "Avg Barren pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__avg_moisture
+msgid "Avg Moisture"
+msgstr "متوسط الرطوبة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_preg_cn
+msgid "Avg Pregnant CN ppm"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_preg_oxygen
+msgid "Avg Pregnant Oxygen"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__avg_preg_ph
+msgid "Avg Pregnant pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__avg_seiving
+msgid "Avg Seiving"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__avg_ph
+msgid "Avg pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__bad_weather
+msgid "Bad Weather"
+msgstr "سوء أحوال الطقس"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_flowmeter__area__barren
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+msgid "Barren"
+msgstr "البارن"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__barren_cn
+msgid "Barren CN ppm"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__barren_cyanide
+msgid "Barren Cyanide"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__barren_oxygen
+msgid "Barren Oxygen"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__pond_barren
+msgid "Barren Pond Level"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__barren_ph
+msgid "Barren pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__batch_id
+msgid "Batch"
+msgstr "الباتش"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_mrp_production_tree_report_plan
+msgid "CIC and CRUSHER Report PLAN"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_mrp_report_manufacturing_orders
+msgid "CIC and Crusher Report Plan"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__carbon_eff
+msgid "Carbon Efficiency"
+msgstr "كفاءة الكربون "
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_pond_management
+#: model:ir.ui.menu,name:mrp_custom.menu_pond_op_management
+msgid "Cell"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__name
+msgid "Cell Name"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_flowmeter__area__cell_new
+msgid "Cell New"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_flowmeter__area__cell_old
+msgid "Cell Old"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__cement_load
+msgid "Cement Load"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__cement_loaded
+msgid "Cement Loaded"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_manhole_sample_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Chem-Assay"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__chemical_sample_request_count
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__chemical_sample_request_count
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__chemical_sample_request_count
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__flowmeter_count
+msgid "Chem-Assays"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_manhole_sample_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Chemical Samples"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_cic_log_sheet_readings
+#: model:ir.ui.menu,name:mrp_custom.menu_cic_log_sheet_readings_chemistry
+msgid "Cic Log Sheet Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Cleaning"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__cleaning_operation
+msgid "Cleaning Operation"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__code
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__code
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__code
+msgid "Code"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+msgid "Compute Averages"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.server,name:mrp_custom.ir_cron_create_auto_mrp_orders_ir_actions_server
+msgid "Create Auto MRP Orders Daily"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "Create Log"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.actions.act_window,help:mrp_custom.action_crusher_log_sheet
+msgid "Create Your daily Crusher Log Sheets here."
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.actions.act_window,help:mrp_custom.action_adr_log_sheet
+msgid "Create your daily ADR log sheet here."
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.actions.act_window,help:mrp_custom.action_stripping_management
+msgid "Create your daily Stripping log sheet here."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__create_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__create_date
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__crusher_log_sheet__form_type__crusher
+msgid "Crusher"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_crusher_log_sheet
+#: model:ir.ui.menu,name:mrp_custom.menu_crusher_log_sheet_chemistry
+#: model:ir.ui.menu,name:mrp_custom.menu_crusher_log_sheet_root
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+msgid "Crusher Log Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_crusher_log_sheet_line
+msgid "Crusher Log Sheet Line"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_crusher_log_sheet_readings
+#: model:ir.ui.menu,name:mrp_custom.menu_crusher_log_sheet_readings_chemistry
+msgid "Crusher Log Sheet Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_crusher_log_sheet
+msgid "Crusher Log Sheets"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__crusher_log
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "Crusher Logs"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Crusher Parameters"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__line_ids
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+msgid "Crusher Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__sheet_id
+msgid "Crusher Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:res.groups,name:mrp_custom.group_crusher_user
+msgid "Crusher User"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__date
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__date
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__loss_detail_id
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__name
+msgid "Detail Reason"
+msgstr "السبب التفصيلي"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__display_name
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet__state__done
+#: model:ir.model.fields.selection,name:mrp_custom.selection__crusher_log_sheet__state__done
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_reading_sheet__state__done
+#: model:ir.model.fields.selection,name:mrp_custom.selection__manhole_manhole__state__done
+#: model:ir.model.fields.selection,name:mrp_custom.selection__stripping_log_sheet__state__done
+msgid "Done"
+msgstr "تم القفل"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet__state__draft
+#: model:ir.model.fields.selection,name:mrp_custom.selection__crusher_log_sheet__state__draft
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_reading_sheet__state__draft
+#: model:ir.model.fields.selection,name:mrp_custom.selection__manhole_manhole__state__draft
+#: model:ir.model.fields.selection,name:mrp_custom.selection__stripping_log_sheet__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__dry_crushed
+msgid "Dry Tonnes Crushed"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__over_load
+msgid "Due Over Load"
+msgstr "بسبب عطل فني أو كهربائي"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__electrical_loss
+msgid "Electrical Loss"
+msgstr "عطل كهربائي"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__e_operation
+msgid "Equip Operation"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__equipment_id
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Equipment"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__explanation_for_other
+msgid "Explanation for Other"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "FLOW"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__rate
+msgid "FLOWRATE M³/Hr"
+msgstr "معدل التدفق"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__feed_rate
+msgid "Feed Rate"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__start_date
+msgid "First Date"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__flipped_irrigation
+msgid "Flipped & under irrigation"
+msgstr "تم التقليب و الرش"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__flipped_waiting_irrigation
+msgid "Flipped & waiting irrigation"
+msgstr "تم التقليب و في انتظار الرش"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__flow
+msgid "Flow"
+msgstr "تدفق"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__sheet_id
+msgid "Flow Log"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__flowmeter_ids
+msgid "Flow Meters"
+msgstr "شاشة مقياس التدفق"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__flow_rate
+msgid "Flow Rate (m³/hr)"
+msgstr "معدل التدفق"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__area
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__area
+msgid "Flow Rate Area"
+msgstr "المنطقة "
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_flowmeters
+#: model:ir.ui.menu,name:mrp_custom.menu_flowmeters_chemistry
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_pump_management
+msgid "Flow Rate Meter"
+msgstr "شاشة معدل التدفق"
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_flow_rate_readings
+#: model:ir.ui.menu,name:mrp_custom.menu_flow_rate_readings_chemistry
+msgid "Flow Rate Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__hourly_flow
+msgid "Flow since last reading (m³)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_flowmeter_flowmeter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__flowmeter_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__flowmeter_id
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_flowmeter_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Flowmeter"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_flowmeter_reading
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__reading_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__flowmeter_reading
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Flowmeter Reading"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_flowmeter_reading_sheet
+msgid "Flowmeter Reading Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__reading_ids
+msgid "Flowmeter Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__flowmeter_relation_ids
+msgid "Flowmeter Relations"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_tree
+msgid "Flowmeter Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_flowmeter
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_tree
+msgid "Flowmeters"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_follower_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_partner_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__activity_type_icon
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__form_type
+msgid "Form Type"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__generation_loss
+msgid "Generation Loss"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__grade_barren
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Grade Barren"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__grade_control
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Grade Control"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__grade_pregnant
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Grade Pregnant"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__has_message
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_heap_sample_root
+#: model:ir.ui.menu,name:mrp_custom.menu_heap_samples_root
+msgid "Heap "
+msgstr "الهيب"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__lot_ids
+msgid "Heap Area"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_barren__high
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_preg__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_flow_rate_reading
+msgid "Hourly Flowmeter Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_stripping_hourly_line
+msgid "Hourly Gold Stripping Reading"
+msgstr "الشاشة التراكمية"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "Hours"
+msgstr "ساعات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__id
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__id
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__id
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__id
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__id
+msgid "ID"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_exception_icon
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__activity_exception_icon
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__message_needaction
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__message_has_sms_error
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__message_has_error
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__au_Inlet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Inlet AU"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__is_adr
+msgid "Is Adr"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__is_crusher_staker
+msgid "Is Crusher Staker"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_is_follower
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__is_heap
+msgid "Is Heap"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__is_smelt
+msgid "Is Smelt"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__is_strip
+msgid "Is Strip"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__last_total_meter_reading
+msgid "Last  Reading (m³)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__last_checked
+msgid "Last Checked"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__last_logged_date
+msgid "Last Logged Date"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__write_uid
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__write_date
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Leaching Parameters"
+msgstr "معاملات الرش"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__equipment_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__equipment_id
+msgid "Linked Equipment"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__location
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__location
+msgid "Location"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__sheet_id
+msgid "Log Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_log_sheets_root
+msgid "Log Sheets "
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__loss_count
+msgid "Loss Count"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_loss_detail_form
+msgid "Loss Detail Reason"
+msgstr "تفصيل سبب التوقف"
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_loss_detail
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_loss_detail_tree
+msgid "Loss Detail Reasons"
+msgstr "تفصيل سبب التوقف"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__loss_id
+msgid "Loss Reason"
+msgstr "سبب التوقف"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_loss_detail
+#: model:ir.actions.act_window,name:mrp_custom.action_loss_reason
+msgid "Loss Reasons"
+msgstr "أسباب التوقف"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__loss_duration
+msgid "Loss duration"
+msgstr "مدة التوقف"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_stock_lot
+msgid "Lot/Serial"
+msgstr "رقم الدفعة/الرقم التسلسلي "
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_barren__low
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_preg__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__maintenance_loss
+msgid "Maintenance DownTime"
+msgstr "زمن التوقف بسبب الصيانة"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_maintenance_request
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_pump_management
+msgid "Maintenance Request"
+msgstr "طلب الصيانة"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_maintenance_request_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__maintenance_request_ids
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_pump_management
+msgid "Maintenance Requests"
+msgstr "طلبات الصيانة"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_manhole_manhole
+msgid "Manhole"
+msgstr "منهول"
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_manhole_samples
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_manhole_sample_form
+msgid "Manhole Sample"
+msgstr "عينة منهول"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_manhole_sample
+#: model:ir.ui.menu,name:mrp_custom.menu_manhole_sample
+msgid "Manhole Samples"
+msgstr "عينات منهول"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__production_id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__production_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__production_id
+msgid "Manufacturing Order"
+msgstr "أمر التصنيع"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Mark as Done"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__mechanical_loss
+msgid "Mechanical Loss"
+msgstr "توقف بسبب الصيانة الميكانيكية"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_barren__med
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet_line__pond_preg__med
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_has_error
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__metal_content
+msgid "Metal Content"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__metal_recovery
+msgid "Metal Recovery (g)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__metalab_sample_request_count
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "Metallurgical Test"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__moisture
+msgid "Moisture"
+msgstr "الرطوبة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__moisture
+msgid "Moisture Content"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__my_activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: mrp_custom
+#. odoo-python
+#: code:addons/mrp_custom/models/parameter_log_sheets.py:0
+#, python-format
+msgid "New"
+msgstr "جديد"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__new_irrigation
+msgid "New Area under Irrigation"
+msgstr "منطقة جديدة تحت الرش"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__under_preparing
+msgid "New Area under Preparing"
+msgstr "منطقة جديدة تحت التجهيز"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__stripping_log_sheet__stripping_unit__new
+msgid "New Cell"
+msgstr "خلية المصنع الجديد"
+
+#. module: mrp_custom
+#. odoo-python
+#: code:addons/mrp_custom/models/work_order.py:0
+#, python-format
+msgid "New Chemical Assay"
+msgstr "طلب تحليل كيميائي جديد"
+
+#. module: mrp_custom
+#. odoo-python
+#: code:addons/mrp_custom/models/work_order.py:0
+#: code:addons/mrp_custom/models/work_order.py:0
+#, python-format
+msgid "New Metallurgical request"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_calendar_event_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_date_deadline
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_summary
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_type_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__no_equipment
+msgid "No Equipment"
+msgstr "عدم توفر آلية"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__no_trucks
+msgid "No Trucks"
+msgstr "عدم توفر قلابات"
+
+#. module: mrp_custom
+#: model_terms:ir.actions.act_window,help:mrp_custom.mrp_manfacuring_order_production_report_blocked
+msgid "No productivity loss for this Manfacuring Order"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.actions.act_window,help:mrp_custom.action_manhole_sample
+msgid "No samples found. Let's create one!"
+msgstr "لا توجد عينات , قم بطلب عينات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__notes
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_needaction_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_has_error_counter
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__message_needaction_counter
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__message_has_error_counter
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__overflow_stuck_cr
+msgid "O.Flow (C-CR)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_operation_chemistry_root
+msgid "OP Chemical"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__old_area
+msgid "Old Area"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__stripping_log_sheet__stripping_unit__old
+msgid "Old Cell"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__m_operation
+msgid "Operation"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Ore Downtime"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Other"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__other_loss
+msgid "Other Loss"
+msgstr "أخرى"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__au_Outlet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Outlet AU"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__oxygen
+msgid "Oxygen"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__cr_ph
+msgid "PH"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+msgid "Parameter"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Performance Metrics"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_pond_management
+msgid "Pond Management"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_pond_management
+#: model:ir.model.fields,field_description:mrp_custom.field_stock_lot__pond_ids
+msgid "Ponds"
+msgstr "الأحواض"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+msgid "Pregnant"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__preg_cn
+msgid "Pregnant CN ppm"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__Pregnant_cyanide
+msgid "Pregnant Cyanide"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__preg_oxygen
+msgid "Pregnant Oxygen"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__ph_Outlet
+msgid "Pregnant PH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__pond_preg
+msgid "Pregnant Pond Level"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__preg_ph
+msgid "Pregnant pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_product_template
+msgid "Product"
+msgstr "المنتج"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_mrp_production
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__production_ref_id
+msgid "Production Order"
+msgstr "أمر الانتاج"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__production_target
+msgid "Production Target"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_loss_reason
+msgid "Productivity and Downtime"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_pump_management
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__pump_id
+#: model:ir.model.fields,field_description:mrp_custom.field_maintenance_request__pump_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stock_lot__pump_id
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_pump_management
+msgid "Pump"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__name
+msgid "Pump "
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_tree_pump_management
+msgid "Pump Management"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_pump_root
+msgid "Pump Monitoring"
+msgstr "وضع الطرمبات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__pump_relation_ids
+msgid "Pump Relations"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_pump_flowmeter_chemistry
+msgid "Pump and Flow Control "
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_flowmeter_pump_relation
+msgid "Pump-Flowmeter Relation"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_pump_management
+#: model:ir.ui.menu,name:mrp_custom.menu_custom_pumps
+#: model:ir.ui.menu,name:mrp_custom.menu_custom_pumps_chemistry
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_flowmeter_custom
+msgid "Pumps"
+msgstr "الطرمبات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__quality_check_count
+msgid "Quality Checks"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Quality Control Metrics"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__qty_producing
+msgid "Quantity Producing"
+msgstr "الكمية المنتجة حاليًا"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__rating_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__flowmeter_reading_sheet_count
+msgid "Reading Count"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__flowmeter_reading_sheet
+msgid "Reading Sheets"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__line_ids
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_flowmeter_custom
+msgid "Readings"
+msgstr "القراءات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__recovery_percentage
+msgid "Recovery Percentage"
+msgstr "نسبة الإستخلاص"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__name
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__name
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__name
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__name
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__name
+msgid "Reference"
+msgstr "الرقم المرجعي"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__remarks
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__remarks
+msgid "Remarks"
+msgstr "الملاحظات"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Reset to Draft"
+msgstr "اجراء تعديل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__activity_user_id
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__active
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__is_running
+#: model:ir.model.fields.selection,name:mrp_custom.selection__adr_log_sheet__state__running
+#: model:ir.model.fields.selection,name:mrp_custom.selection__crusher_log_sheet__state__running
+#: model:ir.model.fields.selection,name:mrp_custom.selection__flowmeter_reading_sheet__state__running
+#: model:ir.model.fields.selection,name:mrp_custom.selection__stripping_log_sheet__state__running
+msgid "Running"
+msgstr "تعمل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__message_has_sms_error
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__manhole_manhole__state__sample
+msgid "Sample"
+msgstr "عينة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__sample_number
+msgid "Sample No."
+msgstr "رقم العينة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__date
+msgid "Sampling Date"
+msgstr "تاريخ أخذ العينة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__serial_number
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__serial_number
+msgid "Serial Number"
+msgstr "الرقم التسلسلي"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__sieving
+msgid "Sieving (+2.36)"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Smelting Parameters"
+msgstr "عوامل ضبط "
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity__workorder_ref_id
+msgid "Source Workorder"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__stacker_area
+msgid "Stacker work area"
+msgstr "منطقة عمل الإستاكر"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__crusher_log_sheet__form_type__stacker
+msgid "Stacker"
+msgstr "الإستاكر"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_crusher_log_sheet_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_flowmeter_reading_form
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_adr_log_sheet
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_flowmeter_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Start"
+msgstr "إبدأ"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__start_time
+msgid "Start Time"
+msgstr "وقت البدأ"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__state
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__state
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__state
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__state
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__status
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__state
+msgid "Status"
+msgstr "الحالة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__activity_state
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__stockpile_full
+msgid "Stockpile Full"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_form_flowmeter_custom
+msgid "Stop"
+msgstr "إيقاف"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Striping Parameters"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__stripping_line_ids
+msgid "Stripping Hourly Data"
+msgstr "بيانات القراءات"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__stripping_id
+msgid "Stripping Log"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_stripping_log_sheet
+#: model:ir.ui.menu,name:mrp_custom.menu_stripping_log_sheet_chemistry
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Stripping Log Sheet"
+msgstr "تقرير النزع"
+
+#. module: mrp_custom
+#: model:ir.ui.menu,name:mrp_custom.menu_striping_log_sheet_readings_chemistry
+#: model:ir.ui.menu,name:mrp_custom.menu_stripping_log_sheet_readings
+msgid "Stripping Log Sheet Readings"
+msgstr "تقرير قراءات النزع"
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.action_stripping_management
+msgid "Stripping Log Sheets"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__stripping_log_count
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_smartbuttun_production_form_inherit
+msgid "Stripping Logs"
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_stripping_log_sheet_form
+msgid "Stripping Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__stripping_unit
+msgid "Stripping Unit"
+msgstr "وحدة النزع"
+
+#. module: mrp_custom
+#: model:res.groups,name:mrp_custom.group_stripping_user
+msgid "Stripping User"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__strrip_id
+msgid "Strripping Log Sheet"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__equipment_stuck_cr
+msgid "Stuck (C-CR)"
+msgstr "اصطكاك الكسارة الثانوية"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__equipment_stuck_jcr
+msgid "Stuck (J-CR)"
+msgstr "اصطكاك الكسارة الفكية"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__total_meter_reading
+msgid "TOTALIZER READING (m³)"
+msgstr "قراءة الشاشة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__temperature
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__temperature
+msgid "Temperature"
+msgstr "درجة الحرارة"
+
+#. module: mrp_custom
+#. odoo-javascript
+#: code:addons/mrp_custom/static/src/components/assay_request_button/metalab_request_button.js:0
+#, python-format
+msgid "The  Metallurgical has successfully been created."
+msgstr ""
+
+#. module: mrp_custom
+#. odoo-javascript
+#: code:addons/mrp_custom/static/src/components/assay_request_button/assay_request_button.js:0
+#, python-format
+msgid "The Chemical assay  has successfully been created."
+msgstr "تم رفع تقرير التحليل الكيميائي بنجاح"
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__equipment_id
+msgid "The equipment this pump is connected to."
+msgstr ""
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_workorder_search_this_week
+msgid "This Month"
+msgstr "هذا الشهر"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_workorder_search_this_week
+msgid "This Quarter"
+msgstr "ربع سنوي"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_workorder_search_this_week
+msgid "This Week"
+msgstr "هذا الأسبوع"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_mrp_workorder_search_this_week
+msgid "This Year"
+msgstr "هذه السنة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet_line__time
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__time
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__timestamp
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__time
+msgid "Times"
+msgstr "وقت العينة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__today_time
+msgid "Today's Time (m)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_production__blocked_time
+msgid "Total Blocked Time (hrs)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__total_flow_today
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading__daily_flow
+msgid "Total Flow Today (m³)"
+msgstr "الكمية الكلية للمحلول"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__total_loss_per_minute
+msgid "Total Loss/Min"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__total_loss
+msgid "Total Losses"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__total_metal_recovery
+msgid "Total Metal Recovery (g)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__total_time
+msgid "Total Time"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__total_time
+msgid "Total Time (m)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workcenter_productivity_loss_detail__x_studio_type
+msgid "Type"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__activity_exception_decoration
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__unit_au
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Unit Au"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__unit_Outlet
+msgid "Unit Outlet AU"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.server,name:mrp_custom.ir_cron_update_flowmeter_readings_ir_actions_server
+msgid "Update Flowmeter Readings"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.server,name:mrp_custom.ir_cron_update_flow_and_workorders_ir_actions_server
+msgid "Update Flowmeters and Workorders"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__utilization_percent
+msgid "Utilization (%)"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__volt
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_hourly_line__volt
+msgid "Volt"
+msgstr "الفولتية"
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__waiting_flipping
+msgid "Waiting Flipping"
+msgstr "بإنتطار التقليب"
+
+#. module: mrp_custom
+#: model_terms:ir.ui.view,arch_db:mrp_custom.view_workorder_form_inherit
+msgid "Waiting Materials"
+msgstr "إنتظار مواد"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_adr_log_sheet__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_pump_relation__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_reading_sheet__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pond_management__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_pump_management__website_message_ids
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,help:mrp_custom.field_adr_log_sheet__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_crusher_log_sheet__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_flowmeter__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_pump_relation__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_flowmeter_reading_sheet__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_manhole_manhole__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_pond_management__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_pump_management__website_message_ids
+#: model:ir.model.fields,help:mrp_custom.field_stripping_log_sheet__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_mrp_workcenter
+#: model:ir.model.fields,field_description:mrp_custom.field_flowmeter_flowmeter__workcenter_id
+msgid "Work Center"
+msgstr "مركز العمل"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_mrp_workorder
+#: model:ir.model.fields,field_description:mrp_custom.field_stripping_log_sheet__workorder_id
+msgid "Work Order"
+msgstr "أمر العمل"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_mrp_workorder__workcenter_code
+msgid "Workcenter Code"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_mrp_workcenter_productivity
+msgid "Workcenter Productivity Log"
+msgstr "سجل إنتاجية مركز العمل"
+
+#. module: mrp_custom
+#: model:ir.model,name:mrp_custom.model_mrp_workcenter_productivity_loss_detail
+msgid "Workcenter Productivity Loss Detail Reason"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__stop_area
+msgid "irrigation stopped for this area"
+msgstr "تم إيقاف الرش من هذه المنطقة"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__mh1
+msgid "mh1"
+msgstr "منهول1"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__mh2
+msgid "mh2"
+msgstr "منهول2"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__mh3
+msgid "mh3"
+msgstr "منهول3"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__mh4
+msgid "mh4"
+msgstr "منهول4"
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_crusher_log_sheet_line__ph
+msgid "pH"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__ppn
+msgid "ppn"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields,field_description:mrp_custom.field_manhole_manhole__ppo
+msgid "ppo"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.actions.act_window,name:mrp_custom.mrp_manfacuring_order_production_report_blocked
+msgid "production Losses"
+msgstr ""
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__under_flipping
+msgid "under Flipping"
+msgstr "في التقليب "
+
+#. module: mrp_custom
+#: model:ir.model.fields.selection,name:mrp_custom.selection__pond_management__status__under_irrigation
+msgid "under irrigation"
+msgstr "في الرش"
+
+#. module: mrp_custom
+#. odoo-javascript
+#: code:addons/mrp_custom/static/src/components/assay_request_button/assay_request_button.xml:0
+#, python-format
+msgid "🧪Chemical Assay"
+msgstr ""
+
+#. module: mrp_custom
+#. odoo-javascript
+#: code:addons/mrp_custom/static/src/components/assay_request_button/metalab_request_button.xml:0
+#, python-format
+msgid "🧪Metallurgical Test"
+msgstr ""

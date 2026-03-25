@@ -1133,19 +1133,23 @@ class MaintenanceRequest(models.Model):
 
             else:
                 stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)], limit=1)
-            if rec.cat_type == 'GENERATORS' or rec.equipment_type == 'vechicles':
-                if rec.odometer <= 0:
-                    raise UserError("Odometer Value Must be grather than 0")
-                odometer = rec.env['fleet.vehicle.odometer'].create({
-                    'value': rec.odometer,
-                    'date': fields.Date.context_today(self),
-                    'equipment_id': rec.equipment_id.id,
-                    'vehicle_id': rec.equipment_id.vechicle_id.id or False
-                })
+                vehicle = rec.equipment_id.vechicle_id
+                if rec.cat_type == 'GENERATORS' or rec.equipment_type == 'vechicles':
+                    if rec.odometer <= 0:
+                        raise UserError("Odometer Value Must be greater than 0")
+                    if vehicle:
+                        if vehicle.company_id and vehicle.company_id not in self.env.user.company_ids:
+                            raise UserError("You cannot create odometer for a vehicle خارج شركاتك")
+                        self.env['fleet.vehicle.odometer'].create({
+                            'value': rec.odometer,
+                            'date': fields.Date.context_today(self),
+                            'equipment_id': rec.equipment_id.id,
+                            'vehicle_id': vehicle.id
+                        })
             rec.write({'stage_id': stage_obj.id,})
 
     def admin_submit(self):
-        stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)])
+        stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)], limit=1)
         for rec in self:
             rec.write({'stage_id': stage_obj.id,
                        'wo_receive_datetime': datetime.now(),
@@ -1153,7 +1157,7 @@ class MaintenanceRequest(models.Model):
             
 
     def manager_submit(self):
-        stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)])
+        stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 2)], limit=1)
 
 
         for rec in self:
@@ -1206,12 +1210,12 @@ class MaintenanceRequest(models.Model):
             if not rec.need_spare and rec.maintenance_type_id == 'internal':
                 raise UserError("Must Define Need SparePart YES/NO !")
             if rec.need_spare == 'yes':
-                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 5)])
+                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 5)],limit=1)
                 rec.write({'stage_id': stage_obj.id,
                            'm_s_datetime': datetime.now(),
                            })
             else:
-                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)])
+                stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)],limit=1)
                 rec.write({'stage_id': stage_obj.id,
                            'm_s_datetime': datetime.now(),
                            })
@@ -1223,7 +1227,7 @@ class MaintenanceRequest(models.Model):
     def button_execute(self):
 
         for rec in self:
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)],limit=1)
             if self.previous_stage_id.sequence==3 and rec.waiting_equipment:
                 rec.write({
                 'stage_id': self.previous_stage_id.id,
@@ -1264,7 +1268,7 @@ class MaintenanceRequest(models.Model):
         for rec in self:
             if rec.duration <= 0:
                 raise UserError("Enter Maintance Duration")
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 7)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 7)],limit=1)
             rec.sudo().write({'stage_id': stage_obj.id,
                        'complete_datetime': datetime.now(),
                        })
@@ -1319,18 +1323,18 @@ class MaintenanceRequest(models.Model):
 
     def button_reject(self):
         for rec in self:
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 9)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 9)],limit=1)
             rec.write({'stage_id': stage_obj.id})
 
     def button_return_maintenance(self):
         for rec in self:
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 6)],limit=1)
             rec.write({'stage_id': stage_obj.id})
 
     def archive_equipment_request(self):
         super(MaintenanceRequest, self).archive_equipment_request()
         for rec in self:
-            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 10)])
+            stage_obj = self.env['maintenance.stage'].search([('sequence', '=', 10)],limit=1)
             rec.write({'stage_id': stage_obj.id})
             rec.write({'archive': True})
 
@@ -1554,12 +1558,19 @@ class FleetVehicleOdometer(models.Model):
     start_night = fields.Float('Start Shift Night')
     end_night = fields.Float('Start Shift Night')
 
-    def create(self, vals):
-        rec = super(FleetVehicleOdometer, self).create(vals)
-        for val in vals:
-            if val.get('location_id') and rec.equipment_id:
+    @api.model_create_multi
+    def create(self, vals_list):
+        # إنشاء السجلات أولاً باستخدام السوبر
+        recs = super(FleetVehicleOdometer, self).create(vals_list)
+        
+        # الربط بين السجلات المنشأة والبيانات المرسلة
+        for rec, vals in zip(recs, vals_list):
+            # نتحقق من وجود المفتاح في القاموس ومن وجود المعدة في السجل
+            if vals.get('location_id') and rec.equipment_id:
+                # تحديث موقع المعدة بناءً على قيمة الموقع في الأودومتر
                 rec.equipment_id.location = rec.location_id.name
-        return rec
+                
+        return recs
 
 
 class VehicleLocation(models.Model):

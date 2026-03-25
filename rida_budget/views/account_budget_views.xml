@@ -30,7 +30,7 @@
                             groups="base_rida.budget_costing_manager,base_rida.rida_finance_manager,base_rida.group_finance_director,base_rida.rida_group_ceo"
                             type="action"/>
                 </xpath>
-                <xpath expr="//sheet" position="inside">
+                <xpath expr="//div[@name='button_box']" position="inside">
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_department_forms"
                                 type="object"
@@ -40,14 +40,6 @@
                         </button>
                     </div>
                 </xpath>
-                <!--                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='account_id']" position="after">-->
-                <!--                    <field name="account_account_id"/>-->
-                <!--                    <field name="department_id"/>-->
-                <!--                </xpath>-->
-                <!--                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='custom_planned_amount']" position="after">-->
-                <!--                    <field name="amendment_amount"/>-->
-                <!--                    <field name="amendment_amount_custom"/>-->
-                <!--                </xpath>-->
                 <xpath expr="//field[@name='budget_line_ids']/list"
                        position="inside">
                     <field name="account_account_id"/>

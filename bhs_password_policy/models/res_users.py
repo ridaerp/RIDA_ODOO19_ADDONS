@@ -72,7 +72,7 @@ class ResUsers(models.Model):
 
     def _send_notification_password_expire(self, delta_days):
         for rec in self:
-            rec.action_expire_password()
+            # rec.action_expire_password()
             body = self.env['mail.render.mixin'].with_context(lang=rec.lang)._render_template(
                 self.env.ref('bhs_password_policy.password_expire'),
                 model='res.users', res_ids=rec.ids,
@@ -240,12 +240,15 @@ class ResUsers(models.Model):
         else:
             return fields.Datetime.now() >= self.next_password_write_date
 
+    # def action_expire_password(self):
+    #     expiration = delta_now(days=+1)
+    #     for user in self:
+    #         user.mapped("partner_id").signup_prepare(
+    #             signup_type="reset", expiration=expiration
+    #         )
     def action_expire_password(self):
-        expiration = delta_now(days=+1)
         for user in self:
-            user.mapped("partner_id").signup_prepare(
-                signup_type="reset", expiration=expiration
-            )
+            user.mapped("partner_id").sudo().signup_prepare(signup_type="reset")
 
     def _set_encrypted_password(self, uid, pw):
         """It saves password crypt history for history rules"""

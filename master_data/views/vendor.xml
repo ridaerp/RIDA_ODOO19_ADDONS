@@ -22,8 +22,6 @@
                         <button string="Submit" name="set_submit" type="object" invisible="state not in ['draft']"
                                 class="oe_highlight"
                                 groups="base_rida.rida_group_supply_chain_manager,material_request.group_contract_manager,material_request.group_buyers,material_request.group_ore_rock_purchase_user"/>
-
-
                         <button string="Confirm" name="set_confirm" type="object"
                                 invisible="is_rock_vendor or state != 'scm'"
                                 class="oe_highlight"
@@ -31,21 +29,26 @@
                         <button string="Confirm" name="set_confirm" type="object" invisible="state != 'w_ore_rock'"
                                 class="oe_highlight"
                                 groups="material_request.group_ore_rock_supply_chain_manager"/>
-
+                        <button string="Confirm" name="account_verification" type="object" invisible="state != 'w_account'"
+                                class="oe_highlight" groups="account.group_account_user"/>
+                        <button string="Confirm" name="internal_audit" type="object" invisible="state != 'w_audit'"
+                                class="oe_highlight" groups="base_rida.rida_internal_audit"/>
                         <button string="Create Vendor" name="create_vendor" type="object" invisible="state != 'md'"
-                                class="oe_highlight" groups="base_rida.rida_group_master_data_manager"/>
+                                class="oe_highlight" groups="base_rida.rida_finance_manager"/>
                         <button string="Create Vendor" name="create_vendor" type="object" invisible="state != 'w_scm_director'"
                                 class="oe_highlight" groups="base_rida.rida_group_supply_chain_director"/>
+                        <button string="Set To Draft" name="set_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight"/>
 
                         <button name="%(material_request.purchase_order_reject_action)d" type="action"
-                                invisible="state not in ['w_ore_rock', 'w_scm_director', 'scm', 'md']" string="Reject"
-                                groups="base_rida.rida_group_supply_chain_manager,material_request.group_ore_rock_supply_chain_manager,material_request.group_contract_manager"
+                                invisible="state not in ['w_ore_rock','w_account','w_audit','w_scm_director', 'scm', 'md']" string="Reject"
+                                groups="account.group_account_user,base_rida.rida_finance_manager,base_rida.rida_internal_audit,base_rida.rida_group_supply_chain_manager,material_request.group_ore_rock_supply_chain_manager,material_request.group_contract_manager"
                         />
                         <field name="state" widget="statusbar" invisible="is_rock_vendor"
                                statusbar_visible="draft,scm,w_scm_director,done"/>
                         <field name="state_rock" widget="statusbar"
                                invisible="not is_rock_vendor"
-                               statusbar_visible="draft,w_ore_rock,md,done"/>
+                               statusbar_visible="draft,w_ore_rock,w_account,w_audit,md,done"/>
                     </header>
                     <sheet>
                              
@@ -141,7 +144,7 @@
 
         <menuitem name="Supplier" id="vendor_request_menu" parent="master_data"
                   action="vendor_request_act_window"
-                  groups="base_rida.rida_group_master_data_manager,base_rida.rida_group_supply_chain_manager,material_request.group_buyers,material_request.group_ore_rock_purchase_user,base_rida.group_warehouse_manager,material_request.group_contract_manager,material_request.group_opu_user,material_request.group_ore_rock_db_geology_user"/>
+                  groups="base_rida.rida_group_master_data_manager,base_rida.rida_group_supply_chain_manager,material_request.group_buyers,material_request.group_ore_rock_purchase_user,base_rida.group_warehouse_manager,material_request.group_contract_manager,material_request.group_opu_user,material_request.group_ore_rock_db_geology_user,base_rida.rida_internal_audit,account.group_account_user"/>/>
 
     </data>
 </odoo>

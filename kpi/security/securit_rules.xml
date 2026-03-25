@@ -24,7 +24,7 @@
         <record model="ir.rule" id="rule_check_kpi_person_mng">
             <field name="name">Manager KPI</field>
             <field name="model_id" ref="model_kpi_person"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
             <field name="groups"
                    eval="[(4, ref('hr.group_hr_user')),(4, ref('base_rida.rida_hr_manager_notify'))]"/>
         </record>

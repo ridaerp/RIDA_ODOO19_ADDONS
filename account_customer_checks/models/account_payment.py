@@ -106,7 +106,7 @@ class account_payment(models.Model):
     check_journal_id = fields.Many2one('account.journal', 'Clearing Journal',domain=[('type', 'in', ('bank', 'cash')), ('is_check_journal', '!=', True)])
     is_check_journal = fields.Boolean(related='journal_id.is_check_journal',store=True)
     # active = fields.Boolean()
-    state = fields.Selection([('draft', 'Draft'), ('posted', 'Posted'), ('sent', 'Sent'), ('reconciled', 'Reconciled'),('cancel', 'Cancelled')],
+    state = fields.Selection([('draft', 'Draft'), ('in_process', 'In Process'),('posted', 'Posted'), ('sent', 'Sent'), ('reconciled', 'Reconciled'),('cancel', 'Cancelled')],
                              readonly=True, default='draft', copy=False, string="Status")
 
 

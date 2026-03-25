@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- add new form and action by ekhlas to  solve resassign buyer issue -->
+
+
+
+     -->
+    <record id="reassigned_supply_wizard" model="ir.ui.view">
+        <field name="name">reassigned.supply_wizard</field>
+        <field name="model">reassigned.supply</field>
+        <field name="arch" type="xml">
+            <form>
+                <!-- comment by ekhlas -->
+<!--                 <sheet>
+ -->                    <group>
+                        <field name="reassigned_supply" required="1" />
+                    </group>
+<!--                 </sheet>
+ -->                <footer>
+                    <button string='Confirm' name="action_validate" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="reassigned_buyer_action" model="ir.actions.act_window">
+        <field name="name">Re-Assign</field>
+        <field name="res_model">reassigned.supply</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="reassigned_supply_wizard" />
+        <field name="target">new</field>
+    </record>
+
+    <record id="reassigned_supply_action" model="ir.actions.act_window">
+        <field name="name">Re-Assign</field>
+        <field name="res_model">reassigned.supply</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="reassigned_supply_wizard" />
+        <field name="target">new</field>
+    </record>
+
+<!-- add new form and action by ekhlas to  solve resassign buyer issue -->
+ <record id="reassigned_buyer_wizard" model="ir.ui.view">
+        <field name="name">reassigned.supply_wizard</field>
+        <field name="model">reassigned.supply</field>
+        <field name="arch" type="xml">
+            <form>
+<!--                 <sheet>
+ -->                    <group>
+                        <field name="reassigned_supply" required="1" />
+                    </group>
+<!--                 </sheet>
+ -->                <footer>
+                    <button string='Confirm' name="action_validate" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- <act_window
+    id="reassigned_supply_action"
+    name="Re-Assign"
+    res_model="reassigned.supply"
+    view_mode="form"
+    view_id="reassigned_supply_wizard"
+    target="new"/> -->
+
+</odoo>

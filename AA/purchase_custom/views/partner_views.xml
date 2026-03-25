@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Add state to contact form view -->
+    <record model="ir.ui.view" id="mr_res_partner_creation_form">
+      <field name="name">res.partner.creation.form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+        <sheet position="before">
+          <header>
+            <!-- Approve -->
+            <button name="action_approve" invisible="state not in ('register')" string="Approve" groups="base_rida.rida_group_supply_chain_manager" type="object" class="oe_highlight"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+          </header>
+        </sheet>
+        <notebook position="inside">
+          <page name="vendor_evaluation" string="Vendor Evaluation">
+            <group>
+              <group>
+            <field name="price" />
+            <field name="delivery_reliability" />
+            <field name="delivery_date_adherence" />
+          </group>
+            <group>
+            <field name="item_quality" />
+            <field name="pyment_terms" />
+            <field name="shipment_place" />
+          </group>
+          </group>
+        </page>
+
+      </notebook>
+      
+      </field>
+    </record>
+    <record id="Rida_res_partner_view_search" model="ir.ui.view">
+      <field name="name">res.partner.search.inherit</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_res_partner_filter"/>
+      <field name="arch" type="xml">
+          <xpath expr="//filter[@name='inactive']" position="before">
+             <filter string="Registerd Vendors" name="registerd_vendors" domain="[('state','=', 'register')]"/>
+             <filter string="Approved Vendors" name="approved_vendors" domain="[('state','=', 'approved')]"/>
+             <separator/>
+          </xpath>
+      </field>
+  </record>
+
+  </data>
+</odoo>
+
+
+
+

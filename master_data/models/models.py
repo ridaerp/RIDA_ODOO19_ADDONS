@@ -70,7 +70,7 @@ class EditProduct(models.Model):
     @api.onchange('req_id')
     def onchange_categ_id(self):
         if self.req_id:
-            self.department_id = self.env['hr.employee'].search([('user_id', '=', self.req_id.id)],
+            self.department_id = self.env['hr.employee'].sudo().search([('user_id', '=', self.req_id.id)],
                                                                 limit=1).department_id
 
     def create_product(self):

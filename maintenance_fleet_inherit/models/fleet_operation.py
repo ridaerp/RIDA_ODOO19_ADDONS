@@ -135,7 +135,8 @@ class FleetOperation(models.Model):
                 # البحث أو الإنشاء
                 existing = Odometer.search(domain, limit=1)
                 print(f"  Found existing odometer? {bool(existing)} domain={domain}")
-
+                if vehicle.company_id and vehicle.company_id not in self.env.user.company_ids:
+                    raise UserError(f"Vehicle {vehicle.name} belongs to another company")
                 vals = {
                     'date': rec.date,
                     'vehicle_id': line.vehicle_id.id,

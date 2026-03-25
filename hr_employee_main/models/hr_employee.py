@@ -9,7 +9,7 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
     _order = 'emp_code'
 
-    display_name = fields.Char("Display Name", compute='compute_display_name', store=True)
+    display_name = fields.Char("Display Name", compute='_compute_display_name', store=True)
     location_id = fields.Many2one("locations.detail")
     residence_area = fields.Many2one("locations.detail",string='Location')
     arabic_name = fields.Char("Arabic Name")
@@ -69,11 +69,22 @@ class HrEmployee(models.Model):
 
 
     @api.model
-    def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None, order=None):
-        args = list(args or [])
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args = args or []
+        domain = []
         if name:
-            args += ['|',('name', operator, name), ('emp_code', operator, name)]
-        return self._search(args, limit=limit)
+            domain = ['|', ('name', operator, name), ('emp_code', operator, name)]
+        pos = self.search(domain + args, limit=limit)
+        return pos.name_get()
+
+    def name_get(self):
+        result = []
+        for rec in self:
+            name = rec.name or ''
+            if rec.emp_code:
+                name = "[%s] %s" % (rec.emp_code, name)
+            result.append((rec.id, name))
+        return result
 
 
     @api.depends('department_id')
@@ -82,7 +93,7 @@ class HrEmployee(models.Model):
             employee.parent_id = employee.department_id.manager_id
 
     @api.depends('emp_code', 'name')
-    def compute_display_name(self):
+    def _compute_display_name(self):
         for record in self:
             display_name = record.name
             if record.emp_code:

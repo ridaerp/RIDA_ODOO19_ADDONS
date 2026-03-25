@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_transport_report_form" model="ir.ui.view">
+            <field name="name">transport.report.wizard.form</field>
+            <field name="model">transport.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Transportation Report">
+                    <group>
+                        <group>
+                            <field name="date_from" required="1"/>
+                            <field name="rotation_type" required="1"/>
+                        </group>
+                        <group>
+                            <field name="date_to" required="1"/>
+                        </group>
+                    </group>
+
+                    <footer>
+                        <button string="Generate Report" type="object"
+                                name="action_generate_report" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_transport_report" model="ir.actions.act_window">
+            <field name="name">Transportation Report</field>
+            <field name="res_model">transport.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_transport_report"
+          name="Transportation Report"
+          parent="hr_holidays.menu_hr_holidays_report"
+          action="action_transport_report"/>
+
+    </data>
+</odoo>

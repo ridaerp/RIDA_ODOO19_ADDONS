@@ -3,12 +3,11 @@
     <data>
 
 
-  <record id="view_journal_new_form_view" model="ir.ui.view">
+<record id="view_journal_new_form_view" model="ir.ui.view">
             <field name="name">account.move.form</field>
             <field name="model">account.move</field>
-                <field name="inherit_id" ref="account.view_move_form" />
-
-                <field name="arch" type="xml">
+            <!-- <field name="inherit_id" ref="account.view_move_form" /> -->
+            <field name="arch" type="xml">
 
 
                 <xpath expr="//field[@name='journal_id']" position="after">
@@ -21,11 +20,11 @@
 
                 <xpath expr="//header" position="replace">
 
-                          <header>
+                    <header>
 
 
 
-
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                        <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" data-hotkey="q" context="{'validate_analytic': True}"  
 
                         invisible = "state != 'draft' or move_type not in ['entry']"
@@ -36,11 +35,7 @@
 
 
 
-
                        <button name="action_post" string="Confirm" class="oe_highlight" type="object" groups="account.group_account_invoice" data-hotkey="q" context="{'validate_analytic': True}"  invisible="move_type  in ['entry'] or user_type_ != 'rohax' "/>
-
-
-
 
 
                         <button name="action_finance" string="Confirm" class="oe_highlight" type="object" groups="base_rida.rida_finance_manager"
@@ -77,7 +72,7 @@
                         <button name="action_reject" type="object" string="Reject" groups="base_rida.rida_internal_audit" class="btn btn-danger" invisible="state != 'internal_audit'"/>
                 
                         <!-- <button name="button_set_checked" string="Set as Checked" type="object" groups="account.group_account_invoice" invisible="not to_check" data-hotkey="k"/> -->
-                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                        
                         <field name="edi_show_force_cancel_button" invisible="1"/>
                     </header>
                 </xpath>
@@ -85,12 +80,6 @@
         </record>
 
 
-
-                 
-
-
-                      
-               
 
 
         <record id="view_journal_form_inherit" model="ir.ui.view">

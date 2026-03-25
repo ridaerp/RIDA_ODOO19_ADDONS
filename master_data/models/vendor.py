@@ -46,9 +46,10 @@ class RequestVendor(models.Model):
     email = fields.Char()
     state = fields.Selection(
         [('draft', 'Draft'), ('scm', 'Waiting Procurement Manager'), ('w_ore_rock', 'Waiting Ore/Rock Manager'),
+         ('w_account', 'Waiting Account Verification'), ('w_audit', 'Waiting Internal Audit'),
          ('w_scm_director', 'Waiting Supply Chain Director'),
-                 ('w_adv', 'Waiting Finance Manager /Analyti Account'), 
-         ('md', 'Waiting Master Admin'),
+         ('w_adv', 'Waiting Finance Manager /Analyti Account'),
+         ('md', 'Waiting Finance Manager'),
          ('reject', 'reject'), ('done', 'Done')],
         string='Status', default='draft', track_visibility='onchange')
     state_rock = fields.Selection(related='state')
@@ -77,13 +78,27 @@ class RequestVendor(models.Model):
     )
     duplicate_warning = fields.Boolean(default=False)
 
+
     def activity_update(self):
         for rec in self:
             users = []
+            # rec.activity_unlink(['hr_salary_advance.mail_act_approval'])
+            # if rec.state not in ['draft','reject']:
+            #     continue
             message = ""
-            if rec.state == 'w_ore_rock':
-                users = self.env.ref('base_rida.rida_group_master_data_manager').user_ids
-                message = "Please Create the Supplier "
+            if rec.state == 'w_account':
+                users = self.env.ref('account.group_account_user').user_ids
+                message = "Please check the supplier's financial data."
+                for user in users:
+                    self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
+            if rec.state == 'w_audit':
+                users = self.env.ref('base_rida.rida_internal_audit').user_ids
+                message = "Please Conduct an internal review of the supplier request."
+                for user in users:
+                    self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
+            if rec.state == 'md':
+                users = self.env.ref('base_rida.rida_finance_manager').user_ids
+                message = "Please Review the Supplier's Request And Create the Supplier "
                 for user in users:
                     self.activity_schedule('master_data.mail_act_master_data_approval', user_id=user.id, note=message)
             else:
@@ -275,7 +290,21 @@ class RequestVendor(models.Model):
         else:
             return self.write({'state': 'w_scm_director'})
 
+    def account_verification(self):
+        for rec in self:
+            if rec.is_rock_vendor:
+                rec.state = 'w_audit'
+                rec.activity_update()
 
+    def internal_audit(self):
+            for rec in self:
+                if rec.is_rock_vendor:
+                    rec.state = 'md'
+                    rec.activity_update()
+
+    def set_draft(self):
+        for rec in self:
+            rec.state = 'draft'
 
 
     def create_vendor(self):
