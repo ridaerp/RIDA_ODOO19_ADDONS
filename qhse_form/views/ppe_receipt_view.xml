@@ -146,7 +146,7 @@
     </record>
 
     <menuitem id="menu_ppe_receipt"
-              name="PPE Receipts"
+              name="PPE Non-Routine Distributions"
               parent="menu_ppe_root"
               action="action_ppe_receipt"
               sequence="6"/>

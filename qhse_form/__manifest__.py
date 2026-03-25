@@ -37,7 +37,7 @@
         'views/loto_work_permit.xml',
         'views/work_site_view.xml',
         'views/ppe_complain_view.xml',
-        'views/ppe_replacement_view.xml',
+        # 'views/ppe_replacement_view.xml',
         'views/ppe_deductiont_view.xml',
         'views/ppe_medical_view.xml',
         'views/ppe_inspection_view.xml',

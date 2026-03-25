@@ -15,6 +15,7 @@ class LiftingWorkPermit(models.Model):
 
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
+    department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
 
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     state = fields.Selection([
@@ -306,6 +307,36 @@ class LiftingWorkPermit(models.Model):
             # التعديل هنا: نغير الحالة أولاً ثم نستدعي الأنشطة
             rec.state = 'submitted'
             rec.action_update_activities()
+            if rec.department_ids:
+                rec._notify_department_managers()
+
+    def _notify_department_managers(self):
+        """دالة لإرسال الإشعارات لمدراء الأقسام المعنية"""
+        for record in self:
+            # جلب المستخدمين المرتبطين بمدراء الأقسام (تجنب التكرار)
+            managers = record.department_ids.mapped('manager_id.user_id')
+            
+            # فلترة المدراء الذين لديهم مستخدم نشط في النظام
+            active_managers = managers.filtered(lambda m: m.id)
+            
+            if active_managers:
+                # 1. إرسال رسالة في الـ Chatter ومنشن (Mention) للمدراء
+                body = _("لقد تم تحديد قسمكم كقسم معني في تصريح العمل رقم: <b>%s</b>. يرجى المراجعة.") % record.name
+                record.message_post(
+                    body=body,
+                    partner_ids=active_managers.partner_id.ids,
+                    subtype_xmlid='mail.mt_comment',
+                    message_type='notification'
+                )
+
+                # 2. (اختياري) إنشاء نشاط (Activity) لكل مدير ليظهر في قائمة المهام لديهم
+                for manager in active_managers:
+                    record.activity_schedule(
+                        'mail.mail_activity_data_todo',
+                        user_id=manager.id,
+                        summary=_('مراجعة تصريح عمل: أقسام معنية'),
+                        note=_('تمت إضافتكم كقسم معني في التصريح %s') % record.name
+                    )
 
     # تعديل دالة action_authorize لتسجيل الشخص الذي اعتمد الطلب
     def action_authorize(self):

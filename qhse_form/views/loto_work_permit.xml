@@ -79,6 +79,7 @@
                                 <field name="loto_justification" widget="signature"/>
                             </group>
                             <group>
+                                <field name="department_ids" widget="many2many_tags"/>
                                 <field name="is_need_ptw" invisible="state != 'draft'"/>
                                 <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft'"/>
                             </group>

@@ -124,7 +124,7 @@
     </record>
 
     <menuitem id="menu_ppe_distribution"
-              name="Routine Distributions"
+              name="PPE Routine Distributions"
               parent="menu_ppe_root"
               action="action_ppe_distribution"
               sequence="7"/>

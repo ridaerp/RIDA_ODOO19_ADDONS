@@ -143,8 +143,8 @@ class CrossoveredBudget(models.Model):
                     # ======================
                     if form.budget_type == 'main':
                         vals = {
-                            'budget_amount': standard_amount,
-                            'custom_planned_amount': custom_amount,
+                            'budget_amount': custom_amount,
+                            'custom_planned_amount': standard_amount,
                         }
                         if existing_line:
                             existing_line.write(vals)
@@ -170,10 +170,10 @@ class CrossoveredBudget(models.Model):
                                 _("No base budget line found to amend for %s") % f_line.account_account_id.name)
 
                         existing_line.write({
-                            'budget_amount': existing_line.planned_amount + standard_amount,
-                            'amendment_amount': existing_line.amendment_amount + standard_amount,
-                            'amendment_amount_custom': existing_line.amendment_amount_custom + custom_amount,
-                            'custom_planned_amount': existing_line.custom_planned_amount + custom_amount,
+                            'budget_amount': existing_line.planned_amount + custom_amount,
+                            'amendment_amount': existing_line.amendment_amount + custom_amount,
+                            'amendment_amount_custom': existing_line.amendment_amount_custom + standard_amount,
+                            'custom_planned_amount': existing_line.custom_planned_amount + standard_amount,
                         })
 
                     # ======================
@@ -186,10 +186,10 @@ class CrossoveredBudget(models.Model):
 
                         # تحديث المبالغ (سواء كانت سالبة للمحول منه أو موجبة للمحول إليه)
                         existing_line.write({
-                            'budget_amount': existing_line.planned_amount + standard_amount,
-                            'amendment_amount': existing_line.amendment_amount + standard_amount,
-                            'amendment_amount_custom': existing_line.amendment_amount_custom + custom_amount,
-                            'custom_planned_amount': existing_line.custom_planned_amount + custom_amount,
+                            'budget_amount': existing_line.planned_amount + custom_amount,
+                            'amendment_amount': existing_line.amendment_amount + custom_amount,
+                            'amendment_amount_custom': existing_line.amendment_amount_custom + standard_amount,
+                            'custom_planned_amount': existing_line.custom_planned_amount + standard_amount,
                         })
 
         return True

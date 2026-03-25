@@ -50,7 +50,7 @@ class CrossoveredBudgetLines(models.Model):
 
     custom_currency_id = fields.Many2one(
         'res.currency',
-        # related="crossovered_budget_id.custom_currency_id"
+        related="budget_analytic_id.custom_currency_id"
     )
     custom_planned_amount = fields.Monetary(
         compute='_compute_custom_planned_amount',

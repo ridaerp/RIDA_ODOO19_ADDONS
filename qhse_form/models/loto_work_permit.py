@@ -11,6 +11,7 @@ class LotoWorkPermit(models.Model):
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
+    department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
         ('submitted', 'انتظار الاعتماد / Pending Approval'),

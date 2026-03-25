@@ -40,10 +40,13 @@
                         </button>
                     </div>
                 </xpath>
-                <xpath expr="//field[@name='budget_line_ids']/list"
-                       position="inside">
+                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='account_id']"
+                       position="after">
                     <field name="account_account_id"/>
                     <field name="department_id"/>
+                </xpath>
+                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='custom_planned_amount']"
+                       position="after">
                     <field name="amendment_amount"/>
                     <field name="amendment_amount_custom"/>
                 </xpath>

@@ -140,5 +140,5 @@
     </record>
 
     <menuitem id="menu_ppe_root" name="PPE Management" sequence="11" parent="qhse.qhse_menu"/>
-    <menuitem id="menu_ppe_complaint" name="Complaints &amp; Suggestions" parent="menu_ppe_root" action="action_ppe_complaint" sequence="1"/>
+    <menuitem id="menu_ppe_complaint" name="PPE Complaints &amp; Suggestions" parent="menu_ppe_root" action="action_ppe_complaint" sequence="1"/>
 </odoo>

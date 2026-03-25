@@ -66,14 +66,6 @@
                 <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,fin_approve,dir_approve,ceo_approve,confirmed"/>
                 </header>
                 <sheet>
-                    <div class="alert alert-warning" role="alert" style="margin-bottom:10px;" invisible="state != 'draft'">
-                        <strong>تنبيه الإدخال:</strong>
-                        يرجى إدخال المبالغ بـ <strong><field name="currency_id" readonly="1" options="{'no_open': True}"/></strong>.
-                        <br/>
-                        * للمصروفات: أدخل المبلغ بـ <strong>إشارة سالب (-)</strong> (مثال: -5000).
-                        <br/>
-                        * للإيرادات: أدخل المبلغ بـ <strong>إشارة موجب</strong> (مثال: 5000).
-                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="New..."/>

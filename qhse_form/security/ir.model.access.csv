@@ -13,8 +13,6 @@ access_qhse_loto_isolation_line,access_qhse_loto_isolation_line,model_loto_isola
 access_qhse_work_site,access_qhse_work_site,model_work_site,,1,1,1,1
 access_qhse_ppe_complaint,access_qhse_ppe_complaint,model_ppe_complaint,,1,1,1,1
 access_qhse_ppe_complaint_line,access_qhse_ppe_complaint_line,model_ppe_complaint_line,,1,1,1,1
-access_qhse_ppe_replacement,access_qhse_ppe_replacement,model_ppe_replacement,,1,1,1,1
-access_qhse_ppe_replacement_line,access_qhse_ppe_replacement_line,model_ppe_replacement_line,,1,1,1,1
 access_qhse_ppe_deduction,access_qhse_ppe_deduction,model_ppe_deduction,,1,1,1,1
 access_qhse_ppe_deduction_line,access_qhse_ppe_deduction_line,model_ppe_deduction_line,,1,1,1,1
 access_qhse_ppe_medical,access_qhse_medical,model_ppe_medical,,1,1,1,1

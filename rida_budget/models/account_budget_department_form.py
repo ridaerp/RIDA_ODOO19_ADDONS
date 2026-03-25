@@ -197,7 +197,7 @@ class BudgetDepartmentFormLine(models.Model):
                     line.practical_amount = 0.0
                     line.theoretical_amount = 0.0
 
-                line.percentage = master_line.percentage
+                line.percentage = master_line.achieved_percentage
                 line.amendment_amount = master_line.amendment_amount
                 line.custom_practical_amount = getattr(master_line, 'custom_practical_amount', 0.0)
                 line.custom_theoretical_amount = getattr(master_line, 'custom_theoritical_amount', 0.0)

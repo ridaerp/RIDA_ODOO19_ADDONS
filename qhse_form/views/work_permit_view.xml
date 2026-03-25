@@ -87,6 +87,7 @@
                                 <field name="date_from" readonly="state != 'draft'" required="True"/>
                                 <field name="date_to" readonly="state != 'draft'" required="True"/>
                                 <field name="shift" readonly="state != 'draft'" required="True"/>
+                                <field name="department_ids" widget="many2many_tags"/>
                             </group>
                             <group>
                                 <field name="is_need_ptw" invisible="state != 'draft'"/>

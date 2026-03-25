@@ -73,6 +73,7 @@
                             <field name="date"/>
                             <field name="location" options="{'no_create': True, 'no_create_edit': True}" required="True"/>
                             <field name="work_at_height_type" widget="radio" options="{'horizontal': true}" required="True"/>
+                            <field name="department_ids" widget="many2many_tags"/>
                         </group>
                         <group>
                             <field name="date_from" required="True"/>

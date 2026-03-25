@@ -71,8 +71,8 @@
                     <group string="General Info &amp; Weather">
                         <group>
                             <field name="date"/>
-<!--                            <field name="location"/>-->
                             <field name="weather_condition" required="True"/>
+                            <field name="department_ids" widget="many2many_tags"/>
                         </group>
                         <group>
                             <field name="date_from" required="True"/>

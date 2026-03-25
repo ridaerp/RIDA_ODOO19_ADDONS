@@ -83,6 +83,7 @@
                                 <field name="entry_purpose" readonly="state != 'draft'" required="True"/>
                                 <field name="space_description" readonly="state != 'draft'" required="True"/>
                                 <field name="tools_used" readonly="state != 'draft'" required="True"/>
+                                <field name="department_ids" widget="many2many_tags"/>
                             </group>
                             <group>
                                 <field name="is_need_ptw" invisible="state != 'draft'"/>

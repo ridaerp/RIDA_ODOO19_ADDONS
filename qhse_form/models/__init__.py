@@ -9,7 +9,7 @@ from . import lifting_work_permit
 from . import loto_work_permit
 from . import work_site
 from . import ppe_complain
-from . import ppe_replacement
+# from . import ppe_replacement
 from . import ppe_deduction
 from . import ppe_medical
 from . import ppe_inspection

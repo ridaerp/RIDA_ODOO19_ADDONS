@@ -80,7 +80,7 @@
                                 <field name="requester_id" readonly="1" options="{'no_open': True}"/>
                                 <field name="department_id"/>
                                 <field name="performer_id" readonly="state != 'draft'" required="True"/>
-
+                                <field name="department_ids" widget="many2many_tags"/>
                             </group>
                             <group>
                                 <label for="date_from" string="الصلاحية / Validity"/>

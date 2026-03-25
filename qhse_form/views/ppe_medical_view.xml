@@ -156,7 +156,7 @@
         </field>
     </record>
 
-    <menuitem id="menu_ppe_medical" name="Medical Cases"
+    <menuitem id="menu_ppe_medical" name="PPE Medical Cases"
               parent="menu_ppe_root" action="action_ppe_medical" sequence="4"/>
 
 </odoo>
