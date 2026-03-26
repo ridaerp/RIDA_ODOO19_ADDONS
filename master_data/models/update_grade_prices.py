@@ -52,12 +52,12 @@ class UpdateGradePrices(models.Model):
                 raise UserError("Sorry! only draft records can be deleted!")
         return super(UpdateGradePrices, self).unlink()
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('update.grade.prices') or ' '
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].sudo().next_by_code('update.grade.prices') or ' '
+        return super(UpdateGradePrices, self).create(vals_list)
 
-        return super(UpdateGradePrices, self).create(vals)
 
     def get_grade(self):
         grade_prices = self.env['purchase.price.list'].sudo().search([])

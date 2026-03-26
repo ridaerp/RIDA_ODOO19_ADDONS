@@ -51,7 +51,7 @@ class PurchaseOrder(models.Model):
         ('done', 'Locked'),
         ('reject', 'Rejected'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
+    ], string='Status', readonly=False, index=True, copy=False, default='draft', track_visibility='onchange')
     user_type_ = fields.Selection(related="create_uid.user_type")
 
     request_id = fields.Many2one('material.request', 'Material Request')

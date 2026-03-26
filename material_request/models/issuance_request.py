@@ -316,7 +316,7 @@ class IssuanceRequestLine(models.Model):
     qty_requested = fields.Float(string='Requested Quantity', track_visibility='onchange', digits=(16, 2))
 
     qty_issued = fields.Float(string='Issued Quantity', track_visibility='onchange', digits=(16, 2))
-    lot_ids = fields.Many2many(comodel_name="stock.lot")
+    lot_ids = fields.Many2many(comodel_name="stock.lot", copy=False)
     request_id = fields.Many2one('issuance.request',
                                  'Issuance No.',
                                  ondelete='cascade', readonly=True)

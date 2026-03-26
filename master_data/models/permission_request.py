@@ -159,7 +159,7 @@ class PermissionRequest(models.Model):
             else:
                 self.ensure_one()
                 try:
-                    line_manager = self.employee_id.user_id.line_manager_id
+                    line_manager = self.requester_id.line_manager_id
                 except:
                     line_manager = False
 
