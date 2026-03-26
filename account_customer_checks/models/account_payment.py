@@ -106,7 +106,7 @@ class account_payment(models.Model):
     check_journal_id = fields.Many2one('account.journal', 'Clearing Journal',domain=[('type', 'in', ('bank', 'cash')), ('is_check_journal', '!=', True)])
     is_check_journal = fields.Boolean(related='journal_id.is_check_journal',store=True)
     # active = fields.Boolean()
-    state = fields.Selection([('draft', 'Draft'), ('in_process', 'In Process'),('posted', 'Posted'), ('sent', 'Sent'), ('reconciled', 'Reconciled'),('cancel', 'Cancelled')],
+    state = fields.Selection([('draft', 'Draft'), ('in_process', 'In Process'),('posted', 'Posted'), ('sent', 'Sent'), ('reconciled', 'Reconciled'),('paid', 'Paid'),('cancel', 'Cancelled')],
                              readonly=True, default='draft', copy=False, string="Status")
 
 
@@ -133,13 +133,13 @@ class account_payment(models.Model):
 
     def action_post(self):
         PDC = self.env['account.pdc']
-
-        company_currency = self.env.user.company_id.currency_id
+        company_currency = self.env.company.currency_id
+        
         for rec in self:
             if rec.is_check_journal:
                 PDC.create({
-                    'name': rec.cheque_no or '/',
-                    'check_no': rec.cheque_no ,
+                    'name': rec.check_no or '/',
+                    'check_no': rec.check_no,
                     'maturity_date': rec.check_date,
                     'clear_date': rec.check_date,
                     'journal_id': rec.check_journal_id.id if rec.check_journal_id else False,
@@ -149,5 +149,13 @@ class account_payment(models.Model):
                     'currency_id': company_currency.id,
                     'amount': rec.amount,
                 })
-            rec.state = 'posted'
-        return super(account_payment, self).action_post()
+        
+        # استدعاء الدالة الأصلية أولاً لتقوم بعمل القيود المحاسبية
+        res = super(account_payment, self).action_post()
+        
+        # بعد تنفيذ الدالة الأصلية، يمكنك التأكد من الحالة
+        for rec in self:
+            if rec.is_check_journal and rec.state not in ['posted', 'paid']:
+                rec.state = 'posted'
+                
+        return res
