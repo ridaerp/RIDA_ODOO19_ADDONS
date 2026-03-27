@@ -58,6 +58,34 @@ class LabRequest(models.Model):
     last_issuance_request_id = fields.Many2one('medicare.issuance.request', 'Lab Consumable Request')
     lab_consumble_count = fields.Integer(string="Lab Consumable", compute='_compute_lab_consumble_count')
 
+    def _update_invoice_prices(self):
+        """ دالة داخلية لتحديث جدول الأسعار تلقائياً """
+        for rec in self:
+            # 1. مسح الأسعار القديمة
+            rec.invoice_prices_ids = [(5, 0, 0)]
+            
+            # 2. جمع كل المعرفات المختارة من القوائم الثلاث
+            all_investigation_ids = (
+                rec.routine_list_ids.ids + 
+                rec.serology_list_ids.ids + 
+                rec.chemistry_list_ids.ids
+            )
+            
+            if all_investigation_ids:
+                # جلب بيانات الفحوصات وأسعارها
+                investigations = self.env['investigations.list'].browse(all_investigation_ids)
+                
+                invoice_data = []
+                for inv in investigations:
+                    invoice_data.append((0, 0, {
+                        'investigation_name': inv.id,
+                        'price': inv.price,
+                        'lab_request': rec.id
+                    }))
+                
+                # تحديث الحقل
+                rec.invoice_prices_ids = invoice_data
+
     def _compute_lab_consumble_count(self):
         self.lab_consumble_count = self.env['medicare.issuance.request'].search_count(
             [('lab_id.id', '=', self.id)])
@@ -216,6 +244,7 @@ class LabRequest(models.Model):
 
                 # Assign the data to the Many2many field
                 rec.lab_result_routine_ids = lab_result_data
+            rec._update_invoice_prices()
 
     @api.onchange('serology_list_ids')
     def _onchange_serology_list_ids(self):
@@ -235,6 +264,7 @@ class LabRequest(models.Model):
 
                 # Assign the virtual records to lab_result_serology_ids
                 rec.lab_result_serology_ids = lab_result_data
+            rec._update_invoice_prices()
 
     @api.onchange('chemistry_list_ids')
     def _onchange_chemistry_list_ids(self):
@@ -254,6 +284,7 @@ class LabRequest(models.Model):
 
                 # Assign the virtual records to lab_result_chemistry_ids
                 rec.lab_result_chemistry_ids = lab_result_data
+            rec._update_invoice_prices()
 
     def update_all_previous_prices(self):
         x=self.env['lab.request'].search([])

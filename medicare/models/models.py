@@ -80,10 +80,10 @@ class DoctorVisit(models.Model):
 
     def compute_doctor_visit_count(self):
         if self.p_employee:
-            self.doctor_visit_count = self.env['doctor.visit'].search_count(
+            self.doctor_visit_count = self.env['doctor.visit'].sudo().search_count(
                 [('p_employee.id', '=', self.p_employee.id), ('id', '!=', self.id)])
         elif self.p_contractor:
-            self.doctor_visit_count = self.env['doctor.visit'].search_count(
+            self.doctor_visit_count = self.env['doctor.visit'].sudo().search_count(
                 [('p_contractor.id', '=', self.p_contractor.id), ('id', '!=', self.id)])
         elif self.p_quest:
             self.doctor_visit_count = self.env['doctor.visit'].search_count(
@@ -197,7 +197,7 @@ class DoctorVisit(models.Model):
     def action_minor_room(self):
         self.ensure_one()
         env = self.env(user=1)
-        res = env['minor.room'].create(
+        res = env['minor.room'].sudo().create(
             {'type': self.type, 'account_analytic_id': self.account_analytic_id.id, 'company_id': self.company_id.id,
              'p_employee': self.p_employee.id,
              'p_contractor': self.p_contractor.id,
@@ -217,7 +217,7 @@ class DoctorVisit(models.Model):
     def action_lab_test(self):
         self.ensure_one()
         env = self.env(user=1)
-        res = env['lab.request'].create(
+        res = env['lab.request'].sudo().create(
             {'type': self.type, 'account_analytic_id': self.account_analytic_id.id, 'company_id': self.company_id.id,
              'p_employee': self.p_employee.id,
              'p_contractor': self.p_contractor.id, 'department_id': self.department_id.id,
@@ -281,18 +281,19 @@ class DoctorVisit(models.Model):
     def _compute_fields(self):
         for rec in self:
             if rec.p_employee:
+                employee_sudo = rec.p_employee.sudo()
                 if rec.p_employee.company_id:
-                    rec.company_id = rec.p_employee.company_id.id
-                if rec.p_employee.sudo():
-                    rec.account_analytic_id = rec.p_employee.sudo().analytic_account_id
+                    rec.company_id = employee_sudo.company_id.id
+                if employee_sudo:
+                    rec.account_analytic_id = employee_sudo.analytic_account_id
                 else:
                     rec.account_analytic_id = False
-                rec.age = rec.p_employee.age
-                rec.department_id = rec.p_employee.department_id
-                rec.job_id = rec.p_employee.job_id
-                rec.line_manager_id = rec.p_employee.user_id.line_manager_id
-                rec.gender = rec.sudo().p_employee.sex
-                rec.blood_group = rec.p_employee.blood_group
+                rec.age = employee_sudo.age
+                rec.department_id = employee_sudo.department_id
+                rec.job_id = employee_sudo.job_id
+                rec.line_manager_id = employee_sudo.user_id.line_manager_id
+                rec.gender = employee_sudo.sex
+                rec.blood_group = employee_sudo.blood_group
                 rec.patient = rec.p_employee.name
             elif rec.p_contractor:
                 rec.blood_group = rec.p_contractor.blood_group
@@ -319,12 +320,12 @@ class DoctorVisit(models.Model):
                 rec.job_id = False
                 rec.line_manager_id = False
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('doctor.visit') or ' '
-
-        return super(DoctorVisit, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', 'NEW') == 'NEW':
+                vals['name'] = self.env['ir.sequence'].next_by_code('doctor.visit') or ' '
+        return super(DoctorVisit, self).create(vals_list)
 
     @api.onchange('type')
     def _onchange_type(self):
