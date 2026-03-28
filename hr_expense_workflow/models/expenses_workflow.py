@@ -79,7 +79,7 @@ class Expenses(models.Model):
 
     def action_submit_sheet(self):
         if self.user_type_=='rohax':
-            self._do_submit()
+            action_submit_expenses()
         else:
             self.write({'state': 'lm'})
             # self.activity_update()
