@@ -42,8 +42,8 @@ class StockScrap(models.Model):
                 self.product_id = self.production_id.product_id.id
                 self.quantity = self.production_id.qty_producing
                 self.lot_id = self.production_id.lot_producing_id
-            else:
-                return super()._onchange_production_id()
+            # else:
+            #     return super()._onchange_production_id()
 
     @api.depends('quantity', 'actual_gold_percentage')
     def _compute_gold_details(self):

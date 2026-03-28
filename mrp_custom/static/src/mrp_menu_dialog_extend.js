@@ -1,38 +1,49 @@
-/** @odoo-module */
-
 import { MrpMenuDialog } from "@mrp_workorder/mrp_display/dialog/mrp_menu_dialog";
 import { patch } from "@web/core/utils/patch";
 
 patch(MrpMenuDialog.prototype, {
-    /**
-     * Overwrites the original block method.
-     */
-    block() {
-        // This console log helps confirm your patched method is being called.
-        console.log("🔁 Custom Patched Block Method Called (Odoo 17)");
+    async block() {
+        // 1. استخراج البيانات من السجل الحالي (Work Order)
+        const record = this.props.record;
 
-        const options = {
-            additionalContext: {
-                default_workcenter_id: this.props.record.data.workcenter_id[0],
-                // default_is_block: '1',
-                // Add your custom context keys here, as in your initial custom class attempt
-                // default_workorder_id: this.props.record.resId, // Assuming resId holds the workorder ID
-                default_workorder_ref_id: this.props.record.resId, // Assuming resId holds the workorder ID
-                custom_param: 'my_custom_value',
-            },
+        // جلب معرف مركز العمل (Work Center)
+        let wcId = null;
+        if (record.data.workcenter_id) {
+            // التعامل مع أشكال البيانات المختلفة [id, name] أو {res_id: id}
+            wcId = Array.isArray(record.data.workcenter_id)
+                   ? record.data.workcenter_id[0]
+                   : (record.data.workcenter_id.res_id || record.data.workcenter_id);
+        }
 
-            onClose: async () => {
-                // 'this.props.reload' is a function passed via props to the dialog
-                await this.props.reload();
-            },
+        // جلب معرف أمر العمل (Work Order)
+        const woId = record.resId || record.data.id;
+
+        // 2. بناء السياق (Context) مع تنظيف أي قيم قديمة
+        const customContext = {
+            'default_workcenter_id': wcId,
+            'default_workorder_id': woId,
+            'active_id': woId,
+            'active_model': 'mrp.workorder',
         };
 
+        console.log("🛠️ محاولة الحظر ببيانات:", customContext);
 
-        // 'this.action' is a service hooked in the original component's setup method.
-        // It should be available here.
-        this.action.doAction('mrp.act_mrp_block_workcenter_wo', options);
+        // 3. استدعاء الأكشن مع التأكد من تمرير السياق في المكانين (الرئيسي والإضافي)
+        await this.action.doAction('mrp.act_mrp_block_workcenter_wo', {
+            additionalContext: customContext,
+            props: {
+                context: customContext, // تمرير مباشر للـ props في Odoo 19
+            },
+            onClose: async () => {
+                if (this.props.reload) {
+                    await this.props.reload();
+                }
+            },
+        });
 
-        // 'this.props.close' is a function passed via props to close the dialog
-        this.props.close();
+        // 4. إغلاق النافذة
+        if (this.props.close) {
+            this.props.close();
+        }
     }
 });

@@ -269,7 +269,7 @@ class RotationBatch(models.Model):
                     'company_id': recc.company_id.id,
                     'amount': rec.amount,
                     'currency_id': recc.company_id.currency_id.id,
-                    'ref': recc.name,
+                    'payment_reference': recc.name,
                     'journal_id': recc.journal_payment_id.id,
 
                 }
@@ -307,8 +307,8 @@ class RotationBatch(models.Model):
             'view_id': tree_view_id,
             'view_mode': 'list',
             'res_model': 'account.payment',
-            'domain': [('ref', '=', self.name)],
-            'context': "{'create': False}"
+            'domain': [('payment_reference', '=', self.name)],
+            'context': {'create': False}
         }
 
 
@@ -409,49 +409,77 @@ class LocationsDetail(models.Model):
 class HolidaysRequest(models.Model):
     _inherit = 'hr.leave'
 
-    @api.constrains('state', 'number_of_days', 'holiday_status_id', 'employee_id')
-    def _check_holidays(self):
-        for holiday in self:
-            # Skip check if no employee or leave type does not require allocation
-            if not holiday.employee_id or holiday.holiday_status_id.requires_allocation == 'no':
-                continue
+    # @api.constrains('state', 'number_of_days', 'holiday_status_id', 'employee_id')
+    # def _check_holidays(self):
+    #     for holiday in self:
+    #         # Skip check if no employee or leave type does not require allocation
+    #         if not holiday.employee_id or holiday.holiday_status_id.requires_allocation == 'no':
+    #             continue
 
-            employee = holiday.employee_id
-            leave_type = holiday.holiday_status_id
+    #         employee = holiday.employee_id
+    #         leave_type = holiday.holiday_status_id
 
-            # Get validated allocations
-            allocations = self.env['hr.leave.allocation'].search([
-                ('employee_id', '=', employee.id),
-                ('holiday_status_id', '=', leave_type.id),
-                ('state', '=', 'validate'),
-            ])
-            allocated = sum(allocations.mapped('number_of_days'))
+    #         # Get validated allocations
+    #         allocations = self.env['hr.leave.allocation'].search([
+    #             ('employee_id', '=', employee.id),
+    #             ('holiday_status_id', '=', leave_type.id),
+    #             ('state', '=', 'validate'),
+    #         ])
+    #         allocated = sum(allocations.mapped('number_of_days'))
 
-            # Get validated leaves excluding the current one (if it's already stored)
-            taken_leaves = self.env['hr.leave'].search([
-                ('employee_id', '=', employee.id),
-                ('holiday_status_id', '=', leave_type.id),
-                ('state', '=', 'validate'),
-                ('id', '!=', holiday.id)
-            ])
-            taken = sum(taken_leaves.mapped('number_of_days'))
+    #         # Get validated leaves excluding the current one (if it's already stored)
+    #         taken_leaves = self.env['hr.leave'].search([
+    #             ('employee_id', '=', employee.id),
+    #             ('holiday_status_id', '=', leave_type.id),
+    #             ('state', '=', 'validate'),
+    #             ('id', '!=', holiday.id)
+    #         ])
+    #         taken = sum(taken_leaves.mapped('number_of_days'))
 
-            # Remaining leaves
-            remaining_leaves = allocated - taken
+    #         # Remaining leaves
+    #         remaining_leaves = allocated - taken
 
-            # Calculate virtual remaining including current leave
-            requested_days = holiday.number_of_days or 0.0
-            virtual_remaining = remaining_leaves - requested_days
+    #         # Calculate virtual remaining including current leave
+    #         requested_days = holiday.number_of_days or 0.0
+    #         virtual_remaining = remaining_leaves - requested_days
 
-            if float_compare(remaining_leaves, 0, precision_digits=2) < 0 or \
-               float_compare(virtual_remaining, 0, precision_digits=2) < 0:
-                raise ValidationError(_(
-                    f'The number of remaining time off is not sufficient for {employee.name} '
-                    f'for time off type "{leave_type.name}".\n'
-                    'Please also check the time off requests waiting for validation.'
-                ))
+    #         if float_compare(remaining_leaves, 0, precision_digits=2) < 0 or \
+    #            float_compare(virtual_remaining, 0, precision_digits=2) < 0:
+    #             raise ValidationError(_(
+    #                 f'The number of remaining time off is not sufficient for {employee.name} '
+    #                 f'for time off type "{leave_type.name}".\n'
+    #                 'Please also check the time off requests waiting for validation.'
+    #             ))
 
+    @api.constrains('date_from', 'date_to')
+    def _check_contracts(self):
+        pass
+        """
+            A leave cannot be set across multiple contracts.
+            Note: a leave can be across multiple contracts despite this constraint.
+            It happens if a leave is correctly created (not across multiple contracts) but
+            contracts are later modifed/created in the middle of the leave.
+        """
+        # for holiday in self.filtered('employee_id'):
+        #     versions = holiday._get_overlapping_contracts()
+        #     if len(versions.resource_calendar_id) > 1:
+        #         raise ValidationError(
+        #             self.env._("""A leave cannot be set across multiple versions with different working schedules.
 
+    def _get_overlapping_contracts(self):
+        pass
+        # self.ensure_one()
+        # domain = Domain.AND([
+        #     Domain('employee_id', '=', self.employee_id.id),
+        #     Domain('contract_date_start', '<=', self.date_to),
+        #     Domain.OR([
+        #         Domain('contract_date_end', '>=', self.date_from),
+        #         Domain('contract_date_end', '=', False),
+        #     ])
+        # ])
+        # versions = self.env['hr.version'].sudo().search(domain)
+        # return versions.filtered(lambda v: v._is_overlapping_period(self.date_from.date(), self.date_to.date()))
+    
 
 # class HolidaysRequest(models.Model):
 #     _inherit = 'hr.leave'

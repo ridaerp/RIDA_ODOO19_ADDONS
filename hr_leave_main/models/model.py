@@ -85,7 +85,7 @@ class hrLeave(models.Model):
                 elif rec.mercy_relation in ['hospital', 'natural']:
                     days = 2
 
-                rec.number_of_days_display = days
+                rec.number_of_days = days
                 if rec.request_date_from and days > 0:
                     rec.request_date_to = rec.request_date_from + timedelta(days=days - 1)
 
@@ -129,9 +129,9 @@ class hrLeave(models.Model):
 
     state = fields.Selection([
         ('draft', 'To Submit'),
-        ('cancel', 'Cancelled'),
         ('confirm', 'To Approve'),
         ('refuse', 'Refused'),
+        ('cancel', 'Cancelled'),
         ('validate1', 'HR Manager Approve'),
         ('line_manager', 'Line Manager'),
         ('hr_officer', ' HR officer'),
@@ -165,74 +165,76 @@ class hrLeave(models.Model):
                 rec.click=False
             
 
-    def _get_number_of_days(self, date_from , date_to, employee_id):
-
-        if self.request_unit_half:
-            # """ Returns a float equals to the timedelta between two dates given as string."""
-            if employee_id:
-                employee = self.env['hr.employee'].browse(employee_id)
-                return employee._get_work_days_data(date_from, date_to)
-
-            today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
-                datetime.combine(date_from.date(), time.min),
-                datetime.combine(date_from.date(), time.max),
-                False)
-            hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
-            return {'days': hours / (today_hours), 'hours': hours}
-
-        else:
-            days = 0
-            from_dt = fields.Datetime.from_string(date_from)
-            to_dt = fields.Datetime.from_string(date_to)
-            if from_dt and to_dt:
-                time_delta = to_dt - from_dt
-                days = time_delta.days + 1
-            day_list = []
-            while from_dt <= to_dt:
-                day_list.append(from_dt.date())
-                from_dt += timedelta(days=1)
-            if self.holiday_status_id.exclude_weekend:
-                for day in day_list:
-                    if day.weekday() == 4 or day.weekday() == 5 :
-                        days -= 1
-            if self.holiday_status_id.exclude_public:
-                for p_id in self.env['hr.public.holidays'].search([]):
-                    for day in day_list:
-                        if ((fields.Datetime.from_string(p_id.date_from).date() <= day) and (day <= fields.Datetime.from_string(p_id.date_to).date())):
-                            if day.weekday() != 4 and day.weekday() != 5:
-                                days -= 1
-            days_total = days
-            hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
-            return {'days': days_total, 'hours': hours}
+    # def _get_number_of_days(self, date_from , date_to, employee_id):
+    #
+    #     if self.request_unit_half:
+    #         # """ Returns a float equals to the timedelta between two dates given as string."""
+    #         if employee_id:
+    #             employee = self.env['hr.employee'].browse(employee_id)
+    #             return employee._get_work_days_data(date_from, date_to)
+    #
+    #         today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
+    #             datetime.combine(date_from.date(), time.min),
+    #             datetime.combine(date_from.date(), time.max),
+    #             False)
+    #         hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
+    #         return {'days': hours / (today_hours), 'hours': hours}
+    #
+    #     else:
+    #         days = 0
+    #         from_dt = fields.Datetime.from_string(date_from)
+    #         to_dt = fields.Datetime.from_string(date_to)
+    #         if from_dt and to_dt:
+    #             time_delta = to_dt - from_dt
+    #             days = time_delta.days + 1
+    #         day_list = []
+    #         while from_dt <= to_dt:
+    #             day_list.append(from_dt.date())
+    #             from_dt += timedelta(days=1)
+    #         if self.holiday_status_id.exclude_weekend:
+    #             for day in day_list:
+    #                 if day.weekday() == 4 or day.weekday() == 5 :
+    #                     days -= 1
+    #         if self.holiday_status_id.exclude_public:
+    #             for p_id in self.env['hr.public.holidays'].search([]):
+    #                 for day in day_list:
+    #                     if ((fields.Datetime.from_string(p_id.date_from).date() <= day) and (day <= fields.Datetime.from_string(p_id.date_to).date())):
+    #                         if day.weekday() != 4 and day.weekday() != 5:
+    #                             days -= 1
+    #         days_total = days
+    #         hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
+    #         return {'days': days_total, 'hours': hours}
         
 
 
-    @api.constrains('date_from','date_to','holiday_status_id')
-    def _leave_validity(self):
-        #check Maximum
-        if not self.sudo().employee_id.version_ids:
-            raise UserError('Sorry!!! This employee dont has a Contract')
+    # @api.constrains('date_from','date_to','holiday_status_id')
+    # def _leave_validity(self):
+    #     #check Maximum
+    #     if not self._get_overlapping_contracts():
+    #         raise UserError('Sorry!!! This employee dont has a Contract')
 
-        else:
-            if self.holiday_status_id.leave_maximum and ( self.number_of_days > self.holiday_status_id.leave_maximum_number ) :
-                raise UserError('Maximum Number Of Days Should Not Exceed %s Days' % (self.holiday_status_id.leave_maximum_number))
+    #     else:
+    #         if self.holiday_status_id.leave_maximum and ( self.number_of_days > self.holiday_status_id.leave_maximum_number ) :
+    #             raise UserError('Maximum Number Of Days Should Not Exceed %s Days' % (self.holiday_status_id.leave_maximum_number))
 
-            date_start_contract = self.sudo().employee_id.date_start
-            date = relativedelta(self.date_from, date_start_contract)
-            years = date.years
-            months = date.months + years*12
-            days = date.days
+    #         date_start_contract = self.sudo().employee_id.date_start
+    #         date = relativedelta(self.date_from, date_start_contract)
+    #         years = date.years
+    #         months = date.months + years*12
+    #         days = date.days
 
-            if self.holiday_status_id.leave_type == 'haj' and years < 1:
-                raise UserError('Employee Must Complete 1 Year Of Service')
-            if len ( self.env['hr.leave'].search([('state','=','validate'),('id','!=',self.id),('employee_id','=',self.employee_id.id),('holiday_status_id.leave_type','=','haj')]) ) > 0 :
-                raise UserError('Employee Already took Haj Leave')
-            #marriage
-            if len ( self.env['hr.leave'].search([('state','=','validate'),('id','!=',self.id),('employee_id','=',self.employee_id.id),('holiday_status_id.leave_type','=','marriage')]) ) > 0 :
-                raise UserError('Employee Already took Marriage Leave')
-            #check attachment
-            if self.holiday_status_id.attachment_required and not self.attachment:
-                raise UserError('Please Upload Required Attachment')
+    #         if self.holiday_status_id.leave_type == 'haj' and years < 1:
+    #             raise UserError('Employee Must Complete 1 Year Of Service')
+    #         if len ( self.env['hr.leave'].search([('state','=','validate'),('id','!=',self.id),('employee_id','=',self.employee_id.id),('holiday_status_id.leave_type','=','haj')]) ) > 0 :
+    #             raise UserError('Employee Already took Haj Leave')
+    #         #marriage
+    #         if len ( self.env['hr.leave'].search([('state','=','validate'),('id','!=',self.id),('employee_id','=',self.employee_id.id),('holiday_status_id.leave_type','=','marriage')]) ) > 0 :
+    #             raise UserError('Employee Already took Marriage Leave')
+    #         #check attachment
+    #         if self.holiday_status_id.attachment_required and not self.attachment:
+    #             raise UserError('Please Upload Required Attachment')
+
+
 
     # draft buttons
     def submit(self):  
@@ -264,7 +266,7 @@ class hrLeave(models.Model):
 
     # cancel and set to draft buttons
     def cancel(self):  
-        self.write({ 'state': 'refuse' })
+        self.write({ 'state': 'cancel' })
 
     def set_to_draft(self):  
         self.write({ 'state': 'draft' })  

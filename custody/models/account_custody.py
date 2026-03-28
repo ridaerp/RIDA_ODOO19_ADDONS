@@ -217,19 +217,33 @@ class AccountCustody(models.Model):
 
     def button_set_Draft(self):
         self.state = "draft"
-        
+
     @api.model
     def _default_journal(self):
-        if self._context.get('default_journal_id', False):
-            return self.env['account.journal'].browse(self._context.get('default_journal_id'))
-        inv_type = self._context.get('type', 'in_invoice')
-        inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
-        company_id = self._context.get('company_id', self.env.user.company_id.id)
-        domain = [
-            ('type', 'in', filter(None, map(self.TYPE2JOURNAL.get, inv_types))),
+        journal = self.env['account.journal']
+
+        journal_id = self._context.get('default_journal_id')
+        if journal_id:
+            return journal.browse(journal_id)
+
+        move_type = self._context.get('move_type', 'in_invoice')
+
+        company_id = self._context.get('company_id', self.env.company.id)
+
+        journal_types = {
+            'out_invoice': ['sale'],
+            'out_refund': ['sale'],
+            'in_invoice': ['purchase'],
+            'in_refund': ['purchase'],
+            'entry': ['general'],
+        }
+
+        types = journal_types.get(move_type, ['general'])
+
+        return journal.search([
+            ('type', 'in', types),
             ('company_id', '=', company_id),
-        ]
-        return self.env['account.journal'].search(domain, limit=1)
+        ], limit=1)
 
     def button_payment(self):
         return {
@@ -239,7 +253,7 @@ class AccountCustody(models.Model):
             'res_model': 'account.payment',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('memo', '=', self.name)],
+            'domain': [('payment_reference', '=', self.name)],
         }
     def button_journal_entries(self):
         return {
@@ -249,7 +263,7 @@ class AccountCustody(models.Model):
             'res_model': 'account.move',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('ref', '=', self.name)],
+            'domain': [('id', '=', self.move_id.id)], 
         }
 
     def button_journals(self):
@@ -336,7 +350,7 @@ class AccountCustody(models.Model):
                 'company_id': rec.company_id.id,
             }
             payment_id = self.env['account.payment'].create(payment_vals)
-            # payment_id.action_post()
+            payment_id.action_post()
             rec.move_id = payment_id.move_id.id
             rec.state = "paid"
         return True
