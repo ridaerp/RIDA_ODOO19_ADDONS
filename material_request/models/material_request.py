@@ -97,8 +97,8 @@ class PaymentRequest(models.Model):
         ('close', 'Waiting Payment'),
         ('partial', 'Partially Paid'),
         ('paid', 'Paid'),
-        ], string='Status', index=True, track_visibility='onchange', readonly=True,
-                             required=True, copy=False, default='draft')
+        ], string='Status', index=True, readonly=True,
+                             required=True, copy=False, default='draft', tracking=True,)
 
 
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id.id)
@@ -372,7 +372,7 @@ class MaterialRequest(models.Model):
     title = fields.Char()
     line_ids = fields.One2many('material.request.line', 'request_id', 'Products to Purchase', readonly=False, copy=True,
                                track_visibility='onchange')
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True,tracking=True,readonly=True,
                              required=True, copy=False, default='draft')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', domain=[('code', '=', 'internal')])
     issuance_count = fields.Integer(string="Count", compute='compute_issuance_count')
