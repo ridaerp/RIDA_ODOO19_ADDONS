@@ -13,7 +13,7 @@ class Contract(models.Model):
     _description = 'External Service Management'
 
     name = fields.Char('Reference', required=True, index=True, copy=False, default='New')
-    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
+    requested_by = fields.Many2one('res.users', 'Requested by', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
     date = fields.Date(string='Issue date', default=datetime.today())
     eff_date = fields.Date(string='Effective date', default=datetime.today())

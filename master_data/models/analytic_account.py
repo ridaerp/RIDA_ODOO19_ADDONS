@@ -17,7 +17,7 @@ class RequestAnalyticAccount(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('w_adv', 'Waiting Account Advisor'), ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True, copy=False)
+        string='Status', default='draft', tracking=True, copy=False)
     date = fields.Date(default=fields.Date.today(), readonly=True)
 
     name = fields.Char(string='Analytic Account', index=True, required=True, tracking=True)

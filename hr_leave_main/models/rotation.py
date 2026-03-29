@@ -25,7 +25,7 @@ class RotationBatch(models.Model):
          ('reject', 'reject'), ('wfm', 'Waiting Finance Manager'),
          ('ccso', 'COO Approve'), ('wod', 'Waiting COO Approval'),
          ('wd', 'Waiting Accountant'),('internal_aud', 'Internal Audit'),('wdp', 'Waiting Payment'), ('paid', 'Paid')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     state_ccso = fields.Selection(related='state')
     employees_line_ids = fields.One2many(comodel_name="employees.rotation.line", inverse_name="request_id",
                                          string="Employees", copy=1)

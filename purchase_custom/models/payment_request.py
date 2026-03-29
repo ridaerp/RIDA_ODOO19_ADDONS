@@ -10,7 +10,7 @@ class PaymentRequest(models.Model):
     
     name = fields.Char('Payment Request', required=True, index=True, copy=False, default='New')
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Contractor',
-                                related='contract_number.vendor_id', track_tracking=True)
+                                related='contract_number.vendor_id', tracking=True)
     contract_number = fields.Many2one(comodel_name='contract.contract',string='Contract ID')
     risk_cost = fields.Monetary(string='Risk cost')
     actual_estimated_cost = fields.Float(comodel_name='contract.contract',
@@ -28,7 +28,7 @@ class PaymentRequest(models.Model):
                                                          ('approve', 'Approve'),
                                                          ('reject', 'Reject'),
                                                          ('pending', 'Pending'),
-                                                         ('reject_approve', 'Reject Then Approved'),], default='draft', track_tracking=True)
+                                                         ('reject_approve', 'Reject Then Approved'),], default='draft', tracking=True)
     total = fields.Monetary(string='Total', 
     )
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id.id, )

@@ -28,10 +28,10 @@ class StationaryRequest(models.Model):
 
     employee_id = fields.Many2one("hr.employee", string="Employee")
     department_id = fields.Many2one('hr.department', string='Department',
-                                    related="employee_id.department_id", readonly=True,track_tracking=True)
-    job_id = fields.Many2one('hr.job', related="employee_id.job_id", string='Job Title', readonly=True,track_tracking=True)
+                                    related="employee_id.department_id", readonly=True,tracking=True)
+    job_id = fields.Many2one('hr.job', related="employee_id.job_id", string='Job Title', readonly=True,tracking=True)
     company_id = fields.Many2one('res.company', string='Company')
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
     stationary_line_ids = fields.One2many('stationary.request.line', 'stationary_id', string='Stationary Lines')
 

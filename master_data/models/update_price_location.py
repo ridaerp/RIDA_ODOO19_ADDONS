@@ -20,7 +20,7 @@ class UpdateTransportationPrices(models.Model):
          ('wfm', 'Waiting Finance Manager'),
          ('coo', 'COO Approval'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     update_transportation_price_line_ids = fields.One2many(comodel_name="update.transportation.prices.line",
                                                            inverse_name="update_trasnportation_price",
                                                            string="", required=False, )

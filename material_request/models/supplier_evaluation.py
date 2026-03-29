@@ -128,7 +128,7 @@ class SupplierPerformanceEvaluation(models.Model):
          ('w_scm_director', 'Waiting Supply Chain Director'),
          ('reject', 'reject'),
          ('approved', 'Approved')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     # vendor_code = fields.Char(related='',string="Vendor Code")
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     approve_by = fields.Many2one('res.users', string="Approved By", readonly=1)

@@ -66,7 +66,7 @@ class VehicleEquipmentRequest(models.Model):
     capacity = fields.Char(string="Capacity", required=False)
     priority = fields.Selection([('0', 'Very Low'), ('1', 'Low'), ('2', 'Normal'), ('3', 'Emergency')], string='Priority' , default='2')
     period = fields.Selection([('24', '24 Hours'), ('12', '12 Hours')], string="Time Period(24/12)", required=True,default="12")
-    requested_by = fields.Many2one("res.users", readonly=True, string="Employee", track_tracking=True,
+    requested_by = fields.Many2one("res.users", readonly=True, string="Employee", tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     movement_receiving_request_time = fields.Datetime("Receiving request time")
     operator_driver_name = fields.Many2one("res.users", string="Operator / Driver Name")
@@ -83,10 +83,10 @@ class VehicleEquipmentRequest(models.Model):
     equipment_code = fields.Char(string="EQ./ Vehicle CODE", related="equipment_id.code", readonly=True)
     equipment_name = fields.Many2one("equipment.request.type", string="Equipment")
 
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
     comments = fields.Text(string="Comments / تعليقات")
-    reason_reject = fields.Char("Resoan Reject", track_tracking=True)
+    reason_reject = fields.Char("Resoan Reject", tracking=True)
     analytic_account_id = fields.Many2one("account.analytic.account", string="Cost Center")
     mr_count = fields.Integer(string="Count", compute='compute_mr_count')
     service_outsource = fields.Boolean("Service Outsourcing", default=False)

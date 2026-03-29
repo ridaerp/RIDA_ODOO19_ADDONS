@@ -51,7 +51,7 @@ class RequestVendor(models.Model):
          ('w_adv', 'Waiting Finance Manager /Analyti Account'),
          ('md', 'Waiting Finance Manager'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     state_rock = fields.Selection(related='state')
     partner = fields.Many2one('res.partner', string='Partner')
     is_rock_vendor = fields.Boolean()

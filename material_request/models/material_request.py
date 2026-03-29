@@ -83,7 +83,7 @@ class PaymentRequest(models.Model):
 
     name = fields.Char('Ovs-Pay No.', required=False, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     date_start = fields.Date('Request Date', help="Date when the user initiated the request.",
-                             default=fields.Date.context_today, track_tracking=True)
+                             default=fields.Date.context_today, tracking=True)
     title = fields.Char()
     note = fields.Text()
     reason_reject = fields.Text("Rejection Reason", track_visibility="onchange")
@@ -116,11 +116,11 @@ class PaymentRequest(models.Model):
     scd_date=fields.Datetime("SCD Approval Date",readonly=True)
     ceo_date=fields.Datetime("CEO Approval Date",readonly=True)
     fm_date=fields.Datetime("Finance Manager Approval Date",readonly=True)
-    scd_approved_by = fields.Many2one('res.users', 'Supply Chain Director', track_tracking=True
+    scd_approved_by = fields.Many2one('res.users', 'Supply Chain Director', tracking=True
                                    , store=True, readonly=True)
-    ceo_approved_by = fields.Many2one('res.users', 'CEO', track_tracking=True
+    ceo_approved_by = fields.Many2one('res.users', 'CEO', tracking=True
                                    , store=True, readonly=True)
-    fm_approved_by = fields.Many2one('res.users', 'Finance Manager', track_tracking=True
+    fm_approved_by = fields.Many2one('res.users', 'Finance Manager', tracking=True
                                    , store=True, readonly=True)
     
     computed_payment_status = fields.Char(compute='_compute_payment_status', store=True)
@@ -357,12 +357,12 @@ class MaterialRequest(models.Model):
     name = fields.Char('MR Number', required=False, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     equipment_id = fields.Many2one(comodel_name="maintenance.equipment", string="Equipment", required=False, )
     date_start = fields.Date('Request Date', help="Date when the user initiated the request.",
-                             default=fields.Date.context_today, track_tracking=True)
-    end_start = fields.Date('End date', default=fields.Date.context_today, track_tracking=True)
-    schedule_date = fields.Date('Expected date',track_tracking=True)
-    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
+                             default=fields.Date.context_today, tracking=True)
+    end_start = fields.Date('End date', default=fields.Date.context_today, tracking=True)
+    schedule_date = fields.Date('Expected date',tracking=True)
+    requested_by = fields.Many2one('res.users', 'Requested by', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
-    assigned_to = fields.Many2one('res.users', 'Approver', track_tracking=True)
+    assigned_to = fields.Many2one('res.users', 'Approver', tracking=True)
     assigned_to_supply = fields.Many2one('res.users', 'Assign To', tracking=True , domain= lambda self: [("group_ids", "=", self.env.ref("material_request.group_buyers").id)] )
     
     ##########################add by ekhlas #######################
@@ -371,7 +371,7 @@ class MaterialRequest(models.Model):
     description = fields.Html('Description')
     title = fields.Char()
     line_ids = fields.One2many('material.request.line', 'request_id', 'Products to Purchase', readonly=False, copy=True,
-                               track_tracking=True)
+                               tracking=True)
     state = fields.Selection(selection=_STATES, string='Status', index=True,tracking=True,readonly=True,
                              required=True, copy=False, default='draft')
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', domain=[('code', '=', 'internal')])
@@ -414,7 +414,7 @@ class MaterialRequest(models.Model):
     # Special Dates
     inventory_check_date = fields.Date()
     lm_approval_date = fields.Date("LM Approval Date")
-    emp = fields.Many2one('hr.employee', track_tracking=True, default=lambda self: self.env.user.employee_id,
+    emp = fields.Many2one('hr.employee', tracking=True, default=lambda self: self.env.user.employee_id,
                           store=True, readonly=True)
 
     emp_type = fields.Selection(string='Employee type', related="emp.rida_employee_type")
@@ -445,11 +445,11 @@ class MaterialRequest(models.Model):
     product_id = fields.Many2one('product.product', related='line_ids.product_id', string='Product', readonly=False)
 
 
-    approve_by = fields.Many2one('res.users', 'Approve by', track_tracking=True
+    approve_by = fields.Many2one('res.users', 'Approve by', tracking=True
                                    , store=True, readonly=True)
 
     user_type=fields.Selection(related="requested_by.user_type",string="Type")
-    scm_approved_by = fields.Many2one('res.users', 'Purchase Manager', track_tracking=True
+    scm_approved_by = fields.Many2one('res.users', 'Purchase Manager', tracking=True
                                    , store=True, readonly=True)
 
     weight_score_count = fields.Integer(string="Count", compute='compute_weight_score_count')
@@ -1408,15 +1408,15 @@ class MaterialRequestLine(models.Model):
     product_id = fields.Many2one(
         'product.product', 'Product',
         domain=[('purchase_ok', '=', True)], required=True,
-        track_tracking=True)
+        tracking=True)
     name = fields.Char('Description', size=256,
-                       track_tracking=True)
+                       tracking=True)
     product_uomm_category_id = fields.Many2one(related='product_id.uom_id')
 
-    product_uom_id = fields.Many2one('uom.uom', 'Product Unit of Measure', track_tracking=True,)
+    product_uom_id = fields.Many2one('uom.uom', 'Product Unit of Measure', tracking=True,)
     # domain="[('relative_uom_id', '=', product_uomm_category_id)]"
 
-    product_qty = fields.Float(string='Quantity', track_tracking=True, digits=(16, 2))
+    product_qty = fields.Float(string='Quantity', tracking=True, digits=(16, 2))
     received_qty = fields.Float(string="Received Qty", compute='_compute_existing_qty_in_rfqs', readonly=True)  # Compute existing qty in RFQs
     request_id = fields.Many2one('material.request',
                                  'Material Request',
@@ -1452,7 +1452,7 @@ class MaterialRequestLine(models.Model):
     description = fields.Text(string='Description',store=True
                               )
     date_required = fields.Date(string='Request Date', required=True,
-                                track_tracking=True,
+                                tracking=True,
                                 related='request_id.date_start')
 
     note_vendor = fields.Text(string='Note to vendor')

@@ -25,7 +25,7 @@ class MedicareIssuanceRequest(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('done', 'Done'),
          ('reject', 'Rejected')],
-        string='Status', default='draft', track_tracking=True, copy=False)
+        string='Status', default='draft', tracking=True, copy=False)
     type = fields.Selection(string="Type Of Patient",
                             selection=[('employee', 'Employee'), ('contractor', 'Contractor'), ('quest', 'Guest'), ],
                             default='employee', required=1)

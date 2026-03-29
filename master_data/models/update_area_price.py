@@ -20,7 +20,7 @@ class UpdateAreaPrices(models.Model):
          ('coo', 'COO Approval'),
          ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     update_area_price_line_ids = fields.One2many(comodel_name="update.area.price.line", inverse_name="update_price",
                                                  string="", required=False, )
 

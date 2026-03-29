@@ -32,9 +32,9 @@ class IctDeviceRequest(models.Model):
     
     name = fields.Char("Full Name")
     name_seq = fields.Char("Number", required=True, index=True, default=lambda self: _('New'), copy=False)
-    employee_id = fields.Many2one("res.users", string="Employee", track_tracking=True,
+    employee_id = fields.Many2one("res.users", string="Employee", tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
-    requested_by = fields.Many2one("res.users",readonly=True, string="Employee", track_tracking=True,
+    requested_by = fields.Many2one("res.users",readonly=True, string="Employee", tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     # department_id = fields.Many2one('hr.department', string='Department',
     #                                 default=lambda self: self._get_default_department())
@@ -52,19 +52,19 @@ class IctDeviceRequest(models.Model):
     relocation_from = fields.Char("From")
     relocation_to = fields.Char("To")
     date_request = fields.Date("Request Date",default=fields.Date.context_today, required=True)
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
 
-    approve_by = fields.Many2one('res.users', 'Approve by', track_tracking=True
+    approve_by = fields.Many2one('res.users', 'Approve by', tracking=True
                                    , store=True, readonly=True)
 
 
-    reason_reject=fields.Char("Resoan Reject",track_tracking=True)
+    reason_reject=fields.Char("Resoan Reject",tracking=True)
     line_manager_id = fields.Many2one('res.users', string="Line Manager", compute='get_line_manager', store=True)
     # line_manager_id = fields.Many2one('res.users', string="Line Manager", related="requested_by.line_manager_id")
     branch_id = fields.Many2one('res.branch', )
     section = fields.Many2one('hr.department', string='Section')
-    service_ids = fields.One2many('ict.services','product_id','Services', copy=True, track_tracking=True)
+    service_ids = fields.One2many('ict.services','product_id','Services', copy=True, tracking=True)
     
 
     def button_draft(self):

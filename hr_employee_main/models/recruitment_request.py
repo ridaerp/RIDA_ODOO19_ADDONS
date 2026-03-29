@@ -42,7 +42,7 @@ class RecruitmentRequest(models.Model):
          ('approved', 'Approved'),
          ('reject', 'reject'),
          ('close', 'Closed')],
-        string='Status', default='draft', track_tracking=True,tracking=True)
+        string='Status', default='draft', tracking=True,tracking=True)
     state_ccso = fields.Selection(related='state')
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     job_location = fields.Many2one('rida.location', string='Job Location')

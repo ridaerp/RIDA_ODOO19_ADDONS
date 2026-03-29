@@ -63,15 +63,15 @@ class WeightRequest(models.Model):
     car_id = fields.Many2one("transportation.car", "Car No.")
     car_plate = fields.Char(related="car_id.car_plate", string="Plate license No.")
     driver_id = fields.Many2one(related="car_id.driver_id", string="Driver")
-    transporter_id = fields.Many2one(related="car_id.transporter_id", string="Transporter" , track_tracking=True)
-    rock_vendor = fields.Many2one("res.partner", "Rock Vendor" , track_tracking=True)
-    quantity = fields.Float("Quantity" , track_tracking=True)
-    area_id = fields.Many2one("x_area", "Area", required=True , track_tracking=True)
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
+    transporter_id = fields.Many2one(related="car_id.transporter_id", string="Transporter" , tracking=True)
+    rock_vendor = fields.Many2one("res.partner", "Rock Vendor" , tracking=True)
+    quantity = fields.Float("Quantity" , tracking=True)
+    area_id = fields.Many2one("x_area", "Area", required=True , tracking=True)
+    state = fields.Selection(selection=_STATES, string='Status', index=True, tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
     external_visit_state = fields.Selection(related='state')
     date_request = fields.Datetime("Request Date/Time ", default=fields.Datetime.now, required=True)
-    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
+    requested_by = fields.Many2one('res.users', 'Requested by', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     request_samples_ids = fields.One2many("weight.samples", "request_id", "Samples for Chemical")
@@ -855,7 +855,7 @@ class ChemicalSamples(models.Model):
     production_id = fields.Many2one('mrp.production', string="Production Order")
     workorder_id = fields.Many2one('mrp.workorder', string="Work Order")
 
-    requested_by = fields.Many2one('res.users', 'Sender Name', track_tracking=True,
+    requested_by = fields.Many2one('res.users', 'Sender Name', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     department_id = fields.Many2one('hr.department', string='Department',
@@ -867,7 +867,7 @@ class ChemicalSamples(models.Model):
 
     receive_date = fields.Datetime("Receive Date")
 
-    receive_name = fields.Many2one('res.users', 'Receive Name', track_tracking=True,
+    receive_name = fields.Many2one('res.users', 'Receive Name', tracking=True,
                                    store=True, readonly=True)
 
     # sample_type = fields.Selection([('grade_control','Grade Control'),('rc', 'RC'), ('rock_chips', 'Rock Chips'),
@@ -899,7 +899,7 @@ class ChemicalSamples(models.Model):
     request_samples_ids = fields.One2many("chemical.samples.line", "chemical_request_id", "Samples")
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id)
 
-    state = fields.Selection(selection=_CSTATES, string='Status', index=True, track_tracking=True,
+    state = fields.Selection(selection=_CSTATES, string='Status', index=True, tracking=True,
                              readonly=True,
                              required=True, copy=False, default='draft')
 

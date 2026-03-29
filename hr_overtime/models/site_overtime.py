@@ -142,7 +142,7 @@ class SiteOvertime(models.Model):
         ('bp', 'Business Partner Approval'),
         ('coo', 'COO chief officer Approval'),
         ('paid', 'Confirmed')
-    ], string="State", default='draft', track_tracking=True, copy=False)
+    ], string="State", default='draft', tracking=True, copy=False)
     
     def _default_employee(self):
         employee = self.env['hr.employee'].browse(self._context.get('active_id'))

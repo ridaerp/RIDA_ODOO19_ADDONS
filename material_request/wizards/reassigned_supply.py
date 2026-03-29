@@ -26,7 +26,7 @@ class ReassignedEvalutor(models.TransientModel):
     _name = 'reassigned.evaluator'
     _description = 'Re-Assigned Evaulator Employee'
 
-    reassigned_evaluator = fields.Many2one('res.users', 'Assign Evaulator', track_tracking=True)
+    reassigned_evaluator = fields.Many2one('res.users', 'Assign Evaulator', tracking=True)
 
 
 

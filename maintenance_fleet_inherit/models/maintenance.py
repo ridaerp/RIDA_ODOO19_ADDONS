@@ -418,7 +418,7 @@ class MaintenanceRequest(models.Model):
                             help='Odometer measure of the vehicle at the moment of this log')
     equipment_type = fields.Selection(related="equipment_id.equipment_type", string="Machines/Vechicles", required=True)
 
-    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
+    requested_by = fields.Many2one('res.users', 'Requested by', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
     sequence = fields.Integer(related="stage_id.sequence", default=1, string='Sequence', )
 
@@ -428,7 +428,7 @@ class MaintenanceRequest(models.Model):
     cat_type = fields.Char(related='category_id.name')
     stage_id = fields.Many2one(readonly=True)
 
-    technican_user = fields.Many2one('res.users', 'Maintenance Technican', track_tracking=True)
+    technican_user = fields.Many2one('res.users', 'Maintenance Technican', tracking=True)
     technican_users = fields.Many2many('res.users', string='Maintenance Technicans')
     
 

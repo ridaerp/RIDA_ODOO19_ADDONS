@@ -36,7 +36,7 @@ class DoctorVisit(models.Model):
          ('pharmacy', 'Pharmacy'),
          ('close', 'Close'),
          ('reject', 'Rejected')],
-        string='Status', default='draft', track_tracking=True, copy=False)
+        string='Status', default='draft', tracking=True, copy=False)
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female'),

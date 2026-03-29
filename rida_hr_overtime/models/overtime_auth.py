@@ -78,7 +78,7 @@ class OvertimeAuth(models.Model):
          ('w_hr_m', 'HR Manager Approve'),
          ('reject', 'reject'), ('ccso', 'CCSO Approve'), ('wod', 'Waiting Operation Director'),
          ('auth', 'Authorized')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     state_ccso = fields.Selection(related='state')
     employees_line_ids = fields.One2many(comodel_name="overtime.auth.line", inverse_name="request_id",
                                          string="Employees", copy=1)

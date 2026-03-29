@@ -33,7 +33,7 @@ class SalaryAdvanceAccount(models.Model):
                               ('approve', 'Approved'),
                               ('paid', 'Paid'),
                               ('cancel', 'Cancelled'),
-                              ('reject', 'Rejected')], string='Status', default='draft', track_tracking=True)
+                              ('reject', 'Rejected')], string='Status', default='draft', tracking=True)
     debit = fields.Many2one('account.account', string='Debit Account')
     credit = fields.Many2one('account.account', string='Credit Account')
     journal_account_for_salary = fields.Many2one('account.move')

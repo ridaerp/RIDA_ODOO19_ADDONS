@@ -18,7 +18,7 @@ class AreaRequest(models.Model):
         [('draft', 'Draft'), ('waiting_pricing', 'Waiting Pricing'),
          ('coo', 'COO Approval'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
     area_name = fields.Char(string="Area Name",required=1)
     area = fields.Many2one(comodel_name="x_area", string="Area")
     distance = fields.Integer(string="Distance",required=1)

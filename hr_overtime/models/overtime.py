@@ -137,7 +137,7 @@ class Overtime(models.Model):
         ('coo', 'COO chief officer Approval'),
         # ('finance', 'Finance'),
         ('paid', 'Confirmed')
-    ], string="State", default='draft', track_tracking=True, copy=False)
+    ], string="State", default='draft', tracking=True, copy=False)
     
     def _default_employee(self):
         employee = self.env['hr.employee'].browse(self._context.get('active_id'))

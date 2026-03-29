@@ -19,7 +19,7 @@ class MinorRoom(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('confirmed', 'Confirmed'),
          ('reject', 'Rejected')],
-        string='Status', default='draft', track_tracking=True, copy=False)
+        string='Status', default='draft', tracking=True, copy=False)
     minor_procedure = fields.Selection(
         [('nuring_procedures', 'Nuring procedures'), ('operations', 'Operations'),
          ('services', 'Services'), ('follow_up', 'Follow Up')],

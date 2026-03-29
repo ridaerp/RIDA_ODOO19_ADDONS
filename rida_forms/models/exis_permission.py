@@ -20,7 +20,7 @@ class ExitPermission(models.Model):
          ('security_approve', 'Waiting Security Approval'),
          ('reject', 'reject'),
          ('approved', 'Approved')],
-        string='Status', default='draft', track_tracking=True)
+        string='Status', default='draft', tracking=True)
 
     exit_date = fields.Date(string="Exit Date", tracking=True, copy=False)
     exit_time = fields.Float(string="Exit Time", tracking=True, copy=False)

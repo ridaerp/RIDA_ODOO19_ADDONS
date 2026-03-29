@@ -16,7 +16,7 @@ class RequestAccountAccount(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('w_adv', 'Waiting Account Advisor'), ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_tracking=True, copy=False)
+        string='Status', default='draft', tracking=True, copy=False)
     date = fields.Date(default=fields.Date.today(), readonly=True)
 
     code = fields.Char(string='Reference', index=True, tracking=True)

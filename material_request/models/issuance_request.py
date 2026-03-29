@@ -25,24 +25,24 @@ class IssuanceRequest(models.Model):
     name = fields.Char('IS Number', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     equipment_id = fields.Many2one(comodel_name="maintenance.equipment", string="Equipment", required=False, )
     request_date = fields.Date('Request Date', help="Date when the user initiated the request.",
-                               default=fields.Date.context_today, track_tracking=True)
-    requested_by = fields.Many2one('res.users', 'Receiver', track_tracking=True,
+                               default=fields.Date.context_today, tracking=True)
+    requested_by = fields.Many2one('res.users', 'Receiver', tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
-    store_keeper = fields.Many2one('res.users', 'Store Keeper', track_tracking=True)
+    store_keeper = fields.Many2one('res.users', 'Store Keeper', tracking=True)
     warehouse_id = fields.Many2one('stock.warehouse', "Warehouse")
-    dest_location = fields.Many2one('stock.location', 'Source Location', track_tracking=True)
+    dest_location = fields.Many2one('stock.location', 'Source Location', tracking=True)
     description = fields.Html('Description')
     title = fields.Char()
     origin = fields.Char("Source Document")
     line_ids = fields.One2many('issuance.request.line', 'request_id', 'Products to Purchase', readonly=False, copy=True,
-                               track_tracking=True)
+                               tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('line_approve', 'Waiting for Line Manager'),
         ('to_inventory', 'Waiting for inventory Approve'),
         ('done', 'Approved'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='draft', track_tracking=True)
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
 
     picking_type_id = fields.Many2one('stock.picking.type', 'Picking Type', domain=[('code', '=', 'internal')])
     picking_count = fields.Integer(string="Count", compute='compute_picking_count')
@@ -308,14 +308,14 @@ class IssuanceRequestLine(models.Model):
     product_id = fields.Many2one(
         'product.product', 'Product',
         domain=[('purchase_ok', '=', True)], required=True,
-        track_tracking=True)
+        tracking=True)
     name = fields.Char('Description', size=256,
-                       track_tracking=True)
+                       tracking=True)
     product_uom_id = fields.Many2one('uom.uom', 'Product Unit of Measure',
-                                     track_tracking=True)
-    qty_requested = fields.Float(string='Requested Quantity', track_tracking=True, digits=(16, 2))
+                                     tracking=True)
+    qty_requested = fields.Float(string='Requested Quantity', tracking=True, digits=(16, 2))
 
-    qty_issued = fields.Float(string='Issued Quantity', track_tracking=True, digits=(16, 2))
+    qty_issued = fields.Float(string='Issued Quantity', tracking=True, digits=(16, 2))
     lot_ids = fields.Many2many(comodel_name="stock.lot", copy=False)
     request_id = fields.Many2one('issuance.request',
                                  'Issuance No.',
