@@ -300,14 +300,14 @@
                                 <span  t-field="line.product_id.part_number"/>
                                 </td>
                                 <td name="td_taxes">
-                                    <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                    <span t-esc="', '.join(map(lambda x: x.name, line.tax_ids))"/>
                                 </td>
                                <!--  <td class="text-center">
                                     <span t-field="line.date_planned"/>
                                 </td> -->
                                 <td class="text-right">
                                     <span t-field="line.product_qty"/>
-                                    <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                                    <span t-field="line.product_uom_id.name" groups="uom.group_uom"/>
                                 </td>
                                 <td class="text-right">
                                     <span t-field="line.price_unit"/>
