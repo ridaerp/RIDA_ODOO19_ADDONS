@@ -271,7 +271,7 @@ class PurchaseOrder(models.Model):
 
         # Create Sale Order lines from the Purchase Order lines
         for line in self.order_line:
-            vat_taxes = line.tax_ids.filtered(lambda t: 'vat' in t.name.lower())
+            vat_taxes = line.taxes_id.filtered(lambda t: 'vat' in t.name.lower())
 
             existing_line = sale_order.order_line.filtered(lambda l: l.product_id == line.product_id)
             if  existing_line:
@@ -288,7 +288,7 @@ class PurchaseOrder(models.Model):
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_qty,
                     'price_unit': line.price_unit,
-                    'product_uom_id': line.product_uom_id.id,
+                    'product_uom': line.product_uom.id,
                     'name': line.name,
                     # 'tax_id' : tax_id if vat_taxes else False,
 
@@ -327,7 +327,7 @@ class PurchaseOrder(models.Model):
                 'product_id': profit_product.id,
                 'name': profit_product.name,
                 'product_uom_qty': 1,  # Set quantity to 1
-                'product_uom_id': profit_product.uom_id.id,
+                'product_uom': profit_product.uom_id.id,
                 'price_unit': total_amount * 0.10,  # Set the price to 10% of the total order amount
             })
 
@@ -736,14 +736,17 @@ class PurchaseOrder(models.Model):
 
     def go_to_ccso(self):
         for rec in self:
-            if rec.ore_purchased:
-                rec.write({'state': 'site'})
-            elif rec.supply_user.user_type == 'fleet':
-                rec.write({'state': 'ccso'})
-            elif rec.supply_user.user_type == 'site' and not rec.ore_purchased:
-                rec.write({'state': 'ccso'})
+            if rec.supply_user.user_type == 'site' and rec.ore_purchased == False:
+                return rec.write({'state': 'ccso'})
+            #########################add new line #############
+            ######################ekhlas code################3            
+            if rec.supply_user.user_type == 'fleet':
+                return rec.write({'state': 'ccso'})
+            if rec.ore_purchased == True:
+                return rec.write({'state': 'site'})
+
             else:
-                rec.write({'state': 'ccso'})
+                return rec.write({'state': 'ccso'})
 
     def action_reject(self):
         self.state = 'reject'

@@ -313,7 +313,7 @@
               name="Reporting"
               sequence="10"
               groups="material_request.group_ore_rock_purchase_user"
-              parent="material_request.menu_ore_poo_maiin"
+              parent="material_request.menu_ore_poo_main_new"
     />
         <menuitem id="menu_custom_rock_report_"
                   name="Ore Rock Purchase Report"
