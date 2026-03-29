@@ -10,7 +10,7 @@ class external_service_management(models.Model):
     _description = 'External Service Management'
     
     name = fields.Char('Reference', required=True, index=True, copy=False, default='New')
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange', default=lambda self: self.get_requested_by(), store=True, readonly=True)
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True, default=lambda self: self.get_requested_by(), store=True, readonly=True)
     date = fields.Date(string='Date', default=datetime.today())
     department_id = fields.Many2one('hr.department', string='Department', default=lambda self: self._get_default_department())
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor', related='contract_number.partner_id', readonly=True)

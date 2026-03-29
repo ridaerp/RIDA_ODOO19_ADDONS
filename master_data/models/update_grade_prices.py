@@ -20,7 +20,7 @@ class UpdateGradePrices(models.Model):
          ('coo', 'COO Approval'),
          ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     update_grade_price_line_ids = fields.One2many(comodel_name="update.grade.price.line", inverse_name="update_price",
                                                   string="", required=False, )
 

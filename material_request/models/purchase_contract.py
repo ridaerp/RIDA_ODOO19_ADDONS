@@ -73,7 +73,7 @@ class PurchaseContract(models.Model):
 
     ###################################################additional field in contract
 
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
     date = fields.Date(string='Issue date', default=datetime.today())
     eff_date = fields.Date(string='Effective date', default=datetime.today())

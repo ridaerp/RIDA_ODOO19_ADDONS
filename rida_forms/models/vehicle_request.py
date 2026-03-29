@@ -51,7 +51,7 @@ class VehicleEquipmentRegulationForm(models.Model):
     capacity = fields.Integer(string="Capacity", required=True)
     priority = fields.Selection([('0', 'Very Low'), ('1', 'Low'), ('2', 'Normal'), ('3', 'High')], string='Priority')
     period = fields.Integer(string="Period", required=True)
-    requested_by = fields.Many2one("res.users",readonly=True, string="Employee", track_visibility='onchange',
+    requested_by = fields.Many2one("res.users",readonly=True, string="Employee", track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     movement_receiving_request_time = fields.Datetime("Receiving request time")
     operator_driver_name = fields.Many2one("res.users",readonly=True, string="Operator / Driver Name", store=True)
@@ -60,7 +60,7 @@ class VehicleEquipmentRegulationForm(models.Model):
     # destination_from = fields.Char("Destination From", required=True)
     # destination_to = fields.Char("To", required=True)
     # type_of_services = fields.Selection([('coffee_break', 'Coffee break - خدمات بوفيه'), ('no_need', 'No need - ﻻشئ'), ('others', 'Others, Specify - ‫‫أخرى‬ , ‫يرجى‬ التحديد‬  ')], 
-                                 # string='Type of services - نوع الخدمةالمطلوبة', track_visibility='onchange')
+                                 # string='Type of services - نوع الخدمةالمطلوبة', track_tracking=True)
     # specify = fields.Char("Specify")
     # time_request = fields.time("Time",default=fields.time.context_today, required=True)
     # employee_no = fields.Integer("Employee No", required=True)
@@ -84,28 +84,28 @@ class VehicleEquipmentRegulationForm(models.Model):
     # admin_date = fields.Date("Date - التاريخ")
     # admin_time = fields.Float(string='Time - الزمن') 
     # return_date = fields.Date("Return date", required=True)
-    # time_of_departure = fields.Integer("Duration - زمن‬ التحرك", track_visibility='onchange', required=True)
+    # time_of_departure = fields.Integer("Duration - زمن‬ التحرك", track_tracking=True, required=True)
     # duty_station = fields.Char("Duty station")  
     # time_request = fields.Float(string='Time - ال‬زمن') 
-    # requested_by = fields.Many2one("res.users",readonly=True, string="Employee - مقدم‬ الطلب", track_visibility='onchange',
+    # requested_by = fields.Many2one("res.users",readonly=True, string="Employee - مقدم‬ الطلب", track_tracking=True,
     #                                default=lambda self: self.get_requested_by(), store=True)
     # department_id = fields.Many2one('hr.department', string='Department - اﻻدارة',
     #                                 default=lambda self: self._get_default_department(),readonly=True)
     
     # job_id = fields.Many2one('hr.job', related="requested_by.employee_ids.job_id", string='Job Title',readonly=True)
     # admin_comment = fields.Text("Admin Comment - تعليق المسئوول الإدارى")
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
 
-    # approve_by = fields.Many2one('res.users', 'Approve by', track_visibility='onchange'
+    # approve_by = fields.Many2one('res.users', 'Approve by', track_tracking=True
     #                                , store=True, readonly=True)
 
 
-    reason_reject=fields.Char("Resoan Reject",track_visibility='onchange')
+    reason_reject=fields.Char("Resoan Reject",track_tracking=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', related="requested_by.employee_id",readonly=True)
     # line_manager_id = fields.Many2one('res.users', string="Line Manager", compute='get_line_manager', store=True)
     
-    # service_ids = fields.One2many('ict.services','product_id','Services', copy=True, track_visibility='onchange')
+    # service_ids = fields.One2many('ict.services','product_id','Services', copy=True, track_tracking=True)
     
     # company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id)
     # company_id = fields.Many2one('res.company', related="requested_by.company_id", store=True,readonly=True)

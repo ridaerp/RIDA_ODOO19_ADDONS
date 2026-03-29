@@ -91,7 +91,7 @@ class hr_loan(models.Model):
         ('approve', 'Approved'),
         ('paid', 'Paid'),
         ('refuse', 'Refused'),
-    ], string="State", default='draft', track_visibility='onchange', copy=False)
+    ], string="State", default='draft', track_tracking=True, copy=False)
     currency_id = fields.Many2one('res.currency', string='Currency',)
 
 

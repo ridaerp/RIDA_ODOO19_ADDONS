@@ -42,8 +42,8 @@ class InheritPurchaseOrder(models.Model):
                                                  ('others ', 'Other')
                                                  ], default='change_order')
     date_start = fields.Date('Start date', help="Date when the Contract will be Effective.",
-                             track_visibility='onchange')
-    end_start = fields.Date('End date', help="Contract will be Expired on this Date.", track_visibility='onchange')
+                             track_tracking=True)
+    end_start = fields.Date('End date', help="Contract will be Expired on this Date.", track_tracking=True)
     time = fields.Integer(string='Duration')
     store_contract = fields.Many2one(comodel_name='change.contract')
     contract_count = fields.Integer(string='Contract Count', compute='compute_contract_count')

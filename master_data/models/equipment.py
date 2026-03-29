@@ -58,7 +58,7 @@ class RequestEquipment(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange', copy=False)
+        string='Status', default='draft', track_tracking=True, copy=False)
     equipment_type=fields.Selection(related="category_id.equipment_type",string="Machines/Vechicles",required=True)
     analytic_account_id=fields.Many2one("account.analytic.account",string="Cost Center")
     location = fields.Char('Location')

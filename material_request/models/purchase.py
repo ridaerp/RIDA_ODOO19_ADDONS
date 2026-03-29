@@ -51,7 +51,7 @@ class PurchaseOrder(models.Model):
         ('done', 'Locked'),
         ('reject', 'Rejected'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=False, index=True, copy=False, default='draft', track_visibility='onchange')
+    ], string='Status', readonly=False, index=True, copy=False, default='draft', track_tracking=True)
     user_type_ = fields.Selection(related="create_uid.user_type")
 
     request_id = fields.Many2one('material.request', 'Material Request')
@@ -154,7 +154,7 @@ class PurchaseOrder(models.Model):
 
     is_payment_request = fields.Boolean("Payment Request")
 
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     landed_costs_ids = fields.One2many('stock.landed.cost', 'purchase_order_id', string='Landed Costs')

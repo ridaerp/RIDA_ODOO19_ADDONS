@@ -95,7 +95,7 @@ class Bills_Workflow(models.Model):
     dm_date_aud = fields.Date(string='Auditor Approval Date')
     dm_date_gm = fields.Date(string='General Manager Approval Date')
 
-    assigned_to_accountant = fields.Many2one('res.users', 'Assign To', track_visibility='onchange' , domain= lambda self: [("group_ids", "=", self.env.ref("account.group_account_user").id)] )
+    assigned_to_accountant = fields.Many2one('res.users', 'Assign To', tracking=True , domain= lambda self: [("group_ids", "=", self.env.ref("account.group_account_user").id)] )
     ######################################comment by ekhlas#########3
     accountant_type = fields.Selection(string='Employee type', related="assigned_to_accountant.employee_id.rida_employee_type")
     # invoice_date=fields.Date(states=False)

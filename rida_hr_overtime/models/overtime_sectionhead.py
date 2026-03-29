@@ -46,7 +46,7 @@ class OvertimeSectionHead(models.Model):
          ('reject', 'reject'), ('wfm', 'Waiting Finance Manager'), ('internal_aud', 'Internal Audit'),
          ('ccso', 'CCSO Approve'), ('wod', 'Waiting Operation Director'),
          ('wd', 'Waiting Accountant'), ('posted', 'Posted')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     state_ccso = fields.Selection(related='state')
     user_type = fields.Selection(related="req_id.user_type")
     employees_line_ids = fields.One2many(comodel_name="overtime.sectionhead.line", inverse_name="request_id",

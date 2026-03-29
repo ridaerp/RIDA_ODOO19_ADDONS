@@ -47,7 +47,7 @@ class TripPermission(models.Model):
          ('reject', 'reject'), ('wfm', 'Waiting Finance Manager'), ('internal_aud', 'Internal Audit'),
          ('ccso', 'CCSO Approve'), ('wod', 'Waiting Operation Director'),
          ('wd', 'Waiting Accountant'), ('wdp', 'Waiting Payment'), ('paid', 'Paid')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     state_ccso = fields.Selection(related='state')
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     number_of_days = fields.Float(

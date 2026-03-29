@@ -125,7 +125,7 @@ class hrLeave(models.Model):
         }
 
 
-    # cut_leave = fields.Boolean(string='Cut Leave',default=False,track_visibility='onchange')
+    # cut_leave = fields.Boolean(string='Cut Leave',default=False,track_tracking=True)
 
     state = fields.Selection([
         ('draft', 'To Submit'),

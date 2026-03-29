@@ -53,7 +53,7 @@ class LowestPriceEvaluation(models.Model):
          ('w_proc_manager', 'Waiting Procurement Manager'),
          ('reject', 'reject'),
          ('approved', 'Approved')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     a_supplier_id = fields.Many2one('res.partner', string="Supplier A")
     b_supplier_id = fields.Many2one('res.partner', string="Supplier B")
     c_supplier_id = fields.Many2one('res.partner', string="Supplier C")

@@ -53,7 +53,7 @@ class NonAcceptMaterial(models.Model):
     department_id = fields.Many2one('hr.department', string='Department',
                                     # default=lambda self: self._get_default_department()
                                     )
-    inspect_date = fields.Date('Date Of Inspection', track_visibility='onchange')
+    inspect_date = fields.Date('Date Of Inspection', track_tracking=True)
     click = fields.Boolean(string='Check', default=False)
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
     order_line_ids = []

@@ -18,7 +18,7 @@ class MaterialInspection(models.Model):
          ('inspection', 'Waiting User Inspection'),
          ('closed', 'Closed'),
          ('reject', 'reject'), ]
-        , string='Status', default='draft', track_visibility='onchange')
+        , string='Status', default='draft', track_tracking=True)
     state_qhse = fields.Selection(related='state')
     employee_id = fields.Many2one("hr.employee", string="Name")
     vendor_id = fields.Many2one('res.partner',
@@ -35,7 +35,7 @@ class MaterialInspection(models.Model):
         string='Other Material Requests'
     )
     requested_by = fields.Many2one('res.users', related='material_request_id.requested_by', string='Requested by',
-                                   track_visibility='onchange', readonly=True)
+                                   track_tracking=True, readonly=True)
     inspector = fields.Many2one("res.users", "Inspector")
     qhse_inspector = fields.Many2one("res.users", "QHSE Inspector")
     department_id = fields.Many2one('hr.department', related='material_request_id.department_id',
@@ -189,18 +189,18 @@ class MaterialInspectionLine(models.Model):
     product_id = fields.Many2one(
         'product.template', 'Product',
         required=True,
-        track_visibility='onchange')
+        track_tracking=True)
     product_uom_id = fields.Many2one('uom.uom', 'Product Unit of Measure',
-                                     track_visibility='onchange')
-    product_qty = fields.Float(string='Quantity', track_visibility='onchange', )
+                                     track_tracking=True)
+    product_qty = fields.Float(string='Quantity', track_tracking=True, )
     part_number = fields.Char('Part Number')
-    qty_on_bill = fields.Float(string='Qty. on bill', track_visibility='onchange', )
-    qty_received = fields.Float(string='Qty Received', track_visibility='onchange', )
-    qty_accepted = fields.Float(string='Qty Accepted', track_visibility='onchange', )
-    qty_rejected = fields.Float(string='Qty Rejected', track_visibility='onchange', )
-    qhse_qty_accepted = fields.Float(string='QHSE Qty Accepted', track_visibility='onchange', )
-    qhse_qty_rejected = fields.Float(string='QHSE Qty Rejected', track_visibility='onchange', )
-    expire_date = fields.Date(string="Expire Date", track_visibility='onchange',)
+    qty_on_bill = fields.Float(string='Qty. on bill', track_tracking=True, )
+    qty_received = fields.Float(string='Qty Received', track_tracking=True, )
+    qty_accepted = fields.Float(string='Qty Accepted', track_tracking=True, )
+    qty_rejected = fields.Float(string='Qty Rejected', track_tracking=True, )
+    qhse_qty_accepted = fields.Float(string='QHSE Qty Accepted', track_tracking=True, )
+    qhse_qty_rejected = fields.Float(string='QHSE Qty Rejected', track_tracking=True, )
+    expire_date = fields.Date(string="Expire Date", track_tracking=True,)
     note = fields.Text(string='Comments –if any-')
     sequence = fields.Integer(string="NO", compute='_compute_step_number')
 

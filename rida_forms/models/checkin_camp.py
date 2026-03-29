@@ -29,10 +29,10 @@ class CheckinCampRequest(models.Model):
     )
     employee_id = fields.Many2one("hr.employee", string="Employee")
     department_id = fields.Many2one('hr.department', string='Department',
-                                    related="employee_id.department_id", readonly=True,track_visibility='onchange')
-    job_id = fields.Many2one('hr.job', related="employee_id.job_id", string='Job Title', readonly=True,track_visibility='onchange')
+                                    related="employee_id.department_id", readonly=True,track_tracking=True)
+    job_id = fields.Many2one('hr.job', related="employee_id.job_id", string='Job Title', readonly=True,track_tracking=True)
     company_id = fields.Many2one('res.company', string='Company')
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
     checkin_camp_line_ids = fields.One2many('checkin_camp.request.line', 'checkin_camp_id', string='Check-in Camp Lines')
 
@@ -126,15 +126,15 @@ class StationaryRequestLine(models.Model):
     _name = 'checkin_camp.request.line'
 
     checkin_camp_id = fields.Many2one('checkin_camp.request', string='Check-in Camp Request', ondelete='cascade')
-    visit_name = fields.Char('Name / الاسم',track_visibility='onchange')
-    department_id = fields.Many2one('hr.department', string='Department / الجهة الطالبة', track_visibility='onchange')
+    visit_name = fields.Char('Name / الاسم',track_tracking=True)
+    department_id = fields.Many2one('hr.department', string='Department / الجهة الطالبة', track_tracking=True)
     degree = fields.Char('Degree / الدرجة الوظيفيه')
-    date_arrival = fields.Date(string='Date Of Arrival / تاريخ الوصول',track_visibility='onchange')
-    duration = fields.Integer(string='Residence time / مدة الاسكان',track_visibility='onchange')
+    date_arrival = fields.Date(string='Date Of Arrival / تاريخ الوصول',track_tracking=True)
+    duration = fields.Integer(string='Residence time / مدة الاسكان',track_tracking=True)
     remark = fields.Char(string='الملاحظات/ Remarks')
     zone_id = fields.Many2one('zone', string='Zone')
-    block_id = fields.Many2one('block', string='Block No/ المجمع',track_visibility='onchange')
-    room_id = fields.Many2one('office.room', string='Unit /الغرفة',track_visibility='onchange')
+    block_id = fields.Many2one('block', string='Block No/ المجمع',track_tracking=True)
+    room_id = fields.Many2one('office.room', string='Unit /الغرفة',track_tracking=True)
 
 
     @api.onchange('zone_id')

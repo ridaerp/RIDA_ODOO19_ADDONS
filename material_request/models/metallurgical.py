@@ -32,7 +32,7 @@ class MetallurgicalRequest(models.Model):
 
     date_request = fields.Datetime("Request Date", default=fields.Datetime.now, required=True)
 
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
 
     sample_category = fields.Selection([('internal', 'Internal'), ('external', 'External')], default="internal",
@@ -64,7 +64,7 @@ class MetallurgicalRequest(models.Model):
 
     test_type = fields.Many2one("meta.test.type", string="Type of test")
 
-    requested_by = fields.Many2one('res.users', 'Courier Name', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Courier Name', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     email = fields.Char("Email")
@@ -80,10 +80,10 @@ class MetallurgicalRequest(models.Model):
 
     metallurgist_date = fields.Datetime("Recevied Date")
 
-    metallurgist = fields.Many2one('res.users', 'Metallurgist', track_visibility='onchange',
+    metallurgist = fields.Many2one('res.users', 'Metallurgist', track_tracking=True,
                                    store=True, readonly=True)
 
-    meta_manager = fields.Many2one('res.users', 'Met Lab Manager', track_visibility='onchange',
+    meta_manager = fields.Many2one('res.users', 'Met Lab Manager', track_tracking=True,
                                    store=True, readonly=True)
 
     approved_date = fields.Datetime("Approval-Date")

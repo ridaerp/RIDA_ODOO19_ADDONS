@@ -49,7 +49,7 @@ class HrLoanAcc(models.Model):
         ('approve', 'Approved'),
         ('paid', 'Paid'),
         ('refuse', 'Refused'),
-    ], string="State", default='draft', track_visibility='onchange', copy=False)
+    ], string="State", default='draft', track_tracking=True, copy=False)
 
     def compute_entery_count(self):
         count = 0

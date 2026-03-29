@@ -68,7 +68,7 @@ class MedicareProductScrap(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'),
          ('reject', 'Rejected'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
 
     def unlink(self):

@@ -8,7 +8,7 @@ class ChangeContract(models.Model):
     
     
     name = fields.Char('Change Contract Reference', required=True, index=True, copy=False, default='New')
-    vendor_id = fields.Many2one(comodel_name='res.partner', string='Contracer', track_visibility='onchange')
+    vendor_id = fields.Many2one(comodel_name='res.partner', string='Contracer', track_tracking=True)
     contract_number = fields.Many2one(comodel_name='contract.contract',string='Contract Reference')
     date = fields.Date(string='Date', default=datetime.today())
     type_of_change = fields.Selection(string='Type of change', selection=[('change_order', 'Change Order'), 
@@ -18,7 +18,7 @@ class ChangeContract(models.Model):
                                                                           ('other ', 'Other')])
     
     portion_of_agreement_affected = fields.Text(string='Portion of agreement affected')
-    reason_for_change = fields.Binary(string='Reason for change',track_visibility='onchange')
+    reason_for_change = fields.Binary(string='Reason for change',track_tracking=True)
     contract_ids = fields.One2many(comodel_name='contract.lines', inverse_name='contract_id')
     inherit_po = fields.Many2one(comodel_name='purchase.order')
     state = fields.Selection(string="Status", selection=[('user_department', 'User Department'), 
@@ -26,16 +26,16 @@ class ChangeContract(models.Model):
                                                          ('buyer', 'Buyer'),
                                                          ('managing_director', 'Managing Director'),
                                                          ('changed', 'Changed'),
-                                                         ('reject', 'Rejected'),], default='user_department', track_visibility='onchange')
+                                                         ('reject', 'Rejected'),], default='user_department', track_tracking=True)
         
     total = fields.Monetary(string='Total', compute='compute_totals')
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id.id, )
     contract_duration = fields.Char(string='Contract Duration',)
-    start_date = fields.Date(string='Start Date', track_visibility='onchange')
-    end_date = fields.Date(string='End Date', track_visibility='onchange')
+    start_date = fields.Date(string='Start Date', track_tracking=True)
+    end_date = fields.Date(string='End Date', track_tracking=True)
     description = fields.Text(string='Descriprtion of services')
     terms_and_conditions = fields.Binary(string='Terms and conditions', )
-    buyer = fields.Many2one(comodel_name='res.users', string='Assign buyer', track_visibility='onchange')
+    buyer = fields.Many2one(comodel_name='res.users', string='Assign buyer', track_tracking=True)
     contract_status=fields.Char(string='Contract State' )
     scope_work = fields.Text('Scope of work')
     scope_doc = fields.Binary()

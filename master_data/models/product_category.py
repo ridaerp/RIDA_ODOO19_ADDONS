@@ -19,7 +19,7 @@ class RequestProductCategoty(models.Model):
         [('draft', 'Draft'), ('w_adv', 'Waiting Account Advisor'),
          ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange', copy=False)
+        string='Status', default='draft', track_tracking=True, copy=False)
     date = fields.Date(default=fields.Date.today(), readonly=True)
 
     name = fields.Char('Name', index=True, )

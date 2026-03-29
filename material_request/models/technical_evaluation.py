@@ -134,7 +134,7 @@ class WeightedScoringEvaluation(models.Model):
          ('w_proc_exective', 'Waiting Procurement Exective'), ('w_proc_manager', 'Waiting Procurement Manager'),
          ('reject', 'reject'),
          ('approved', 'Approved')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     comment = fields.Text(string="Recommendation:", required=False, )
     a_supplier_id = fields.Many2one('res.partner', string="Supplier A")
     b_supplier_id = fields.Many2one('res.partner', string="Supplier B")

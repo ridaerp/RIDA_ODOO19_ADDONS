@@ -27,7 +27,7 @@ class ModificationRequest(models.Model):
          ('ict', 'ICT Processing'),
          ('qhse_validated', 'QHSE Reviewing'),
          ('reject', 'reject'), ('close', 'Waiting Acceptance/Close'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange', copy=False)
+        string='Status', default='draft', track_tracking=True, copy=False)
     type_approval = fields.Selection(selection=[('ccso_approval', 'CCSO Approval'),
                                                 ('od', 'Operation Director Approve'),
                                                 ('ceo', 'CEO'),

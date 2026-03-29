@@ -19,7 +19,7 @@ class employee_rotation(models.Model):
         ('hr_manager','HR Manager Approval'),
         ('approve', 'Approved'),
         ('reject', 'Rejected')
-    ], default='draft',track_visibility='onchange')
+    ], default='draft',track_tracking=True)
     company_id = fields.Many2one("res.company", string="Company")
     new_company = fields.Many2one("res.company", string="New Company")
     note = fields.Text("Note")

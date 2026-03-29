@@ -8,7 +8,7 @@ class ReassignedSupply(models.TransientModel):
     _name = 'reassigned.supply'
     _description = 'Re-Assigned Supply Employee'
 
-    reassigned_supply = fields.Many2one('res.users', 'Re-Assign To', track_visibility='onchange' , domain= lambda self: [("group_ids", "=", self.env.ref("material_request.group_buyers").id)] )
+    reassigned_supply = fields.Many2one('res.users', 'Re-Assign To',tracking=True , domain= lambda self: [("group_ids", "=", self.env.ref("material_request.group_buyers").id)] )
 
     def action_validate(self):
         self.ensure_one()
@@ -26,7 +26,7 @@ class ReassignedEvalutor(models.TransientModel):
     _name = 'reassigned.evaluator'
     _description = 'Re-Assigned Evaulator Employee'
 
-    reassigned_evaluator = fields.Many2one('res.users', 'Assign Evaulator', track_visibility='onchange')
+    reassigned_evaluator = fields.Many2one('res.users', 'Assign Evaulator', track_tracking=True)
 
 
 

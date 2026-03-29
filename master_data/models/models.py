@@ -25,7 +25,7 @@ class EditProduct(models.Model):
         [('draft', 'Draft'), ('scm', 'Waiting Warehouse Manager'), ('md', 'Waiting Warehouse Manager'),
          ('reject', 'reject'),
          ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     image_1920 = fields.Image()
     categ_id = fields.Many2one(
         'product.category', 'Product Category',
@@ -132,7 +132,7 @@ class RequestProduct(models.Model):
         [('draft', 'Draft'), ('scm', 'Waiting Warehouse Manager'), ('md', 'Waiting Master Admin'),
          ('reject', 'reject'),
          ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     purchase_method = fields.Selection([
         ('purchase', 'On ordered quantities'),
         ('receive', 'On received quantities'),

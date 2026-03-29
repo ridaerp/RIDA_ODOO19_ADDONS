@@ -31,7 +31,7 @@ class RequestLocation(models.Model):
     state = fields.Selection(
         [('draft', 'Draft'), ('md', 'Waiting Master Admin'),
          ('reject', 'reject'), ('done', 'Done')],
-        string='Status', default='draft', track_visibility='onchange',copy=False)
+        string='Status', default='draft', track_tracking=True,copy=False)
     date = fields.Date(default=fields.Date.today(), readonly=True)
     complete_name = fields.Char("Full Location Name", compute='_compute_complete_name', store=True)
     active = fields.Boolean('Active', default=True, help="By unchecking the active field, you may hide a location without deleting it.")

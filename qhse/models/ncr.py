@@ -24,7 +24,7 @@ class QualityNcr(models.Model):
         ('auditor_represent_verify', 'Auditor Representative Verifier'),
         ('closed', 'Closed'),
         ('reject', 'rejected')
-    ], string='Status', default='draft', track_visibility='onchange')
+    ], string='Status', default='draft', track_tracking=True)
     source = fields.Selection([
         ('client_internal', 'Client/Internal Complaint'),
         ('audit', 'Internal Audit/Inspection'),

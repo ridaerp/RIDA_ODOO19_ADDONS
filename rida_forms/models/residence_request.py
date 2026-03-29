@@ -24,7 +24,7 @@ class ResidenceRequest(models.Model):
 
     name_seq = fields.Char("Number", required=True, index=True, default=lambda self: _('New'), copy=False)
     date_request = fields.Date("Request Date", default=fields.Date.context_today, required=True)
-    requested_by = fields.Many2one("res.users", readonly=True, string="Requested By", track_visibility='onchange',
+    requested_by = fields.Many2one("res.users", readonly=True, string="Requested By", track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     employee_id = fields.Many2one("hr.employee", string="Employee", default=lambda self: self._get_employee())
     department_id = fields.Many2one('hr.department', string='Department')
@@ -33,12 +33,12 @@ class ResidenceRequest(models.Model):
     grade_id = fields.Many2one('hr.grade.configuration', string='Grade')
     purpose = fields.Selection([('visitor', 'Visitor'),
                                      ('per_cont', 'Permanent Contract'),],
-                                    required=True, default='per_cont',track_visibility='onchange')
+                                    required=True, default='per_cont',track_tracking=True)
     num_of_days = fields.Integer(string='Number Of Days')
     zone_id = fields.Many2one('zone', string='Zone')
     block_id = fields.Many2one('block', string='Unit/Block No')
-    room_id = fields.Many2one('office.room', string='Unit /الغرفة', track_visibility='onchange')
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    room_id = fields.Many2one('office.room', string='Unit /الغرفة', track_tracking=True)
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
 
 

@@ -41,7 +41,7 @@ class AccountCustody(models.Model):
     account_id = fields.Many2one("account.account", string="Employee Account")
     journal_id = fields.Many2one("account.journal", string="Payment Journal")
     analytic_id = fields.Many2one("account.analytic.account",default=_default_analytic_account_id,string="Analytic Account")
-    state = fields.Selection(state, string="State", required=True, default="draft", index=True, track_visibility='onchange')
+    state = fields.Selection(state, string="State", required=True, default="draft", index=True, track_tracking=True)
     date_request = fields.Date("Request Date", default=lambda *a: time.strftime('%Y-%m-%d'))
     amount = fields.Float("Amount")
     amount_char = fields.Text("Amount(Character)", compute="compute_char_amount", store=True)
@@ -56,7 +56,7 @@ class AccountCustody(models.Model):
     account_move_id = fields.Many2one('account.move', string='Journal Entry', ondelete='restrict', copy=False, readonly=True)
     
     ###############added by ekhlas code
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     ###############added by ekhlas code

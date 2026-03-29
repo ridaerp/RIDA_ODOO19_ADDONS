@@ -47,7 +47,7 @@ class LabRequest(models.Model):
         [('draft', 'Draft'), ('sample_collected', 'Sample Collected'), ('test_in_progress', 'Test In progress'),
          ('doctor_accept', 'physician decision'), ('close', 'Closed'),
          ('reject', 'Rejected')],
-        string='Status', default='draft', track_visibility='onchange', copy=False)
+        string='Status', default='draft', track_tracking=True, copy=False)
     emp_approval = fields.Many2one('res.users', string="Employee Approval", readonly=1)
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     is_today = fields.Boolean(default=False, compute='_is_today', store='True')

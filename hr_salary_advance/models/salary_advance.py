@@ -33,12 +33,12 @@ class SalaryAdvancePayment(models.Model):
                               ('finance', 'Finance Approval'),
                               ('paid', 'Paid'),
                               ('cancel', 'Cancelled'),
-                              ('reject', 'Rejected')], string='Status', default='draft', track_visibility='onchange')
+                              ('reject', 'Rejected')], string='Status', default='draft', track_tracking=True)
 
     employee_contract_id = fields.Many2one('hr.version', string='Contract')
     last_salary = fields.Monetary(compute="_compute_last_salary",readonly=True, store=True )
     ######################added by ekhlas code #####################################
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     user_type = fields.Selection(string='User type', selection=[('hq', 'HQ Staff'),

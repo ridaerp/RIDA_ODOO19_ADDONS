@@ -46,7 +46,7 @@ class VisitRequest(models.Model):
                                     ('other', 'Other')],
                                     required=True,string='Activites' ,default='work')
     other = fields.Char(string='Other')
-    requested_by = fields.Many2one("res.users", readonly=True, string="Requested Employee", track_visibility='onchange',
+    requested_by = fields.Many2one("res.users", readonly=True, string="Requested Employee", track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     employee_id = fields.Many2one("hr.employee", string="Employee", default=lambda  self: self._get_employee())
     department_id = fields.Many2one('hr.department', string='Department',
@@ -57,7 +57,7 @@ class VisitRequest(models.Model):
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", required=True)
 
 
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
     visit_line_ids = fields.One2many('visit.request.line', 'visit_id', string='Visit Lines')
     department_involved = fields.Many2many('hr.department', string='Departments Involved', required=True)

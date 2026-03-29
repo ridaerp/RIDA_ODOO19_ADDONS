@@ -30,23 +30,23 @@ class TransportationRequest(models.Model):
     destination_from = fields.Char("From - ‫من‬", required=True)
     destination_to = fields.Char("To - ‫إلى‬", required=True)
     purpose = fields.Selection([('internal_business_task', 'Internal business task - ‫مهمة ‬عمل داخل‬‬ الوﻻية'), ('business_trip', 'Business trip - رحلة‬ ‫عمل'), ('regular_transportation', 'Regular transportation trip - ‫ترحيل‬ منتظم')], 
-                                 string='Purpose - ‫الغرض‬', track_visibility='onchange')
+                                 string='Purpose - ‫الغرض‬', track_tracking=True)
     reason = fields.Text("Reason - اﻻسباب", required=True)
     expected_departure = fields.Datetime("Expected departure date - تاريخ التحرك ‫المقترح", required=True)
     other_requirements = fields.Text("Other requirements - مطلوبات‬ أخرى‬")   
-    requested_by = fields.Many2one("res.users",readonly=True, string="Employee - اﻻسم", track_visibility='onchange',
+    requested_by = fields.Many2one("res.users",readonly=True, string="Employee - اﻻسم", track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     department_id = fields.Many2one('hr.department', string='Department - اﻻدارة', related="requested_by.employee_ids.department_id",readonly=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', related="requested_by.employee_id",readonly=True)
     job_id = fields.Many2one('hr.job', related="requested_by.employee_ids.job_id", string='Job Title - ‫الوظيفة‬',readonly=True)
     admin_comment = fields.Text("Admin Comment - تعليق ‫الشئون‬ اﻻدارية")
-    state = fields.Selection(selection=_STATES, string='Status', index=True, track_visibility='onchange', readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, track_tracking=True, readonly=True,
                              required=True, copy=False, default='draft')
 
-    approve_by = fields.Many2one('res.users', 'Approve by', track_visibility='onchange'
+    approve_by = fields.Many2one('res.users', 'Approve by', track_tracking=True
                                    , store=True, readonly=True)
 
-    reason_reject=fields.Char("Resoan Reject",track_visibility='onchange')
+    reason_reject=fields.Char("Resoan Reject",track_tracking=True)
     line_manager_id = fields.Many2one('res.users', string="Line Manager", compute='get_line_manager', store=True)
     company_id = fields.Many2one('res.company', related="requested_by.company_id", store=True,readonly=True)
 

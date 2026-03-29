@@ -10,14 +10,14 @@ class FleetOperation(models.Model):
     _order = 'date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    date = fields.Date(string='Date', default=lambda self: fields.Date.context_today(self), track_visibility='onchange')
-    employee_id = fields.Many2one('hr.employee', string='Employee', default=lambda self: self._get_employee(), track_visibility='onchange')
+    date = fields.Date(string='Date', default=lambda self: fields.Date.context_today(self), track_tracking=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', default=lambda self: self._get_employee(), track_tracking=True)
     department_id = fields.Many2one('hr.department', string='Department', default=lambda self: self._get_default_department())
 
-    start_day = fields.Float(string='Start Shift (Day)', track_visibility='onchange')
-    end_day = fields.Float(string='End Shift (Day)', track_visibility='onchange')
-    start_night = fields.Float(string='Start Shift (Night)', track_visibility='onchange')
-    end_night = fields.Float(string='End Shift (Night)', track_visibility='onchange')
+    start_day = fields.Float(string='Start Shift (Day)', track_tracking=True)
+    end_day = fields.Float(string='End Shift (Day)', track_tracking=True)
+    start_night = fields.Float(string='Start Shift (Night)', track_tracking=True)
+    end_night = fields.Float(string='End Shift (Night)', track_tracking=True)
 
     odometer_ids = fields.One2many('fleet.vehicle.odometer.line', 'operation_id', string='Odometer Lines')
     state = fields.Selection([
@@ -180,19 +180,19 @@ class FleetVehicleOdometerLine(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string='Equipment Name')
     equipment_id = fields.Many2one('maintenance.equipment', 'Equipment Type', ondelete="cascade")
     equipment_code = fields.Char(string='Equipment Code', compute='_compute_equipment_code', store=True)
-    location_id = fields.Many2one('vehicle.location', string='Location', track_visibility='onchange')
-    start_value = fields.Float(string='Start Value', track_visibility='onchange')
-    end_value = fields.Float(string='End Value', track_visibility='onchange')
+    location_id = fields.Many2one('vehicle.location', string='Location', track_tracking=True)
+    start_value = fields.Float(string='Start Value', track_tracking=True)
+    end_value = fields.Float(string='End Value', track_tracking=True)
     custom_sequence = fields.Integer("sequence",related='equipment_id.custom_sequence')
     type_of = fields.Char(string='Type', related='equipment_id.type_of_equipment')
 
     day_type = fields.Selection(
         [('d_s', 'Day Shift'), ('n_s', 'Night Shift'), ('d_n_s', 'Day & Night Shift')],
-        string="Type Of Shift", default='d_s', track_visibility='onchange'
+        string="Type Of Shift", default='d_s', track_tracking=True
     )
     operation_type = fields.Selection(
         [('operation', 'Operational'), ('non_operation', 'Non Operational')],
-        string="Operation Type", default='operation', track_visibility='onchange'
+        string="Operation Type", default='operation', track_tracking=True
     )
 
     day_duration = fields.Float(string='Target.hrs', compute='_compute_durations', store=True)

@@ -38,7 +38,7 @@ class RecruitmentPlan(models.Model):
          ('coo', 'COO Approve'),
          ('approved', 'Approved'),
          ('reject', 'reject')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     state_ccso = fields.Selection(related='state')
     user_type = fields.Selection(related="req_id.user_type")
     recr_plain_line_ids = fields.One2many(comodel_name="recruitment.plan.line", inverse_name="request_id",

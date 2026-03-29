@@ -95,7 +95,7 @@ class KpiPerson(models.Model):
          ('w_hr_m', 'HR Manager Approve'),
          ('reject', 'reject'),
          ('approved', 'Approved')],
-        string='Status', default='draft', track_visibility='onchange')
+        string='Status', default='draft', track_tracking=True)
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     employee_id = fields.Many2one("hr.employee", string="Name")
     job_id = fields.Many2one('hr.job', string="Position Title", related='employee_id.job_id', readonly=True)

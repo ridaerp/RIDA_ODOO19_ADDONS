@@ -23,7 +23,7 @@ class Delegation(models.Model):
         ('w_ict', 'Waiting ICT Verfiy'),
         ('confirm', 'Access Granted'),
         ('revoked', 'Access Revoked'),
-    ], string='Status', required=True, default='draft', track_visibility='onchange')
+    ], string='Status', required=True, default='draft', track_tracking=True)
 
     display_name = fields.Char(compute='compute_display_name', string="Name", store=False)
     employee_id = fields.Many2one('hr.employee', string='Delegation Of', required=True,

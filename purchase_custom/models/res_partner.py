@@ -10,7 +10,7 @@ class Partner(models.Model):
                               ('register', 'Registration'),
                               ('approved', 'Approved'),
                               # ('reject', 'Rejected'),
-     ],string="Status", default='draft', readonly=True, track_visibility='onchange')
+     ],string="Status", default='draft', readonly=True, track_tracking=True)
 
     price = fields.Integer(string='Price', default=False,)
     delivery_reliability = fields.Boolean(string='Delivery reliability', default=False,)

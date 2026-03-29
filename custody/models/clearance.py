@@ -109,7 +109,7 @@ class CustodyClear(models.Model):
 
 
 
-    ], default='draft', readonly=True,track_visibility='onchange')
+    ], default='draft', readonly=True,track_tracking=True)
 
     #added by ekhlas code############################
     analytic_id = fields.Many2one(related="ac_id.analytic_id" ,string="Analytic Account")
@@ -117,7 +117,7 @@ class CustodyClear(models.Model):
 
 
     ###############added by ekhlas code
-    requested_by = fields.Many2one('res.users', 'Requested by', track_visibility='onchange',
+    requested_by = fields.Many2one('res.users', 'Requested by', track_tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
 
     ###############added by ekhlas code
