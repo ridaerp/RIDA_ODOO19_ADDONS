@@ -528,16 +528,16 @@
         </record>
 
 
-        <!-- <menuitem id="menu_ore_poo_main_new" name="Ore/Rock Purcharses"
+       <menuitem id="menu_ore_poo_maiin" name="Ore/Rock Purcharses"
                   groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
        
 
 
-        <menuitem id="meniu_ore_poo_root_new" parent="menu_ore_poo_main_new" action="action_ore_rock_po_purchase"
+        <menuitem id="meniu_ore_poo_root_new" parent="menu_ore_poo_maiin" action="action_ore_rock_po_purchase"
             groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
- -->
+
 
 
 
