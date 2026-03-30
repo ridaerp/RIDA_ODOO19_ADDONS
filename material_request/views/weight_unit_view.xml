@@ -137,7 +137,7 @@
                                statusbar_visible="draft,db_geologist,chem_lab,db_price,rock_user,done"
                                invisible="form_type == 'external_visit'"
                                statusbar_colors='{"manager_approved":"blue"}'/>
-                        <field name="external_visit_state" widget="statusbar"
+                        <field name="state" widget="statusbar"
                                statusbar_visible="draft,db_geologist,chem_lab,waiting_rock,close"
                                statusbar_colors='{"manager_aaterapproved":"blue"}'
                                invisible="form_type != 'external_visit'"/>

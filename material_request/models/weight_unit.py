@@ -67,9 +67,9 @@ class WeightRequest(models.Model):
     rock_vendor = fields.Many2one("res.partner", "Rock Vendor" )
     quantity = fields.Float("Quantity" )
     area_id = fields.Many2one("x_area", "Area", required=True )
-    state = fields.Selection(selection=_STATES, string='Status', index=True, tracking=True, readonly=True,
+    state = fields.Selection(selection=_STATES, string='Status', index=True, readonly=True,
                              required=True, copy=False, default='draft')
-    external_visit_state = fields.Selection(related='state')
+    external_visit_state = fields.Selection(related='state', tracking=True,)
     date_request = fields.Datetime("Request Date/Time ", default=fields.Datetime.now, required=True)
     requested_by = fields.Many2one('res.users', 'Requested by',
                                    default=lambda self: self.get_requested_by(), store=True, readonly=True)
