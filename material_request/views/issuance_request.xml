@@ -1,0 +1,347 @@
+<odoo>
+    <data>
+
+        <record id="seq_issuance_request" model="ir.sequence">
+            <field name="name">Issuance Request Refrence</field>
+            <field name="code">issuance_request.sequence</field>
+            <field name="prefix">ISS-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="view_issuance_request_form" model="ir.ui.view">
+            <field name="name">Issuance Request</field>
+            <field name="model">issuance.request</field>
+            <field name="arch" type="xml">
+                <form string="Issuance Request">
+                    <header>
+                        <!--                    Set to Draft-->
+                        <button name="button_draft"
+                                invisible="state  in ['done','draft']"
+                                string="Set as Draft"
+                                type="object"
+
+                        />
+
+                        <!--                    User Submit-->
+                        <button name="button_to_lm" invisible="state not in ['draft']"
+                                string="Submit" type="object"
+                                class="oe_highlight"/>
+
+
+                        <button name="action_approve_sheets" invisible="state not in ['line_approve']" string="Approve"
+                                type="object"
+                                groups="base_rida.rida_group_line_manager"
+                                class="oe_highlight o_expense_sheet_approve"/>
+
+
+                        <!--          <button name="button_cancel" states="draft"
+                                         string="Cancel" type="object"
+
+                                         class=""/> -->
+
+                        <!--                    Inventory -->
+                        <button name="action_stock_delivery"
+                                string="Approve"
+                                type="object"
+                                invisible="state not in ['to_inventory']"
+                                groups="stock.group_stock_user,stock.group_stock_user"
+                                class="oe_highlight"
+                        />
+
+
+                        <button name="button_cancel" invisible="state not in ['draft','line_approve','to_inventory']"
+
+                                string="Cancel" type="object"
+                                confirm="You are about to cancel this request and its related records. Please confirm!"
+                                class=""/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,done"
+                               statusbar_colors='{"manager_approved":"blue"}'/>
+
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                    name="action_view_picking"
+                                    class="oe_stat_button"
+                                    groups="stock.group_stock_user"
+                                    icon="fa-truck" invisible="picking_count == 0">
+                                <field name="picking_count" string="Shipment" widget="statinfo"/>
+                            </button>
+
+
+                        </div>
+
+                        <div class="oe_edit_only">
+                            <label for="name" class="oe_inline"/>
+                        </div>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <div class="oe_edit_only">
+                            <label for="title" class="oe_inline"/>
+                        </div>
+                        <h1>
+                            <field name="title" readonly="state not in ('draft')"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="requested_by" readonly="1" options="{'no_create': 1, 'no_open': 1}"
+                                />
+
+                                <field name="department_id" readonly="1" options="{'no_create': 1, 'no_open': 1}"
+                                />
+                                <field name="equipment_id" options="{'no_create': 1, 'no_open': 1}"
+                                       readonly="state not in ('draft')"/>
+
+                                <field name="analytic_account_id" readonly="state not in ('draft')"
+                                       options="{'no_create': 1, 'no_open': 1}"
+
+
+                                       domain="['|',('company_id','=',company_id),('company_id','=',False),('active','=',True)]"/>
+
+
+                                <field name="company_id" options="{'no_create': 1, 'no_open': 1}" required="1"
+                                       readonly="state == 'done'"/>
+                                <field name="currency_id" invisible="1"
+                                       readonly="state not in ('draft')"/>
+
+                                <field name="issuance_type"/>
+                                <field name="delivery_address" invisible="issuance_type != 'external_issuance'"
+                                       required="issuance_type == 'external_issuance'"/>
+                                <field name="show_button" invisible="1"/>
+                                <label string="Receipt Confirmation Number" for="security_number" style="color: green;"
+                                       invisible="show_button == False"/>
+                                <field name="security_number" style="color: green;" nolabel="1"
+                                       invisible="show_button == False" readonly="1"/>
+                                <field name="user_ids" invisible="show_button == False" readonly="state != 'draft'"
+                                       widget="many2many_tags"
+                                       options="{'no_open':True,'no_create': True, 'no_create_edit':True}"/>
+
+
+                            </group>
+                            <group>
+
+                                <field name="request_date"
+                                       readonly="state not in ('draft')"/>
+                                <!--comment by ekhlas <field name="dest_location"
+                                   attrs="{'readonly': [('state','in', ('draft'))]}"/> -->
+                                <!-- line by ekhlas -->
+                                <field name="warehouse_id" domain="[('company_id','=', company_id)]"
+
+
+                                       readonly="state in ('draft')"/>
+                                <field name="issuance_new_location" domain="[('company_id','=', company_id)]"
+                                       readonly="state in ('cancel','done')"/>
+
+                                <field name="store_keeper"
+                                       readonly="1"
+                                />
+                                <field name="origin"
+                                       readonly="1"
+                                />
+
+                                <field name="request_id"
+                                       readonly="1"
+                                />
+
+
+                                <field name="status"
+                                       readonly="1"/>
+
+                                <!--  <field name="delivered"
+                                      readonly="1"
+                                />
+                                <button name="get_shipment_status" string="do" type="object"/>
+-->
+
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page string="Products">
+                                <field name="line_ids">
+                                    <list editable="bottom">
+                                        <field name="product_id"
+                                               readonly="parent.state not in ('draft')"/>
+                                        <field name="name"
+                                               readonly="parent.state not in ('draft')"/>
+                                        <field name="qty_available" invisible="0"/>
+                                        <field name="qty_requested" string="Requested Qty"
+                                               readonly="parent.state not in 'draft'"/>
+                                        <field name="lot_ids" groups="stock.group_stock_user" options="{'no_create': True,'no_open':True}"
+                                               widget="many2many_tags" invisible="product_id != 63325"/>
+                                        <field name="qty_issued" string="Issued Qty"
+                                               readonly="parent.state not in ('to_inventory')"/>
+                                        <field name="product_uom_id"
+                                               readonly="parent.state not in ('draft')"/>
+
+                                        <field name="company_id" column_invisible="1"/>
+
+                                        <field name="analytic_account_id" readonly="0"
+                                               domain="['|',('company_id','=',parent.company_id),('company_id','=',False)]"
+                                               options="{'no_create': 1, 'no_open': 1}"/>
+
+
+                                        <field name="equipment_id" readonly="0" optional="show"
+                                               domain="['|',('company_id','=',parent.company_id),('company_id','=',False)]"
+                                               options="{'no_create': 1, 'no_open': 1}"/>
+
+
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="request_id" column_invisible="1"/>
+
+                                        <field name="remarks"
+                                               readonly="parent.state not in ('draft')"/>
+
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <group>
+
+                                                    <field name="product_id"/>
+                                                    <field name="name"/>
+
+                                                    <div>
+                                                        <field name="qty_requested"
+                                                               class="oe_inline"/>
+                                                        <field name="product_uom_id"
+
+                                                               class="oe_inline"/>
+                                                    </div>
+                                                    <field name="qty_available"/>
+                                                    <field name="qty_requested"/>
+                                                    <field name="qty_issued"/>
+
+                                                </group>
+                                            </group>
+
+                                            <notebook>
+                                            </notebook>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <page string="Other Information">
+                                <group>
+                                    <group>
+                                        <field name="create_date" readonly="0"/>
+                                    </group>
+                                    <group>
+                                        <field name="create_uid" readonly="1"/>
+                                    </group>
+                                </group>
+
+                            </page>
+                        </notebook>
+
+                    </sheet>
+
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_issuance_request_tree">
+            <field name="name">issuance.request.tree</field>
+            <field name="model">issuance.request</field>
+            <field name="arch" type="xml">
+                <list decoration-bf="message_needaction==True"
+                      decoration-info="state in ('draft')"
+                      decoration-muted="state in ('reject')"
+                      string="Material Request">
+                    <field name="message_needaction" invisible="1"/>
+                    <field name="name"/>
+                    <field name="request_date"/>
+                    <field name="requested_by"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <field name="mr_type"/>
+                    <!-- <field name="status"/> -->
+
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+       
+        <record id="view_issuance_request_search" model="ir.ui.view">
+            <field name="name">issuance.request.list.select</field>
+            <field name="model">issuance.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Issuance Request">
+                    <field name="name" string="Issuance Request"/>
+                    <field name="title" string="Issuance Request Title"/>
+                    <separator/>
+                    <field name="state"/>
+                    <field name="delivery_address"/>
+                    <field name="requested_by"/>
+                    <field name="product_id"/>
+                    <field name="department_id"/>
+                    <field name="analytic_account_id"/>
+                    <field name="issuance_type"/>
+
+                    <filter domain="[('requested_by','=', uid)]" name="my_request" help="My requests"/>
+
+                    <filter domain="[('state','in', ['line_approve','to_inventory'])]" name="to_approve"
+                            help="To Approve"/>
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter string="Requested by" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'requested_by'}"/>
+                    <filter string="Product" icon="terp-personal" name="request_by" domain="[]"
+                            context="{'group_by':'product_id'}"/>
+                </search>
+            </field>
+        </record>
+
+
+        <!--    To Approve-->
+        <record model="ir.actions.act_window" id="issuance_request_form_approve_action">
+            <field name="name">Issuance Requests</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">issuance.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to start a new Issuance request process.
+                </p>
+                <p>
+
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem
+                id="menu_issuance_request_main"
+                sequence="5"
+                web_icon="material_request,static/description/1024.png"
+                name="Issuance Requests"
+
+                groups="base.group_user"
+        />
+
+        <menuitem
+                id="menu_material_request_my_requests"
+                sequence="0"
+                parent="menu_issuance_request_main"
+                action="issuance_request_form_approve_action"
+                groups="base.group_user"
+        />
+
+
+        <!--    <menuitem
+              id="menu_issuance_request_buyers"
+              sequence="10"
+              parent="purchase.menu_procurement_management"
+              action="material_request_form_all_action"
+               groups="base.group_user"
+          /> -->
+
+
+    </data>
+</odoo>

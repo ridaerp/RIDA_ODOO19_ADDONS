@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+hr_employee_overtime,access hr employee overtime,model_hr_over_time,base.group_user,1,1,1,1
+hr_employee_overtime_user,access hr employee overtime officer,model_hr_over_time,hr.group_hr_user,1,1,1,1
+hr_employee_overtime_manager,access hr employee overtime manager,model_hr_over_time,hr.group_hr_manager,1,1,1,1
+hr_employee_overtime_ccso,access hr employee overtime ccso,model_hr_over_time,base_rida.rida_group_CCSO,1,1,0,0
+hr_employee_overtime_ccso,access hr employee overtime lm,model_hr_over_time,base_rida.rida_group_line_manager,1,1,1,1
+hr_employee_overtime_ccso,access hr employee overtime finance,model_hr_over_time,account.group_account_user,1,1,0,0
+hr_employee_overtime_ccso,access hr employee overtime finance,model_hr_site_overtime,,1,1,1,1

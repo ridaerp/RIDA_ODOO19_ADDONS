@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <record id="view_budget_department" model="ir.ui.view">
+            <field name="name">view.budget.department</field>
+            <field name="model">budget.department</field>
+            <field name="arch" type="xml">
+               <form string="Budget Department Settings">
+                   <sheet>
+                        <group>
+                           <group>
+                               <field name="department_id"/>
+                               <field name="account_account_ids" widget="many2many_tags" required="1"/>
+                           </group>
+                           <group>
+                               <field name="analytic_account_id" widget="many2many_tags" required="1"/>
+                               <field name="respons_user"
+                                   domain="[('employee_id.department_id', 'child_of', department_id)]"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                           </group>
+                        </group>
+                   </sheet>
+                   <chatter/>
+
+               </form>
+            </field>
+        </record>
+
+        <!-- Tree -->
+
+        <record id="account_budget_departmentt_tree" model="ir.ui.view">
+            <field name="name">account_budget_department_tree.tree</field>
+            <field name="model">budget.department</field>
+            <field name="arch" type="xml">
+               <list string="Budget Amendments">
+                   <field name="department_id"/>
+                   <field name="account_account_ids"/>
+                   <field name="analytic_account_id"/>
+                   <field name="respons_user"/>
+               </list>
+            </field>
+        </record>
+
+
+        <!-- Action -->
+        <record id="action_budget_department" model="ir.actions.act_window">
+            <field name="name">Budget Department Settings</field>
+            <field name="res_model">budget.department</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem action="action_budget_department" id="menu_budget_department" parent="account.account_transactions_menu" sequence="100"/>
+
+    </data>
+</odoo>

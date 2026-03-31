@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <report
+            id="print_custody"
+            model="account.custody"
+            string="Custody"
+            report_type="qweb-pdf"
+            name="custody.print_custody_report_pdf"
+            file="custody.print_custody_report_pdf"
+        />
+    </data>
+</odoo>

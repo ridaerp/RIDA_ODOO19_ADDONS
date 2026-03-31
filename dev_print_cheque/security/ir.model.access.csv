@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+cheque_setting_group_account_invoice,cheque.setting,model_cheque_setting,account.group_account_invoice,1,1,1,1
+cheque_setting_group_account_user,cheque.setting,model_cheque_setting,account.group_account_user,1,1,1,1
+cheque_setting_group_account_manager,cheque.setting,model_cheque_setting,account.group_account_manager,1,1,1,1
+
+
+
+
+

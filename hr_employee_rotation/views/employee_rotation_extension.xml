@@ -1,0 +1,20 @@
+<odoo>
+    <record id="employee_rotation_extension_view" model="ir.ui.view">
+        <field name="name">employee rotation extended</field>
+        <field name="model">employee.rotation</field>
+        <field name="inherit_id" ref="hr_employee_rotation.view_employee_rotation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="analytic_account_id_related" />
+                <field name="project_analytic_account_id_related" />
+                <label for="contract_start_date_related" string="Contract Period"/>
+                <div>
+                    <field name="contract_start_date_related" class="oe_inline"/>
+ -                    <field name="contract_end_date_related" class="oe_inline"/>
+                </div>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>

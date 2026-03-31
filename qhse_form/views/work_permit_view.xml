@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_cold_work_permit_list" model="ir.ui.view">
+            <field name="name">cold.work.permit.list</field>
+            <field name="model">cold.work.permit</field>
+            <field name="arch" type="xml">
+                <list string="Work Permits" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state in ('authorized','issued','extended')" decoration-muted="state == 'closed'">
+                    <field name="name"/>
+                    <field name="requester_id" string="Requester / المقدم"/>
+                    <field name="work_site"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="state" widget="badge" decoration-info="state == 'submitted'" decoration-success="state == 'issued'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_cold_work_permit_form" model="ir.ui.view">
+            <field name="name">cold.work.permit.form</field>
+            <field name="model">cold.work.permit</field>
+            <field name="arch" type="xml">
+                <form string="Work Permit">
+                    <header>
+                        <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                                groups="base_rida.rida_group_safety_officer"/>
+                        <button name="action_extend" string="تمديد / Extend" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state != 'pending_extension'"/>
+                        <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                        <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                        <button name="action_close" string="إغلاق / Close" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state not in ['pending_close']"/>
+                        <button name="action_done" string="تم / Done" type="object"
+                                invisible="state not in ['reject']"/>
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state not in ['submitted','pending_close']"
+                                groups="base_rida.rida_group_safety_officer"
+                                type="action"/>
+                        <button name="action_reactivate"
+                            string="إعادة تنشيط / Reactivate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['suspend', 'revoked']"/>
+                        <button name="action_create_related_ptw"
+                            string="إنشاء التصريح المرتبط"
+                            type="object"
+                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,issued,revoked,suspend,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title text-center">
+                            <h1 style="color: #c53929;">Cold Work Permission</h1>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_linked_ptw"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-external-link"
+                                    invisible="linked_ptw_count == 0">
+                                <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group invisible="state != 'closed'">
+                            <field name="duration_display" readonly="1" class="text-danger font-weight-bold"/>
+                        </group>
+                        <group string="الجزء الأول: بيانات المهمة / Part One: Request Details">
+                            <group>
+                                <field name="requester_id" readonly="state != 'draft'"/>
+                                <field name="date_request"/>
+                                <field name="work_site" readonly="state != 'draft'" options="{'no_create': True, 'no_create_edit': True}" required="True"/>
+                                <field name="sub_location" required="True" />
+                                <field name="workers_count" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="date_from" readonly="state != 'draft'" required="True"/>
+                                <field name="date_to" readonly="state != 'draft'" required="True"/>
+                                <field name="shift" readonly="state != 'draft'" required="True"/>
+                                <field name="department_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="is_need_ptw" invisible="state != 'draft'"/>
+                                <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft'"/>
+                            </group>
+                        </group>
+
+                        <group string="طبيعة العمل / Work Nature">
+                            <group>
+                                <field name="work_nature" widget="radio" options="{'horizontal': true}" readonly="state != 'draft'" required="True"/>
+                                <field name="other_work_description" invisible="work_nature != 'other'" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="task_description" readonly="state != 'draft'" required="True"/>
+                                <field name="tools_used" readonly="state != 'draft'" required="True"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="احتياطات السلامة / Safety Precautions">
+                                <group>
+                                    <group string="التحكم بالمخاطر / Risk Control">
+                                        <field name="crew_introduced" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazards_explained" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="emergency_explained" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="energy_isolated" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group string="تجهيز الموقع / Site Preparation">
+                                        <field name="area_cleaned" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="safety_tools_available" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="warning_signs_placed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="assistant_assigned" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="weather_suitable" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+
+                                <group string="أدوات السلامة الشخصية / PPE Required">
+                                    <group col="4">
+                                        <field name="ppe_mask_count" required="True"/>
+                                        <field name="ppe_ear_count" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="ppe_gloves_count" required="True"/>
+                                        <field name="ppe_belt_count" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="التمديد والمصادقة / Extension &amp; Authentication">
+                                <group string="فترة التمديد / Extension Period" invisible="state not in ['pending_extension','extended', 'closed']">
+                                    <field name="extension_date_from" required="state == 'pending_extension'"/>
+                                    <field name="extension_date_to" required="state == 'pending_extension'"/>
+                                </group>
+                                <group string="الاعتمادات / Approvals">
+                                    <field name="supervisor_id" options="{'no_create': True}" required="True"/>
+                                    <field name="authorizer_id" options="{'no_create': True}" required="True"/>
+                                    <field name="issuer_id" options="{'no_create': True}"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <group invisible="state != 'submitted'" class="mt-3">
+                            <div class="alert alert-warning d-flex align-items-center" role="alert" style="padding: 15px; border-right: 5px solid #ffc107;">
+                                <field name="checked" class="mr-3" style="transform: scale(1.5);"/>
+                                <label for="checked" string="أقر بموجبه أنه تم التحقق من كافة البنود المذكورة أعلاه / I hereby certify that all above items have been checked." style="font-weight: bold; margin-left:10px;"/>
+                            </div>
+                        </group>
+                        <group>
+                            <group string="تفاصيل الإجراءات">
+                                <field name="extension_reason" required="state == 'pending_extension'" invisible="state not in ['pending_extension', 'extended']"/>
+                                <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
+                                <field name="reason_reject" invisible="state != 'reject'"/>
+                            </group>
+                        </group>
+                        <div class="mt-4 p-3" style="border: 1px solid #dee2e6; border-radius: 5px; background-color: #f8f9fa;">
+                            <h4 class="text-center mb-4" style="color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">
+                                توجيهات وإرشادات عامة / General Directions &amp; Instructions
+                            </h4>
+                            <div class="row">
+                                <div class="col-6" style="border-right: 1px solid #dee2e6;">
+                                    <h5 style="color: #0056b3;">توجيهات عامة:</h5>
+                                    <ul style="font-size: 0.8rem; line-height: 1.6;">
+                                        <li>يتم توزيع نسخة من تصريح العمل الموقع لكل من قسم السلامة, الجهة المستفيده,الجهة المنفذه والجهات ذات الصله.</li>
+                                        <li>يسرى هذا التصريح فقط على الاعمال المحدده والمنصوص عليها فى الجزء الاول من التصريح ويعتبر لاغيا فى حاله تغيرها.</li>
+                                        <li>حامل هذا التصريح هو الشخص /الجهه الوحيده المخول له تنفيذ الاعمال المنصوص عليها ويحق له ايقاف او تجميد اى اعمال اخرى فى المنطقة المنصوص عليها والتى يمكن ان تتعارض مع اعماله.</li>
+                                        <li>لا يتم استخراج اكثر من تصريح عمل فى نفس المنطقة الا بعد الرجوع الى تقيم المخاطر المحتمله.</li>
+                                        <li>يحق لاى من منسوبى ادارة السلامة الغاء او تعطيل العمل بهذا التصريح فى حاله اختلاف الظروف ,الادوات,المعدات,الطاقم ,مكان العمل او غيرها من العوامل التى يمكن ان تشكل خطرا على الانسان او البيئة او الصحة العامة او سلامة المنشاه.</li>
+                                        <li>يجب علي الجهه المنفذه تنظيف وترتيب منطقة العمل الوارده فى التصريح بعد من الانتهاء من المهمه قبل ارجاعها للجهة المستفيده.</li>
+                                        <li>تقوم الجهه المستفيده وادارة السلامة بمراجعة مكان العمل قبل التوقيع على استلام المنطقة واغلاق التصريح.</li>
+                                        <li>تقوم الجهه/الجهات الاخرى ذات الصله الاخرى(ان وجدت) بفتح او ارجاع مصادر الطاقة بعد التاكد من اغلاق التصريح بواسطة الجهة المستفيده والجهه المنفذه.</li>
+                                        <li>يقوم مسئول السلامة باغلاق التصريح بعد التاكد من من النقاط الوارده اعلاه ومن ثم الاحتفاظ بالنسخة الاصل فى الملف.</li>
+                                        <li>تعتبر ادارة السلامة هى الجهة الوحيده المخوله بتمديد التصريح اعلاها مع الوضع فى الاعتبار الجهات الاخرى ذات الصله.</li>
+                                        <li>يستخدم هذا التصريح للعمليات غير الوتينية او الروتينية ذات الخطورة العالية و التي تحتوي على مصدر اشتعال حسب وثيقة الاعمال والاماكن الخطره المعتمده /حسب تحليل المخاطر للاعمال الامنه بواسطه اداره السلامة.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <h5 style="color: #0056b3;">General Directions:</h5>
+                                    <ul style="font-size: 0.8rem; line-height: 1.6;">
+                                        <li>A copy of the signed work permit is distributed to the safety department, the beneficiary, the implementing agency, and relevant parties.</li>
+                                        <li>This permit applies only to the specific works outlined in Part 1 of the permit and shall be considered void if they change.</li>
+                                        <li>The holder of this permit is the sole person/entity authorized to carry out the specified works and has the right to stop or suspend any other works in the specified area that may conflict with its works.</li>
+                                        <li>No more than one work permit will be issued in the same area except after a review of the potential risks.</li>
+                                        <li>Any member of the Safety Department has the right to cancel or suspend this permit if circumstances, tools, equipment, personnel, workplace, or other factors change and could pose a risk to human health, the environment, public health, or the safety of the facility.</li>
+                                        <li>The implementing party must clean and tidy the work area specified in the permit after completing the task before returning it to the beneficiary.</li>
+                                        <li>The beneficiary and the safety department review the workplace before signing off on the area handover and closing the permit.</li>
+                                        <li>Other relevant parties (if any) will open or restore energy sources after verifying that the permit has been closed by the beneficiary and the implementing party.</li>
+                                        <li>The safety officer closes the permit after verifying the points mentioned above and then keeps the original copy in the file.</li>
+                                        <li>The Safety Department is the only entity authorized to extend the above permit, taking into consideration other relevant authorities.</li>
+                                        <li>This permit is used for non-routine or high-risk operations that contain an ignition source, as per the approved Hazardous Work and Places document/as per the Safety Management Risk Analysis.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-6" style="border-right: 1px solid #dee2e6;">
+                                    <h5 style="color: #28a745;">إرشادات عامة:</h5>
+                                    <ul style="font-size: 0.8rem; line-height: 1.6;">
+                                        <li>يجب عقد اجتماع سلامة خاص لاداة المهمة للتاكد من ان كل الاطراف المعنية تعى تماما مهامها ومسئولياتها.</li>
+                                        <li>يجب التاكد مسبقا من مخارج الطوارئ ومطابقتها لاشتراطات السلامة من حيث النطاقة والترتيب والاضاءه.</li>
+                                        <li>يجب التاكد من نظاقة او ازاله اى مواد ملتهبه او مشتعله من محيط منطقة العمل.</li>
+                                        <li>يجب التاكد من عزل مصادر الطاقة بوضع الاقفال وعلامات السلامة التحذيرية.</li>
+                                        <li>يجب التاكد من انظمة التهويه الطبيعة او الاصطناعية.</li>
+                                        <li>يجب تعين شخص مسئول كرجل اطفاء طول مده التصريح.</li>
+                                        <li>يجب الالتزام باستخدام معدات السلامة الشخصية طول فتره التصريح.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <h5 style="color: #28a745;">General Instructions:</h5>
+                                    <ul style="font-size: 0.8rem; line-height: 1.6;">
+                                        <li>A special safety meeting must be held for the task force to ensure that all parties involved are fully aware of their roles and responsibilities.</li>
+                                        <li>Emergency exits must be checked beforehand to ensure they meet safety requirements in terms of scope, arrangement, and lighting.</li>
+                                        <li>It is necessary to ensure that the firefighting equipment is suitable in terms of type, number, and size.</li>
+                                        <li>Ensure that any flammable or combustible materials are cleared from the work area.</li>
+                                        <li>Natural or artificial ventilation systems must be checked.</li>
+                                        <li>A designated person must be assigned as the firefighter for the duration of the permit.</li>
+                                        <li>Personal protective equipment must be used throughout the permit period.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <group string="الموافقة والتعهد / Confirmation" class="mt-3">
+                            <field name="confirmation_check" widget="boolean_toggle"
+                                   string="أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cold_work_permit" model="ir.actions.act_window">
+            <field name="name">Cold Work Permits / تصاريح العمل البارد</field>
+            <field name="res_model">cold.work.permit</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">ابدأ بإنشاء أول تصريح عمل بارد</p>
+            </field>
+        </record>
+    </data>
+
+    <menuitem id="menu_cold_work_permit_all"
+          name="تصاريح العمل البارد / Cold Work Permits"
+          parent="menu_safety_root_dual"
+          action="action_cold_work_permit"
+          sequence="2"/>
+</odoo>

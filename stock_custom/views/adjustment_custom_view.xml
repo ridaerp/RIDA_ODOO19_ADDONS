@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+   <record id="view_stock_quant_user_inherit" model="ir.ui.view">
+            <field name="name">stock.quant.custom</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+            <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='inventory_quantity_auto_apply']" position="after">
+                    <field name="inventory_quantity_onhand" readonly="True"/>
+                </xpath> 
+            </field>
+        </record>
+
+
+
+        <record id="view_stock_quant_tree_inventory_editable_inherit" model="ir.ui.view">
+            <field name="name">stock.quant.custom</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+            <field name="arch" type="xml">
+
+
+
+                <xpath  expr="//button[@name='stock.action_stock_inventory_adjustement_name']" position="attributes">
+                    <attribute name="groups">base_rida.rida_group_supply_chain_director</attribute>
+                </xpath>
+                <xpath  expr="//button[@name='action_apply_inventory']" position="attributes">
+                    <attribute name="groups">base_rida.rida_group_supply_chain_director</attribute>
+                </xpath>
+                <xpath  expr="//button[@name='action_clear_inventory_quantity']" position="attributes">
+                    <attribute name="groups">base.group_system</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record model="ir.actions.server" id="action_st_confirm">
+            <field name="name">Confirm Stock Taking</field>
+            <field name="model_id" ref="stock.model_stock_quant"/>
+            <field name="binding_model_id" ref="stock.model_stock_quant"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_apply_inventory()
+            </field>
+            <field name='group_ids'
+                   eval="[(4, ref('base_rida.rida_group_supply_chain_director'))]"/>
+
+
+        </record>
+
+
+
+                    <!-- Disable Create on Inventory Editable Tree -->
+            <record id="view_stock_quant_tree_inventory_no_create" model="ir.ui.view">
+                <field name="name">stock.quant.inventory.tree.no.create</field>
+                <field name="model">stock.quant</field>
+                <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//list" position="attributes">
+                        <attribute name="create">false</attribute>
+                    </xpath>
+                       <xpath expr="//list" position="attributes">
+                        <attribute name="edit">false</attribute>
+                    </xpath>
+                </field>
+            </record>
+
+
+        
+
+
+    </data>
+</odoo>

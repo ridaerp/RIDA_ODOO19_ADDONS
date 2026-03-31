@@ -1,0 +1,44 @@
+<odoo>
+    <data>
+
+        <record id="view_analytic_line_tree2" model="ir.ui.view">
+            <field name="name">Analytic Line Tree:</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="account_id" position="after">
+                    <field name="equipment_id"/>
+                </field>
+            </field>
+        </record>
+
+    
+
+
+        <record id="view_account_payment_form_inherit" model="ir.ui.view">
+            <field name="name">account.payment.form.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_type']" position="after">
+                    <field name="is_check_journal" invisible="1"/>
+                    <field name="check_journal_id" widget="selection" invisible="is_check_journal == False" readonly="state != 'draft'" required="is_check_journal == True and  payment_type== 'outbound'"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!--Journal FormView-->
+        <record id="view_account_journal_form_inherit" model="ir.ui.view">
+            <field name="name">account.journal.form.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="is_check_journal" string="PDC Journal?"
+                           invisible="type not in ('bank')"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

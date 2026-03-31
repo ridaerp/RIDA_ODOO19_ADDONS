@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_custody_employee_user,hr employee custody user,model_hr_custody,base.group_user,1,0,0,0
+access_hr_employee_custody_hr_user,hr employee custody officer,model_hr_custody,hr.group_hr_user,1,1,1,1
+access_hr_employee_relative_employee_user,hr employee relative user,model_hr_employee_relative,base.group_user,1,0,0,0
+access_hr_employee_relative_officer,hr employee relative officer,model_hr_employee_relative,hr.group_hr_user,1,1,1,1
+access_hr_employee_relative_relation_employee_user,hr employee relative relation user,model_hr_employee_relative_relation,base.group_user,1,0,0,0
+access_hr_employee_relative_relation_officer,hr employee relative relation officer,model_hr_employee_relative_relation,hr.group_hr_user,1,1,1,1
+access_hr_employee_training_employee_user,hr employee training user,model_hr_training,base.group_user,1,0,0,0
+access_hr_employee_training_officer,hr employee training officer,model_hr_training,hr.group_hr_user,1,1,1,1
+access_hr_location,hr location,model_rida_location,,1,1,1,1
+access_recruitment_plan,access_recruitment_plan,model_recruitment_plan,hr.group_hr_user,1,1,1,1
+access_recruitment_plan_line_manager,access_recruitment_plan_line_manager,model_recruitment_plan,base_rida.rida_group_line_manager,1,1,1,1
+access_recruitment_plan_line,access_recruitment_plan_line,model_recruitment_plan_line,hr.group_hr_user,1,1,1,1
+access_recruitment_plan__line_line_manager,access_recruitment_plan__line_line_manager,model_recruitment_plan_line,base_rida.rida_group_line_manager,1,1,1,1
+access_recruitment_requset,access_recruitment_plan_line,model_recruitment_request,hr.group_hr_user,1,1,1,1
+access_recruitment_requset_mng,access_recruitment_plan__line_line_manager,model_recruitment_request,base_rida.rida_group_line_manager,1,1,1,1
+access_trip_permission_line,access_trip_permission_line,model_trip_permission,hr.group_hr_user,1,1,1,1
+access_trip_permission_line_manager,access_trip_permission_line_manager,model_trip_permission,base_rida.rida_group_line_manager,1,1,1,1
+access_rip_permission_line,access_rip_permission_line,model_trip_permission_line,hr.group_hr_user,1,1,1,1
+access_rip_permission_line_manager,access_rip_permission_line_manager,model_trip_permission_line,base_rida.rida_group_line_manager,1,1,1,1
+

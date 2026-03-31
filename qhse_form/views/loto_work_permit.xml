@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_loto_permit_list" model="ir.ui.view">
+            <field name="name">loto.work.permit.list</field>
+            <field name="model">loto.work.permit</field>
+            <field name="arch" type="xml">
+                <list string="LOTO Permits" decoration-info="state == 'draft'" decoration-success="state == 'authorized'" decoration-warning="state == 'submitted'" decoration-muted="state == 'closed'">
+                    <field name="name" string="رقم التصريح"/>
+                    <field name="plant_site" string="المصنع"/>
+                    <field name="location" string="الموقع"/>
+                    <field name="requester_id" string="مقدم الطلب" widget="many2one_avatar_user"/>
+                    <field name="state" string="الحالة" widget="badge" decoration-success="state == 'authorized'" decoration-info="state == 'draft'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_loto_permit_form_custom" model="ir.ui.view">
+            <field name="name">loto.work.permit.form.custom</field>
+            <field name="model">loto.work.permit</field>
+            <field name="arch" type="xml">
+                <form string="LOTO Permit">
+                    <header>
+                        <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer"/>
+                        <button name="action_extend" string="تمديد / Extend" type="object"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer"
+                                invisible="state != 'issued'"/>
+                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer" invisible="state != 'issued'"/>
+                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer" invisible="state not in ['issued', 'extended', 'authorized']" />
+                        <button name="action_close" string="إغلاق / Close" type="object"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer"
+                                invisible="state not in ['issued', 'extended']"/>
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state not in ['submitted']"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer"
+                                type="action"/>
+                        <button name="action_reactivate"
+                            string="إعادة تنشيط / Reactivate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['suspend', 'revoked', 'reject']"/>
+                        <button name="action_create_related_ptw"
+                            string="إنشاء التصريح المرتبط"
+                            type="object"
+                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,issued,revoked,suspend,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_linked_ptw"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-external-link"
+                                    invisible="linked_ptw_count == 0">
+                                <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group string="المعلومات العامة">
+                            <group>
+                                <field name="date"/>
+                                <field name="plant_site"/>
+                                <field name="location" options="{'no_create': True, 'no_create_edit': True}" required="True"/>
+                                <field name="purpose"/>
+                            </group>
+                            <group>
+                                <label for="date_from" string="صلاحية التصريح"/>
+                                <div class="o_row">
+                                    من <field name="date_from"/> إلى <field name="date_to"/>
+                                </div>
+                                <field name="requester_id"/>
+                                <field name="loto_justification" widget="signature"/>
+                            </group>
+                            <group>
+                                <field name="department_ids" widget="many2many_tags"/>
+                                <field name="is_need_ptw" invisible="state != 'draft'"/>
+                                <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft'"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="المخاطر والاحتياطات /Hazard identification  Risk control ">
+                                <group string="المخاطر المرتبطة / Associated Hazard">
+                                    <group>
+                                        <field name="hazard_fluid"/><field name="hazard_drowning"/>
+                                        <field name="hazard_electrical"/><field name="hazard_physical"/>
+                                    </group>
+                                    <group>
+                                        <field name="hazard_mechanical"/><field name="hazard_traffic"/>
+                                        <field name="hazard_chemical"/><field name="hazard_movement"/>
+                                        <field name="hazard_fire"/><field name="hazard_other"/>
+                                    </group>
+                                </group>
+
+                                <group string="Precaution Require to complete the work safely">
+                                    <field name="prec_jsa_attached" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="prec_sources_identified" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="prec_locked_tagged" widget="radio" options="{'horizontal': true}"/>
+
+                                    <label for="cutter_switch" string="نوع القواطع المفعلة / The following power source cutter are activated to isolate the power"/>
+                                    <div class="o_row">
+                                        <field name="cutter_switch"/>
+                                        <field name="cutter_valve"/>
+                                        <field name="cutter_lever"/>
+                                        <field name="cutter_gate"/>
+                                        <field name="cutter_other" placeholder="أخرى..."/>
+                                    </div>
+
+                                    <field name="prec_indications" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="prec_performer_loto" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="prec_external_loto" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="prec_ppe_available" widget="radio" options="{'horizontal': true}"/>
+                                </group>
+
+                                <separator string="Inspection and Preparation / التفتيش والتحضير" class="mt32"/>
+                                <group>
+                                    <group string="Equipment Preparation / تحضير المعدات">
+                                        <field name="prep_power_isolation"/>
+                                        <field name="prep_loto_in_place"/>
+                                        <field name="prep_keys_custody"/>
+                                        <field name="prep_suitable_tools"/>
+                                        <field name="prep_escape_route"/>
+                                        <field name="prep_warning"/> </group>
+                                    <group string="Communication / التواصل والتدريب">
+                                        <field name="prep_jsa_done"/>
+                                        <field name="prep_trained_personnel"/>
+                                        <field name="prep_safety_meeting"/>
+                                        <field name="prep_method_reviewed"/>
+                                        <field name="prep_comm_method"/>
+                                        <field name="prep_emergency"/> </group>
+                                </group>
+                                <group string="PPE Preparation / معدات الوقاية الشخصية">
+                                    <div class="o_row">
+                                        <field name="ppe_helmet"/> <label for="ppe_helmet" string='Helmet / خوذة'/>
+                                        <field name="ppe_foot_protection" class="ml16"/> <label for="ppe_helmet" string='Foot protection / أحذية السلامة'/>
+                                        <field name="ppe_hi_vis" class="ml16"/> <label for="ppe_helmet" string='Hi-Visible jacket / سترة عالية الوضوح'/>
+                                        <field name="ppe_goggles" class="ml16"/> <label for="ppe_helmet" string='Safety Goggles / نظارات السلامة'/>
+                                        <field name="ppe_dust_masks" class="ml16"/> <label for="ppe_helmet" string='Dust Masks / كمامات الغبار'/>
+                                        <field name="prep_ear" class="ml16"/> <label for="ppe_helmet" string='Ear protection  / حماية الأذن'/>
+                                    </div>
+                                </group>
+                                <separator string="إجراءات تحكم إضافية / Additional required Control Measure"/>
+                                <field name="additional_controls" placeholder="إجراءات تحكم إضافية / Additional required Control Measure..."/>
+                            </page>
+
+                            <page string="نقاط العزل والاعتماد / LOTO Requester">
+                                <field name="isolation_ids">
+                                    <list editable="bottom">
+                                        <field name="control_id"/>
+                                        <field name="control_location"/>
+                                        <field name="isolation_method"/>
+                                        <field name="isolation_indication"/>
+                                        <field name="lock_no"/>
+                                        <field name="tag_no"/>
+                                        <field name="competent_person"/>
+                                        <field name="date_time"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <group string="الاعتمادات / Authorization">
+                                        <field name="relevant_party_1"/>
+                                        <field name="relevant_party_1_sig" widget="signature"/>
+                                        <field name="relevant_party_1_date"/>
+                                        <field name="authorizer_id"/>
+                                        <field name="authorizer_sig" widget="signature"/>
+                                        <field name="authorizer_date"/>
+                                    </group>
+                                    <group string="مسؤول السلامة">
+                                        <field name="issuer_id"/>
+                                        <field name="issuer_sig" widget="signature"/>
+                                        <field name="issuer_date"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="التمديد والإغلاق / Extend/Suspend/terminate and close of PTW">
+                                <group>
+                                    <group string="تمديد التصريح / Extend of PTW">
+                                        <field name="ext_valid_from"/><field name="ext_valid_to"/>
+                                    </group>
+                                    <group string="إغلاق التصريح / close of PTW">
+                                        <field name="close_men_withdrawn"/><field name="close_loto_removed"/>
+                                        <field name="close_observation"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <group>
+                            <group>
+                                <field name="reason_reject" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                   <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_loto_work_permit" model="ir.actions.act_window">
+            <field name="name">LOTO Permits / تصاريح القفل والعزل</field>
+            <field name="res_model">loto.work.permit</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    لم يتم إنشاء أي تصريح LOTO بعد.
+                </p>
+                <p>
+                    قم بإنشاء تصريح جديد لتوثيق عمليات عزل الطاقة وضمان سلامة العاملين.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_loto_permit_root"
+                  name="Isolation/De-enerize Permission (LOTO) / تصاريح القفل والعزل"
+                  parent = "menu_safety_root_dual"
+                  action="action_loto_work_permit"
+                  sequence="8"/>
+
+
+    </data>
+</odoo>

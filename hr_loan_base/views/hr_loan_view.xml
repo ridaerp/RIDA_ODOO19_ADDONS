@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="ir_seq_hr_loan_req" model="ir.sequence">
+			<field name="name">Loan Request</field>
+			<field name="code">hr.loan.req.seq</field>
+			<field name="prefix">Loan</field>
+			<field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+
+		</record>
+
+		<!-- Loan Recalculation -->
+		<record id="action_hr_loan_recalculation_button" model="ir.actions.act_window">
+			<field name="name">Loan Recalculation</field>
+			<field name="res_model">loan.recalculation</field>
+			<field name="view_mode">form</field>
+			<field name="target">current</field>
+			<field name="context">{'default_loan_id' :  active_id}</field>
+		</record>
+
+		<!-- Loan Clear -->
+		<record id="action_hr_loan_clear_button" model="ir.actions.act_window">
+			<field name="name">Loan Clear</field>
+			<field name="res_model">loan.clear</field>
+			<field name="view_mode">form</field>
+			<field name="target">current</field>
+			<field name="context">{'default_loan_id' :  active_id}</field>
+		</record>
+
+		<!--Loan Tree-->
+		<record id="tree_hr_loan_view" model="ir.ui.view">
+			<field name="name">hr.loan.tree</field>
+			<field name="model">hr.loan</field>
+			<field name="arch" type="xml">
+				<list string="Loan Requests">
+					<field name="name" string="Loan No"/>
+					<field name="employee_id"/>
+					<field name="loan_config_id"/>
+					<field name="loan_amount"/>
+					<field name="date"/>
+					<field name="state"/>
+					<field name="progress"/>
+					<field name="company_id"/>
+				</list>
+			</field>
+		</record>
+
+
+		<!--Loan Form-->
+		<record id="view_hr_loan_form_custom" model="ir.ui.view">
+			<field name="name">hr.loan.form</field>
+			<field name="model">hr.loan</field>
+			<field name="arch" type="xml">
+				<form string="Loan Request">
+					<header>
+						<button name="action_submit" type="object" class="btn btn-primary" string="Submit" invisible="state != 'draft'" groups='base.group_user'/>
+						<button name="action_approve" type="object" class="btn btn-primary" string="Approve" invisible="state != 'draft'" groups='hr_payroll.group_hr_payroll_user'/>
+						<button name="action_refuse" type="object" string="Refuse" invisible="state != 'draft'" groups="hr_payroll.group_hr_payroll_user"/>
+
+						<button name="action_set_to_draft" type="object" string="Set To Draft" invisible="state != 'draft'" groups="hr_payroll.group_hr_payroll_user"/>
+
+						<button name="%(hr_loan_base.action_hr_loan_clear_button)d" type="action" invisible="state != 'draft'" string="Loan Clear" groups="hr_payroll.group_hr_payroll_user"/>
+						<button name="%(hr_loan_base.action_hr_loan_recalculation_button)d" type="action" sinvisible="state != 'draft'" string="Loan Recalculate" groups="hr_payroll.group_hr_payroll_user"/>
+						<field name="state" widget="statusbar" statusbar_colors='{"proforma":"blue","proforma2":"blue"}' statusbar_visible ="draft,hr_approve,approve"/>
+					</header>
+
+					<sheet>
+						<div class="oe_title">
+							<label for="name"/>
+							<h1>
+								<field name="name" class="oe_inline" force_save="1"/>
+							</h1>
+						</div>
+						<group name="group_top">
+							<group name="group_left">
+								<field name="employee_id" on_change="onchange_employee_id(employee_id)" />
+								<field name="emp_code"/>
+								<field name="department_id"/>
+								<field name="job_id"/>
+								<field name="start_date"/>
+                 				<field name="expiry_date"/>
+								<field name="emp_salary" groups="hr_payroll.group_hr_payroll_user,hr.group_hr_manager" readonly="1" force_save='1'/>
+								<field name="loan_old_amount"/>
+							</group>
+							<group name="group_right">
+								<field name="loan_config_id" readonly="state not in ('draft', 'hr_officer', 'hr_approve')"/>
+								<field name="date"/>
+								<field name="loan_amount" readonly="state not in ('draft', 'hr_officer', 'hr_approve')"/>
+								<field name="progress"/>
+								<field name="payment_start_date" readonly="state not in ('draft', 'hr_officer', 'hr_approve')"/>
+								<field name="no_month" readonly="state not in ('draft', 'hr_officer', 'hr_approve')"/>
+								<field name="company_id" readonly="state not in ('refuse', 'reject', 'draft')"  groups="base.group_multi_currency" required="True"/>
+								 <field name="currency_id" readonly="state not in ('refuse', 'reject', 'draft')" groups="base.group_multi_currency"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Number of Deduction">
+								<field name="loan_line_ids">
+									<list string="Loan Line" editable="bottom" create="false" delete="false">
+										<field name="paid_date"/>
+										<field name="paid_amount" readonly="1" force_save="1"/>
+										<field name="paid" force_save="1" />
+										<field name="notes"/>
+									</list>
+								</field>
+								<group class="oe_subtotal_footer oe_right">
+									<field name="total_amount" widget="monetary"/>
+									<div>
+										<label for="total_paid_amount"/>
+										<button name="button_reset_balance_total"   invisible="state != 'draft'"  string="(update)" class="oe_link oe_edit_only" type="object" help="Recompute Balance"/>
+									</div>
+									<field name="total_paid_amount" nolabel="1" widget="monetary"/>
+									<field name="balance_amount" class="oe_subtotal_footer_separator" widget="monetary"/>
+
+								</group>
+								<button type="object" name="compute_loan_line" string="Compute" icon="fa-gears" colspan="2" invisible="state == 'approve'"/>
+								<div class="oe_clear"/>
+							</page>
+						</notebook>
+					</sheet>
+					<chatter/>
+				</form>
+			</field>
+		</record>
+
+		<!--loan menu-->
+		<menuitem name="Loans" parent="base_rida.cus_menu_hr_root" id="menu_hr_loans" groups="base.group_user" sequence="20"/>
+
+		<record id="action_hr_loan_request_my" model="ir.actions.act_window">
+			<field name="name">Employee Loans</field>
+			<field name="res_model">hr.loan</field>
+			<field name="view_mode">list,form,kanban</field>
+			<field name="domain"> [('employee_id.user_id','=',uid)]</field>
+		</record>
+
+		<menuitem name="My Loans" parent="menu_hr_loans" id="menu_hr_loan_request_my" groups="base.group_user" action="action_hr_loan_request_my" sequence="1"/>
+
+		<record id="action_hr_loan_approve" model="ir.actions.act_window">
+			<field name="name">Loans To Approve</field>
+			<field name="res_model">hr.loan</field>
+			<field name="view_mode">list,form,kanban</field>
+		</record>
+
+		<menuitem name="Loans To Approve" parent="menu_hr_loans" id="menu_hr_loan_approve" action="action_hr_loan_approve"  sequence="2" groups="hr_payroll.group_hr_payroll_user,account.group_account_user,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,base_rida.rida_internal_audit" />
+
+		<!-- Shortcuts -->
+		<record id="act_hr_employee_loan_request" model="ir.actions.act_window">
+			<field name="name">Loans</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">hr.loan</field>
+			<field name="view_mode">list,form</field>
+			<field name="context">{'search_default_employee_id': [active_id], 'default_employee_id': active_id}</field>
+			<field name="domain">[('employee_id','=',active_id)]</field>
+			<field name="view_id" ref="tree_hr_loan_view"/>
+		</record>
+
+		<!-- HR employee inherit Loans -->
+		<record id="view_employee_form_loan_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.loan.form.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<!---->
+				<xpath expr="//group[@name='user']" position="after">
+					<group string="Loans">
+						<label for="loan_amount"/>
+						<div>
+							<field name="loan_amount" class="oe_inline"/>
+						</div>
+					</group>
+				</xpath>
+				
+				<!--appear loan dasboard in hr.employee to hr officer-->
+				<xpath expr="//div[@name='button_box']" position="inside">
+					<button name="%(act_hr_employee_loan_request)d" type="action" class="oe_inline oe_stat_button" icon="fa-usd" groups="hr.group_hr_user">
+						<field name="loan_count" widget="statinfo" string="Loans"/>
+					</button>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="hr_loan_search" model="ir.ui.view">
+			<field name="name">hr.loan.search</field>
+			<field name="model">hr.loan</field>
+			<field name="arch" type="xml">
+				<search >
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="emp_code" />
+				</search>
+			</field>
+		</record>
+
+		<record id="mymodule_message_wizard_form" model="ir.ui.view">
+			<field name="name">mymodule.message.wizard.form</field>
+			<field name="model">mymodule.message.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<field name="message" readonly="True"/>
+					<footer>
+						<button name="action_close" string="Ok" type="object" class="oe_highlight"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+	</data>
+</odoo>

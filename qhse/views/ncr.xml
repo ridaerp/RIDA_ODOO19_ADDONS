@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="quality_ncr_form" model="ir.ui.view">
+            <field name="name">quality.ncr.request.form</field>
+            <field name="model">quality.ncr</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state not in ['draft']"
+                                class="oe_highlight"/>
+                        <button string="Confirm" name="set_l_mng_confirm" type="object"
+                                invisible="state not in ['qhse']"
+                                class="oe_highlight" groups="base_rida.rida_group_qhse_manager"/>
+                        <button string="Assign" name="set_l_dept_mng_confirm" type="object"
+                                invisible="state not in ['department_manager']"
+                                class="oe_highlight" groups="base_rida.rida_group_line_manager"/>
+                        <button string="Submit" name="set_waiting_employee_audi" type="object"
+                                invisible="state not in ['waiting_employee']"
+                                class="oe_highlight"/>
+                        <button string="Approve" name="set_waiting_dept_approve" type="object"
+                                invisible="state not in ['waiting_approve_department_manager']"
+                                class="oe_highlight" groups="base_rida.rida_group_line_manager"/>
+                        <button string="Verfiy" name="set_l_auditor_verfiy_confirm" type="object"
+                                groups="base_rida.rida_group_qhse_manager"
+                                invisible="state not in ['audit_verifier']"
+                                class="oe_highlight"/>
+
+                        <button string="Confirm" name="set_l_qhse_mng_confirm" type="object"
+                                groups="base_rida.rida_group_qhse_manager"
+                                invisible="state not in ['qhse_manager']"
+                                class="oe_highlight"/>
+
+                        <button string="Complete" name="set_auditor_represent_confirm" type="object"
+                                groups="base_rida.rida_group_line_manager"
+                                invisible="state not in ['w_depr_mng_close']"
+                                class="btn-success"/>
+
+
+                        <button string="Accept" name="done" type="object" groups="base_rida.rida_group_qhse_manager"
+                                invisible="state not in ['auditor_represent_verify']"
+                                class="oe_highlight"/>
+
+                        <button string="Return To Dept Manager" name="return_to_dept_mng_close" type="object"
+                                invisible="state not in ['auditor_represent_verify']"
+                                groups="base_rida.rida_group_qhse_manager"
+                        />
+                        <button string="Return To Dept Manager" name="return_to_dpt_mng" type="object"
+                                invisible="state not in ['waiting_employee']"
+                        />
+                        <button string="Return To Auditee Employee" name="return_to_employee_audit" type="object"
+                                invisible="state not in ['waiting_approve_department_manager']"
+                                groups="base_rida.rida_group_line_manager"
+                        />
+                        <button string="Return To Auditor Verifier" name="return_to_audit_verify"
+                                groups="base_rida.rida_group_qhse_manager"
+                                type="object"
+                                invisible="state not in ['qhse_manager']"
+                        />
+                        <button string="Return To Dept Manager" name="return_to_dept_mng"
+                                type="object" groups="base_rida.rida_group_qhse_manager"
+                                invisible="state not in ['audit_verifier']"
+                        />
+
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state not in ['qhse', 'department_manager', 'qhse_manager']"
+                                string="Reject"
+                                groups="base_rida.rida_group_qhse_manager,base_rida.rida_group_line_manager"/>
+                        <button string="Set To Draft" name="set_to_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight"
+                                groups="base_rida.rida_group_qhse_manager,base_rida.rida_group_line_manager"/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,qhse,department_manager,waiting_employee,waiting_approve_department_manager,audit_verifier,qhse_manager,w_depr_mng_close,auditor_represent_verify,closed"
+                        />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id" required="1" readonly="state not in ['draft','qhse']"/>
+                                <field name="audit_name" required="1" readonly="state not in ['draft','qhse']"/>
+                                <field name="department_id" options="{'no_create': True,'no_open':True}" required="1"
+                                       readonly="state not in ['draft','qhse']"/>
+                                <field name="source" widget="radio" required="1"
+                                       readonly="state not in ['draft','qhse']"/>
+                            </group>
+                            <group>
+                                <field name="date" required="1" readonly="state not in ['draft']"/>
+                                <field name="procedure_id" options="{'no_create': True,'no_open':True}" required="1"
+                                       readonly="state not in ['draft','qhse']"/>
+                                <field name="emp_assign_id" options="{'no_create': True,'no_open':True}"
+                                       required="state == 'department_manager'" invisible="state in ['draft','qhse']"
+                                       readonly="state not in ['department_manager']"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description_of_ncr" required="1" readonly="state not in ['draft','qhse']"/>
+                        </group>
+                        <group string="for Auditee/Concerned person" invisible="state in ['draft','qhse']">
+                            <group>
+                                <field name="potential_causes"
+                                       required="state in ['waiting_approve_department_manager']"
+                                       readonly="state not in ['draft','qhse','department_manager','waiting_employee','waiting_approve_department_manager','audit_verifier','qhse_manager']"/>
+                                <field name="proposed_corrective_action"
+                                       required="state in ['waiting_approve_department_manager']"
+                                       readonly="state not in ['draft','qhse','department_manager','waiting_employee','waiting_approve_department_manager','audit_verifier','qhse_manager']"/>
+                                <field name="expected_date_corrective_action"
+                                       required="state in ['waiting_approve_department_manager']"
+                                       readonly="state not in ['draft','qhse','department_manager','waiting_employee','waiting_approve_department_manager']"/>
+
+                            </group>
+                        </group>
+                        <group string="FOR QHSE DEPT" groups="base_rida.rida_group_qhse_manager"
+                        >
+                            <field name="qhse_dept_use_only" readonly="state not in ['auditor_represent_verify']"
+                                   groups="base_rida.rida_group_qhse_manager"
+                                   invisible="state not in ['auditor_represent_verify','closed','reject']"
+                                   placeholder="Verification / effectiveness of the corrective action including any evidence documents to demonstrate closure of NC"/>
+                            <field name="note" readonly="state in ['closed','reject']"
+                                   groups="base_rida.rida_group_qhse_manager"/>
+                        </group>
+                        <notebook>
+                            <page string="Approval and Signature" invisible="qhse_manager == False">
+                                <group>
+                                    <group string="QHSE Approval">
+                                        <field name="qhse_manager" invisible="qhse_manager == False"/>
+                                        <field name="qhse_approval_date"
+                                               invisible="qhse_approval_date == False"/>
+                                        <field name="close_ncr_person" invisible="close_ncr_person == False"/>
+                                        <field name="ncr_person_approval_date"
+                                               invisible="ncr_person_approval_date == False"/>
+                                    </group>
+
+                                    <group string="Auditee/Concerned Approval" invisible="dpt_manager == False">
+                                        <field name="dpt_manager" invisible="dpt_manager == False"/>
+                                        <field name="dpt_approval_date"
+                                               invisible="dpt_approval_date == False"/>
+                                        <field name="dpt_manager_the_complete"
+                                               invisible="dpt_manager_the_complete == False"/>
+                                        <field name="dpt_approval_date_complete"
+                                               invisible="dpt_approval_date_complete == False"/>
+                                    </group>
+
+
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="ncr_tree_view">
+            <field name="name">NCR List</field>
+            <field name="model">quality.ncr</field>
+            <field name="arch" type="xml">
+                <list string="Non-Conformance Reports">
+                    <field name="name"/>
+                    <field name="audit_name"/>
+                    <field name="date"/>
+                    <field name="department_id"/>
+                    <field name="source"/>
+                    <field name="procedure_id"/>
+                    <field name="emp_assign_id"/>
+                    <field name="description_of_ncr"/>
+                    <field name="potential_causes"/>
+                    <field name="expected_date_corrective_action"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="ncr_forms_act_window" model="ir.actions.act_window">
+            <field name="name">Non-Conformity Corrective Action Request (NCAR)</field>
+            <field name="res_model">quality.ncr</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem name="Procedure" id="proc_menu_root" parent="qhse_menu" sequence="1" />
+        
+        <menuitem name="Non-Conformity Corrective Action Request (NCAR)" id="ncr_menu" parent="qhse.proc_menu_root"
+                  action="ncr_forms_act_window" sequence="2"
+        />
+
+    </data>
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ppe_inspection_list" model="ir.ui.view">
+        <field name="name">ppe.inspection.list</field>
+        <field name="model">ppe.inspection</field>
+        <field name="arch" type="xml">
+            <list string="PPE Inspections">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="requester_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('officer', 'senior')"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ppe_inspection_form" model="ir.ui.view">
+        <field name="name">ppe.inspection.form</field>
+        <field name="model">ppe.inspection</field>
+        <field name="arch" type="xml">
+            <form string="PPE Inspection">
+                <header>
+                    <button name="action_officer" string="Submit to Officer" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+
+                    <button name="action_senior" string="Officer Approve" type="object"
+                            invisible="state != 'officer'" groups="base_rida.rida_group_safety_officer" class="oe_highlight"/>
+
+                    <button name="action_done" string="Senior Approve" type="object"
+                            invisible="state != 'senior'" groups="base_rida.rida_group_senior_officer" class="oe_highlight"/>
+
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                            type="action" invisible="state in ('draft', 'done')"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,officer,senior,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_issuance_requests" type="object" class="oe_stat_button" icon="fa-truck">
+                            <field name="issuance_count" string="Issuance" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="text-center mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h2 style="color: #714B67;">
+                            <field name="doc_no" readonly="1"/>
+                        </h2>
+                        <div class="text-muted text-uppercase fw-bold">PPE Inspection Document</div>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Inspection Number"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="requester_id" readonly="1"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="plant_unit"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Inspected PPE Details" name="inspection_lines">
+                            <field name="inspection_line_ids">
+                                <list editable="bottom">
+                                    <field name="ppe_type"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           domain="[('categ_id', 'child_of', 'QHSE / PPE')]" readonly="parent.state != 'draft'"/>
+                                    <field name="brand_sn" readonly="parent.state != 'draft'"/>
+                                    <field name="sub_location" readonly="parent.state != 'draft'"/>
+                                    <field name="condition" widget="progressbar" options="{'current_value': 'condition', 'max_value': 100, 'editable': true}" readonly="parent.state not in ['officer','senior']"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Defected PPE Summary" name="defect_lines">
+                            <field name="defect_line_ids">
+                                <list editable="bottom" decoration-danger="1">
+                                    <field name="ppe_product_id"/>
+                                    <field name="brand_sn"/>
+                                    <field name="action_required"/>
+                                    <field name="comment"/>
+                                    <field name="other" invisible="action_required != 'others'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Approvals &amp; History" name="approvals">
+                            <group>
+                                <group string="Workflow Logging">
+                                    <field name="done_user_id" widget="many2one_avatar_user"/>
+                                    <field name="officer_user_id" widget="many2one_avatar_user"/>
+                                    <field name="date_of_safety" readonly="1"/>
+                                </group>
+                                <group string="Final Management">
+                                    <field name="senior_user_id" widget="many2one_avatar_user"/>
+                                    <field name="date_senior" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Rejection Details" invisible="not reason_reject">
+                                <field name="reason_reject" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ppe_inspection" model="ir.actions.act_window">
+        <field name="name">PPE Inspection</field>
+        <field name="res_model">ppe.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new PPE Inspection report.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ppe_inspection"
+              name="PPE Inspections"
+              parent="menu_ppe_root"
+              action="action_ppe_inspection"
+              sequence="5"/>
+</odoo>

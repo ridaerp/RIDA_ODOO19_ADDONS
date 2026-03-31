@@ -1,0 +1,379 @@
+<odoo>
+    <data>
+
+        <record id="trip_evaliation_forms" model="ir.ui.view">
+            <field name="name">Trip Evaluation form</field>
+            <field name="model">trip.evaliation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                        </group>
+                        <group>
+                            <field name="type_of_vechile"/>
+                            <field name="type_of_evaluation"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Approval activities -->
+        <record id="mail_act_user_equipement_request_approval" model="mail.activity.type">
+            <field name="name">Action Required</field>
+            <field name="icon">fa-check</field>
+        </record>
+
+
+        <record id="seq_vehicle_equipment_request" model="ir.sequence">
+            <field name="name">VehicleRequest</field>
+            <field name="code">vehicle.equipment.request</field>
+            <field name="prefix">VR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- reject reason -->
+
+        <record id="order_reject_reject_wizard" model="ir.ui.view">
+            <field name="name">reject.wizard_wizard</field>
+            <field name="model">rejection.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Rejection Reason">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+
+                        <group>
+                            <group>
+                                <field name="reason_reject" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string='Ok' name="action_validate" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="rejection_wizard_reject_action" model="ir.actions.act_window">
+            <field name="name">Reject</field>
+            <field name="res_model">rejection.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="order_reject_reject_wizard"/>
+            <field name="target">new</field>
+
+        </record>
+
+
+        <record model="ir.ui.view" id="view_vehicle_request_tree">
+            <field name="name">vehicle.request.list</field>
+            <field name="model">vehicle.equipment.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name_seq"/>
+                    <field name="date_request"/>
+
+                    <field name="started_from"/>
+                    <field name="to"/>
+
+                    <field name="requested_by"/>
+                    <field name="department_id"/>
+
+                    <field name="priority"/>
+                    <field name="state"/>
+
+                </list>
+            </field>
+        </record>
+
+        <record id="view_vehicle_request_search" model="ir.ui.view">
+            <field name="name">vehicle.request.search</field>
+            <field name="model">vehicle.equipment.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name_seq" string="No Request"/>
+                    <filter string='Department' name="department_group" context="{'group_by': 'department_id'}"/>
+                    <filter string='Equipment' name="equipment_group" domain="[]"
+                            context="{'group_by': 'equipment_id'}"/>
+                    <filter string='Status' name="status_group" domain="[]" context="{'group_by': 'state'}"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_vehicle_request_form" model="ir.ui.view">
+            <field name="name">Vehicle/ Equipment Request</field>
+            <field name="model">vehicle.equipment.request</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle/ Equipment Request">
+                    <header>
+                        <!--  Set to Draft-->
+                        <button name="button_draft" invisible="state == 'cancel' or state == 'reject'"
+                                string="Set as Draft" type="object"/>
+
+                        <button name="submit" invisible="state != 'draft'" string="Submit" type="object"
+                                class="oe_highlight"
+                                groups="base.group_user"/>
+
+                        <button name="button_lm_approve" type="object" invisible="state != 'line_approve'"
+                                groups="base_rida.rida_group_line_manager" class="btn-primary" string="Approve"/>
+                        <button name="button_lm_reject" type="object" invisible="state != 'line_approve'"
+                                groups="base_rida.rida_group_line_manager" string="Reject"/>
+
+
+                        <button name="button_cancel" invisible="state != 'draft'" string="Cancel" type="object"
+                                groups="base.group_user" class=""/>
+
+
+                        <button name="button_to_operation_movement" string="Confirm" type="object"
+                                invisible="state != 'operation_movement_approve'"
+                                groups="maintenance_fleet_inherit.group_maintenance_oper_mov" class="oe_highlight"/>
+
+
+                        <button name="button_to_delivery" string="To Delivery" type="object"
+                                invisible="state != 'approve'"
+                                groups="maintenance_fleet_inherit.group_operation_fleet_user" class="oe_highlight"/>
+
+                        <button name="button_to_received" invisible="state != 'done'" string="Receive" type="object"
+                                groups="base.group_user" class="oe_highlight"/>
+
+
+                        <button name="button_to_not_received" invisible="state != 'done'" string="NOT" type="object"
+                                groups="base.group_user" class="oe_highlight"/>
+
+
+                        <button string="Create SR" name="create_sr" type="object"
+                                invisible="state == 'approve' or state == 'operation_movement_approve'"
+                                groups="maintenance_fleet_inherit.group_operation_fleet_user,maintenance_fleet_inherit.group_maintenance_oper_mov"
+                                confirm="Are You Sure ? "
+                                class="oe_highlight"/>
+
+
+                        <button name="button_to_release" string="To Release" type="object"
+                                invisible="state != 'received'"
+                                groups="base.group_user" class="oe_highlight"/>
+
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state == 'approve' or state == 'operation_movement_approve'"
+                                groups="maintenance_fleet_inherit.group_maintenance_oper_mov,maintenance_fleet_inherit.group_operation_fleet_user"
+                                type="action"/>
+
+
+                        <button name="button_cancel" state="approve"
+                                groups="maintenance_fleet_inherit.group_maintenance_oper_mov" string="Cancel"
+                                type="object"
+                                confirm="You are about to cancel this request and its related records. Please confirm!"
+                                invisible="state != 'draft'"
+                                class=""/>
+
+
+                        <field name="state" widget="statusbar" tatusbar_visible="draft,operation_movement_approve,done"
+                               statusbar_colors='{"operation_movement_approve":"blue"}'/>
+
+
+                    </header>
+
+
+                    <sheet>
+
+                        <h1 class="oe_title">
+                            <field name="name_seq" readonly="1" class="oe_inline"/>
+                        </h1>
+
+
+                        <group>
+
+                            <group>
+                                <field name="date_request" readonly="state != 'draft'"/>
+                                <field name="mainteance_request_id" readonly="1"
+                                       invisible="mainteance_request_id == False"
+                                       string="Maintenance Request"/>
+                                <field name="equipment_name" required="1"
+                                       readonly="state not in ['draft', 'operation_officer_approve']"
+                                       options="{'no_edit': True, 'no_create': True}"/>
+
+                                <field name="service_outsource"
+                                       invisible="state not in ['approve', 'done', 'received', 'release']"/>
+
+
+                                <field name="external_equipment_name" invisible="not service_outsource"
+                                       required="state == 'approve' and service_outsource"
+                                       readonly="state != 'approve'"/>
+
+
+                                <field name="equipment_id" required="state == 'approve' and not service_outsource"
+                                       invisible="service_outsource" readonly="state == 'sr_created'"/>
+
+
+                                <field name="equipment_code" invisible="state != 'draft'"/>
+
+
+                                <field name="analytic_account_id" required="state == 'draft'"
+                                       readonly="state == 'sr_created'"/>
+
+
+                                <field name="started_from" readonly="state != 'draft'"/>
+
+                                <field name="to" readonly="state != 'draft'"/>
+
+                                <field name="purpose" readonly="state != 'draft'"/>
+
+
+                            </group>
+
+
+                            <group>
+
+                                <field name="requested_by" readonly="1"/>
+
+
+                                <field name="location" readonly="state != 'draft'"/>
+                                <field name="capacity" readonly="state != 'draft'"/>
+
+                                <field name="priority" 
+                                       readonly="state != 'draft'"/>
+                                <field name="period" readonly="state != 'draft'"/>
+
+                                <field name="company_id" string="Company"
+                                       readonly="state == 'sr_created'"/>
+
+
+                            </group>
+
+
+                        </group>
+
+                        <group>
+                            <group>
+
+                                <field name="movement_receiving_request_time"
+                                       invisible="state in ['draft', 'operation_movement_approve']"
+                                       readonly="True"/>
+
+                                <field name="operator_driver_name"
+                                       invisible="state == 'draft'" readonly="state == 'sr_created'"/>
+                            </group>
+                            <group>
+
+                                <field name="movement_delivery_time" readonly="True"
+                                       invisible="state not in ['approve', 'done', 'release', 'received']"/>
+
+
+                                <field name="movement_received_time" readonly="True"
+                                       invisible="state not in ['approve', 'done', 'release', 'received']"/>
+
+
+                                <field name="movement_release_time" readonly="True"
+                                       invisible="state not in ['approve', 'done', 'received', 'release']"/>
+
+
+                            </group>
+
+                            <group string="Duration"
+                            >
+                                <field name="duration_day"/>
+                                <field name="duration_mintus"/>
+                                <field name="duration_second"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Trip Evaliation"
+                                  invisible="state not in ['received', 'release']">
+                                <h4 style="color:red">Driver evaluation / تقييم السائق</h4>
+
+                                <field name="driver_evaluation_ids"
+                                       readonly="state != 'release'">
+                                    <list string="Trip Evaliation" create="false" delete="false" editable="bottom">
+                                        <field name="name" style="font-weight:bold;" readonly="1"/>
+                                        <field name="priority" widget="priority"/>
+                                    </list>
+                                </field>
+                                <h4 style="color:red">Trip evaluation / تقييم الرحلة</h4>
+                                <field name="trip_evaluation_ids" readonly="state != 'release'">
+                                    <list string="Trip Evaliation" create="false" delete="false" editable="bottom">
+                                        <field name="name" style="font-weight:bold;" readonly="1"/>
+                                        <field name="priority" widget="priority"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <field name="comments"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                         <chatter/>
+                </form>
+
+
+            </field>
+        </record>
+
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="vehicle_request_action">
+            <field name="name">Vehicle/ Equipment Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vehicle.equipment.request</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <record id="maintenance_equipment_type_action" model="ir.actions.act_window">
+            <field name="name">Equipment Request Type</field>
+            <field name="res_model">equipment.request.type</field>
+
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to set a new type for your equipments.
+                </p>
+            </field>
+        </record>
+
+        <record id="trip_evaluation_act_window" model="ir.actions.act_window">
+            <field name="name">Trip Evaluation</field>
+            <field name="res_model">trip.evaliation</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem
+                id="menu_vechile_request_forrm_user"
+                name="Equipment Request"
+                action="vehicle_request_action"
+                groups="base.group_user"
+                web_icon="maintenance_fleet_inherit,static/description/icon.png"
+        />
+
+
+        <menuitem
+                id="menu_vechile_request_form"
+                name="Equipment Request"
+                parent="maintenance.menu_m_request"
+                action="vehicle_request_action"
+                groups="base.group_user"
+        />
+
+
+        <menuitem
+                id="menu_maintenance_equipment_type"
+                name="Equipment Type"
+                action="maintenance_equipment_type_action"
+                parent="maintenance.menu_maintenance_configuration"
+                groups="maintenance.group_equipment_manager"
+        />
+        <menuitem name="Configuration" sequence="2" id="trip_menu_conf"
+                  parent="maintenance_fleet_inherit.menu_vechile_request_forrm_user"
+                  groups="base_rida.rida_group_master_data_manager"/>
+        <menuitem name="Trip Evaluation Configuration" id="trip_evaluation_conf" sequence="2"
+                  parent="trip_menu_conf" action="trip_evaluation_act_window"
+                  groups="base_rida.rida_group_master_data_manager"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="hr_overtime_sectionhead_request" model="ir.sequence">
+            <field name="name">Hr Overtime Section Head</field>
+            <field name="code">overtime.sectionhead</field>
+            <field name="prefix">OVR-SH</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="hr_overtime_batch_request" model="ir.sequence">
+            <field name="name">Hr Overtime</field>
+            <field name="code">hr.overtime.batch</field>
+            <field name="prefix">OVR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+       <record id="hr_overtime_auth" model="ir.sequence">
+            <field name="name">Hr Overtime Auth</field>
+            <field name="code">overtime.auth.code</field>
+            <field name="prefix">OVR-AU/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+
+    </data>
+</odoo>

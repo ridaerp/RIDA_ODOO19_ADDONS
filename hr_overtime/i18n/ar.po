@@ -1,0 +1,496 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* overtime_main
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-15 18:35+0000\n"
+"PO-Revision-Date: 2019-01-15 20:41+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: ar\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Department:</b>"
+msgstr "الإدارة"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Employee</b>"
+msgstr "الموظف"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>From:</b>"
+msgstr "من"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Gross Salary</b>"
+msgstr "إجمالي الراتب"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Holiday Hours</b>"
+msgstr "ساعات الإجازة"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Net Overtime</b>"
+msgstr "<b>صافي الأجر الاضافي</b>"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Normal Hours</b>"
+msgstr "الساعات العادية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Overtime Amount</b>"
+msgstr "مبلغ الأجر الأضافي"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Overtime Date</b>"
+msgstr "تاريخ الأجر الاضافي"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Overtime Report</b>"
+msgstr "تقرير الأجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Overtime Tax</b>"
+msgstr "<b>ضريبة الأجر الاضافي</b>"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Signature</b>"
+msgstr "التوقيع"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>To:</b>"
+msgstr "الى"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<b>Total Hours</b>"
+msgstr "إجمالي الساعات"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.over_time_report
+msgid "<strong class=\"text-right\">Total:</strong>"
+msgstr "<strong class=\"text-right\">الإجمالي:</strong>"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Approve"
+msgstr "تصديق"
+
+#. module: overtime_main
+#: model:ir.actions.server,name:overtime_main.view_approve_dm_all_records
+msgid "Approve Direct. Mgr"
+msgstr "تصديق المدير المباشر"
+
+#. module: overtime_main
+#: model:ir.actions.server,name:overtime_main.view_approve_hr_mgr_all_records
+msgid "Approve HR Mgr "
+msgstr "تصديق الموارد البشرية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Approved"
+msgstr "مصدق"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Approved Requests"
+msgstr "طلب مصدق"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_company_id
+msgid "Branch"
+msgstr "الفرع"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_over_time_wizard
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: overtime_main
+#: selection:hr.over.time,state:0
+msgid "Canceled"
+msgstr "ملغي"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_payslips_form_inherited
+msgid "Compute Overtime"
+msgstr "حساب الأجر الإضافي"
+
+#. module: overtime_main
+#: selection:hr.over.time,state:0
+msgid "Confirmed"
+msgstr "مصدقة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_create_uid
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_create_date
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_department_id
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_department_id
+msgid "Department"
+msgstr "القسم"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_display_name
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_display_name
+#: model:ir.model.fields,field_description:overtime_main.field_report_overtime_main_over_time_report_display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: overtime_main
+#: selection:hr.over.time,state:0
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_employee_id
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Employee"
+msgstr "الموظف"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Employee name"
+msgstr "اسم الموظف"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_date_from
+msgid "From"
+msgstr "مِن"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_gross_salary
+msgid "Gross Salary"
+msgstr "إجمالي الراتب"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: overtime_main
+#: selection:hr.over.time,state:0
+msgid "HR Manager Approval"
+msgstr "تصديق الموارد البشرية"
+
+#. module: overtime_main
+#: model:ir.actions.act_window,name:overtime_main.hr_overtime_action
+msgid "HR Overtime"
+msgstr "الاجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_hours_holiday_rate
+msgid "Holiday Hours * 2"
+msgstr "ساعات الاجازة*2"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Holidays"
+msgstr "ساعات الاجازة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_hours_holiday
+msgid "Holidays hours"
+msgstr "ساعات الاجازة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_id
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_id
+#: model:ir.model.fields,field_description:overtime_main.field_report_overtime_main_over_time_report_id
+msgid "ID"
+msgstr "المعرف"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_working_evening
+msgid "IS Working Evening"
+msgstr "العمل مساء"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_working_saturday
+msgid "IS Working Saturday"
+msgstr "العمل يوم السبت"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time___last_update
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard___last_update
+#: model:ir.model.fields,field_description:overtime_main.field_report_overtime_main_over_time_report___last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_write_uid
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_write_date
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: overtime_main
+#: model:res.groups,name:overtime_main.overtime_group_manager
+msgid "Manager"
+msgstr "المدير"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_payslip_manual_overtime
+msgid "Manual Overtime"
+msgstr "تعديل الاجر الاضافي"
+
+#. module: overtime_main
+#: model:ir.ui.menu,name:overtime_main.hr_over_time_menu
+msgid "My Overtime"
+msgstr "أجوري الاضافية"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_net_overtime
+msgid "Net Overtime"
+msgstr "صافي الأجر الاضافي"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "New Requests"
+msgstr "طلب جدبد"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_hours_normal_rate
+msgid "Normal Hours * 1.5"
+msgstr "الساعات العادية*1.5"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_holidays_hours_amount
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_normal_hours_amount
+msgid "Normal Hours Amount"
+msgstr "مبلغ الساعات العادية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Normal days"
+msgstr "الساعات العادية"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_hours_normal
+msgid "Normal hours"
+msgstr "الساعات العادية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Other"
+msgstr "أخرى"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_other_amount
+msgid "Other Amount"
+msgstr "مبلغ اٌخر"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Over Time"
+msgstr "الأجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.actions.act_window,name:overtime_main.action_overtime_approve
+msgid "OverTime To Approve"
+msgstr "تصديق الأجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_payslip_overtime
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Overtime"
+msgstr "الأجر الأضافي"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_date
+msgid "Overtime Date"
+msgstr "تاريخ الأجر الاضافي"
+
+#. module: overtime_main
+#: code:addons/overtime_main/payslips.py:28
+#, python-format
+msgid "Overtime Exceeded for Employee NO =   , Please Enable Manual Overtime"
+msgstr "الاجر الاضافى تجاوز ال60 في المائة من اجمالي الموظف رقم= ,,فضلا حدد قيمة الاجر المراد حسابها"
+
+#. module: overtime_main
+#: model:ir.module.category,name:overtime_main.overtime_management_access
+msgid "Overtime Management"
+msgstr "إدارة الاجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.actions.report.xml,name:overtime_main.hr_overtime_report_pdf
+#: model:ir.ui.menu,name:overtime_main.menu_report_Overtime
+msgid "Overtime Report"
+msgstr "تقرير الاجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.ui.menu,name:overtime_main.menu_hr_overtime_approve
+msgid "Overtime To Approve"
+msgstr "تصديق الأجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_overtime
+msgid "Overtime Total amount"
+msgstr "مبلغ الأجر الاضافي"
+
+#. module: overtime_main
+#: model:ir.ui.menu,name:overtime_main.hr_overtime_root
+msgid "Overtime management"
+msgstr "إدارة الاجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_over_time_wizard
+msgid "Overtime report"
+msgstr "تقرير الاجور الاضافية"
+
+#. module: overtime_main
+#: sql_constraint:hr.over.time:0
+msgid "Overtime: record with the same date and  employee already exist!"
+msgstr "لايمكن ادخال اكثر من اجر اضافي واحد للموظف في نفس التاريخ"
+
+#. module: overtime_main
+#: model:ir.model,name:overtime_main.model_hr_payslip
+msgid "Pay Slip"
+msgstr "المرتب"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Period"
+msgstr "فترة"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_over_time_wizard
+msgid "Print"
+msgstr "طباعة"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Regular Days"
+msgstr "الايام العادية"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Reject"
+msgstr "رفض"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Search"
+msgstr "بحث"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Set_To_Draft"
+msgstr "تحويل الى مسودة"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_state
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "State"
+msgstr "الحالة"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.hr_overtime_form_view
+msgid "Submit"
+msgstr "ارسال"
+
+#. module: overtime_main
+#: model:ir.actions.server,name:overtime_main.view_submit_all_records
+msgid "Submit overtime "
+msgstr "ارسل"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "Submitted Requests"
+msgstr "طلب مرسل"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_ovt_tax
+msgid "Tax Overtime"
+msgstr "ضريبة الأجر الاضافي"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_overtime_report_wizard_date_to
+msgid "To"
+msgstr "إلى"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "To Approve"
+msgstr "للاعتماد"
+
+#. module: overtime_main
+#: model:ir.ui.view,arch_db:overtime_main.view_overtime_filter
+msgid "To Submit"
+msgstr "ارسل"
+
+#. module: overtime_main
+#: model:ir.model.fields,field_description:overtime_main.field_hr_over_time_total
+msgid "Total hours"
+msgstr "اجمالي الساعات"
+
+#. module: overtime_main
+#: model:ir.module.category,description:overtime_main.overtime_management_access
+msgid "User access level for this module"
+msgstr "User access level for this module"
+
+#. module: overtime_main
+#: selection:hr.over.time,state:0
+msgid "direct Manager Approval"
+msgstr "تصديق المدير المباشر"
+
+#. module: overtime_main
+#: model:ir.model,name:overtime_main.model_hr_over_time
+msgid "hr.over.time"
+msgstr "hr.over.time"
+
+#. module: overtime_main
+#: model:ir.model,name:overtime_main.model_hr_overtime_report_wizard
+msgid "hr.overtime.report.wizard"
+msgstr "hr.overtime.report.wizard"
+
+#. module: overtime_main
+#: model:ir.actions.act_window,name:overtime_main.hr_overtime_report_action
+msgid "overtime report"
+msgstr "تقرير الاجور الاضافية"
+
+#. module: overtime_main
+#: model:ir.model,name:overtime_main.model_report_overtime_main_over_time_report
+msgid "report.overtime_main.over_time_report"
+msgstr "report.overtime_main.over_time_report"

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_pdc_pivot">
+        <field name="name">account.pdc.pivot</field>
+        <field name="model">account.pdc</field>
+        <field name="arch" type="xml">
+            <pivot string="PDCs" display_quantity="true">
+                <field name="partner_id"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_pdc_graph">
+        <field name="name">account.pdc.graph</field>
+        <field name="model">account.pdc</field>
+        <field name="arch" type="xml">
+            <graph string="PDCs">
+                <field name="partner_id"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="pdc_tree" model="ir.ui.view">
+        <field name="name">account.pdc.tree</field>
+        <field name="model">account.pdc</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-info="state == 'draft'" decoration-muted="state == 'reject'" string="PDC">
+                <field name="partner_id" groups="base.group_user" string="Partner"/>
+                <field name="name" string="Check Reference"/>
+                <field name="maturity_date"/>
+                <field name="amount" sum="Total"/>
+                    <field name="state" string="Status" invisible="0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="pdc_form" model="ir.ui.view">
+        <field name="name">account.pdc.form</field>
+        <field name="model">account.pdc</field>
+        <field name="arch" type="xml">
+            <form string="PDC" create="0">
+            <header>
+                <button name="clear" type="object" string="Mark As Cleared" icon="fa-check" invisible="state != 'draft'" class="btn-warning"/>
+                <button name="reject" type="object" string="Mark As Rejected" icon="fa-close" invisible="state != 'draft'" class="btn-danger"/>
+                <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,clear"/>
+            </header>
+            <sheet>
+                <h1 class="mt0">
+                    <field name="name" readonly="state != 'draft'"/>
+                </h1>
+                <field name="type" invisible="1"/>
+                <group>
+                    <group>
+                            <label for="amount"/>
+                            <div name="amount_div" class="o_row">
+                                <field name="amount" readonly="1"/>
+                                <field name="currency_id" invisible="1" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency" readonly="1"/>
+                            </div>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="maturity_date" readonly="state != 'draft'"/>
+                    </group>
+                    <group>
+                        
+                        <field name="clear_date" readonly="state == 'clear'"/>
+                        <field name="check_no" readonly="state == 'clear'"/>
+                        <field name="journal_id" widget="selection" readonly="state != 'draft'"/>
+                        <field name="payment_id" readonly="1"/>
+                        <field name="move_id" readonly="1" invisible="not move_id"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="note"/>
+                </group>
+            </sheet>
+                    <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_account_pdc_filter" model="ir.ui.view">
+        <field name="name">account.pdc.select</field>
+        <field name="model">account.pdc</field>
+        <field name="arch" type="xml">
+            <search string="Search PDC">
+                <field name="name" string="Reference" filter_domain="[('name','ilike',self)]"/>
+                <field name="journal_id" />
+                <filter name="draft" string="New" domain="[('state','=','draft')]"/>
+                <filter name="clear" string="Cleared" domain="[('state','=','clear')]"/>
+                <filter name="reject" string="Rejected" domain="[('state','=','reject')]"/>
+                <separator/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="maturity_date" string="Maturity Date"/>
+                <filter name="group_by_partner_id" string="Partner" context="{'group_by':'partner_id'}"/>
+                <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                <filter name="journal_id" string="Clearing Journal" context="{'group_by':'journal_id'}"/>
+           </search>
+        </field>
+    </record>
+
+    <record id="action_pdc_tree" model="ir.actions.act_window">
+        <field name="name">Customer Checks</field>
+        <field name="res_model">account.pdc</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="domain">[('type','=', 'customer')]</field>
+        <field name="search_view_id" ref="view_account_pdc_filter"/>
+    </record>
+    <menuitem action="action_pdc_tree" id="menu_action_pdc_tree1" parent="account.menu_finance_receivables" sequence="21"/>
+
+
+    <record id="action_pdc_tree1" model="ir.actions.act_window">
+        <field name="name">Vendor Checks</field>
+        <field name="res_model">account.pdc</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="domain">[('type','=', 'vendor')]</field>
+        <field name="search_view_id" ref="view_account_pdc_filter"/>
+    </record>
+    <menuitem action="action_pdc_tree1" id="menu_action_pdc_tree2" parent="account.menu_finance_payables" sequence="21"/>
+
+</odoo>
