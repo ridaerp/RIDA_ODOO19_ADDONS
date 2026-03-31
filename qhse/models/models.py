@@ -27,7 +27,7 @@ class ModificationRequest(models.Model):
          ('ict', 'ICT Processing'),
          ('qhse_validated', 'QHSE Reviewing'),
          ('reject', 'reject'), ('close', 'Waiting Acceptance/Close'), ('done', 'Done')],
-        string='Status', default='draft', tracking=True, copy=False)
+        string='Status', default='draft', copy=False)
     type_approval = fields.Selection(selection=[('ccso_approval', 'CCSO Approval'),
                                                 ('od', 'Operation Director Approve'),
                                                 ('ceo', 'CEO'),
@@ -37,7 +37,7 @@ class ModificationRequest(models.Model):
     state_od = fields.Selection(related='state')
     state_fleet = fields.Selection(related='state')
     state_chro = fields.Selection(related='state')
-    state_ceo = fields.Selection(related='state')
+    state_ceo = fields.Selection(related='state',tracking=True, )
     date = fields.Datetime(default=fields.Datetime.now(), readonly=True)
     level_of_change = fields.Selection(string="", selection=[('maj', 'Major'), ('min', 'Minor'), ], default='maj')
     type = fields.Selection(string="", selection=[('mod', 'Modified'), ('new_doc', 'New document'), ], default='mod')
@@ -157,12 +157,24 @@ class ModificationRequest(models.Model):
 
         return super(ModificationRequest, self).unlink()
 
+    # @api.model
+    # def create(self, vals):
+    #     for val in vals:
+    #         vals['code_seq'] = self.env['ir.sequence'].next_by_code('mod.request') or ' '
+
+    #     return super(ModificationRequest, self).create(vals)
+
+
     @api.model
     def create(self, vals):
-        for val in vals:
+        if isinstance(vals, list):
+            for val in vals:
+                val['code_seq'] = self.env['ir.sequence'].next_by_code('mod.request') or ' '
+        else:
             vals['code_seq'] = self.env['ir.sequence'].next_by_code('mod.request') or ' '
 
         return super(ModificationRequest, self).create(vals)
+
 
 
 class QhseProcedure(models.Model):
