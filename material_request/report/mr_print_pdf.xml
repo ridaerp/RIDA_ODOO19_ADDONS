@@ -114,10 +114,10 @@
                      
                         <th ><strong>Item </strong></th>
                         <th ><strong>Description</strong></th>
-                        <th ><strong>Part Number</strong></th>
                         <th ><strong>Quantity</strong></th>
                         <th ><strong>Unit Of Measure</strong></th>
                         <th ><strong>Estimated Cost</strong></th>
+                        <th ><strong>Part Number</strong></th>
                     </tr>
                 </thead>
 
@@ -133,10 +133,7 @@
                                  <td t-if="line_ids.description"> 
                                     <span t-field="line_ids.description"/>
                                 </td>
-                                 <td t-if="line_ids.part_number"> 
-                                    <span t-field="line_ids.part_number"/>
-                                </td>
-
+                               
                                  <td t-if="line_ids.product_qty"> 
                                     <span t-field="line_ids.product_qty"/>
                                 </td>
@@ -148,7 +145,9 @@
                                     <span t-field="line_ids.unit_price"/>
                                 </td>
                                 
-
+                                <td t-if="line_ids.part_number"> 
+                                    <span t-field="line_ids.part_number"/>
+                                </td>
                        </tr>
                    </t>
                 </tbody>
