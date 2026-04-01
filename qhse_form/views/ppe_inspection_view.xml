@@ -46,7 +46,10 @@
                         <h2 style="color: #714B67;">
                             <field name="doc_no" readonly="1"/>
                         </h2>
-                        <div class="text-muted text-uppercase fw-bold">PPE Inspection Document</div>
+                        <div class="text-muted text-uppercase fw-bold" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">PPE Inspection Document</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم كمرجع لتنفيذ عمليات الفحص والاختبار الدوري لبعض معدات الوقاية الشخصية الخاصة (مثل أحزمة الأمان وأجهزة التنفس)، لضمان سلامتها وكفاءتها للاستخدام.
+                        </p>
                     </div>
 
                     <div class="oe_title">

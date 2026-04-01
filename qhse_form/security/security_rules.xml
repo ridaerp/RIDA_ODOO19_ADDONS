@@ -112,5 +112,90 @@
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
         </record>
+
+
+        <!--        ppe complaint      -->
+        <record id="ppe_complaint_department_rule" model="ir.rule">
+            <field name="name">ppe complaint:User Request</field>
+            <field name="model_id" ref="model_ppe_complaint"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_complaint_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe complaint: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_complaint"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe deduction      -->
+        <record id="ppe_deduction_department_rule" model="ir.rule">
+            <field name="name">ppe deduction:User Request</field>
+            <field name="model_id" ref="model_ppe_deduction"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_deduction_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe deduction: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_deduction"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe inspection      -->
+        <record id="ppe_inspection_department_rule" model="ir.rule">
+            <field name="name">ppe inspection:User Request</field>
+            <field name="model_id" ref="model_ppe_inspection"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_inspection_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe inspection: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_inspection"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe medical      -->
+        <record id="ppe_medical_department_rule" model="ir.rule">
+            <field name="name">ppe medical:User Request</field>
+            <field name="model_id" ref="model_ppe_medical"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_medical_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe medical: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_medical"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe receipt      -->
+        <record id="ppe_receipt_department_rule" model="ir.rule">
+            <field name="name">ppe receipt:User Request</field>
+            <field name="model_id" ref="model_ppe_receipt"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_receipt_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe receipt: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_receipt"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe distribution      -->
+        <record id="ppe_distribution_department_rule" model="ir.rule">
+            <field name="name">ppe distribution:User Request</field>
+            <field name="model_id" ref="model_ppe_distribution"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_distribution_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe distribution: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_distribution"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
     </data>
 </odoo>

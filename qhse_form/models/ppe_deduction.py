@@ -16,17 +16,14 @@ class PPEDeduction(models.Model):
     name = fields.Char(string='Document Number', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('ppe.deduction') or ' '
 
-        records = super(PPEDeduction, self).create(val)
-
-        for rec in records:
-            rec.action_update_activities()
-
-        return records
+    
+    @api.model_create_multi # استخدم هذا الديكوريتور لـ Odoo 17/19
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('ppe.deduction') or '/'
+        return super(PPEDeduction, self).create(vals_list)
 
     doc_no = fields.Char(string="Doc. No.", default="UMC-QHSE-QP-PPE-03", readonly=True)
 
@@ -45,7 +42,17 @@ class PPEDeduction(models.Model):
     # جدول المعدات مع خانة السعر
     ppe_line_ids = fields.One2many('ppe.deduction.line', 'deduction_id', string='Details of PPE')
     total_deduction = fields.Float(string='Total Price', compute='_compute_total')
-
+    type_deduction = fields.Selection([
+        ('internal', 'Internal'),
+        ('external', 'External')
+    ], string='Type of Deduction', default='internal')
+    type_of_ppe = fields.Selection([
+        ('routine', 'Routine'),
+        ('no_Routen', 'Non-Routine')
+    ], string='Type of PPE', default='routine')
+    vender = fields.Many2one('res.partner', string='Contract Name', required=False)
+    cont_name = fields.Char(string='Contact Employee')
+    host_dep = fields.Many2one('hr.department', string='Hosting Department')
     # أسباب الاستقطاع (QHSE Use Only)
     deduction_reason = fields.Selection([
         ('intention', 'Intention'),
@@ -84,6 +91,7 @@ class PPEDeduction(models.Model):
     def action_officer(self):
         for rec in self:
             rec.state = 'officer'
+            rec.responsible_safety_officer_id = self.env.user.id
             rec.action_update_activities()
 
     def action_manager(self):
@@ -99,10 +107,10 @@ class PPEDeduction(models.Model):
             rec.state = 'hr'
             rec.action_update_activities()
 
-    def action_finance(self):
-        for rec in self:
-            rec.state = 'finance'
-            rec.action_update_activities()
+    # def action_finance(self):
+    #     for rec in self:
+    #         rec.state = 'finance'
+    #         rec.action_update_activities()
 
     def action_done(self):
         for rec in self:

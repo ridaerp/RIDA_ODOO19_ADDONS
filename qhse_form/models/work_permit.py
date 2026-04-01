@@ -13,13 +13,15 @@ class ColdWorkPermit(models.Model):
                        default=lambda self: _('New'))
 
     def unlink(self):
-        if self.state != 'draft':
-            raise UserError("You cannot delete this Cold Work Permit. Only DRAFT records can be deleted.")
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError("لا يمكنك حذف هذا التصريح. يمكن حذف السجلات في حالة (مسودة) فقط! / You cannot delete this Cold Work Permit. Only DRAFT records can be deleted.")
         return super(ColdWorkPermit, self).unlink()
 
     # الحالات - تم توحيدها مع الأزرار
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
+        ('dept_approval', 'انتظار اعتماد الأقسام / Dept Approval'),
         ('submitted', 'انتظار الاعتماد / Pending Approval'),
         ('authorized', 'تم التصريح / Authorized'),
         ('issued', 'نشط / Issued'),
@@ -51,6 +53,7 @@ class ColdWorkPermit(models.Model):
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
+    approved_dept_ids = fields.Many2many('hr.department', 'cold_work_dept_rel', string='الأقسام التي وافقت')
     work_nature = fields.Selection([
         ('mechanical', 'صيانة ميكانيكية / Mechanical Maintenance'),
         ('electrical', 'صيانة كهربائية / Electrical Maintenance'),
@@ -115,7 +118,7 @@ class ColdWorkPermit(models.Model):
     duration_display = fields.Char(string='مدة التصريح / Duration', compute='_compute_duration')
     confirmation_check = fields.Boolean(
         string='أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions',
-        required=True
+        
     )
 
     def _compute_linked_ptw_count(self):
@@ -149,10 +152,11 @@ class ColdWorkPermit(models.Model):
         # إنشاء السجل في الموديول المستهدف
         new_record = self.env[target['model']].create({
             'work_site': self.work_site.id,
-            'task_description': f"مرتبط بتصريح العمل الساخن رقم: {self.name}",
+            'task_description': f"مرتبط بتصريح العمل البارد رقم: {self.name}",
             'date_from': self.date_from,
             'date_to': self.date_to,
             'requester_id': self.requester_id.id,
+            'confirmation_check': True,
         })
 
         # ربط السجل الجديد بالسجل الحالي
@@ -194,11 +198,12 @@ class ColdWorkPermit(models.Model):
 
         return super(ColdWorkPermit, self).create(vals)
 
+    
     def action_submit(self):
         for rec in self:
             if not rec.confirmation_check:
-                raise UserError(
-                    "يجب عليك الموافقة على صحة البيانات وإرشادات السلامة قبل إرسال الطلب! / You must confirm that all information is correct before submitting.")
+                raise UserError("يجب عليك الموافقة على صحة البيانات وإرشادات السلامة قبل إرسال الطلب أولاً!")
+            
             if rec.is_need_ptw:
                 related_ptws = [rec.linked_hot_ptw, rec.linked_blasting_ptw, rec.linked_confined_ptw,
                                 rec.linked_excavation_ptw, rec.linked_highway_ptw, rec.linked_lifting_ptw,
@@ -207,12 +212,38 @@ class ColdWorkPermit(models.Model):
                 for ptw in related_ptws:
                     if ptw and ptw.state not in ['issued']:
                         raise UserError(f"لا يمكن الاعتماد! التصريح المرتبط ({ptw.name}) لا يزال في حالة {ptw.state}")
-
-            # التعديل هنا: نغير الحالة أولاً ثم نستدعي الأنشطة
-            rec.state = 'submitted'
-            rec.action_update_activities()
+            
             if rec.department_ids:
-                rec._notify_department_managers()
+                # إذا وجد أقسام، ننتقل لحالة اعتماد الأقسام
+                rec.state = 'dept_approval'
+                rec._notify_department_managers() # إرسال التنبيهات التي قمت ببرمجتها سابقاً
+            else:
+                # إذا لم توجد أقسام، يذهب مباشرة لمسؤول السلامة
+                rec.state = 'submitted'
+                rec.action_update_activities()
+
+    def action_dept_approve(self):
+        for rec in self:
+            # التأكد أن المستخدم الحالي هو مدير لأحد الأقسام المعنية
+            user_employee = self.env.user.employee_id
+            managed_depts = self.env['hr.department'].search([('manager_id', '=', user_employee.id)])
+            
+            # تقاطع الأقسام التي يديرها المستخدم مع الأقسام المطلوبة في التصريح
+            depts_to_approve = rec.department_ids.filtered(lambda d: d.id in managed_depts.ids)
+            
+            if not depts_to_approve:
+                raise UserError("عذراً، أنت لست مديراً لأي من الأقسام المعنية بهذا التصريح.")
+
+            # إضافة القسم للقائمة التي وافقت
+            rec.approved_dept_ids |= depts_to_approve
+            
+            # التحقق: هل وافقت كل الأقسام المطلوبة؟
+            if all(dept in rec.approved_dept_ids for dept in rec.department_ids):
+                rec.state = 'submitted' # الانتقال لمسؤول السلامة
+                rec.message_post(body="تم اعتماد جميع الأقسام المعنية. الطلب الآن بانتظار مسؤول السلامة.")
+                rec.action_update_activities() # تنبيه مسؤولي السلامة
+            else:
+                rec.message_post(body=f"تم الاعتماد من قبل قسم {depts_to_approve.mapped('name')}. بانتظار بقية الأقسام.")
 
     def _notify_department_managers(self):
         """دالة لإرسال الإشعارات لمدراء الأقسام المعنية"""

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from xlsxwriter.contenttypes import defaults
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import  UserError
 
 
@@ -20,6 +20,7 @@ class HotWorkPermit(models.Model):
                                     default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
     work_site = fields.Many2one('work.site',string='موقع العمل / Work site',ondelete='set null', tracking=True)
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     sub_location = fields.Char( string='الموقع الفرعي / Sub Location', tracking=True)
     num_workers = fields.Integer(string='عدد العاملين / Number of workers')
     date_from = fields.Datetime(string='من / From')
@@ -62,6 +63,7 @@ class HotWorkPermit(models.Model):
     # الجزء الثالث: المصادقة / Part Three: Authentication
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
+        ('dept_approval', 'انتظار اعتماد الأقسام / Dept Approval'),
         ('submitted', 'انتظار الاعتماد / Pending Approval'),
         ('authorized', 'تم التصريح / Authorized'),
         ('issued', 'نشط / Issued'),
@@ -112,7 +114,7 @@ class HotWorkPermit(models.Model):
     duration_display = fields.Char(string='مدة التصريح / Duration', compute='_compute_duration')
     confirmation_check = fields.Boolean(
         string='أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions',
-        required=True
+        required=False
     )
 
     def _compute_linked_ptw_count(self):
@@ -127,7 +129,6 @@ class HotWorkPermit(models.Model):
         if not self.type_of_ptw:
             raise UserError("الرجاء اختيار نوع التصريح أولاً / Please select PTW type first")
 
-        # خريطة الربط بين الاختيار واسم الموديل واسم الحقل في موديولك
         ptw_map = {
             'cold_work': {'model': 'cold.work.permit', 'field': 'linked_cold_ptw'},
             'blasting': {'model': 'blasting.work.permit', 'field': 'linked_blasting_ptw'},
@@ -138,25 +139,35 @@ class HotWorkPermit(models.Model):
             'loto': {'model': 'loto.work.permit', 'field': 'linked_loto_ptw'},
         }
 
-        # منع التكرار
         target = ptw_map.get(self.type_of_ptw)
         if target and getattr(self, target['field']):
             raise UserError("تم إنشاء هذا التصريح مسبقاً / This permit is already created")
 
-        # إنشاء السجل في الموديول المستهدف
-        new_record = self.env[target['model']].create({
-            'work_site': self.work_site.id,
+        # تجهيز الحقول الأساسية المشتركة
+        vals = {
             'task_description': f"مرتبط بتصريح العمل الساخن رقم: {self.name}",
             'date_from': self.date_from,
             'date_to': self.date_to,
             'requester_id': self.requester_id.id,
-        })
+            'confirmation_check': True,
+        }
+
+        # معالجة اختلاف الحقول بين الموديلات
+        if self.type_of_ptw == 'blasting':
+            # موديل التفجير يستخدم mine_name نصي أو رابط آخر
+            vals['mine_name'] = self.work_site.name if self.work_site else False
+        else:
+            # بقية الموديلات تستخدم work_site (Many2one)
+            vals['work_site'] = self.work_site.id if self.work_site else False
+
+        # إنشاء السجل الجديد
+        new_record = self.env[target['model']].create(vals)
 
         # ربط السجل الجديد بالسجل الحالي
         self.write({target['field']: new_record.id})
 
         return {
-            'name': 'الفتح التصريح الجديد',
+            'name': 'فتح التصريح الجديد',
             'type': 'ir.actions.act_window',
             'res_model': target['model'],
             'res_id': new_record.id,
@@ -167,13 +178,26 @@ class HotWorkPermit(models.Model):
     # دالة الزر الذكي لفتح التصريح المرتبط
     def action_view_linked_ptw(self):
         self.ensure_one()
+        # Ensure every selection option from 'type_of_ptw' is mapped here
         ptw_map = {
-            'work': 'linked_cold_ptw', 'blasting': 'linked_blasting_ptw', 'confined': 'linked_confined_ptw',
-            'excavation': 'linked_excavation_ptw', 'highway': 'linked_highway_ptw',
-            'lifting': 'linked_lifting_ptw', 'loto': 'linked_loto_ptw'
+            'cold_work': 'linked_cold_ptw', # This was likely missing or mismatched
+            'blasting': 'linked_blasting_ptw', 
+            'confined': 'linked_confined_ptw',
+            'excavation': 'linked_excavation_ptw', 
+            'highway': 'linked_highway_ptw',
+            'lifting': 'linked_lifting_ptw', 
+            'loto': 'linked_loto_ptw'
         }
+        
         target_field = ptw_map.get(self.type_of_ptw)
+        
+        if not target_field:
+            raise UserError(_("No mapping found for this permit type."))
+            
         res = getattr(self, target_field)
+        
+        if not res:
+            raise UserError(_("The related permit record could not be found."))
 
         return {
             'type': 'ir.actions.act_window',
@@ -183,24 +207,26 @@ class HotWorkPermit(models.Model):
             'target': 'current',
         }
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', 'جديد / New') == 'جديد / New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('hot.work.permit') or ' '
+        return super(HotWorkPermit, self).create(vals_list)
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('hot.work.permit') or ' '
-
-        return super(HotWorkPermit, self).create(vals)
-
+    
     def unlink(self):
-        if self.state != 'draft':
-            raise UserError("You cannot delete this Hot Work Permit. Only DRAFT records can be deleted.")
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError("لا يمكنك حذف هذا التصريح. يمكن حذف السجلات في حالة (مسودة) فقط! / You cannot delete this Cold Work Permit. Only DRAFT records can be deleted.")
         return super(HotWorkPermit, self).unlink()
+
 
     def action_submit(self):
         for rec in self:
             if not rec.confirmation_check:
-                raise UserError(
-                    "يجب عليك الموافقة على صحة البيانات وإرشادات السلامة قبل إرسال الطلب! / You must confirm that all information is correct before submitting.")
+                raise UserError("يجب عليك الموافقة على صحة البيانات أولاً!")
+            
             if rec.is_need_ptw:
                 related_ptws = [rec.linked_cold_ptw, rec.linked_blasting_ptw, rec.linked_confined_ptw,
                                 rec.linked_excavation_ptw, rec.linked_highway_ptw, rec.linked_lifting_ptw,
@@ -209,11 +235,38 @@ class HotWorkPermit(models.Model):
                 for ptw in related_ptws:
                     if ptw and ptw.state not in ['issued']:
                         raise UserError(f"لا يمكن الاعتماد! التصريح المرتبط ({ptw.name}) لا يزال في حالة {ptw.state}")
-
-            rec.state = 'submitted'
-            rec.action_update_activities()
+            
             if rec.department_ids:
-                rec._notify_department_managers()
+                # إذا وجد أقسام، ننتقل لحالة اعتماد الأقسام
+                rec.state = 'dept_approval'
+                rec._notify_department_managers() # إرسال التنبيهات التي قمت ببرمجتها سابقاً
+            else:
+                # إذا لم توجد أقسام، يذهب مباشرة لمسؤول السلامة
+                rec.state = 'submitted'
+                rec.action_update_activities()
+
+    def action_dept_approve(self):
+        for rec in self:
+            # التأكد أن المستخدم الحالي هو مدير لأحد الأقسام المعنية
+            user_employee = self.env.user.employee_id
+            managed_depts = self.env['hr.department'].search([('manager_id', '=', user_employee.id)])
+            
+            # تقاطع الأقسام التي يديرها المستخدم مع الأقسام المطلوبة في التصريح
+            depts_to_approve = rec.department_ids.filtered(lambda d: d.id in managed_depts.ids)
+            
+            if not depts_to_approve:
+                raise UserError("عذراً، أنت لست مديراً لأي من الأقسام المعنية بهذا التصريح.")
+
+            # إضافة القسم للقائمة التي وافقت
+            rec.approved_dept_ids |= depts_to_approve
+            
+            # التحقق: هل وافقت كل الأقسام المطلوبة؟
+            if all(dept in rec.approved_dept_ids for dept in rec.department_ids):
+                rec.state = 'submitted' # الانتقال لمسؤول السلامة
+                rec.message_post(body="تم اعتماد جميع الأقسام المعنية. الطلب الآن بانتظار مسؤول السلامة.")
+                rec.action_update_activities() # تنبيه مسؤولي السلامة
+            else:
+                rec.message_post(body=f"تم الاعتماد من قبل قسم {depts_to_approve.mapped('name')}. بانتظار بقية الأقسام.")
 
     def _notify_department_managers(self):
         """دالة لإرسال الإشعارات لمدراء الأقسام المعنية"""

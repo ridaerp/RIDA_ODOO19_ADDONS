@@ -8,7 +8,7 @@
                 <field name="name"/>
                 <field name="date"/>
                 <field name="work_at_height_type"/>
-                <field name="location"/>
+                <field name="work_site"/>
                 <field name="state" widget="badge"/>
             </list>
         </field>
@@ -21,6 +21,9 @@
             <form string="Work at Height Permit">
                 <header>
                     <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_dept_approve" string="اعتماد القسم المعني" type="object" 
+                                invisible="state != 'dept_approval'" class="oe_highlight" 
+                                groups="base_rida.rida_group_line_manager"/>
                     <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
                             groups="base_rida.rida_group_safety_officer"/>
                     <button name="action_extend" string="تمديد / Extend" type="object"
@@ -50,11 +53,17 @@
                         string="إنشاء التصريح المرتبط"
                         type="object"
                         invisible="is_need_ptw == False or linked_ptw_count > 0"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,issued,revoked,suspend,closed"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,dept_approval,submitted,issued,revoked,suspend,closed"/>
                 </header>
                 <sheet>
-                    <div class="oe_title text-center">
-                        <h1 style="color: #c53929;">Hot Work Permission</h1>
+                    <div class="oe_title text-center" style="background-color: #77309D; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <h1 style="color: #ffffff; margin-bottom: 0;">Work at Height Permit / تصريح العمل في المرتفعات</h1>
+                            
+                        <div style="background-color: #77309D; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم عند تنفيذ أعمال غير روتينية على ارتفاع يزيد عن 3 أمتار، حيث يكون هناك خطر السقوط ويستلزم اتخاذ إجراءات حماية خاصة. 
+                            </p>
+                        </div>
                     </div>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_linked_ptw"
@@ -71,7 +80,7 @@
                     <group string="Part #01: General Information">
                         <group>
                             <field name="date"/>
-                            <field name="location" options="{'no_create': True, 'no_create_edit': True}" required="True"/>
+                            <field name="work_site" options="{'no_create': True, 'no_create_edit': True}" required="True"/>
                             <field name="work_at_height_type" widget="radio" options="{'horizontal': true}" required="True"/>
                             <field name="department_ids" widget="many2many_tags"/>
                         </group>

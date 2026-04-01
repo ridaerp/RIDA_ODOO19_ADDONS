@@ -35,6 +35,9 @@
                             <field name="doc_no" readonly="1"/>
                         </h2>
                         <div class="text-muted">PPE Complain/Suggestion DOCUMENT</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لتقديم شكاوى أو مقترحات تتعلق بمعدات الوقاية الشخصية، حيث يتم تسجيل الملاحظات والتحقيق فيها واتخاذ الإجراءات المناسبة لتحسين السلامة. 
+                        </p>
                     </div>
 
                     <div class="oe_title">

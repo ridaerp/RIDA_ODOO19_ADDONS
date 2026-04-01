@@ -27,8 +27,8 @@
 
          <menuitem id="menu_daily_report_report"
                   name="Daily Breakdowns Report" parent="fleet.menu_fleet_reporting"
-                  action="action_daily_report_wizard"
-                  sequence="50"/>
+                  action="action_daily_report_wizard" groups="base_maintenance_group.group_maintenance_user"
+                  sequence="60"/>
 
         <record id="action_daily_report_wizard_1" model="ir.actions.act_window">
             <field name="name">Daily Report</field>
@@ -39,8 +39,8 @@
 
          <menuitem id="menu_daily_report_report_1"
                   name="Daily breakdowns Maintenance report" parent="maintenance.maintenance_reporting"
-                  action="action_daily_report_wizard_1"
-                  sequence="50"/>
+                  action="action_daily_report_wizard_1" groups="base_maintenance_group.group_maintenance_user"
+                  sequence="60"/>
 
     </data>
 </odoo>

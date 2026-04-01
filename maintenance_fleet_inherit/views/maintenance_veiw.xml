@@ -809,7 +809,7 @@
         <menuitem id="maintenance_odometer" name="Odometers" parent="maintenance.menu_m_request"
                   action="fleet.fleet_vehicle_odometer_action" sequence="512"/>
 
-        <menuitem id="vehicle_location" name="Vehicle Location" parent="fleet.fleet_vehicles_configuration"
+        <menuitem id="vehicle_location" name="Vehicle Location" parent="fleet.fleet_models_configuration"
                   action="maintenance_fleet_inherit.vehicle_location_action" sequence="9"/>
 
 
