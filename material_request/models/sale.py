@@ -6,7 +6,6 @@ from odoo.tools import float_round
 import logging
 
 
-
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 

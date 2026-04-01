@@ -139,6 +139,16 @@ class Bills_Workflow(models.Model):
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
 
+
+
+    purchase_id = fields.Many2one(
+        'purchase.order',
+        string='Purchase Order',
+        readonly=False,   # example change
+        store=True,
+    )
+
+
     ############################## change function by ekhlas    
     def action_submit(self):
         for rec in self:
