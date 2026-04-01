@@ -278,7 +278,8 @@ class PurchaseOrder(models.Model):
             # # If the product already exists, update the quantity and price (if needed)
                 existing_line.write({
                     'product_uom_qty': line.product_qty,  # Add the quantities together
-                    'price_unit': line.price_unit  # Update the price if necessary
+                    'price_unit': line.price_unit , # Update the price if necessary
+                    'product_id': line.product_id.id,
                 })
                 line.sale_line_id = existing_line  # Link the sale order line to the purchase order line
 
@@ -338,7 +339,24 @@ class PurchaseOrder(models.Model):
 
         dropshipping_record=self.env['stock.picking'].search([("origin","=",self.name)],limit=1)
         dropshipping_record.button_validate()
-        
+
+
+        # dropshipping_record = self.env['stock.picking'].search(
+        #     [("origin", "=", self.name)], limit=1
+        # )
+
+        # if dropshipping_record:
+        #     _logger.info("==== BEFORE VALIDATION ====")
+        #     for move in dropshipping_record.move_ids_without_package:
+        #         _logger.info(f"Move: {move.product_id.name}, Qty Done: {move.quantity_done}, Demand: {move.product_uom_qty}")
+
+        #     dropshipping_record.button_validate()
+
+        #     _logger.info("==== AFTER VALIDATION ====")
+        #     for move in dropshipping_record.move_ids_without_package:
+        #         _logger.info(f"Move: {move.product_id.name}, Qty Done: {move.quantity_done}, Demand: {move.product_uom_qty}")
+
+
         self.action_create_invoice()  # This returns the invoice(s) created
 
         return {

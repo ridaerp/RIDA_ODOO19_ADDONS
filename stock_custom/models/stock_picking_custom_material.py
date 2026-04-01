@@ -103,9 +103,9 @@ class RidaStockPiking(models.Model):
                 ], limit=1)
 
 
-                if sale_order_line:
-                    # Update the delivered quantity in the sales order
-                    sale_order_line.qty_delivered += move.product_uom_qty
+                # if sale_order_line:
+                #     # Update the delivered quantity in the sales order
+                #     sale_order_line.qty_delivered += move.product_uom_qty
 
 
 
