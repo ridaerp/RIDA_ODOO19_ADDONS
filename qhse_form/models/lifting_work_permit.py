@@ -26,7 +26,7 @@ class LiftingWorkPermit(models.Model):
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
-    approved_dept_ids = fields.Many2many('hr.department', 'lifting_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
@@ -518,7 +518,7 @@ class LiftingWorkPermit(models.Model):
         _name = 'lifting.permit.extension'
         _description = 'Permit Extension Record'
 
-        permit_id = fields.Many2one('lifting.work.permit', string='Permit Reference')
+        permit_id = fields.Many2one('confined.space.permit', string='Permit Reference')
         date = fields.Date(string='Date / التاريخ', default=fields.Date.context_today)
         time_from = fields.Float(string='From / من')
         time_to = fields.Float(string='To / إلى')

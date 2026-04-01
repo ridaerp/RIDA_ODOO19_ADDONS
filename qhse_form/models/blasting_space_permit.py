@@ -13,7 +13,6 @@ class BlastingWorkPermit(models.Model):
                 raise UserError("لا يمكنك حذف هذا التصريح. يمكن حذف السجلات في حالة (مسودة) فقط! / You cannot delete this Cold Work Permit. Only DRAFT records can be deleted.")
         return super(BlastingWorkPermit, self).unlink()
 
-    cold_work_permit_id = fields.Many2one('cold.work.permit', string='Related Cold Work Permit', readonly=True)
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
@@ -41,7 +40,7 @@ class BlastingWorkPermit(models.Model):
                                     default=lambda self: self.env.user.employee_id.department_id)
 
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
-    approved_dept_ids = fields.Many2many('hr.department', 'blasting_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     closed_date = fields.Datetime(string='تاريخ الإغلاق / Closing Date', readonly=True)
     duration_display = fields.Char(string='مدة التصريح / Duration', compute='_compute_duration')
     # الجزء رقم #1/أ: تفاصيل موقع التفجير

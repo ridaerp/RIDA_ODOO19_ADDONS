@@ -44,7 +44,7 @@ class ExcavationWorkPermit(models.Model):
     closing_reason = fields.Text(string='التعليق / Comment')
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
-    approved_dept_ids = fields.Many2many('hr.department', 'excavation_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
     # الجزء الأول: معلومات عامة وأبعاد الحفر
     date = fields.Datetime(string='Date / التاريخ', default=fields.Date.context_today)

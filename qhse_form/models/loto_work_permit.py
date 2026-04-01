@@ -12,7 +12,7 @@ class LotoWorkPermit(models.Model):
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
-    approved_dept_ids = fields.Many2many('hr.department', 'loto_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
         ('dept_approval', 'انتظار اعتماد الأقسام / Dept Approval'),

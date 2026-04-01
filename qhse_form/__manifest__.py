@@ -20,7 +20,7 @@
     'version': '19.0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'material_request','qhse','base_rida', 'master_data'],
+    'depends': ['base', 'material_request','mail','qhse','base_rida', 'master_data'],
 
     # always loaded
     'data': [

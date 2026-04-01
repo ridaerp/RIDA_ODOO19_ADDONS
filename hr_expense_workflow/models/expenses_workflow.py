@@ -42,6 +42,19 @@ class Expenses(models.Model):
     #         return action
     #     self._do_approve()
 
+    # أضف هذا الحقل في كلاس ExpensesCustom
+    is_editable = fields.Boolean(compute='_compute_is_editable')
+
+    @api.depends('state')
+    def _compute_is_editable(self):
+        for expense in self:
+            # السماح بالتعديل إذا كان في المسودة أو حالات الاعتماد الوسطى
+            if expense.state in ['draft', 'submitted', 'lm', 'finance', 'internal_audit', 'site', 'ccso']:
+                expense.is_editable = True
+            else:
+                # إذا كان قد دفع أو تم ترحيله يمنع التعديل إلا للمدير المالي
+                expense.is_editable = self.env.user.has_group('account.group_account_manager')
+
     def action_approve_expense_sheets(self):
         for expense in self:
             # تحقق إذا كان يمكن الموافقة عليه (يمكنك كتابة custom logic هنا)
@@ -79,7 +92,7 @@ class Expenses(models.Model):
 
     def action_submit_sheet(self):
         if self.user_type_=='rohax':
-            action_submit_expenses()
+            self.action_submit_expenses()
         else:
             self.write({'state': 'lm'})
             # self.activity_update()

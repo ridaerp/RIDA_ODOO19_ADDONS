@@ -51,7 +51,7 @@ class ConfinedSpacePermit(models.Model):
     # company_id = fields.Many2one('res.company', string='الشركة', default=lambda self: self.env.company)
     department_id = fields.Many2one('hr.department', string='القسم / Department',default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
-    approved_dept_ids = fields.Many2many('hr.department', 'confined_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     space_description = fields.Text(string='وصف المكان / Space Description')
     entry_purpose = fields.Text(string='الغرض من الدخول / Entry Purpose')
     task_description = fields.Text(string='وصف المهمة / Task Description')
