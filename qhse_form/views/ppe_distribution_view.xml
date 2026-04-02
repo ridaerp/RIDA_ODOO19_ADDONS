@@ -33,6 +33,9 @@
                             invisible="state != 'senior_approve'" groups="base_rida.rida_group_senior_officer" class="oe_highlight"/>
 
                     <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancel')"/>
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                        invisible="state in ['draft', 'done']"
+                        groups="base_rida.rida_group_safety_officer,base_rida.rida_group_qhse_manager,base_rida.rida_group_senior_officer" type="action"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,junior_approve,senior_approve,done"/>
                 </header>
@@ -48,6 +51,9 @@
                             <field name="doc_no" readonly="1"/>
                         </h2>
                         <div class="text-muted text-uppercase fw-bold">Routine PPE Distribution Form</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لطلب واستلام معدات الوقاية الشخصية الاستهلاكية (مثل القفازات والكمامات) وكذلك التوزيع السنوي، حيث يتم تعبئته من قبل المشرف المباشر ومراجعته من مسؤول السلامة واعتماده لتوثيق صرف المعدات ومتابعة استهلاك الموظفين. 
+                        </p>
                     </div>
 
                     <div class="oe_title">
@@ -72,14 +78,14 @@
 
                     <notebook>
                         <page string="PPE Items &amp; Quantities" name="lines">
-                            <field name="line_ids" readonly="state != 'draft'">
+                            <field name="line_ids">
                                 <list editable="bottom">
                                     <field name="ppe_type" options="{'no_create': True}" domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
                                     <field name="brand_sn"/>
                                     <field name="unit"/>
-                                    <field name="last_distributed_date"/> 
-                                    <field name="last_distributed_qty"/>
                                     <field name="quantity" sum="Total Requested"/>
+                                    <field name="last_distributed_qty"/>
+                                    <field name="last_distributed_date"/> 
                                     <field name="qty_approved" sum="Total Approved"/>
                                 </list>
                             </field>

@@ -78,7 +78,10 @@
                         <h2 style="color: #714B67;">
                             <field name="doc_no" readonly="1"/>
                         </h2>
-                        <div class="text-muted">PPE Replacement DOCUMENT (For Individuals)</div>
+                        <div class="text-muted">PPE for Medical Case Form</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لطلب معدات وقاية شخصية بديلة أو مخصصة لأسباب طبية، بناءً على تقرير طبي يوضح الحالة ومتطلبات المعدة المناسبة. 
+                        </p>
                     </div>
 
                     <div class="oe_title">
@@ -115,7 +118,7 @@
                                     <field name="medical_condition"/>
                                     <field name="current_ppe_effect"/>
                                     <field name="physician_recommendation"/>
-                                    <field name="physician_signature_date"/>
+                                    <!-- <field name="physician_signature_date"/> -->
                                 </group>
                                 <group string="QHSE Evaluation">
                                     <field name="new_ppe_safety_eval"/>
@@ -131,6 +134,11 @@
                                     <field name="line_supervisor_user_id"/>
                                     <field name="senior_health_user_id"/>
                                     <field name="senior_safety_user_id"/>
+                                </group>
+                                <group string="Post-Approval Actions">
+                                    <field name="update_risk_register"/>
+                                    <field name="update_jsa"/>
+                                    <field name="training_staff"/>
                                 </group>
                                 <group string="Final Management">
                                     <field name="manager_user_id"/>

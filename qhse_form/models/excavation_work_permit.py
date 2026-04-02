@@ -8,15 +8,25 @@ class ExcavationWorkPermit(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
 
-
+    
     def unlink(self):
-        if self.state != 'draft':
-            raise UserError("You cannot delete this Excavation Work Permit. Only DRAFT records can be deleted.")
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError("لا يمكنك حذف هذا التصريح. يمكن حذف السجلات في حالة (مسودة) فقط! / Only DRAFT records can be deleted.")
         return super(ExcavationWorkPermit, self).unlink()
+
+    # تعديل دالة create لتجنب خطأ التكرار (Odoo 19 Standard)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('excavation.work.permit') or '/'
+        return super(ExcavationWorkPermit, self).create(vals_list)
 
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
+        ('dept_approval', 'انتظار اعتماد الأقسام / Dept Approval'),
         ('submitted', 'انتظار الاعتماد / Pending Approval'),
         ('authorized', 'تم التصريح / Authorized'),
         ('issued', 'نشط / Issued'),
@@ -34,12 +44,13 @@ class ExcavationWorkPermit(models.Model):
     closing_reason = fields.Text(string='التعليق / Comment')
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
+    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
     # الجزء الأول: معلومات عامة وأبعاد الحفر
     date = fields.Datetime(string='Date / التاريخ', default=fields.Date.context_today)
     date_from = fields.Datetime(string='Valid From / صالح من')
     date_to = fields.Datetime(string='Valid To / إلى')
-    location = fields.Many2one('work.site',string='Exact Location / الموقع الدقيق',ondelete='set null', tracking=True)
+    work_site = fields.Many2one('work.site',string='Exact Location / الموقع الدقيق',ondelete='set null', tracking=True)
     sub_location = fields.Char(string='الموقع الفرعي / Sub Location', tracking=True)
     task_description = fields.Text(string='Description of Task / وصف المهمة')
     requester_id = fields.Many2one('res.users', string='Requester / مقدم الطلب', default=lambda self: self.env.user)
@@ -138,12 +149,6 @@ class ExcavationWorkPermit(models.Model):
         required=True
     )
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('excavation.work.permit') or ' '
-
-        return super(ExcavationWorkPermit, self).create(vals)
 
     def _compute_linked_ptw_count(self):
         for rec in self:
@@ -175,7 +180,7 @@ class ExcavationWorkPermit(models.Model):
         # إنشاء السجل في الموديول المستهدف
         new_record = self.env[target['model']].create({
             'work_site': self.work_site.id,
-            'task_description': f"مرتبط بتصريح العمل الساخن رقم: {self.name}",
+            'task_description': f"مرتبط بتصريح اعمال الحفر رقم: {self.name}",
             'date_from': self.date_from,
             'date_to': self.date_to,
             'requester_id': self.requester_id.id,
@@ -212,25 +217,53 @@ class ExcavationWorkPermit(models.Model):
             'target': 'current',
         }
 
+
     def action_submit(self):
         for rec in self:
             if not rec.confirmation_check:
                 raise UserError(
                     "يجب عليك الموافقة على صحة البيانات وإرشادات السلامة قبل إرسال الطلب! / You must confirm that all information is correct before submitting.")
+
             if rec.is_need_ptw:
-                related_ptws = [rec.linked_hot_ptw, rec.linked_blasting_ptw, rec.linked_confined_ptw,
-                                rec.linked_excavation_ptw, rec.linked_highway_ptw, rec.linked_lifting_ptw,
+                related_ptws = [rec.linked_cold_ptw, rec.linked_blasting_ptw, rec.linked_confined_ptw,
+                                rec.linked_hot_ptw, rec.linked_highway_ptw, rec.linked_lifting_ptw,
                                 rec.linked_loto_ptw]
 
                 for ptw in related_ptws:
                     if ptw and ptw.state not in ['issued']:
                         raise UserError(f"لا يمكن الاعتماد! التصريح المرتبط ({ptw.name}) لا يزال في حالة {ptw.state}")
-
-            # التعديل هنا: نغير الحالة أولاً ثم نستدعي الأنشطة
-            rec.state = 'submitted'
-            rec.action_update_activities()
+            
             if rec.department_ids:
-                rec._notify_department_managers()
+                # إذا وجد أقسام، ننتقل لحالة اعتماد الأقسام
+                rec.state = 'dept_approval'
+                rec._notify_department_managers() # إرسال التنبيهات التي قمت ببرمجتها سابقاً
+            else:
+                # إذا لم توجد أقسام، يذهب مباشرة لمسؤول السلامة
+                rec.state = 'submitted'
+                rec.action_update_activities()
+
+    def action_dept_approve(self):
+        for rec in self:
+            # التأكد أن المستخدم الحالي هو مدير لأحد الأقسام المعنية
+            user_employee = self.env.user.employee_id
+            managed_depts = self.env['hr.department'].search([('manager_id', '=', user_employee.id)])
+            
+            # تقاطع الأقسام التي يديرها المستخدم مع الأقسام المطلوبة في التصريح
+            depts_to_approve = rec.department_ids.filtered(lambda d: d.id in managed_depts.ids)
+            
+            if not depts_to_approve:
+                raise UserError("عذراً، أنت لست مديراً لأي من الأقسام المعنية بهذا التصريح.")
+
+            # إضافة القسم للقائمة التي وافقت
+            rec.approved_dept_ids |= depts_to_approve
+            
+            # التحقق: هل وافقت كل الأقسام المطلوبة؟
+            if all(dept in rec.approved_dept_ids for dept in rec.department_ids):
+                rec.state = 'submitted' # الانتقال لمسؤول السلامة
+                rec.message_post(body="تم اعتماد جميع الأقسام المعنية. الطلب الآن بانتظار مسؤول السلامة.")
+                rec.action_update_activities() # تنبيه مسؤولي السلامة
+            else:
+                rec.message_post(body=f"تم الاعتماد من قبل قسم {depts_to_approve.mapped('name')}. بانتظار بقية الأقسام.")
 
     def _notify_department_managers(self):
         """دالة لإرسال الإشعارات لمدراء الأقسام المعنية"""

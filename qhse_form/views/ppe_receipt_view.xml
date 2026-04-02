@@ -43,12 +43,21 @@
                         <button name="action_view_issuance_requests" type="object" class="oe_stat_button" icon="fa-truck" invisible="issuance_count == 0">
                             <field name="issuance_count" widget="statinfo" string="Issuances"/>
                         </button>
+                        <button name="action_view_deductions" type="object" class="oe_stat_button" icon="fa-money" invisible="deduction_count == 0">
+                            <field name="deduction_count" string="Deduction" widget="statinfo"/>
+                        </button>
                     </div>
                     <div class="text-center mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <h2 style="color: #714B67;">
                             <field name="doc_no" readonly="1"/>
                         </h2>
                         <div class="text-muted text-uppercase fw-bold">PPE RECEIPT DOCUMENT</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لتوثيق استلام الموظف لمعدات الوقاية الشخصية غير الاستهلاكية من خلال توقيعه، كإثبات رسمي على تسلّمه للمعدة ومسؤوليته عنها. 
+                        </p>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لطلب استبدال معدات الوقاية الشخصية غير الاستهلاكية عند تلفها أو انتهاء عمرها أو عدم ملاءمتها، مع توضيح أسباب الاستبدال واعتمادها من الجهات المختصة. 
+                        </p>
                     </div>
 
                     <div class="oe_title">
@@ -70,48 +79,77 @@
 
                     <notebook>
                         <page string="Received PPE Details" name="receipt_lines">
-                            <field name="receipt_line_ids" readonly="state != 'draft'">
+                            <field name="receipt_line_ids">
                                 <list editable="bottom">
                                     <field name="employee_id" required="1" options="{'no_create': True}"
                                         domain="[('department_id', 'child_of', parent.department_id), ('company_id', '=', parent.company_id)]"/>
                                     <field name="emp_code" readonly="1" force_save="1" />
                                     <field name="ppe_type" options="{'no_create': True}" domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
                                     <field name="brand_sn" readonly="1" force_save="1"/>
-                                    
-                                    <field name="qty_hand" string="Stock On Hand" readonly="1" force_save="1" groups="base_rida.rida_group_safety_officer"/>
-                                    
                                     <field name="quantity" string="Requested Qty" readonly="parent.state != 'draft'"/>
-                                    
+                                    <field name="qty_hand" string="Stock On Hand" readonly="1" force_save="1" groups="base_rida.rida_group_safety_officer"/>
+                                    <field name="last_distributed_qty"/>
+                                    <field name="last_distributed_date"/> 
+                                    <field name="size"/>
+                                    <field name="color"/>
+                                    <field name="damage_reason" column_invisible="parent.reason_type != 'damage_replacement'"/>
+                                    <!-- <field name="other"/> -->
                                     <field name="qty_approved" 
                                            string="Approved Qty" 
                                            column_invisible="parent.state == 'draft'"
                                            readonly="parent.state == 'done'"/>
 
-                                    <field name="reason_type" column_invisible="True"/>
+                                    <!-- <field name="reason_type" column_invisible="True"/> -->
                                 </list>
                             </field>
 
                             <div class="mt-4 p-3 border rounded bg-light" style="font-size: 0.95rem;">
-                                <h5 class="text-primary mb-3">
-                                    <i class="fa fa-info-circle mr-2"/> Employee Declaration &amp; Confirmation
-                                </h5>
-                                <p class="font-weight-bold">
-                                    I confirm that I have received the above noted personal protective equipment (PPE). I also confirm that I have received instruction and training in the:
-                                </p>
-                                <ul style="list-style-type: decimal; padding-left: 20px;">
-                                    <li>Reasons why the PPE is necessary.</li>
-                                    <li>Correct method of using/wearing the PPE.</li>
-                                    <li>Procedures to follow in the event of loss or damage to the PPE.</li>
-                                    <li>Arrangements for cleaning, storage, and repair/replacement of the equipment.</li>
-                                    <li>Recommended times/periods for cleaning, and replacement of the PPE or its components.</li>
-                                    <li>Limitations of the PPE (if any).</li>
-                                    <li>Specific circumstances when the PPE is to be worn (e.g., as detailed in company safe working procedures).</li>
-                                </ul>
-                                <p class="mt-2 italic">
-                                    Also confirm that I have been made aware of my duties under current legislation in relation to the need for me to appropriately use and not abuse the PPE issued to me.
-                                </p>
+                                <div class="row">
 
-                                <hr/>
+                                    <!-- 🔵 English (Left) -->
+                                    <div class="col-6">
+                                        <h5 class="text-primary mb-3">
+                                            <i class="fa fa-info-circle mr-2"/> Employee Declaration &amp; Confirmation
+                                        </h5>
+                                        <p class="font-weight-bold">
+                                            I confirm that I have received the above noted personal protective equipment (PPE). I also confirm that I have received instruction and training in the:
+                                        </p>
+                                        <ul style="list-style-type: decimal; padding-left: 20px;">
+                                            <li>Reasons why the PPE is necessary.</li>
+                                            <li>Correct method of using/wearing the PPE.</li>
+                                            <li>Procedures to follow in the event of loss or damage to the PPE.</li>
+                                            <li>Arrangements for cleaning, storage, and repair/replacement of the equipment.</li>
+                                            <li>Recommended times/periods for cleaning, and replacement of the PPE or its components.</li>
+                                            <li>Limitations of the PPE (if any).</li>
+                                            <li>Specific circumstances when the PPE is to be worn.</li>
+                                        </ul>
+                                        <p class="mt-2 italic">
+                                            Also confirm that I have been made aware of my duties under current legislation.
+                                        </p>
+                                    </div>
+
+                                    <!-- 🔴 Arabic (Right) -->
+                                    <div class="col-6" style="direction: rtl; text-align: right;">
+                                        <h5 class="text-primary mb-3">
+                                            <i class="fa fa-info-circle ml-2"/> إقرار واستلام الموظف
+                                        </h5>
+                                        <p class="font-weight-bold">
+                                            أقر بأنني استلمت معدات الوقاية الشخصية المذكورة أعلاه، كما أقر بأنني تلقيت التعليمات والتدريب على ما يلي:
+                                        </p>
+                                        <ul style="list-style-type: decimal; padding-right: 20px;">
+                                            <li>أسباب ضرورة استخدام معدات الوقاية الشخصية.</li>
+                                            <li>الطريقة الصحيحة لاستخدام وارتداء المعدات.</li>
+                                            <li>الإجراءات الواجب اتباعها في حال فقدان أو تلف المعدات.</li>
+                                            <li>ترتيبات التنظيف والتخزين والصيانة أو الاستبدال.</li>
+                                            <li>الفترات الموصى بها للتنظيف والاستبدال.</li>
+                                            <li>حدود استخدام معدات الوقاية (إن وجدت).</li>
+                                            <li>الحالات التي يجب فيها ارتداء المعدات.</li>
+                                        </ul>
+                                        <p class="mt-2 italic">
+                                            كما أقر بأنني على علم بمسؤولياتي وفق الأنظمة المعمول بها بخصوص الاستخدام الصحيح وعدم إساءة استخدام المعدات.
+                                        </p>
+                                    </div>
+                                </div>
                                 <div class="d-flex align-items-center">
                                     <field name="confirm_training" required="1" readonly="state != 'draft'" class="mr-2"/>
                                     <label for="confirm_training" string="I Agree and Confirm the above instructions" class="font-weight-bold text-danger"/>

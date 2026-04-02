@@ -68,7 +68,7 @@
                                     <field name="last_data" string="Last Issued" readonly="1" force_save="1"/>
                                     
                                     <field name="quantity" string="Req. Qty" readonly="parent.state != 'draft'"/>
-                                    
+        
                                     <field name="qty_approved" string="Appr. Qty" 
                                            column_invisible="parent.state == 'draft'"
                                            required="parent.state != 'draft'"/>

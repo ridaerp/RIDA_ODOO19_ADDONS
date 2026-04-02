@@ -41,18 +41,18 @@ class FleetOperation(models.Model):
 
     # ---------- Helper methods ----------
     def _get_employee(self):
-        return self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1).id
+        return self.env['hr.employee'].sudo().search([('user_id', '=', self.env.uid)], limit=1).id
 
     def _get_default_department(self):
-        emp = self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1)
+        emp = self.env['hr.employee'].sudo().search([('user_id', '=', self.env.uid)], limit=1)
         return emp.department_id.id if emp and emp.department_id else False
 
     def _get_or_create_vehicle_location(self, location_name):
         if not location_name:
             return False
-        location = self.env['vehicle.location'].search([('name', '=', location_name)], limit=1)
+        location = self.env['vehicle.location'].sudo().search([('name', '=', location_name)], limit=1)
         if not location:
-            location = self.env['vehicle.location'].create({'name': location_name})
+            location = self.env['vehicle.location'].sudo().create({'name': location_name})
         return location.id
 
     def unlink(self):
@@ -111,12 +111,60 @@ class FleetOperation(models.Model):
         return res
 
     # ---------- تحديث العدادات ----------
+    # def _update_vehicle_odometers(self):
+    #     print("\n==== Updating Vehicle Odometers ====\n")
+    #     Odometer = self.env['fleet.vehicle.odometer']
+    #     for rec in self:
+    #         for line in rec.odometer_ids:
+    #             print(f"Processing line for equipment: {line.equipment_id.name}, vehicle: {line.vehicle_id.name}")
+    #             # تحديد أو إنشاء الموقع
+    #             location_id = line.location_id.id or self._get_or_create_vehicle_location(
+    #                 getattr(line.vehicle_id, 'location', False)
+    #             )
+
+    #             # تحديد مفتاح البحث (المعدة أولًا، ثم المركبة)
+    #             domain = [
+    #                 ('date', '=', rec.date),
+    #                 ('equipment_id', '=', line.equipment_id.id)
+    #             ]
+    #             if line.vehicle_id:
+    #                 domain.append(('vehicle_id', '=', line.vehicle_id.id))
+
+
+
+    #             # البحث أو الإنشاء
+    #             existing = Odometer.search(domain, limit=1)
+    #             print(f"  Found existing odometer? {bool(existing)} domain={domain}")
+    #             if vehicle.company_id and vehicle.company_id not in self.env.user.company_ids:
+    #                 raise UserError(f"Vehicle {vehicle.name} belongs to another company")
+    #             vals = {
+    #                 'date': rec.date,
+    #                 'vehicle_id': line.vehicle_id.id,
+    #                 'equipment_id': line.equipment_id.id,
+    #                 'location_id': line.location_id.id,
+    #                 'value': line.end_value,
+    #                 'start_value': line.start_value,
+    #             }
+
+    #             if existing:
+    #                 print("  → Updating existing odometer record")
+    #                 existing.write(vals)
+    #             else:
+    #                 print("  → Creating new odometer record")
+    #                 Odometer.create(vals)
     def _update_vehicle_odometers(self):
         print("\n==== Updating Vehicle Odometers ====\n")
         Odometer = self.env['fleet.vehicle.odometer']
         for rec in self:
             for line in rec.odometer_ids:
                 print(f"Processing line for equipment: {line.equipment_id.name}, vehicle: {line.vehicle_id.name}")
+                
+                # التحقق من الصلاحيات والشركة باستخدام line.vehicle_id
+                if line.vehicle_id:
+                    # هنا تم تصحيح الخطأ: استبدال vehicle بـ line.vehicle_id
+                    if line.vehicle_id.company_id and line.vehicle_id.company_id not in self.env.user.company_ids:
+                        raise UserError(f"Vehicle {line.vehicle_id.name} belongs to another company")
+
                 # تحديد أو إنشاء الموقع
                 location_id = line.location_id.id or self._get_or_create_vehicle_location(
                     getattr(line.vehicle_id, 'location', False)
@@ -130,28 +178,22 @@ class FleetOperation(models.Model):
                 if line.vehicle_id:
                     domain.append(('vehicle_id', '=', line.vehicle_id.id))
 
-
-
                 # البحث أو الإنشاء
                 existing = Odometer.search(domain, limit=1)
-                print(f"  Found existing odometer? {bool(existing)} domain={domain}")
-                if vehicle.company_id and vehicle.company_id not in self.env.user.company_ids:
-                    raise UserError(f"Vehicle {vehicle.name} belongs to another company")
+                
                 vals = {
                     'date': rec.date,
                     'vehicle_id': line.vehicle_id.id,
                     'equipment_id': line.equipment_id.id,
-                    'location_id': line.location_id.id,
+                    'location_id': location_id, # تم استخدام المتغير المحسوب أعلاه
                     'value': line.end_value,
                     'start_value': line.start_value,
                 }
 
                 if existing:
-                    print("  → Updating existing odometer record")
-                    existing.write(vals)
+                    existing.sudo().write(vals)
                 else:
-                    print("  → Creating new odometer record")
-                    Odometer.create(vals)
+                    Odometer.sudo().create(vals)
 
     # ---------- تحديث المدد تلقائيًا ----------
     @api.onchange('start_day', 'end_day', 'start_night', 'end_night')

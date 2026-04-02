@@ -42,8 +42,8 @@ class PPEMedicalCase(models.Model):
     diagnoses_results = fields.Text(string='Diagnoses & test Result')
     medical_condition = fields.Text(string='Employee medical condition')
     current_ppe_effect = fields.Text(string='Effect of current PPE to medical condition')
-    physician_recommendation = fields.Text(string='Physician Recommendation')
-    physician_signature_date = fields.Date(string='Physician Signature Date')
+    physician_recommendation = fields.Binary(string='Physician Report')
+    # physician_signature_date = fields.Date(string='Physician Signature Date')
 
     # قسم إدارة الصحة والسلامة (QHSE Department Use Only)
     new_ppe_safety_eval = fields.Text(string='Employee safety with new PPE')
@@ -81,6 +81,9 @@ class PPEMedicalCase(models.Model):
     product_request_count = fields.Integer(compute='_compute_product_request_count')
     is_product_done = fields.Boolean(compute='_compute_is_product_done', store=False)
     mr_count = fields.Integer(compute='_compute_mr_count')
+    update_risk_register = fields.Boolean(string="Update the Risk Register")
+    update_jsa = fields.Boolean(string="Update the JSA")
+    training_staff = fields.Boolean(string="Training the staff")
 
     def action_create_mr_from_medical(self):
         self.ensure_one()

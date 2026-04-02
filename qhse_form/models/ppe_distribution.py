@@ -37,9 +37,9 @@ class PPERoutineDistribution(models.Model):
     justification = fields.Text(string='Justification (if more than Routine Qty.)')
 
     # قسم QHSE (Review & Approval)
-    junior_safety_executive_id = fields.Many2one('res.users', string='Junior Safety Executive')
-    junior_comment = fields.Text(string='Junior Comment')
-    junior_voucher_sn = fields.Char(string='Issuance voucher S/N (Junior)')
+    junior_safety_executive_id = fields.Many2one('res.users', string='Safety Officer Executive')
+    junior_comment = fields.Text(string='Officer Comment')
+    junior_voucher_sn = fields.Char(string='Issuance voucher S/N (Officer)')
 
     senior_safety_executive_id = fields.Many2one('res.users', string='Senior Safety Executive')
     senior_comment = fields.Text(string='Senior Comment')
@@ -47,10 +47,11 @@ class PPERoutineDistribution(models.Model):
     issuance_count = fields.Integer(compute='_compute_issuance_count')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('junior_approve', 'Junior Safety Approval'),
+        ('junior_approve', 'Safety Officer Approval'),
         ('senior_approve', 'Senior Safety Approval'),
         ('done', 'Issued'),
-        ('cancel', 'Cancelled')
+        ('cancel', 'Cancelled'),
+        ('reject', 'Rejected')
     ], default='draft', tracking=True)
     reason_reject = fields.Text(string='Reject Reason', tracking=True)
 
@@ -136,7 +137,7 @@ class PPERoutineDistribution(models.Model):
                 'state': 'draft',
                 'origin': rec.name,
                 'company_id': self.env.company.id,
-                'requested_by': rec.originator_id.id or self.env.user.id,
+                'requested_by': rec.senior_safety_executive_id.id or self.env.user.id,
                 'issuance_type': 'internal_issuance',
             }
             issuance_rec = self.env['issuance.request'].create(issuance_vals)
@@ -146,7 +147,7 @@ class PPERoutineDistribution(models.Model):
                 lines.append((0, 0, {
                     'product_id': line.ppe_type.id,
                     'product_uom_id': line.ppe_type.uom_id.id,
-                    'qty_requested': line.quantity,
+                    'qty_requested': line.qty_approved,
                     'name': rec.name,
                 }))
             issuance_rec.write({'line_ids': lines})
@@ -159,7 +160,7 @@ class PPERoutineDistributionLine(models.Model):
     distribution_id = fields.Many2one('ppe.distribution')
     ppe_type = fields.Many2one('product.product', string='Type of PPE', required=True)
     brand_sn = fields.Char(string="Brand or S/N", related='ppe_type.brand')
-    unit = fields.Char(string='Unit')
+    unit = fields.Char(string='Unit', related='ppe_type.uom_id.name')
     quantity = fields.Float(string='QTY')
     qty_approved = fields.Float(string='Quantity Approved', default=1.0)
     last_distributed_date = fields.Date(
@@ -172,26 +173,9 @@ class PPERoutineDistributionLine(models.Model):
         compute='_compute_last_issuance_per_product', 
         store=True
     )
+    size = fields.Char(string='Size/Specification')
+    color = fields.Char(string='Color')
 
-    @api.depends('ppe_type', 'distribution_id.department_id')
-    def _compute_last_issuance_per_product(self):
-        for line in self:
-            # تعيين قيم افتراضية في حال عدم وجود سجلات سابقة
-            line.last_distributed_date = False
-            line.last_distributed_qty = 0.0
-            
-            # التأكد من اختيار المنتج والقسم أولاً
-            if line.ppe_type and line.distribution_id.department_id:
-                # البحث في أسطر الإيصالات عن آخر استلام لهذا القسم وهذا المنتج
-                last_receipt = self.env['ppe.receipt.line'].search([
-                    ('ppe_type', '=', line.ppe_type.id),
-                    ('receipt_id.department_id', '=', line.distribution_id.department_id.id),
-                    ('receipt_id.state', '=', 'done')
-                ], order='create_date desc', limit=1)
-
-                if last_receipt:
-                    line.last_distributed_date = last_receipt.receipt_id.date
-                    line.last_distributed_qty = last_receipt.qty_approved
 
     @api.depends('ppe_type', 'distribution_id.department_id')
     def _compute_last_issuance_per_product(self):

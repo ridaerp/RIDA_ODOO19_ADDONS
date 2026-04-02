@@ -21,40 +21,48 @@
             <form>
                 <header>
                     <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
-                                groups="base_rida.rida_group_safety_officer"/>
-                        <button name="action_extend" string="تمديد / Extend" type="object"
-                                groups="base_rida.rida_group_safety_officer"
-                                invisible="state != 'pending_extension'"/>
-                        <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
-                        <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
-                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
-                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
-                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
-                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
-                        <button name="action_close" string="إغلاق / Close" type="object"
-                                groups="base_rida.rida_group_safety_officer"
-                                invisible="state not in ['pending_close']"/>
-                        <button name="action_done" string="تم / Done" type="object"
-                                invisible="state not in ['reject']"/>
-                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
-                                invisible="state not in ['submitted']"
-                                groups="base_rida.rida_group_safety_officer"
-                                type="action"/>
-                        <button name="action_reactivate"
-                            string="إعادة تنشيط / Reactivate"
-                            type="object"
-                            class="oe_highlight"
-                            invisible="state not in ['suspend', 'revoked']"/>
-                        <button name="action_create_related_ptw"
-                            string="إنشاء التصريح المرتبط"
-                            type="object"
-                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,issued,revoked,suspend,closed"/>
+                    <button name="action_dept_approve" string="اعتماد القسم المعني" type="object" 
+                                invisible="state != 'dept_approval'" class="oe_highlight" 
+                                groups="base_rida.rida_group_line_manager"/>
+                    <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                            groups="base_rida.rida_group_safety_officer"/>
+                    <button name="action_extend" string="تمديد / Extend" type="object"
+                            groups="base_rida.rida_group_safety_officer"
+                            invisible="state != 'pending_extension'"/>
+                    <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                    <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                    <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                            groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                    <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                            groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                    <button name="action_close" string="إغلاق / Close" type="object"
+                            groups="base_rida.rida_group_safety_officer"
+                            invisible="state not in ['pending_close']"/>
+                    <button name="action_done" string="تم / Done" type="object"
+                            invisible="state not in ['reject']"/>
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                            invisible="state not in ['submitted']"
+                            groups="base_rida.rida_group_safety_officer"
+                            type="action"/>
+                    <button name="action_reactivate"
+                        string="إعادة تنشيط / Reactivate"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state not in ['suspend', 'revoked']"/>
+                    <button name="action_create_related_ptw"
+                        string="إنشاء التصريح المرتبط"
+                        type="object"
+                        invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,dept_approval,submitted,issued,revoked,suspend,closed"/>
                 </header>
                 <sheet>
-                    <div class="oe_title text-center">
-                        <h1 style="color: #c53929;">Hot Work Permission</h1>
+                    <div class="oe_title text-center" style="background-color: #D1D1D1; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                        <h1 style="color: #ffffff; margin-bottom: 0;">Lifting/Crane Operation Permit / تصريح الرفع والتشغيل بالرافعات</h1>
+                        <div style="background-color: #D1D1D1; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم عند تنفيذ عمليات رفع حرجة أو غير روتينية باستخدام الرافعات، خاصة في الظروف الخطرة أو عند التعامل مع أحمال ثقيلة أو معدات حساسة. 
+                            </p>
+                        </div>
                     </div>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_linked_ptw"
@@ -85,7 +93,7 @@
                     </group>
                     <group string="الموقع والطقس / Site &amp; Weather">
                         <group>
-                            <field name="plant_site" required="True"/>
+                            <field name="work_site" required="True"/>
                             <field name="sub_location_1" required="True"/>
                             <field name="sub_location_2" required="True"/>
                         </group>
