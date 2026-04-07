@@ -500,6 +500,7 @@ class StockMove(models.Model):
                 'debit': 0,
                 'credit': value,
                 'product_id': self.product_id.id,
+
             },
             {
                 'account_id': target_debit_account or debit_acc.id,
@@ -508,6 +509,9 @@ class StockMove(models.Model):
                 'credit': 0,
                 'product_id': self.product_id.id,
                 'partner_id': target_partner,
+                'analytic_distribution': {
+                    str(self.picking_id.analytic_account_id.id): 100} if self.picking_id.analytic_account_id else False,
+                
             }
         ]
 
