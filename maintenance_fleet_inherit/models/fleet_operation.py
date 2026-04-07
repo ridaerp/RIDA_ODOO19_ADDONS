@@ -11,8 +11,7 @@ class FleetOperation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     date = fields.Date(string='Date', default=lambda self: fields.Date.context_today(self), tracking=True)
-    employee_id = fields.Many2one('hr.employee', string='Employee', default=lambda self: self._get_employee(), tracking=True)
-    department_id = fields.Many2one('hr.department', string='Department', default=lambda self: self._get_default_department())
+    employee_id = fields.Many2one('hr.employee', string='Employee', default=lambda self: self._get_employee(), tracking=True,groups="base.group_user")    department_id = fields.Many2one('hr.department', string='Department', default=lambda self: self._get_default_department())
 
     start_day = fields.Float(string='Start Shift (Day)', tracking=True)
     end_day = fields.Float(string='End Shift (Day)', tracking=True)
