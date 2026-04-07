@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle 
+ -->
+<odoo>
+    <record id="cheque_setting_form_view" model="ir.ui.view">
+        <field name="name">cheque.setting.form</field>
+        <field name="model">cheque.setting</field>
+        <field name="arch" type="xml">
+            <form string="Cheque Format">
+                <sheet>
+                    <label for="name" string="Cheque Name" class="oe_edit"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="font_size"/>
+                            <field name="color"/>
+                        </group>
+                        <group>
+                            <field name="set_default"/>
+                            <field name="company_id"/>
+                            <field name="journal_id" />
+                        </group>
+                    </group>
+
+                    <group string="Print Partner">
+                        <group>
+                            <field name='is_partner' />
+                            <field name="is_partner_bold"/>
+                            <field name="partner_text"/>
+                        </group>
+                        <group>
+                            <field name='partner_m_top' string='From Top' required="is_partner"/>
+                            <field name='partner_m_left' string='From Left' required="is_partner"/>
+                        </group>
+                    </group>
+
+                    <group string="Print Address">
+                        <group>
+                            <field name='print_partner_address'/>
+                        </group>
+                        <group>
+                            <field name='partner_address_top_margin' string='From Top' required="print_partner_address"/>
+                            <field name='partner_address_left_margin' string='From Left' required="print_partner_address"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Print Date" >
+                            <field name='is_date' />
+                            <field name="date_seprator"/>
+                            <field name="date_formate" required="is_date"/>
+                            <field name='year_formate' required="is_date"/>
+                            <field name='date_m_top' string='From Top' required="is_date"/>
+                        </group>
+                        <group string="Date Digit From Left">
+                            <field name='f_d_m_left' required="is_date"/>
+                            <field name='s_d_m_left' required="is_date"/>
+                            <field name='t_d_m_left' required="is_date"/>
+                            <field name='fo_d_m_left' required="is_date"/>
+                            <field name='fi_d_m_left' required="is_date"/>
+                            <field name='si_d_m_left' required="is_date"/>
+                            <field name="se_d_m_left" required="is_date and year_formate == 'yyyy'"/>
+                            <field name='e_d_m_left' required="is_date and year_formate == 'yyyy'"/>
+                        </group>
+                    </group>
+
+                    <group string="Amount In Digit">
+                        <group>
+                            <field name='is_amount' />
+                            <field name="is_currency"/>
+                            <field name='is_star' />
+                        </group>
+                        <group>
+                            <field name='amt_m_top' string='From Top' required="is_amount"/>
+                            <field name='amt_m_left' string='From Left' required="is_amount"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Amount In Words">
+                        <group>
+                            <field name='is_amount_word' />
+                            <field name="is_star_word" string='Print Star'/>
+                            <field name="is_word_bold" string='Font Bold'/>
+                            <field name="word_in_f_line" required="is_amount_word"/>
+                        </group>
+                        <group>
+                            <field name='amt_w_m_top' required="is_amount_word"/>
+                            <field name='amt_w_m_left' required="is_amount_word"/>
+                            <field name='amt_w_s_m_top' required="is_amount_word"/>
+                            <field name='amt_w_s_m_left' required="is_amount_word"/>
+                        </group>
+                    </group>
+                    <group string="Print Company">
+                        <group>
+                            <field name='is_company'/>
+                        </group>
+                        <group>
+                            <field name='c_margin_top' string='From Top' required="is_company"/>
+                            <field name='c_margin_left' string='From Left' required="is_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Print Cheque No">
+                        <group>
+                            <field name='is_cheque_no'/>
+                        </group>
+                        <group>
+                            <field name='cheque_margin_top' string='From Top' required="is_cheque_no"/>
+                            <field name='cheque_margin_left' string='From Left' required="is_cheque_no"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Print A/C PAY">
+                        <group>
+                            <field name='is_acc_pay'/>
+                        </group>
+                        <group>
+                            <field name='acc_pay_m_top' string='From Top' required="is_acc_pay"/>
+                            <field name='acc_pay_m_left' string='From Left' required="is_acc_pay"/>
+                        </group>
+                    </group>
+                    
+                    
+
+                    <group string="Print Fitst Signature">
+                        <group>
+                            <field name='is_f_line_sig'/>
+                        </group>
+                        <group>
+                            <field name='f_sig_m_top' string='From Top' required="is_f_line_sig"/>
+                            <field name='f_sig_m_left' string='From Left' required="is_f_line_sig"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Print Second Signature">
+                        <group>
+                            <field name='is_s_line_sig' string='Print Signature'/>
+                        </group>
+                        <group>
+                            <field name='s_sig_m_top' string='From Top' required="is_s_line_sig"/>
+                            <field name='s_sig_m_left' string='From Left' required="is_s_line_sig"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Print Free Text One">
+                        <group>
+                            <field name='is_free_one'/>
+                        </group>
+                        <group>
+                            <field name='f_one_margin_top' string='From Top' required="is_free_one"/>
+                            <field name='f_one_margin_left' string='From Left' required="is_free_one"/>
+                        </group>
+                    </group>
+
+                    <group string="Print Free Text Two">
+                        <group>
+                            <field name='is_free_two'/>
+                        </group>
+                        <group>
+                            <field name='f_two_margin_top' string='From Top' required="is_free_two"/>
+                            <field name='f_two_margin_left' string='From Left' required="is_free_two"/>
+                        </group>
+                    </group>
+                    
+                    
+                    
+                    <group string="Print Stub">
+                        <group>
+                            <field name='is_stub'/>
+                        </group>
+                        <group>
+                            <field name='stub_margin_top' string='From Top' required="is_stub"/>
+                            <field name='stub_margin_left' string='From Left' required="is_stub"/>
+                        </group>
+                    </group>
+                    
+                    
+                    
+                    <group string="Print Journal">
+                        <group>
+                            <field name='print_journal'/>
+                        </group>
+                        <group>
+                            <field name='journal_margin_top' string='From Top' required="print_journal"/>
+                            <field name='journal_margin_left' string='From Left' required="print_journal"/>
+                        </group>
+                    </group>
+                    
+                    
+                    <group string='Print Footer Text'>
+                        <group>
+                            <field name="is_print_footer_text"/>
+                            <field name="cheque_footer_text" required="is_print_footer_text"/>
+                            <field name="footer_font_size" string='Font Size' required="is_print_footer_text"/>
+                        </group>
+                        
+                        <group>
+                            <field name="is_footer_text_bold" string='Font Bold'/>
+                            <field name="footer_m_top" string='From Top' required="is_print_footer_text"/>
+                            <field name="footer_m_left" string='From Left' required="is_print_footer_text"/>
+                        </group>
+                    </group>
+                    
+                    
+                    
+                    
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cheque_setting_tree_view" model="ir.ui.view">
+        <field name="name">cheque.setting.tree</field>
+        <field name="model">cheque.setting</field>
+        <field name="arch" type="xml">
+            <list string="Cheque Format">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="set_default"/>
+                <field name="is_partner"/>
+                <field name="is_date"/>
+                <field name="is_amount"/>
+                <field name="is_amount_word"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="cheque_setting_action" model="ir.actions.act_window">
+        <field name="name">Cheque Format</field>
+        <field name="res_model">cheque.setting</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+	<!--  Menu Items-->
+    <menuitem name="Cheque Format" id="cheque_setting_menu" parent="account.menu_finance_configuration" action="cheque_setting_action" sequence="1"/>
+</odoo>

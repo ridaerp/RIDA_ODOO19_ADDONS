@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="mo_connect_as_user.ReturnSystray">
+        <div t-if="isConnectAsSession" class="o_connect_as_return_systray d-flex align-items-center">
+            <a class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1"
+               t-on-click="onClickReturn"
+               title="Return to original user">
+                <i class="fa fa-undo"/>
+                <span>Return to <t t-esc="originalName"/></span>
+            </a>
+        </div>
+    </t>
+
+</templates>

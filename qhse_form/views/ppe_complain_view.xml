@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ppe_complaint_form" model="ir.ui.view">
+        <field name="name">ppe.complaint.form</field>
+        <field name="model">ppe.complaint</field>
+        <field name="arch" type="xml">
+            <form string="PPE Complain/Suggestion Document">
+                <header>
+                    <button name="action_officer" string="Send to Safety Officer" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_senior" string="Send to Senior EX" type="object" class="oe_highlight"
+                            groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer"
+                            invisible="state != 'officer'"/>
+
+                    <button name="action_manager" string="Send to QHSE Manager" type="object" class="oe_highlight"
+                            groups="base_rida.rida_group_senior_officer"
+                            invisible="state != 'senior'"/>
+
+                    <button name="action_done" string="Approve" type="object" class="oe_highlight"
+                            groups="base_rida.rida_group_qhse_manager"
+                            invisible="state != 'manager'"/>
+
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state in ['draft', 'done']"
+                                groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer,base_rida.rida_group_qhse_manager"
+                                type="action"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,officer,senior,manager,done"/>
+                </header>
+
+                <sheet>
+                    <div class="text-center" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h2 style="color: #714B67;">
+                            <field name="doc_no" readonly="1"/>
+                        </h2>
+                        <div class="text-muted">PPE Complain/Suggestion DOCUMENT</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لتقديم شكاوى أو مقترحات تتعلق بمعدات الوقاية الشخصية، حيث يتم تسجيل الملاحظات والتحقيق فيها واتخاذ الإجراءات المناسبة لتحسين السلامة. 
+                        </p>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Sequence Number"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group string="Employee Information">
+                        <group>
+                            <field name="requester_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="employee_id" required="1" options="{'no_create': True}"/>
+                            <field name="emp_code"/>
+                            <field name="job_id"/>
+                            <field name="emp_department_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Details of PPE" name="ppe_details">
+                            <field name="complaint_line_ids">
+                                <list editable="bottom">
+                                    <field name="ppe_type"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
+                                    <field name="brand_sn"/>
+                                    <field name="purpose" placeholder="Why complain/suggest?"/>
+                                </list>
+                            </field>
+                            <group string="Additional Justification" col="2">
+                                <field name="reason" colspan="2" placeholder="General reasons for complaints/suggestions..."/>
+                                <field name="special_conditions" colspan="2" placeholder="Special Consideration/Condition, if any"/>
+                                <field name="recommendation" colspan="2" placeholder="Employee's proposed solution"/>
+                            </group>
+                        </page>
+
+                        <page string="Safety Officer Review" invisible="state == 'draft'">
+                            <group string="Investigation Findings">
+                                <field name="find_of" required="state == 'officer'"/>
+                                <field name="comment_of_safety"/>
+                                <field name="date_of_safety" readonly="1" force_save="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Senior EX Review" invisible="state not in ['senior', 'manager', 'done']">
+                            <group string="Senior Review &amp; Analysis">
+                                <field name="review" required="state == 'senior'"/>
+                                <field name="recommendation_senior"/>
+                                <field name="date_senior" readonly="1" force_save="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Manager Approval" invisible="state not in ['manager', 'done']">
+                            <group>
+                                <group string="Final Approval">
+                                    <field name="recommendation_manager" required="state == 'manager'"/>
+                                    <field name="action_to_take"/>
+                                    <field name="date_qhse_manager" readonly="1" force_save="1"/>
+                                </group>
+                                <group string="Post-Approval Actions">
+                                    <field name="update_risk_register"/>
+                                    <field name="update_jsa"/>
+                                    <field name="training_staff"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <group invisible="not reason_reject">
+                        <field name="reason_reject" readonly="1" string="Rejection Reason" decoration-danger="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ppe_complaint_tree" model="ir.ui.view">
+        <field name="name">ppe.complaint.list</field>
+        <field name="model">ppe.complaint</field>
+        <field name="arch" type="xml">
+            <list string="PPE Complaints" decoration-danger="state == 'officer'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="emp_department_id"/>
+                <field name="date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ['officer', 'senior', 'manager']"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_ppe_complaint" model="ir.actions.act_window">
+        <field name="name">PPE Complaints</field>
+        <field name="res_model">ppe.complaint</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_ppe_root" name="PPE Management" sequence="11" parent="qhse.qhse_menu"/>
+    <menuitem id="menu_ppe_complaint" name="PPE Complaints &amp; Suggestions" parent="menu_ppe_root" action="action_ppe_complaint" sequence="1"/>
+</odoo>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!--        Hot Permit      -->
+        <record id="hot_work_permit_department_rule" model="ir.rule">
+            <field name="name">Hot Work Permit:User Request</field>
+            <field name="model_id" ref="model_hot_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="hot_work_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Hot Work Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_hot_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Cold Permit      -->
+        <record id="cold_work_permit_department_rule" model="ir.rule">
+            <field name="name">Cold Work Permit:User Request</field>
+            <field name="model_id" ref="model_cold_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="cold_work_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Cold Work Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_cold_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Confined Space Permit      -->
+        <record id="confined_space_permit_department_rule" model="ir.rule">
+            <field name="name">Confined Space Permit:User Request</field>
+            <field name="model_id" ref="model_confined_space_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="confined_space_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Confined Space Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_confined_space_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Blasting Space Permit      -->
+        <record id="blasting_space_permit_department_rule" model="ir.rule">
+            <field name="name">Blasting Space Permit:User Request</field>
+            <field name="model_id" ref="model_blasting_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="blasting_space_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Blasting Space Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_blasting_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Excavation Work Permit      -->
+        <record id="excavation_work_permit_department_rule" model="ir.rule">
+            <field name="name">Excavation Work Permit:User Request</field>
+            <field name="model_id" ref="model_excavation_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="excavation_work_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Excavation Work Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_excavation_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Work Height Permit      -->
+        <record id="work_height_permit_department_rule" model="ir.rule">
+            <field name="name">Work Height Permit:User Request</field>
+            <field name="model_id" ref="model_work_height_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="work_height_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Work Height Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_work_height_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Lifting Work Permit      -->
+        <record id="lifting_work_permit_department_rule" model="ir.rule">
+            <field name="name">Lifting Work Permit:User Request</field>
+            <field name="model_id" ref="model_lifting_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="lifting_work_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Lifting Work Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_lifting_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        Loto Work Permit      -->
+        <record id="loto_work_permit_department_rule" model="ir.rule">
+            <field name="name">Loto Work Permit:User Request</field>
+            <field name="model_id" ref="model_loto_work_permit"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="loto_work_permit_safety_officer_rule" model="ir.rule">
+            <field name="name">Loto Work Permit: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_loto_work_permit"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+
+        <!--        ppe complaint      -->
+        <record id="ppe_complaint_department_rule" model="ir.rule">
+            <field name="name">ppe complaint:User Request</field>
+            <field name="model_id" ref="model_ppe_complaint"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_complaint_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe complaint: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_complaint"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe deduction      -->
+        <record id="ppe_deduction_department_rule" model="ir.rule">
+            <field name="name">ppe deduction:User Request</field>
+            <field name="model_id" ref="model_ppe_deduction"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_deduction_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe deduction: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_deduction"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe inspection      -->
+        <record id="ppe_inspection_department_rule" model="ir.rule">
+            <field name="name">ppe inspection:User Request</field>
+            <field name="model_id" ref="model_ppe_inspection"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_inspection_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe inspection: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_inspection"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe medical      -->
+        <record id="ppe_medical_department_rule" model="ir.rule">
+            <field name="name">ppe medical:User Request</field>
+            <field name="model_id" ref="model_ppe_medical"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('emp_department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_medical_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe medical: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_medical"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe receipt      -->
+        <record id="ppe_receipt_department_rule" model="ir.rule">
+            <field name="name">ppe receipt:User Request</field>
+            <field name="model_id" ref="model_ppe_receipt"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_receipt_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe receipt: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_receipt"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+
+        <!--        ppe distribution      -->
+        <record id="ppe_distribution_department_rule" model="ir.rule">
+            <field name="name">ppe distribution:User Request</field>
+            <field name="model_id" ref="model_ppe_distribution"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('department_id', 'child_of', [d.id for d in user.employee_ids.department_id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ppe_distribution_safety_officer_rule" model="ir.rule">
+            <field name="name">ppe distribution: Full Access for Safety Officers</field>
+            <field name="model_id" ref="model_ppe_distribution"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_safety_officer')), (4, ref('base_rida.rida_group_senior_officer'))]"/>
+        </record>
+    </data>
+</odoo>

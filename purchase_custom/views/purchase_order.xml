@@ -1,0 +1,160 @@
+<odoo>
+  <data>
+    <!-- Add you code here -->
+    <record id="purchase_order_form_view_inherit" model="ir.ui.view">
+      <field name="name">purchase.order.form.inherit.inherit</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="after">
+        </xpath>
+        <xpath expr="/form/sheet/group" position="inside">
+          <group col="4" colspan="4">
+            <field name="pr_type" invisible="1"/>
+            <field name="currency" />
+            <field name="buyer" readonly="state != 'department_manger'" invisible="1"/>
+
+          </group>
+        </xpath>
+      </field>
+    </record>
+
+
+<!--      Inherit purchase list view -->
+    <record id="nus_po_inherit_list" model="ir.ui.view">
+      <field name="name">Purchase Order List</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='amount_total']" position="after">
+          <field name="or_percentage"  />
+         </xpath>
+      </field>
+    </record>
+
+    <record id="nus_po_inherit_form" model="ir.ui.view">
+      <field name="name">Purchase Order</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='state']" position="attributes">
+          <attribute name="statusbar_visible">draft,managing_director,purchase</attribute>
+        </xpath>
+
+
+        <xpath expr="//header/button[@name='button_confirm'][2]" position="replace">
+          <button name="button_confirm" type="object" string="Confirm Order" invisible="state != 'managing_director'" class="btn btn-primary"/>
+        </xpath>
+
+
+        <xpath expr="//header/button[@name='print_quotation']" position="after">
+          <!-- <button name="button_to_user_department" type="object" string="Submit" class="btn btn-primary" groups="purchase.group_purchase_user"  attrs="{'invisible': ['|', ('pr_type', '!=', 'material'),('state', '!=', 'draft')]}"/> -->
+          <button name="button_submit_to_contract_sh" type="object" string="Submit"  class="btn btn-primary" groups="purchase.group_purchase_user"  invisible="pr_type != 'service' or state != 'draft'"/>
+          <button name="action_back" type="object" string="Go back"  groups="purchase.group_purchase_user"  invisible="state not in ('reject', 'cancel')"/>
+        </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                    <attribute name="invisible">state not in ('user_department')</attribute>
+                </xpath>
+
+
+        <xpath expr="//field[@name='origin']" position="after">
+          <field name="request_id" string="Source Document" readonly="1"/>
+          <field name="chk_source" invisible="1" />
+          <field name="check_user" invisible="0" />
+
+
+                    <field name="buyer" readonly="state != 'draft'"/>
+                    <!--          <field name="or_percentage"/>-->
+
+        </xpath>
+
+        <xpath expr="//field[@name='order_line']//field[@name='name']" position="attributes">
+          <attribute name="required">0</attribute>
+        </xpath>
+
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='requisition_id']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='pr_type']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="readonly">state not in ('draft')</attribute>
+                </xpath>
+
+        <xpath expr="//field[@name='currency']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+
+        <xpath expr="//header" position="inside">
+          <button name="button_to_cost_control" type="object" string="Approve" invisible="state != 'department_manger'" groups="purchase.group_purchase_manager" class="btn btn-primary"/>
+          <button name="department_approve" type="object" string="Approve" invisible="state != 'cost_control'" groups="purchase.group_purchase_manager" class="btn btn-primary"/>
+          <button name="button_to_approve" type="object" string="Approve" invisible="state != 'procurement_manger'" groups="purchase.group_purchase_manager" class="btn btn-primary"/>
+          <button name="button_to_submit" type="object" string="Submit" invisible="state != 'user_department'" groups="purchase.group_purchase_user" class="btn btn-primary"/>
+          <button name="button_reject" type="object" string="Reject" invisible="state not in ['department_manger','cost_control','procurement_manger','managing_director']"/>
+        </xpath>
+      </field>
+    </record>
+
+
+
+
+
+    <record id="purchase_order_tree_view_inherit" model="ir.ui.view">
+      <field name="name">purchase.order.tree.inherit.inherit</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_id']" position="attributes">
+          <attribute name="required">False</attribute>
+        </xpath>
+
+      </field>
+    </record>
+
+
+    <record id="purchase_order_tree_view_send_rfq" model="ir.ui.view">
+      <field name="name">purchase.order.tree.send.rfq</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+          <button name="button_rfq_send" type="object" string="Send by email" groups="purchase.group_purchase_manager" class="btn btn-primary"/>
+        </xpath>
+      </field>
+    </record>
+
+
+
+    <record id="purchase_agreement_form_view_inherit" model="ir.ui.view">
+      <field name="name">purchase.agreement.form.inherit.inherit</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='origin']" position="after">
+          <field name="commercial_comments"/>
+
+          <field name="comments"/>
+        </xpath>
+        <xpath expr="//field[@name='partner_id']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

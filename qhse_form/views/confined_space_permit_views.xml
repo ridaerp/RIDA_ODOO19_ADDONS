@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_confined_space_permit_list" model="ir.ui.view">
+            <field name="name">confined.space.permit.list</field>
+            <field name="model">confined.space.permit</field>
+            <field name="arch" type="xml">
+                <list string="Confined Space Permits"
+                      decoration-info="state == 'draft'"
+                      decoration-warning="state == 'submitted'"
+                      decoration-success="state in ('authorized','issued')"
+                      decoration-muted="state == 'closed'">
+                    <field name="name" string="Permit No / رقم التصريح"/>
+                    <field name="date_from"/>
+                    <field name="department_id"/>
+                    <field name="state" widget="badge" decoration-info="state == 'submitted'" decoration-success="state == 'issued'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_confined_space_permit_form" model="ir.ui.view">
+            <field name="name">confined.space.permit.form</field>
+            <field name="model">confined.space.permit</field>
+            <field name="arch" type="xml">
+                <form string="Confined Space Entry Permit">
+                    <header>
+                        <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_dept_approve" string="اعتماد القسم المعني" type="object" 
+                                invisible="state != 'dept_approval'" class="oe_highlight" 
+                                groups="base_rida.rida_group_line_manager"/>
+                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                                groups="base_rida.rida_group_safety_officer"/>
+                        <button name="action_extend" string="تمديد / Extend" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state != 'pending_extension'"/>
+                        <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                        <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                        <button name="action_close" string="إغلاق / Close" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state not in ['pending_close']"/>
+                        <button name="action_done" string="تم / Done" type="object"
+                                invisible="state not in ['reject']"/>
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state not in ['submitted']"
+                                groups="base_rida.rida_group_safety_officer"
+                                type="action"/>
+                        <button name="action_reactivate"
+                            string="إعادة تنشيط / Reactivate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['suspend', 'revoked']"/>
+                        <button name="action_create_related_ptw"
+                            string="إنشاء التصريح المرتبط"
+                            type="object"
+                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,dept_approval,submitted,issued,revoked,suspend,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title text-center" style="background-color: #46556B; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <h1 style="color: #ffffff; margin-bottom: 0;">Confined Space Entry Permit /تصريح دخول الأماكن المغلقة</h1>
+                            
+                            <div style="background-color: #46556B; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                                <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم عند دخول أماكن مغلقة أو محدودة التهوية مثل الخزانات أو الحفر، حيث يوجد خطر نقص الأكسجين أو وجود غازات سامة أو قابلة للاشتعال. 
+                                </p>
+                            </div>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_linked_ptw"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-external-link"
+                                    invisible="linked_ptw_count == 0">
+                                <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="رقم التصريح"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group string="بيانات الموقع / Site Details">
+                            <group>
+                                <field name="date_from" readonly="True"/>
+                                <field name="requester_id" readonly="state != 'draft'"/>
+                                <field name="department_id" options="{'no_create': True}" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="entry_purpose" readonly="state != 'draft'" required="True"/>
+                                <field name="space_description" readonly="state != 'draft'" required="True"/>
+                                <field name="tools_used" readonly="state != 'draft'" required="True"/>
+                                <field name="department_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="is_need_ptw" invisible="state != 'draft'"/>
+                                <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft' or is_need_ptw == False"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="ضوابط السلامة والمخاطر /Confined Space Requirement/Control (Check the box , if applicable)" name="controls">
+                                <separator string="إجراءات العزل والتحضير"/>
+                                <group col="3">
+                                    <group string="Equipment Preparation / تحضير المعدات">
+                                        <field name="lines_isolated" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="loto_applied" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="line_dic" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="line_liquid" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ventilation_fan" widget="radio" options="{'horizontal': true}" required="True"/>
+<!--                                        <field name="hot_work_permit" widget="radio" options="{'horizontal': true}" required="True"/>-->
+                                        <field name="grounding_equipment" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+
+                                    <group string="Communication / طرق التواصل">
+                                        <field name="job_planning_done" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="all_personnel" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="pre_job_meeting" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="emergency_plan_reviewed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="communication_method" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hse_notified" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+
+                                    <group string="Emergency &amp; Rescue / الطوارئ والإنقاذ">
+                                        <field name="rescue_team_on_site" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="assembly_system" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="rescue_team" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="non_rescue" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="retrieval_system" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="full_body_harness" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="emergency_contact" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+
+                                </group>
+                                <separator string="معدات الوقاية الشخصية والضوابط الإضافية"/>
+                                <group col="3">
+                                    <group string="Serious Hazards for Space /المخاطر الجسيمة ">
+                                        <field name="hazard_electrical" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_ventilation" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_entrapment" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_engulfment" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_chemical" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_heat_cold" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_noise" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group string="Additional Safety Controls /ضوابط السلامة الإضافية">
+                                        <field name="ctrl_explosion_proof" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_fall_protection" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_fire_extinguisher" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_scaffolding" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_decontamination" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_water_liquids" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group string="PPE Equipment /معدات الوقاية الشخصية">
+                                        <field name="ppe_gloves" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_movement" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_hearing" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_face_shield" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_eye" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_face_shield" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+
+                            </page>
+
+                            <page string="ضوابط إضافية / Additional Controls" name="extra_controls">
+                                <group>
+                                    <group>
+                                        <field name="ctrl_slip_trip" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_access_obstruction" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_sharp_edges" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_barriers" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="ctrl_forced_ventilation" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_contents_removed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_lines_isolated" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_loto_tested" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="فريق العمل / Entry Team" name="team">
+                                <field name="entry_team_ids">
+                                    <list editable="bottom">
+                                        <field name="employee_id" options="{'no_create': True}"/>
+                                        <field name="position" readonly="1" force_save="1"/>
+                                    </list>
+                                </field>
+                                <group>
+                                    <group>
+                                        <field name="standby_person" string="شخص التأهب"/>
+                                    </group>
+                                    <group>
+                                        <field name="rescue_team_name" string="فريق الإنقاذ"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="اختبار الغاز / Gas Testing" name="gas_test">
+                                <group>
+                                    <group string="بيانات الجهاز">
+                                        <field name="gas_detector_sn"/>
+                                        <field name="calibration_date"/>
+                                    </group>
+                                    <group string="النتائج (يجب أن تكون ضمن الحدود)">
+                                        <field name="oxygen_level" placeholder="19.5 - 23.5%"/>
+                                        <field name="lel_level" placeholder="&lt; 10%"/>
+                                        <field name="h2s_level" placeholder="&lt; 10 ppm"/>
+                                        <field name="co_level" placeholder="&lt; 25 ppm"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="التمديد والمصادقة / Extension &amp; Authentication">
+                                <group string="فترة التمديد / Extension Period" invisible="state not in ['pending_extension','extended', 'closed']">
+                                    <field name="extension_date_from" required="state == 'pending_extension'"/>
+                                    <field name="extension_date_to" required="state == 'pending_extension'"/>
+                                </group>
+                                <group string="الاعتمادات / Approvals">
+                                    <field name="supervisor_id" options="{'no_create': True}" required="True"/>
+                                    <field name="authorizer_id" options="{'no_create': True}" required="True"/>
+                                    <field name="safety_officer_id" options="{'no_create': True}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                        <group>
+                            <group string="تفاصيل الإجراءات">
+                                <field name="extension_reason" required="state == 'pending_extension'" invisible="state not in ['pending_extension', 'extended', 'closed']"/>
+                                <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
+                                <field name="reason_reject" invisible="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group string="الموافقة والتعهد / Confirmation" class="mt-3">
+                            <field name="confirmation_check" widget="boolean_toggle"
+                                   string="أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_confined_space_permit" model="ir.actions.act_window">
+            <field name="name">Confined Space Entry / دخول الأماكن المغلقة</field>
+            <field name="res_model">confined.space.permit</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">ابدأ بإنشاء أول تصريح دخول</p>
+            </field>
+        </record>
+
+        <menuitem id="menu_confined_space_all"
+                  name="Confined Space Entry / الأماكن المغلقة"
+                  parent="menu_safety_root_dual"
+                  action="action_confined_space_permit"
+                  sequence="3"/>
+    </data>
+</odoo>
+

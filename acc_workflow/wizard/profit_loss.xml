@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="pl_custom_report_view" model="ir.ui.view">
+        <field name="name">Accounting P/L Report</field>
+        <field name="model">profit.loss.custom</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <label for="date_from" string="Period of Review "/>
+                        <div>
+                            <field name="date_from" invisible="1"/>
+                            <field name="date_to" invisible="1"/>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline">
+                                    From
+                                </span>
+                                <field name="date_from" required="1" class="oe_inline" nolabel="1"/>
+                                <span class="oe_inline">
+                                    To
+                                </span>
+                                <field name="date_to" required="1" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="target_move" widget="radio"/>
+                    </group>
+                </group>
+                <group col="4">
+                    <field name="account_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    <field name="analytic_account_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    <field name="with_details"/>
+                </group>
+                <group>
+                    <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <template id="pl_custom_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h2>Profit and Loss</h2>
+                </div>
+                <div class="col-6">
+                    <p>
+                        <t t-if="data['date_from']">
+                            <strong>Date from :</strong>
+                            <span t-esc="data['date_from']"/>
+                        </t>
+                        <t t-if="data['date_to']">
+                            <strong>Date to :</strong>
+                            <span t-esc="data['date_to']"/>
+                        </t>
+                    </p>
+                </div>
+                <div class="col-4">
+                    <strong>Target Moves:</strong>
+                    <p>
+                        <span t-if="data['target_move'] == 'all'">All Entries</span>
+                        <span t-if="data['target_move'] == 'posted'">All Posted Entries</span>
+                    </p>
+                </div>
+                <table class="table table-sm table-reports ">
+                    <tr>
+                        <th style="font-size: 20px; font-weight: bold;">Particulars</th>
+                        <th></th>
+                        <th style="font-size: 20px; font-weight: bold;">SDG</th>
+                    </tr>
+                    <tbody>
+                        <tr t-foreach="data['balance']" t-as="account">
+                            <td >
+                                <t t-if="account[2] == 0">
+                                    <span t-att-style="style" t-esc="account[0]"/>
+                                </t>
+                                <t t-if="account[2] == 1">
+                                    <span t-esc="account[0]"
+                                          style="font-size: 20px; font-weight: bold;"/>
+                                </t>
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <t t-if="account[2] == 0">
+                                    <span t-att-style="style"
+                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
+                                          t-esc="account[1]"/>
+                                </t>
+                                <t t-if="account[2] == 1">
+                                    <span t-esc="account[1]"
+                                          t-att-style="style"
+                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
+                                          style="font-size: 20px; font-weight: bold;"/>
+                                </t>
+                            </td>
+                            <t t-if="account[1]">
+                                <t t-if="account[3]">
+                                    <t t-if="data['with_details']">
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Account</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                        <tr t-foreach="account[3]" t-as="account">
+                                            <t t-if="account[2][0][2]">
+                                                <td>
+                                                    <span t-att-style="style" t-esc="account[1]"/>
+                                                </td>
+                                                <td>
+                                                    <span t-att-style="style" t-esc="account[0]"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="account[2]">
+                                                        <span t-att-style="style" t-esc="account[2][0][2]"
+                                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                                    </t>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-if="account[0] == 'Less: Cost of goods sold' or account[0] == 'General Expenses'">
+                                    <t t-if="data['with_details']">
+                                        <tr t-foreach="account[4]" t-as="account">
+                                            <td>
+                                                <t t-if="account[2] == 0">
+                                                    <span  style="color:green" t-esc="account[0]"/>
+                                                </t>
+                                                <t t-if="account[2] == 1">
+                                                    <span t-esc="account[0]"
+                                                          style="font-size: 16px; font-weight: bold;"/>
+                                                </t>
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <t t-if="account[2] == 0">
+                                                    <span t-att-style="style" style="color:green"
+                                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
+                                                          t-esc="account[1]"/>
+                                                </t>
+                                                <t t-if="account[2] == 1">
+                                                    <span t-esc="account[1]"
+                                                          t-att-style="style"
+                                                          t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
+                                                          style="font-size: 16px; font-weight: bold;"/>
+                                                </t>
+                                            </td>
+                                            <t t-if="data['with_details']">
+                                                <t t-if="account[3]">
+                                                    <t t-if="account[1] != 0">
+                                                        <t t-if="account[3] != 0">
+                                                            <tr>
+                                                                <th>Code</th>
+                                                                <th>Account</th>
+                                                                <th>Balance</th>
+                                                            </tr>
+                                                            <tr t-foreach="account[3]" t-as="account">
+                                                                <t t-if="account[2][0][2]">
+                                                                    <td>
+                                                                        <span t-att-style="style"
+                                                                              t-esc="account[1]"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span t-att-style="style"
+                                                                              t-esc="account[0]"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span t-esc="account[2][0][2]"
+                                                                              t-att-style="style"
+                                                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
+                                                                              style="font-size: 16px; font-weight: bold;"/>
+                                                                    </td>
+                                                                </t>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+
+
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </t>
+        </t>
+    </template>
+
+    <act_window
+            id="action_account_report_pl"
+            name="Rida Profit and Loss"
+            res_model="profit.loss.custom"
+            view_mode="form"
+            view_id="pl_custom_report"
+            target="new"/>
+
+    <report
+            id="report_pl_custom_report"
+            string="Rida Profit and Loss"
+            model="account.move.line"
+            report_type="qweb-pdf"
+            file="acc_workflow.pl_custom_report"
+            name="acc_workflow.pl_custom_report"
+            menu="False"
+    />
+
+    <report
+            id="report_pl_custom"
+            model="profit.loss.custom"
+            string="Rida Profit and Loss"
+            report_type="qweb-pdf"
+            name="acc_workflow.report_pl_custom"
+            file="acc_workflow.report_pl_custom"
+            attachment_use="False"
+    />
+
+    <menuitem id="menu_report_pl"
+              name="Rida Profit and Loss"
+              sequence="7"
+              action="action_account_report_pl"
+              parent="account.menu_finance_reports"
+              groups="account.group_account_user,account.group_account_manager"/>
+
+</odoo>

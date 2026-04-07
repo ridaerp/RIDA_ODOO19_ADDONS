@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="daily_report_wizard_form" model="ir.ui.view">
+            <field name="name">Daily Report Wizard</field>
+            <field name="model">daily.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Daily Report">
+                    <group>
+                        <field name="report_day"/>
+                    </group>
+                    <footer>
+                        <button name="generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_daily_report_wizard" model="ir.actions.act_window">
+            <field name="name">Daily Report</field>
+            <field name="res_model">daily.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <menuitem id="menu_daily_report_report"
+                  name="Daily Breakdowns Report" parent="fleet.menu_fleet_reporting"
+                  action="action_daily_report_wizard" groups="base_maintenance_group.group_maintenance_user"
+                  sequence="60"/>
+
+        <record id="action_daily_report_wizard_1" model="ir.actions.act_window">
+            <field name="name">Daily Report</field>
+            <field name="res_model">daily.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <menuitem id="menu_daily_report_report_1"
+                  name="Daily breakdowns Maintenance report" parent="maintenance.maintenance_reporting"
+                  action="action_daily_report_wizard_1" groups="base_maintenance_group.group_maintenance_user"
+                  sequence="60"/>
+
+    </data>
+</odoo>

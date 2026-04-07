@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="recr_plan_request" model="ir.sequence">
+            <field name="name">Recruitment Plan Request</field>
+            <field name="code">reur.plan.code</field>
+            <field name="prefix">RP</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="trip_request" model="ir.sequence">
+            <field name="name">Trip Permission Account</field>
+            <field name="code">trip.permission.code</field>
+            <field name="prefix">TP</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="recr_requisition_request" model="ir.sequence">
+            <field name="name">Recruitment Requisition</field>
+            <field name="code">reur.requisition.code</field>
+            <field name="prefix">RR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+<!--        <record model="ir.cron" id="employee_data_reminder">-->
+<!--            <field name="name">HR Employee Data Expiration</field>-->
+<!--            <field name="interval_number">1</field>-->
+<!--            <field name="interval_type">days</field>-->
+<!--            <field name="numbercall">-1</field>-->
+<!--            <field name="doall" eval="False"/>-->
+<!--            <field name="model_id" ref="model_hr_employee"/>-->
+<!--            <field name="state">code</field>-->
+<!--            <field name="code">model.mail_reminder()</field>-->
+<!--        </record>-->
+    </data>
+</odoo>

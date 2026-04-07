@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+        <record id="view_budget_analytic_form_inherit" model="ir.ui.view">
+            <field name="name">budget.analytic.view.form.inherit</field>
+            <field name="model">budget.analytic</field>
+            <field name="inherit_id"
+                   ref="account_budget.view_budget_analytic_form"/>
+            <field name="mode">primary</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_budget_confirm']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">base.group_no_one</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_budget_cancel']" position="before">
+                    <button name="action_create_budgt_forms" invisible="state != 'draft'" class="oe_highlight"
+                            string="Generate Dept. Forms" type="object"/>
+                    <button name="action_submit_for_approval" string="Submit for Approval" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_finance_approve" string="Finance Approve" type="object"
+                            invisible="state != 'fin_approve'" class="oe_highlight"
+                            groups="base_rida.rida_finance_manager"/>
+                    <button name="action_director_approve" string="Director Approve" type="object"
+                            invisible="state != 'dir_approve'" class="oe_highlight"
+                            groups="base_rida.group_finance_director"/>
+                    <button name="action_ceo_approve" string="CEO Approve" type="object"
+                            invisible="state != 'ceo_approve'" class="oe_highlight" groups="base_rida.rida_group_ceo"/>
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                            invisible="state in ['confirmed','done','draft']"
+                            groups="base_rida.budget_costing_manager,base_rida.rida_finance_manager,base_rida.group_finance_director,base_rida.rida_group_ceo"
+                            type="action"/>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_department_forms"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list-alt">
+                            <field name="department_form_count" widget="statinfo" string="Dept. Forms"/>
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='account_id']"
+                       position="after">
+                    <field name="account_account_id"/>
+                    <field name="department_id"/>
+                </xpath>
+                <xpath expr="//field[@name='budget_line_ids']/list/field[@name='custom_planned_amount']"
+                       position="after">
+                    <field name="amendment_amount"/>
+                    <field name="amendment_amount_custom"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_budget_line_tree_inherit" model="ir.ui.view">
+            <field name="name">view.budget.line.tree</field>
+            <field name="model">budget.line</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="8"/>
+            <field name="inherit_id" ref="account_budget.view_budget_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='account_id']" position="after">
+                    <field name="account_account_id"/>
+                    <field name="department_id"/>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

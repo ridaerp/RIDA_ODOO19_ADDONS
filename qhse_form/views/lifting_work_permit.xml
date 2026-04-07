@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_lifting_permit_list" model="ir.ui.view">
+        <field name="name">lifting.work.permit.list</field>
+        <field name="model">lifting.work.permit</field>
+        <field name="arch" type="xml">
+            <list string="Lifting Permits" decoration-danger="state == 'authorized'" decoration-success="state == 'issued'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="lifting_equipment_type"/>
+                <field name="safe_working_load" string="SWL"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lifting_permit_form" model="ir.ui.view">
+        <field name="name">lifting.work.permit.form</field>
+        <field name="model">lifting.work.permit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_dept_approve" string="اعتماد القسم المعني" type="object" 
+                                invisible="state != 'dept_approval'" class="oe_highlight" 
+                                groups="base_rida.rida_group_line_manager"/>
+                    <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                            groups="base_rida.rida_group_safety_officer"/>
+                    <button name="action_extend" string="تمديد / Extend" type="object"
+                            groups="base_rida.rida_group_safety_officer"
+                            invisible="state != 'pending_extension'"/>
+                    <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                    <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                    <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                            groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                    <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                            groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                    <button name="action_close" string="إغلاق / Close" type="object"
+                            groups="base_rida.rida_group_safety_officer"
+                            invisible="state not in ['pending_close']"/>
+                    <button name="action_done" string="تم / Done" type="object"
+                            invisible="state not in ['reject']"/>
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                            invisible="state not in ['submitted']"
+                            groups="base_rida.rida_group_safety_officer"
+                            type="action"/>
+                    <button name="action_reactivate"
+                        string="إعادة تنشيط / Reactivate"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state not in ['suspend', 'revoked']"/>
+                    <button name="action_create_related_ptw"
+                        string="إنشاء التصريح المرتبط"
+                        type="object"
+                        invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,dept_approval,submitted,issued,revoked,suspend,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title text-center" style="background-color: #D1D1D1; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                        <h1 style="color: #ffffff; margin-bottom: 0;">Lifting/Crane Operation Permit / تصريح الرفع والتشغيل بالرافعات</h1>
+                        <div style="background-color: #D1D1D1; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم عند تنفيذ عمليات رفع حرجة أو غير روتينية باستخدام الرافعات، خاصة في الظروف الخطرة أو عند التعامل مع أحمال ثقيلة أو معدات حساسة. 
+                            </p>
+                        </div>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_linked_ptw"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-external-link"
+                                invisible="linked_ptw_count == 0">
+                            <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group string="General Info &amp; Weather">
+                        <group>
+                            <field name="date"/>
+                            <field name="weather_condition" required="True"/>
+                            <field name="department_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="date_from" required="True"/>
+                            <field name="date_to" required="True"/>
+                        </group>
+                        <group>
+                            <field name="is_need_ptw" invisible="state != 'draft'"/>
+                            <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft' or is_need_ptw == False"/>
+                        </group>
+                    </group>
+                    <group string="الموقع والطقس / Site &amp; Weather">
+                        <group>
+                            <field name="work_site" required="True"/>
+                            <field name="sub_location_1" required="True"/>
+                            <field name="sub_location_2" required="True"/>
+                        </group>
+                        <group>
+                            <field name="weather_condition" required="True"/>
+                            <field name="work_purpose" required="True"/>
+                            <field name="workers_count" required="True"/>
+                        </group>
+                    </group>
+
+                    <group string="وصف العمل / Work Description">
+                        <field name="task_description" placeholder="ادخل وصفاً تفصيلياً للمهمة..." required="True"/>
+                    </group>
+
+                    <group string="تفاصيل الحمولة / Load Details">
+                        <group>
+                            <field name="load_weight" required="True"/>
+                            <field name="load_dimensions" required="True"/>
+                        </group>
+                        <group>
+                            <field name="load_quantity" required="True"/>
+                            <field name="load_price" required="True"/>
+                        </group>
+                    </group>
+
+                    <separator string="معدات الرفع / Lifting Equipment"/>
+                    <group col="5">
+                        <field name="equip_excavator" required="True"/>
+                        <field name="equip_crane" required="True"/>
+                        <field name="equip_forklift" required="True"/>
+                        <field name="equip_manlift" required="True"/>
+                        <field name="equip_hiab" required="True"/>
+                    </group>
+
+                    <group string="بيانات الفحص والسعة / Inspection &amp; Capacity">
+                        <group>
+                            <field name="equip_sn" required="True"/>
+                            <field name="equip_inspection" required="True"/>
+                        </group>
+                        <group>
+                            <field name="equip_swl" required="True"/>
+                            <field name="other_tools" required="True"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <separator string="Hazard Identification &amp; Control / تحديد المخاطر والسيطرة عليها (02أ)" class="mt32"/>
+                        <p class="text-muted" style="font-style: italic;">
+                            يتم استكمال هذا الجزء بعد فحص موقع العمل من قبل المُصرِّح والمُصدر.
+                        </p>
+
+                        <group col="3">
+                            <group string="Mechanical Risks / مخاطر ميكانيكية">
+                                <field name="hazard_tipping_over" required="True"/>
+                                <field name="hazard_suspended_load" required="True"/>
+                                <field name="hazard_overloading" required="True"/>
+                                <field name="hazard_crushing" required="True"/>
+                            </group>
+
+                            <group string="Environmental Risks / مخاطر بيئية">
+                                <field name="hazard_strong_wind_rain" required="True"/>
+                                <field name="hazard_unfavorable_weather" required="True"/>
+                                <field name="hazard_traffic_noise" required="True"/>
+                            </group>
+
+                            <group string="Structural &amp; Electrical / مخاطر هيكلية وكهربائية">
+<!--                                <field name="hazard_falling_objects_height"/>-->
+                                <field name="hazard_overhead_lines" required="True"/>
+                                <field name="hazard_collapse" required="True"/>
+                                <field name="hazard_structural_failure" required="True"/>
+                                <field name="hazard_energized_equip" required="True"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <field name="hazard_other_specify" placeholder="إذا تم اختيار 'أخرى'، يرجى التوضيح هنا..."/>
+                        </group>
+                        <separator string="Lifting Safety Precautions / التدابير الوقائية لعمليات الرفع (02ب)" class="mt32"/>
+                        <group>
+                            <group string="التخطيط والمعدات / Planning &amp; Equipment">
+                                <field name="prec_lift_plan_attached" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <field name="prec_lift_equip_inspected" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <field name="prec_lift_accessories_ok" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <field name="prec_accessories_types" placeholder="سلاسل، خطافات، حبال نايلون..." invisible="prec_lift_accessories_ok != 'yes'" required="True"/>
+                                <field name="prec_load_within_capacity" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <field name="prec_wind_speed_limit" widget="radio" options="{'horizontal': true}" required="True"/>
+                            </group>
+
+                            <group string="المشغل والفريق / Operator &amp; Team">
+                                <field name="prec_operator_certified" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <group col="3" invisible="prec_operator_certified != 'yes'" class="border p-2">
+                                    <field name="operator_cert_type" required="True"/>
+                                    <field name="operator_cert_no" required="True"/>
+                                    <field name="operator_cert_validity" required="True"/>
+                                </group>
+                                <field name="prec_barriers_placed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                <field name="prec_team_qualified" widget="radio" options="{'horizontal': true}" required="True"/>
+                            </group>
+                        </group>
+
+                        <group string="تدابير إضافية">
+                            <field name="prec_additional_controls" placeholder="أدخل أي تدابير تحكم إضافية مطلوبة هنا..."/>
+                        </group>
+                        <separator string="Inspection &amp; Preparation / الفحص والتحضير (02ج)" class="mt32"/>
+                        <group col="3">
+                            <group string="Equipment Setup / إعداد المعدات">
+                                <field name="prep_ground_condition" required="True"/>
+                                <field name="prep_outriggers_pads" required="True"/>
+                                <field name="prep_weight_indicators" required="True"/>
+                                <field name="prep_pulleys_lines" required="True"/>
+                                <field name="prep_safety_devices" required="True"/>
+                                <field name="prep_signal_man" required="True"/>
+                            </group>
+
+                            <group string="Communications / الاتصالات">
+                                <field name="prep_lift_jsa" required="True"/>
+                                <field name="prep_lift_training" required="True"/>
+                                <field name="prep_lift_toolbox" required="True"/>
+                                <field name="prep_lift_method_review" required="True"/>
+                                <field name="prep_lift_comm_method" required="True"/>
+                                <field name="prep_lift_emergency" required="True"/>
+                            </group>
+
+                            <group string="PPE / معدات الوقاية الشخصية">
+                                <field name="prep_lift_helmet" required="True"/>
+                                <field name="prep_lift_shoes" required="True"/>
+                                <field name="prep_lift_hi_vis" required="True"/>
+                                <field name="prep_lift_goggles" required="True"/>
+                                <field name="prep_lift_masks" required="True"/>
+                                <field name="prep_lift_ear_prot" required="True"/>
+                            </group>
+                        </group>
+                    </notebook>
+                    <notebook>
+                        <page string="Approval / التصريح والتفويض" name="lifting_approval">
+                            <div class="alert alert-info">
+                                <field name="operator_ack_text" readonly="1" nolabel="1"/>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="operator_sign_id" options="{'no_create': True}" required="True"/>
+                                    <field name="operator_signature" widget="signature"/>
+                                    <field name="operator_sign_time" required="True"/>
+                                </group>
+                            </group>
+
+                            <hr style="border-top: 2px solid #bbb;"/>
+
+                            <div class="alert alert-warning">
+                                <field name="approver_ack_text" readonly="1" nolabel="1"/>
+                            </div>
+                            <group col="4">
+                                <group string="طرف ذو صلة 1">
+                                    <field name="related_party_1" nolabel="1" placeholder="الاسم" required="True"/>
+                                    <field name="related_party_1_sign" widget="signature" nolabel="1"/>
+                                    <field name="related_party_1_time" nolabel="1"/>
+                                </group>
+                                <group string="طرف ذو صلة 2">
+                                    <field name="related_party_2" nolabel="1" placeholder="الاسم" required="True"/>
+                                    <field name="related_party_2_sign" widget="signature" nolabel="1"/>
+                                    <field name="related_party_2_time" nolabel="1"/>
+                                </group>
+                                <group string="طرف ذو صلة 3">
+                                    <field name="related_party_3" nolabel="1" placeholder="الاسم"/>
+                                    <field name="related_party_3_sign" widget="signature" nolabel="1"/>
+                                    <field name="related_party_3_time" nolabel="1"/>
+                                </group>
+                                <group string="المُصرِّح (مهندس/مشرف)">
+                                    <field name="approver_id" required="state == 'submitted'" nolabel="1" placeholder="الاسم"/>
+                                    <field name="approver_signature" widget="signature" nolabel="1"/>
+                                    <field name="approver_sign_time" nolabel="1"/>
+                                </group>
+                            </group>
+
+                            <hr style="border-top: 2px solid #bbb;"/>
+
+                            <div class="alert alert-success">
+                                <field name="safety_issuer_ack_text" readonly="1" nolabel="1"/>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="safety_issuer_id" required="state == 'authorized'"/>
+<!--                                    <field name="safety_signature" widget="signature"/>-->
+<!--                                    <field name="safety_sign_date"/>-->
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Extension &amp; Closing / التمديد والإغلاق" name="extension_closing">
+                            <separator string="Permit Extension / تمديد تصريح العمل (04)"/>
+                            <p class="text-muted">يمكن إضافة تمديد جديد في حال استمرار العمل بعد الوقت المحدد:</p>
+
+                            <field name="extension_line_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_to" widget="float_time"/>
+                                    <field name="executor_supervisor_id" options="{'no_create': True}"/>
+                                    <field name="authorizer_id" options="{'no_create': True}"/>
+                                    <field name="related_party_id" options="{'no_create': True}"/>
+                                    <field name="safety_officer_id" options="{'no_create': True}"/>
+                                    <field name="signature" widget="signature" string="توقيع"/>
+                                </list>
+                            </field>
+
+                            <separator string="Permit Closing / إغلاق التصريح" class="mt32"/>
+                            <group>
+                                <group>
+                                    <field name="state" invisible="1"/> <label for="action_close" string="حالة الإغلاق"/>
+                                    <div class="text-info">
+                                        * عند انتهاء العمل، تأكد من تنظيف الموقع وإغلاق التصريح نهائياً.
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    <group>
+                        <group string="تفاصيل الإجراءات">
+                            <field name="extension_reason" required="state == 'pending_extension'" invisible="state not in ['pending_extension', 'extended']"/>
+                            <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
+                            <field name="reason_reject" invisible="state != 'reject'"/>
+                        </group>
+                    </group>
+                    <group string="الموافقة والتعهد / Confirmation" class="mt-3">
+                        <field name="confirmation_check" widget="boolean_toggle"
+                               string="أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_lifting_work_permit" model="ir.actions.act_window">
+        <field name="name">Lifting &amp; Crane / الرفع والكرينات</field>
+        <field name="res_model">lifting.work.permit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_lifting_permit"
+              name="Lifting &amp; Crane / الرفع"
+              parent="menu_safety_root_dual"
+              action="action_lifting_work_permit"
+              sequence="7"/>
+</odoo>

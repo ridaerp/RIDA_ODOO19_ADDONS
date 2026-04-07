@@ -1,0 +1,35 @@
+<!-- po_count_report/wizard/po_count_wizard.xml -->
+
+<odoo>
+    <data>
+        <record id="po_count_wizard_form" model="ir.ui.view">
+            <field name="name">PO Count Report Wizard</field>
+            <field name="model">po.count.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Number of transactions in Odoo">
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <footer>
+                        <button name="generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_po_count_wizard" model="ir.actions.act_window">
+            <field name="name">Number of transactions in Odoo</field>
+            <field name="res_model">po.count.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Add this action to a menu -->
+        <menuitem id="menu_po_count_report"
+                  name="Number of transactions in Odoo" parent="form_document"
+                  action="action_po_count_wizard" groups="base_rida.rida_group_ict_team"
+                  sequence="50"/>
+    </data>
+</odoo>

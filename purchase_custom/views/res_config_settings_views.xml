@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+  <record model="ir.ui.view" id="res_partner_form_inherit_view">
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='purchase']" position="inside">
+                  <h3>Ore Info</h3>
+                            <field name="east" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="north" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="rock_type" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="rea_ids" groups="material_request.group_ore_rock_db_geology_user" widget="many2many_tags"/> 
+                </xpath>
+
+            
+            </field>
+        </record>
+
+
+
+    <record id="res_config_settings_view_form_contract" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.contract</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="25"/>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='purchase']" position="inside">
+                    <h2>Contracts</h2>
+                   
+                                <div class="text-muted"> Maximum Contract Amount  
+                                <field name="maximum_contract_amount"/>
+                                </div>
+            </xpath>
+        </field>
+    </record>
+
+    
+</odoo>

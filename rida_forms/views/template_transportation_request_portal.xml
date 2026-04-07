@@ -1,0 +1,283 @@
+<odoo>
+    <data>
+        <template id="portal_my_home_menu_transport_request" name="Portal layout : transport_request menu entries" inherit_id="portal.portal_breadcrumbs" priority="25">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+          <li t-if="page_name == 'transport_request' or transport_request" t-attf-class="breadcrumb-item #{'active ' if not transport_request else ''}">
+            <a t-if="transport_request or transport_request_name" t-attf-href="/my/transport_request?{{ keep_query() }}">Transportation Request</a>
+            <t t-else="">Transportation Request</t>
+          </li>
+          <li t-if="transport_request" class="breadcrumb-item active">
+            <t t-esc="transport_request.name_seq"/>
+          </li>
+        </xpath>
+      </template>
+
+
+
+
+
+
+          <template id="portal_my_home_transport_request" name="Portal Home : transport_request entry" inherit_id="portal.portal_my_home" priority="25">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-if="employee_id" t-call="portal.portal_docs_entry">
+                    <t t-set="title">Transportation Request</t>
+                    <t t-set="url" t-value="'/my/transport_request'"/>
+                    <t t-set="count" t-value="request_count"/>
+                </t>
+            </xpath>
+      </template>
+
+
+
+
+
+
+        <template id="portal_my_home_transport_request_icon" name="Portal Tray : transport_request entry" inherit_id="hr_portal.dashboard_icons" priority="25">
+            <xpath expr="//div[@id='icons']" position="inside">
+                <div class="col-sm-2 col-md-2">
+                  <div class="circle-tile ">
+                    <a href="/my/transport_request"><div class="circle-tile-heading dark-blue" style="background: #e08356;"><i class="fa fa-money fa-fw fa-2x"></i></div></a>
+                    <div class="circle-tile-content dark-blue" style="background: #e08356;">
+                      <div class="circle-tile-description text-faded"> Transportation Request</div>
+                      <div class="circle-tile-number text-faded "><span t-esc="request.env['transportation.request'].search_count([('employee_id', '=', request.env.user.employee_ids[0].id)])"></span></div>
+                      <a class="circle-tile-footer" href="/my/transport_request">Show <i class="fa fa-chevron-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+            </xpath>
+        </template>
+
+
+
+
+
+<!--  Transportation Request List for specifc user-->
+        <template id="portal_my_transport_requests" name="transport_requests">
+        <t t-call="portal.portal_layout">
+          <t t-call="portal.portal_searchbar">
+            <t t-set="title">Transportation Request</t>
+          </t>
+           <t t-if="employee_id" >
+               <div class="row">
+                <div class="col-lg-12">
+                  <div t-if="error_message" class="alert alert-danger" role="alert">
+                      <t t-foreach="error_message" t-as="err"><t t-esc="err"/><br /></t>
+                  </div>
+                </div>
+            </div>
+               <style>
+                   .action-button {
+                        padding: 0 5px;
+                    }
+               </style>
+               <t t-call="rida_forms.portal_create_transport_requests"/>
+               <t t-if="transport_requests" t-call="portal.portal_table">
+                <thead>
+                  <tr class="active">
+                        <th>Reference</th>
+                        <th>Date</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Employee</th>
+                        <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <t t-foreach="transport_requests" t-as="transport_request">
+                    <tr>
+                          <td><span t-field="transport_request.name_seq"/></td>
+
+                        <td><a t-attf-href="/my/transport_request/#{transport_request.id}"><span t-esc="transport_request.date_request"  t-options='{"widget": "date"}'/></a></td>
+                        <td><span t-field="transport_request.destination_from" /></td>
+                      <td><span t-field="transport_request.destination_to"/></td>
+                      <td><span t-field="transport_request.employee_id"/></td>
+
+                      <td>
+                          <span class="badge badge-info" t-field="transport_request.state"/>
+                      </td>
+                    </tr>
+                  </t>
+                </tbody>
+          </t>
+           </t>
+        </t>
+      </template>
+
+
+
+      <!--        Create Button-->
+        <template id="portal_create_transport_requests" name="Portal: Create transport_request">
+            <a href="/my/transport_request/edit" class="btn btn-primary" style="margin-bottom: 10px;color: #fff;background-color: #00A09D; border-color: #00A09D;border-radius: 0;">New Request</a>
+            <br/>
+        </template>
+
+
+
+
+<!--        view the  salary_advance per empployee-->
+        <template id="portal_my_transport_request" name="transport_request">
+        <t t-call="portal.portal_layout">
+          <t t-set="transport_request" t-value="transport_request"/>
+          <div id="optional_placeholder"></div>
+          <div class="container">
+              <div class="card">
+            <div class="card-header">
+                  <div class="row no-gutters">
+                        <div class="col-md text-md-right">
+                            <small class="text-right">Status:</small>
+                            <span t-field="transport_request.state" class=" badge badge-pill badge-info" title="Current stage of this transport_request"/>
+                        </div>
+                  </div>
+                </div> 
+                <div class="card-body">
+                    <style>
+                        .table th, .table td {
+                            border-top: 0 !important;
+                        }
+                    </style>
+                    <table class="table table-condensed">
+                        <tbody>
+                           
+                            <tr>
+                                <td><strong>Date</strong></td>
+                                <td><span t-field="transport_request.date_request" t-options='{"widget": "date"}'></span></td>
+                            </tr>
+                             <tr>
+                                <td><strong>From</strong></td>
+                                <td><span t-field="transport_request.destination_from"></span></td>
+                            </tr> 
+                          <tr>
+                                <td><strong>To</strong></td>
+                                <td><span t-field="transport_request.destination_to"></span></td>
+                            </tr> 
+
+                            <tr>
+                                <td><strong>Expected Departure</strong></td>
+                                <td><span t-field="transport_request.expected_departure"></span></td>
+                            </tr> 
+                              <tr>
+                                <td><strong>purpose</strong></td>
+                                <td><span t-field="transport_request.purpose"></span></td>
+                            </tr> 
+
+
+                        </tbody>
+                    </table>
+                    <div id="request_communication" class="mt-4">
+                        <h2>Communication</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="transport_request"/>
+                        </t>
+                    </div>
+                </div>
+              </div>
+
+          </div>
+          <div class="oe_structure mb32"/>
+        </t>
+      </template>
+
+        <!--creeate Transportation Request-->
+        <template id="edit_transport_request_details">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Edit Transportation Details</t>
+            <form action="/my/transport_request/edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="row o_portal_details">
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <br/>
+                                    <strong><p align="center"  style="margin-bottom: 10px;color: #B8860B;border-radius: 0;">Doc. No. UMC-ADM-QP-ADM/20 - Issue/Rev 02/00</p></strong>
+
+                              <div t-if="error_message" class="alert alert-danger" role="alert">
+                                  <ul>
+                                      <t t-foreach="error_message" t-as="err"><li><t t-esc="err"/></li></t>
+                                  </ul>
+
+
+                              </div>
+                            </div>
+
+                            <div t-attf-class="form-group col-xl-6">
+
+                                <label class="col-form-label required" for="date">Date</label>
+                                <input required="" type="date" id="date_request" name="date_request" t-attf-class="form-control" />
+                            </div>
+
+                           <!--   <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date">Reference</label>
+                                <input required="" type="chart" id="name_seq" name="name_seq" t-attf-class="form-control" />
+                            </div>
+  -->
+
+
+                           <!--   <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date">Employee</label>
+                                <input required=""  id="requested_by" name="requested_by" t-attf-class="form-control" />
+                            </div> -->
+
+
+                             <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date">From</label>
+                                <input required="1"  id="from" name="destination_from" t-attf-class="form-control" />
+                            </div>
+
+                        <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date">To</label>
+                                <input required="1"  id="to" name="destination_to" t-attf-class="form-control" />
+                            </div>
+
+
+
+                            <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date">Expected Departure</label>
+                                <input required="" type="date" id="expected_departure" name="expected_departure" t-attf-class="form-control" />
+                            </div>
+
+
+                            
+
+                 
+                 <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="currency_id">Purpose</label>
+                                <select name="purpose" id="purpose" required="" t-attf-class="form-control">
+                                        <option value="internal_business_task"> Internal business task </option>
+                                        <option value="business_trip">Business trip </option>
+                                          <option value="regular_transportation">Regular transportation trip</option>
+
+                                </select>
+                            </div>
+
+
+
+
+
+                             <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label " for="date">Other Requirements</label>
+                                <input  id="other_requirements" name="other_requirements" t-attf-class="form-control" />
+                            </div>
+
+
+                            <div t-attf-class="form-group col-xl-6">
+                                <label class="col-form-label required" for="date"> Reason</label>
+                                <textarea name="reason" class="form-control" id="reason" cols="10" rows="5"></textarea>
+                            </div>
+
+
+                            <div class="clearfix" />
+                            <input type="hidden" name="redirect" t-att-value="redirect"/>
+                        </div>
+                        <div class="clearfix">
+                            <button type="submit" class="btn btn-primary float-right mb32 ">
+                                Submit
+                                <span class="fa fa-long-arrow-right" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </t>
+    </template>
+    </data>
+</odoo>

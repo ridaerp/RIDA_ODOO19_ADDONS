@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="room_request_forms" model="ir.ui.view">
+            <field name="name">minor.room.form</field>
+            <field name="model">minor.room</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Confirm" groups="medicare.group_medicare_minor" class="oe_highlight"
+                                name="action_confirm"
+                                type="object" invisible="state != 'draft'"/>
+                        <button string="Minor Consumable Request" groups="medicare.group_medicare_minor"
+                                name="action_minor_consumable"
+                                class="oe_highlight"
+                                type="object" invisible="state not in ['draft','confirmed']" />
+                        <button string="Set to Draft" groups="medicare.group_medicare_minor" name="action_draft"
+                                type="object" invisible="state != 'reject'" />
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                groups="medicare.group_medicare_minor" invisible="state != 'draft'" string="Reject"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="set_minor_consumable" invisible="minor_consumble_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="minor_consumble_count" string="Minor Consumable" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id"/>
+                                <field name="doctor_visitor_id" invisible="doctor_visitor_id == False"
+                                       readonly="1"/>
+                                <field name="patient" invisible="1"/>
+                                <field name="type" readonly="state == 'confirmed'" widget='radio'/>
+                                <field name="p_employee"
+                                       invisible="type != 'employee'" required="type == 'employee'"
+                                       readonly="state != 'draft'" options="{'no_create': True,'no_open':True}"/>
+                                <field name="p_contractor"
+                                       invisible="type != 'contractor'" required="type == 'contractor'"
+                                       readonly="state != 'draft'" options="{'no_create': True,'no_open':True}"/>
+                                <field name="p_quest"
+                                       invisible="type != 'quest'" required="type == 'quest'"
+                                       readonly="state != 'draft'" options="{'no_create': True,'no_open':True}"/>
+                                <field name="account_analytic_id"  readonly="state != 'draft'"/>
+                                <field name="minor_procedure" required="1"
+                                   readonly="state == 'confirmed'"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="company_id"
+                                       invisible="type != 'employee'" readonly="state in ['confirmed']"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="description" readonly="state == 'confirmed'"/>
+                            </group>
+                        </group>
+                        <field name="minor_items" readonly="state == 'confirmed'"
+                               domain="[('minor_procedure','=',minor_procedure)]"
+                               options="{'no_create': True, 'no_edit': True, 'no_open': True}">
+                            <list editable="bottom">
+                                <field name="sequence" style="width:5%"/>
+                                <field name="name" readonly="name != False" />
+                                <field name="description" readonly="name != False" />
+                                <field name="price" sum="Total" readonly="name != False"  />
+                            </list>
+                        </field>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="minor_items_forms" model="ir.ui.view">
+            <field name="name">minor.items.form</field>
+            <field name="model">minor.items</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="price"/>
+                            </group>
+                            <group>
+                                <field name="minor_procedure" required="1"/>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="minor_medcare_forms" model="ir.ui.view">
+            <field name="name">pharmacy product medicare form</field>
+            <field name="model">product.medicare</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" required="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="product_id"
+                                       domain="['|', ('categ_id.parent_id', 'ilike','%Minor%'), '|', ('categ_id', 'ilike','%Minor%'), '|', ('categ_id.parent_id.parent_id', 'ilike', '%Minor%'), '|', ('categ_id.parent_id', 'ilike', '%Nursing%'), '|', ('categ_id', 'ilike', '%Nursing%'), ('categ_id.parent_id.parent_id', 'ilike', '%Nursing%')]"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="uom_id" options="{'no_create': True,'no_open':True}" required="1"/>
+                                <field name="qty_available"/>
+                                <field name="qty"/>
+                                <field name="price"/>
+                                <field name="manufacture"/>
+                                <field name="site_effect"/>
+                            </group>
+                            <group>
+                                <field name="default_code" required="1"/>
+                                <field name="categ_id" options="{'no_create': True,'no_open':True}" required="1"/>
+                                <field name="dosage_instruction"/>
+                                <field name="expire_date"/>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="minor_item_conf_tree" model="ir.ui.view">
+            <field name="name">Minor Procedure Tree</field>
+            <field name="model">minor.items</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="minor_procedure"/>
+                    <field name="price"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="minor_room_tree" model="ir.ui.view">
+            <field name="name">Minor Room Tree</field>
+            <field name="model">minor.room</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="doctor_visitor_id"/>
+                    <field name="type"/>
+                    <field name="patient"/>
+                    <field name="minor_procedure"/>
+                    <field name="minor_items" widget="many2many_tags"/>
+                    <field name="req_id"/>
+                    <field name="date"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="minor_room_request_act_window" model="ir.actions.act_window">
+            <field name="name">Minor Room</field>
+            <field name="res_model">minor.room</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="minor_room_product_act_window" model="ir.actions.act_window">
+            <field name="name">Minor Consumable</field>
+            <field name="res_model">product.medicare</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_type_product' : 'minor_room'}</field>
+            <field name="domain">[('type_product', '=', 'minor_room')]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('medicare.product_medcare_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('medicare.minor_medcare_forms')})]"/>
+        </record>
+
+        <record id="minor_room_scrap_act_window" model="ir.actions.act_window">
+            <field name="name">Scrap Orders</field>
+            <field name="res_model">medicare.product.scrap</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_type_product' : 'minor_room'}</field>
+            <field name="domain">[('type_product', '=', 'minor_room')]</field>
+        </record>
+
+        <record id="minor_item_conf" model="ir.actions.act_window">
+            <field name="name">Minor Procedure</field>
+            <field name="res_model">minor.items</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="minor_issuance_request_act_window" model="ir.actions.act_window">
+            <field name="name">Minor Consumable Request</field>
+            <field name="res_model">medicare.issuance.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_type_product' : 'minor_room'}</field>
+            <field name="domain">[('type_product', '=', 'minor_room')]</field>
+        </record>
+
+
+        <menuitem name="Minor Room" groups="medicare.group_medicare_minor" id="minor_root" sequence="4"
+                  parent="medicare.medicare_menu"/>
+        <menuitem name="Minor Room Requests" groups="medicare.group_medicare_minor" id="menu_minor_room_requests"
+                  parent="minor_root"
+                  sequence="1" action="minor_room_request_act_window"/>
+        <menuitem name="Minor Consumable " groups="medicare.group_medicare_minor" id="menu_minor_product"
+                  parent="minor_root"
+                  sequence="3" action="minor_room_product_act_window"/>
+        <menuitem name="Scrap" groups="medicare.group_medicare_minor" id="med_minor_scrap"
+                  parent="minor_root"
+                  sequence="4" action="minor_room_scrap_act_window"/>
+        <menuitem name="Configuration" groups="medicare.group_medicare_medicare" sequence="6" id="medicare_menu_conf"
+                  parent="medicare.medicare_menu"/>
+        <menuitem name="Minor Procedures" groups="medicare.group_medicare_minor" id="menu_minor_procedure"
+                  parent="medicare_menu_conf"
+                  sequence="1" action="minor_item_conf"/>
+        <menuitem name="Minor Consumable Request" groups="medicare.group_medicare_minor"
+                  id="menu_minor_issuance_request"
+                  parent="minor_root"
+                  sequence="2" action="minor_issuance_request_act_window"/>
+    </data>
+</odoo>

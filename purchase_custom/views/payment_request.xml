@@ -1,0 +1,106 @@
+<odoo>
+  <data>
+
+    <record id="seq_pyment_request" model="ir.sequence">
+      <field name="name">Payment Request</field>
+      <field name="code">payment.request.sequence</field>
+      <field name="prefix">PR-</field>
+      <field name="padding">3</field>
+      <field name="company_id" eval="False"/>
+    </record>
+    <record id="payment_request_view_form" model="ir.ui.view">
+      <field name="name">Payment Request</field>
+      <field name="model">payment.request</field>
+      <field name="arch" type="xml">
+        <form >
+          <header>
+            <field name="state" widget="statusbar"/>
+            <button name="approve_button" string="Approve" type="object" class="oe_highlight" invisible="state not in ('draft')"/>
+            <button name="approve_reject_button" string="Approve"  type="object" class="oe_highlight" invisible="state not in ('reject')"/>
+            <button name="action_reject" string="Reject" type="object" invisible="state not in ('draft')"/>
+            <button name="button_create_invoice" string="Create Invoice" type="object" invisible="state not in ('approve')"/>
+
+          </header>
+          <sheet>
+             <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                    name="action_view_invoice"
+                                    class="oe_stat_button"
+                                    string="Invoice"
+                                    invisible="state not in ('approve')"  >
+                                <field name="invoice_count"
+                                   invisible="invoice_count == 0"
+                                     widget="statinfo"/>
+                            </button>
+
+                        </div>
+            <div class="oe_edit_only">
+              <label for="name" class="oe_inline"/>
+          </div>
+          <h1>
+              <!--<field name="name" class="oe_inline" attrs="{'readonly': [('is_editable','=', False)]}"/>-->
+              <field name="name" readonly="1"/>
+              <!--<label for="space" name="Space" string="-"/>-->
+          </h1>
+            <group col="4" colspan="4">
+              <!-- Add your fields here -->
+              <field name="contract_number" />
+              <field name="date" invisible="state not in ('draft')" />
+                <field name="voucher" invisible="state not in ('draft')"/>
+                <field name="receipt" invisible="state not in ('draft')" />
+                <field name="estimated_cost" invisible="state not in ('draft')"/>
+                <field name="currency_id" string="Payment Currency" invisible="state not in ('draft')"/>
+
+            </group>
+            <group col="4" colspan="4">
+                  <field name="curr_rate" string="Currency Rate"/>
+                  <field name="remark" readonly="state not in ('draft')"/>
+                 <field name="pay_date" readonly="state not in ('draft')"/>
+                 <field name="risk_cost" readonly="state not in ('draft')"/>
+                 <field name="actual_estimated_cost" readonly="state not in ('draft')"/>
+
+              </group>
+
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+
+    <record id="model_name_view_tree" model="ir.ui.view">
+      <field name="name">Payment Request</field>
+      <field name="model">payment.request</field>
+      <field name="arch" type="xml">
+        <list >
+          <!-- Add your fields here -->
+          <field name="name"/>
+          <field name="vendor_id"/>
+          <field name="contract_number"/>
+          <field name="date"/>
+
+          <field name="state"/>
+        </list>
+      </field>
+    </record>
+    <record id="payment_request_action" model="ir.actions.act_window">
+      <field name="name">Payment Request</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">payment.request</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Here is list of payment requests.
+        </p>
+        <p>
+          <!-- More details ayout what a user can do with this object will be OK -->
+        </p>
+      </field>
+    </record>
+    <!-- This Menu Item must have a parent and an action -->
+    <!-- <menuitem id="contract_menu_act" name="Contracts" parent="purchase.menu_purchase_root" sequence="17" groups="material_request.group_contract_manager,purchase_custom.material_request.group_buyers"/> -->
+    <menuitem id="payment_request" name="Payment Request" parent="contract_menu_act" action="payment_request_action" sequence="3"/>
+
+    <!-- <menuitem id="change_contract_menu_act" name="Change in contracts" parent="contract_menu_act" action="change_contract_action" sequence="18"/> -->
+
+  </data>
+</odoo>

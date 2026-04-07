@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_blasting_work_permit_list" model="ir.ui.view">
+            <field name="name">blasting.work.permit.list</field>
+            <field name="model">blasting.work.permit</field>
+            <field name="arch" type="xml">
+                <list string="Blasting Permits"
+                      decoration-info="state == 'draft'"
+                      decoration-warning="state == 'submitted'"
+                      decoration-danger="state == 'authorized'"
+                      decoration-success="state == 'issued'">
+                    <field name="name" string="Permit No / رقم التصريح"/>
+                    <field name="date_from" string="Date / التاريخ"/>
+                    <field name="mine_name" string="Mine / المنجم"/>
+                    <field name="planned_time" string="Blasting Time / وقت التفجير"/>
+                    <field name="responsible_blaster" string="Blaster / المفجر"/>
+                    <field name="state" widget="badge" string="Status / الحالة"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_blasting_work_permit_form" model="ir.ui.view">
+            <field name="name">blasting.work.permit.form</field>
+            <field name="model">blasting.work.permit</field>
+            <field name="arch" type="xml">
+                <form string="Blasting Permit">
+                    <header>
+                        <button name="action_submit" type="object" string="إرسال / Submit" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_dept_approve" string="اعتماد القسم المعني" type="object" 
+                                invisible="state != 'dept_approval'" class="oe_highlight" 
+                                groups="base_rida.rida_group_line_manager"/>
+                        <button name="action_authorize" type="object" string="مصادقة / Authorize" class="oe_highlight" invisible="state != 'submitted'"
+                                groups="base_rida.rida_group_safety_officer"/>
+                        <button name="action_extend" string="تمديد / Extend" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state != 'pending_extension'"/>
+                        <button name="action_request_extension" string="طلب تمديد" type="object" invisible="state != 'issued'"/>
+                        <button name="action_request_close" string="طلب إغلاق" type="object" invisible="state not in ['issued','extended']"/>
+                        <button name="action_suspend" type="object" string="تجميد / Suspension" class="btn-primary"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']"/>
+                        <button name="action_revoked" type="object" string="ملغى / Revoked" class="btn-danger"
+                                groups="base_rida.rida_group_safety_officer" invisible="state not in ['issued','extended']" />
+                        <button name="action_close" string="إغلاق / Close" type="object"
+                                groups="base_rida.rida_group_safety_officer"
+                                invisible="state not in ['pending_close']"/>
+                        <button name="action_done" string="تم / Done" type="object"
+                                invisible="state not in ['reject']"/>
+                        <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                                invisible="state not in ['submitted']"
+                                groups="base_rida.rida_group_safety_officer"
+                                type="action"/>
+                        <button name="action_reactivate"
+                            string="إعادة تنشيط / Reactivate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['suspend', 'revoked']"/>
+                        <button name="action_create_related_ptw"
+                            string="إنشاء التصريح المرتبط"
+                            type="object"
+                            invisible="is_need_ptw == False or linked_ptw_count > 0"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,dept_approval,submitted,issued,revoked,suspend,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title text-center" style="background-color: #85410F; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                            <h1 style="color: #ffffff; margin-bottom: 0;">Mine Site Blasting Permit/تصريح التفجير في مواقع التعدين</h1>
+                            
+                            <div style="background-color: #85410F; color: white; padding: 15px; margin-top: 10px; border-radius: 5px;">
+                                <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+                                 يُستخدم عند تنفيذ أعمال التفجير في مواقع التعدين، لضمان التحكم الكامل في العملية وإخطار جميع العاملين وتقليل المخاطر على الأفراد والممتلكات. 
+                                </p>
+                            </div>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_linked_ptw"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-external-link"
+                                    invisible="linked_ptw_count == 0">
+                                <field name="linked_ptw_count" widget="statinfo" string="Related PTW"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Permit No / رقم التصريح"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+
+                        <group string="Part #01/A: Details of Site Blasting / تفاصيل موقع التفجير">
+                            <group>
+                                <field name="date_from"/>
+                                <field name="requester_id"/>
+                                <field name="department_id"/>
+                                <field name="is_need_ptw" invisible="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="department_ids" widget="many2many_tags"/>
+                                <field name="mine_name" required="True"/>
+                                <field name="mine_code" required="True"/>
+                                <field name="planned_time" required="True"/>
+                                <field name="blasting_purpose" required="True"/>
+                            </group>
+                            <group>
+                                <field name="type_of_ptw" required="is_need_ptw == True" invisible="state != 'draft' or is_need_ptw == False"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Technical Info / المعلومات الفنية">
+                                <group>
+                                    <group string="Explosives Data / بيانات المتفجرات">
+                                        <field name="explosive_type" required="True"/>
+                                        <field name="used_volume" required="True"/>
+                                        <field name="targeted_holes" required="True"/>
+                                    </group>
+                                    <group string="Drilling &amp; Charging / الحفر والشحن">
+                                        <field name="drilling_depth" required="True"/>
+                                        <field name="detonator_type" required="True"/>
+                                        <field name="main_charge" required="True"/>
+                                        <field name="stemming_type" required="True"/>
+                                        <field name="value_1" required="True"/>
+                                        <field name="value_2" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Device &amp; Blaster / الجهاز والمفجر">
+                                <group>
+                                    <group string="Device Details / تفاصيل الجهاز">
+                                        <field name="detonating_device" required="True"/>
+                                        <field name="device_sn" required="True"/>
+                                        <field name="calibration_date" required="True"/>
+                                    </group>
+                                    <group string="Responsible Blaster / المسؤول">
+                                        <field name="responsible_blaster" required="True"/>
+                                        <field name="blaster_certificate" required="True"/>
+                                        <field name="certificate" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <notebook>
+                            <page string="متطلبات التفجير / Blasting Requirements">
+                                <group>
+                                    <group string="Equipment Preparation / تحضير المعدات">
+                                        <field name="equipment_transport" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="equip_explosive_proof" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="charge_lines_ok" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="red_flags" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group string="Communication / الاتصال">
+                                        <field name="blasting_notification" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="jsa_done" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="safety_meeting" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="work_method_reviewed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="msds_available" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+                                <group string="Emergency Preparation / الاستعداد للطوارئ">
+                                    <group>
+                                        <field name="emergency_plans_reviewed" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ert_ready" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="access_secured" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="alarm_tested" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="المخاطر والوقاية / Hazards &amp; PPE">
+                                <group>
+                                    <group string="Serious Hazards / المخاطر الجسيمة">
+                                        <field name="hazard_fire_explosion" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_traffic" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_fall_height" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_trip_fall" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_chemical" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_heat_cold" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_noise" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="hazard_manual_handling" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group string="PPE Equipment / معدات الوقاية الشخصية">
+                                        <field name="ppe_hand" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_eye" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_hearing" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_head" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_body" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_respirator" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_other"/>
+                                    </group>
+                                </group>
+                                <group string="Additional Control Measures / إجراءات تحكم إضافية">
+                                    <group>
+                                        <field name="ctrl_slip_trip" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_unauthorized_access" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_barriers" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_traffic_mgmt" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                    <group>
+                                        <field name="ctrl_evacuation_dist" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_pre_firing_tour" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ctrl_alarm_siren" widget="radio" options="{'horizontal': true}" required="True"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="المصادقة والاعتماد / Authorization">
+                                <group>
+                                    <group string="Authorizer / المفوض (المهندس/المشرف)">
+                                        <field name="authorizer_id" options="{'no_create': True}"/>
+                                        <field name="authorizer_sig" widget="signature"/>
+                                        <field name="authorizer_date"/>
+                                    </group>
+                                    <group string="Issuer / الجهة المصدرة (ضابط السلامة)">
+                                        <field name="issuer_id" options="{'no_create': True}"/>
+                                        <field name="issuer_sig" widget="signature"/>
+                                        <field name="issuer_date"/>
+                                    </group>
+                                </group>
+<!--                                <div class="alert alert-info" role="alert" style="margin-top: 20px;">-->
+<!--                                    أقر بأنني قد راجعت هذا التصريح وتم تنفيذ جميع إجراءات التحكم اللازمة.-->
+<!--                                </div>-->
+                            </page>
+                        </notebook>
+                        <group>
+                            <group string="تفاصيل الإجراءات">
+                                <field name="extension_reason" required="state == 'pending_extension'" invisible="state not in ['pending_extension', 'extended', 'closed']"/>
+                                <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
+                                <field name="reason_reject" invisible="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group string="الموافقة والتعهد / Confirmation" class="mt-3">
+                            <field name="confirmation_check" widget="boolean_toggle"
+                                   string="أقر بأن جميع البيانات صحيحة وموافق على كافة إرشادات السلامة / I confirm that all information is correct and I agree to all safety instructions"/>
+                        </group>
+                        <div class="mt-4 p-3" style="border: 1px solid #dee2e6; background-color: #fff5f5; border-left: 5px solid #c53929; border-radius: 0 5px 5px 0;">
+                            <h5 style="color: #c53929; font-weight: bold; border-bottom: 1px solid #ffcccc; padding-bottom: 8px;">
+                                <i class="fa fa-exclamation-triangle"/> General Instructions &amp; Notes / التعليمات العامة والملاحظات:
+                            </h5>
+
+                            <div class="row" style="font-size: 0.85rem; line-height: 1.6;">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><strong>• Evacuation:</strong> 750m for personnel &amp; 300m for equipment. <br/>مسافة الإخلاء: 750م للأفراد و300م للمعدات</li>
+                                        <li> Only the blasting team is allowed to access the shooting zone. <br/>يُسمح فقط لفريق التفجير بالدخول إلى منطقة التفجير</li>
+                                        <li class="mt-2"><strong>• Road Closure:</strong> Close all roads 10 minutes before blasting. <br/>إغلاق كافة الطرق قبل التفجير بـ 10 دقائق</li>
+                                        <li class="mt-2"><strong>• Siren:</strong> Operate siren 2 minutes before blasting. <br/>تشغيل صافرة الإنذار قبل دقيقتين من التفجير</li>
+                                        <li class="mt-2"><strong>• Communication:</strong> Use Radio to communicate with all parties. <br/>استخدام أجهزة الراديو للتواصل مع الجميع</li>
+                                        <li>Double check to Identify and fix missed or incorrect connections for all basting material grids before firing. <br/>إجراء فحص مزدوج لتحديد وإصلاح أي توصيلات غير صحيحة أو مفقودة في شبكة مواد التفجير قبل التفجير</li>
+                                        <li>Inspect the Blast controller and Blasting wire before firing. <br/>فحص جهاز التحكم في التفجير والأسلاك المتصلة به قبل التفجير</li>
+                                        <li>Give order to the crusher and generation power plant(if necessary to shut down before the shooting take place through Radio.<br/>إصدار أمر بإيقاف تشغيل الكسارة ومحطة توليد الطاقة (إذا لزم الأمر) عبر الراديو قبل بدء التفجير</li>
+                                        <li>Electrical Detonator connected and handled by Blaster/shot firer only.<br/>يجب توصيل ومعالجة المفجرات الكهربائية فقط بواسطة المفجر/منفذ التفجير</li>
+                                        <li>QHSE Officer shall check the blast location thoroughly before giving clearance for blast.<br/>يجب على مسؤول السلامة  فحص موقع التفجير بدقة قبل إعطاء الإذن بالتفجير</li>
+                                        <li>After firing, Mine Engineer shall confirm that all explosives have detonated, that no misfires are evident, and that the shot has fired satisfactorily.<br/>بعد التفجير، يجب على مهندس المنجم التأكد من أن جميع المتفجرات قد انفجرت، وأنه لا توجد أخطاء في التفجير، وأن العملية تمت بنجاح</li>
+                                        <li>The operations foreman and the blasting supervisor wait for the gases and fumes from the firing to dissipate before inspecting the blast area.<br/>يجب على مشرف العمليات ومشرف التفجير الانتظار حتى تتبدد الغازات والأبخرة الناتجة عن التفجير قبل فحص منطقة التفجير</li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><strong>• Timing:</strong> After sunrise and before sunset only. <br/>(عمليات التفجير نهاراً فقط - بين الشروق والغروب)</li>
+                                        <li class="mt-2"><strong>• No Smoking:</strong> No smoking or naked fires near explosives. <br/>(يمنع التدخين أو النيران المكشوفة بالقرب من المتفجرات)</li>
+                                        <li class="mt-2"><strong>• Attachments:</strong> Attach JSA and Pre-job safety meeting minutes. <br/>(يجب إرفاق تقييم المخاطر ومحضر اجتماع السلامة)</li>
+                                        <li class="mt-2"><strong>• Post-Blast:</strong> Wait for fumes to dissipate before inspection. <br/>(الانتظار حتى تتبدد الغازات قبل فحص منطقة التفجير)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="text-muted mt-2" style="font-size: 0.75rem; border-top: 1px dashed #ffcccc; pt-2;">
+                                Ref: UMC-QHSE-Blasting safety guideline / UMC-QHSE-QP-PTW-04
+                            </div>
+                        </div>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_blasting_work_permit" model="ir.actions.act_window">
+            <field name="name">Blasting Permits / تصاريح التفجير</field>
+            <field name="res_model">blasting.work.permit</field>
+            <field name="view_mode">list,form,search</field>
+<!--            <field name="search_view_id" ref="view_blasting_work_permit_search"/>-->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Blasting Permit!
+                </p>
+                <p>
+                    Manage and track mine site blasting operations safely and efficiently.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_blasting_work_permit"
+          name="Blasting Operations / أعمال التفجير"
+          parent="menu_safety_root_dual"
+          action="action_blasting_work_permit"
+          sequence="4"/>
+
+    </data>
+</odoo>

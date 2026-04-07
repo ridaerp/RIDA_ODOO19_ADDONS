@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- KPI Exective User Rule-->
+        <record model="ir.rule" id="rule_check_kpi_person_creator">
+            <field name="name">Check Creator</field>
+            <field name="model_id" ref="model_kpi_person"/>
+            <field name="domain_force">['|',('create_uid', '=', user.id),('employee_id.user_id.id', '=', user.id)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- KPI Exective Line Manager KPI -->
+        <record model="ir.rule" id="rule_check_kpi_person_l_mng">
+            <field name="name">Line Manager KPI</field>
+            <field name="model_id" ref="model_kpi_person"/>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+        </record>
+
+
+        <!--  KPI Exective Manager-->
+        <record model="ir.rule" id="rule_check_kpi_person_mng">
+            <field name="name">Manager KPI</field>
+            <field name="model_id" ref="model_kpi_person"/>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
+            <field name="groups"
+                   eval="[(4, ref('hr.group_hr_user')),(4, ref('base_rida.rida_hr_manager_notify'))]"/>
+        </record>
+
+      <!-- KPI Non Exective User Rule-->
+        <record model="ir.rule" id="rule_check_non_exective_kpi_person_creator">
+            <field name="name">Check Creator</field>
+            <field name="model_id" ref="model_kpi_non_exective"/>
+            <field name="domain_force">['|',('create_uid', '=', user.id),('employee_id.user_id.id', '=', user.id)]</field>
+            <field name="groups"
+                   eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!--  KPI Non Exective Line Manager -->
+        <record model="ir.rule" id="rule_check_non_exective_kpi_person_l_mng">
+            <field name="name">Line Manager KPI</field>
+            <field name="model_id" ref="model_kpi_non_exective"/>
+            <field name="domain_force">[('req_id.line_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base_rida.rida_group_line_manager'))]"/>
+        </record>
+
+
+        <!-- KPI Non Exective Manager -->
+        <record model="ir.rule" id="rule_check_non_exective_kpi_person_mng">
+            <field name="name">Manager KPI</field>
+            <field name="model_id" ref="model_kpi_non_exective"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups"
+                   eval="[(4, ref('hr.group_hr_user')),(4, ref('base_rida.rida_hr_manager_notify'))]"/>
+        </record>
+
+
+    </data>
+
+
+</odoo>

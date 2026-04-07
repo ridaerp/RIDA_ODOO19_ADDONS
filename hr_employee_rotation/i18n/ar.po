@@ -1,0 +1,165 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* employee_transfer_nileBank
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-07 11:41+0000\n"
+"PO-Revision-Date: 2019-01-07 13:45+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: ar_SY\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: employee_transfer_nileBank
+#: selection:employee.rotation,state:0 selection:employee.transfer,state:0
+msgid "Approved"
+msgstr "مصدقة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_company_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_company_id
+msgid "Branch"
+msgstr "الفرع"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_create_uid
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_create_date
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_date
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_date
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_department_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_department_id
+msgid "Department"
+msgstr "القسم"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_display_name
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: employee_transfer_nileBank
+#: selection:employee.rotation,state:0 selection:employee.transfer,state:0
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_employee_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_employee_id
+msgid "Employee"
+msgstr "الموظف"
+
+#. module: employee_transfer_nileBank
+#: model:ir.actions.act_window,name:employee_transfer_nileBank.action_employee_rotation
+#: model:ir.model,name:employee_transfer_nileBank.model_employee_rotation
+#: model:ir.ui.menu,name:employee_transfer_nileBank.menu_employee_rotation
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_rotation_form
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_rotation_tree
+msgid "Employee Rotation"
+msgstr "تنقلات الموظف داخل الفرع"
+
+#. module: employee_transfer_nileBank
+#: model:ir.actions.act_window,name:employee_transfer_nileBank.action_employee_transfer
+#: model:ir.model,name:employee_transfer_nileBank.model_employee_transfer
+#: model:ir.ui.menu,name:employee_transfer_nileBank.menu_employee_transfer
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_transfer_form
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_transfer_tree
+msgid "Employee Transfer"
+msgstr "تحويلات الموظفين من فرع لاخر"
+
+#. module: employee_transfer_nileBank
+#: model:ir.ui.menu,name:employee_transfer_nileBank.menu_hr_transfer_root
+msgid "HR Transfer"
+msgstr "التحويلات والتنقلات"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_id
+msgid "ID"
+msgstr "المعرف"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_job_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_job_id
+msgid "Job Title"
+msgstr "المسمى الوظيفي"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation___last_update
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer___last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_write_uid
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_write_date
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_n_company_id
+msgid "New Branch"
+msgstr "الفرع الجديد"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_n_department_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_n_department_id
+msgid "New Department"
+msgstr "القسم الجديد"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_n_job_id
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_n_job_id
+msgid "New Job Title"
+msgstr "الوظيفة الجديدة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_note
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_note
+msgid "Note"
+msgstr "الملاحظة"
+
+#. module: employee_transfer_nileBank
+#: code:addons/employee_transfer_nileBank/model.py:37
+#: code:addons/employee_transfer_nileBank/model.py:75
+#, python-format
+msgid "Only HR Can Approve !"
+msgstr "فقط الموارد البشرية يسمح لها بالتصديق"
+
+#. module: employee_transfer_nileBank
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_rotation_state
+#: model:ir.model.fields,field_description:employee_transfer_nileBank.field_employee_transfer_state
+msgid "State"
+msgstr "الحالة"
+
+#. module: employee_transfer_nileBank
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_rotation_form
+#: model:ir.ui.view,arch_db:employee_transfer_nileBank.view_employee_transfer_form
+msgid "approve"
+msgstr "تصديق"

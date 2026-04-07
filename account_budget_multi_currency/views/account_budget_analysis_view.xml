@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_budget_line_pivot_inherit_multi_currency" model="ir.ui.view">
+            <field name="name">budget.line.pivot.inherit.multi.currency</field>
+            <field name="model">budget.line</field>
+            <field name="inherit_id" ref="account_budget.view_budget_line_pivot" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='budget_amount']" position="after">
+                    <field name="custom_planned_amount" type="measure" />
+                    <field name="theoritical_amount" type="measure" />
+                    <field name="custom_theoritical_amount" type="measure" />
+                </xpath>
+                <!-- <xpath expr="//field[@name='practical_amount']" position="after">
+                    <field name="custom_practical_amount" type="measure" />
+                </xpath> -->
+            </field>
+        </record>
+
+        <record id="view_budget_line_graph_inherit_multi_currency" model="ir.ui.view">
+            <field name="name">budget.line.graph.inherit.multi.currency</field>
+            <field name="model">budget.line</field>
+            <field name="inherit_id" ref="account_budget.view_budget_line_graph" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='budget_amount']" position="after">
+                    <field name="custom_planned_amount" type="measure" string="Planned Amount (Other Currency)"/>
+                    <field name="theoritical_amount" type="measure"/>
+                    <field name="custom_theoritical_amount" type="measure" string="Theoritical Amount (Other Currency)"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='practical_amount']" position="after">
+                    <field name="custom_practical_amount" type="measure" string="Practical Amount (Other Currency)"/>
+                </xpath> -->
+            </field>
+        </record>
+
+        <record id="view_budget_line_tree_inherit_multi_currency" model="ir.ui.view">
+            <field name="name">budget.line.tree.inherit.multi.currency</field>
+            <field name="model">budget.line</field>
+            <field name="inherit_id" ref="account_budget.view_budget_line_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='budget_amount']" position="after">
+                    <field name="custom_currency_id" invisible="1" groups="base.group_multi_currency" />
+                    <field name="custom_planned_amount" type="measure" string="Planned Amount (Other Currency)"/>
+                    <!-- <field name="theoritical_amount" type="measure"/> -->
+                    <field name="custom_theoritical_amount" type="measure" string="Theoritical Amount (Other Currency)"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='practical_amount']" position="after">
+                    <field name="custom_practical_amount" type="measure" string="Practical Amount (Other Currency)"/>
+                </xpath> -->
+            </field>
+        </record>
+
+        <record id="view_budget_line_form_inherit_multi_currency" model="ir.ui.view">
+            <field name="name">budget.line.form.inherit.multi.currency</field>
+            <field name="model">budget.line</field>
+            <field name="inherit_id" ref="account_budget.view_budget_line_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='budget_amount']" position="after">
+                    <field name="custom_currency_id" invisible="1" groups="base.group_multi_currency" />
+                    <field name="custom_planned_amount" type="measure" string="Planned Amount (Other Currency)"/>
+                    <field name="theoritical_amount" type="measure"/>
+                    <!-- <field name="custom_practical_amount" type="measure" string="Practical Amount (Other Currency)"/> -->
+                    <field name="custom_theoritical_amount" type="measure" string="Theoritical Amount (Other Currency)"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
