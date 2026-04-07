@@ -287,14 +287,14 @@
                                 <h4 style="color:red">Driver evaluation / تقييم السائق</h4>
 
                                 <field name="driver_evaluation_ids"
-                                       readonly="state != 'release'">
+                                       readonly="state == 'release'">
                                     <list string="Trip Evaliation" create="false" delete="false" editable="bottom">
                                         <field name="name" style="font-weight:bold;" readonly="1"/>
                                         <field name="priority" widget="priority"/>
                                     </list>
                                 </field>
                                 <h4 style="color:red">Trip evaluation / تقييم الرحلة</h4>
-                                <field name="trip_evaluation_ids" readonly="state != 'release'">
+                                <field name="trip_evaluation_ids" readonly="state == 'release'">
                                     <list string="Trip Evaliation" create="false" delete="false" editable="bottom">
                                         <field name="name" style="font-weight:bold;" readonly="1"/>
                                         <field name="priority" widget="priority"/>
