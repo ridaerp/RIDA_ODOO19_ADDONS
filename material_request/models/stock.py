@@ -406,40 +406,127 @@ class StockMove(models.Model):
 
     ####################################override function to  create journal entries with receviable (fuel issuance external)
     ##############################ekhlas code #####################################################################
-    def _get_accounting_data_for_valuation(self):
-        """ Return the accounts and journal to use to post Journal Entries for
-        the real-time valuation of the quant. """
+    # def _get_accounting_data_for_valuation(self):
+    #     """ Return the accounts and journal to use to post Journal Entries for
+    #     the real-time valuation of the quant. """
+    #     self.ensure_one()
+    #
+    #     # acc_dest=None
+    #     self = self.with_company(self.company_id)
+    #     accounts_data = self.product_id.product_tmpl_id.get_product_accounts()
+    #
+    #     acc_src = self._get_src_account(accounts_data)
+    #     if self.picking_type_id.issued == True and self.partner_id:
+    #         acc_dest = self.property_account_payable_id.id
+    #     else:
+    #         acc_dest = self._get_dest_account(accounts_data)
+    #
+    #     acc_valuation = accounts_data.get('stock_valuation', False)
+    #     if acc_valuation:
+    #         acc_valuation = acc_valuation.id
+    #     if not accounts_data.get('stock_journal', False):
+    #         raise UserError(
+    #             _('You don\'t have any stock journal defined on your product category, check if you have installed a chart of accounts.'))
+    #     if not acc_src:
+    #         raise UserError(
+    #             _('Cannot find a stock input account for the product %s. You must define one on the product category, or on the location, before processing this operation.') % (
+    #                 self.product_id.display_name))
+    #     if not acc_dest:
+    #         raise UserError(
+    #             _('Cannot find a stock output account for the product %s. You must define one on the product category, or on the location, before processing this operation.') % (
+    #                 self.product_id.display_name))
+    #     if not acc_valuation:
+    #         raise UserError(
+    #             _('You don\'t have any stock valuation account defined on your product category. You must define one before processing this operation.'))
+    #     journal_id = accounts_data['stock_journal'].id
+    #     return journal_id, acc_src, acc_dest, acc_valuation
+#################################################################################
+
+
+
+
+    def _should_create_account_move(self):
         self.ensure_one()
+        res = super()._should_create_account_move()
 
-        # acc_dest=None
-        self = self.with_company(self.company_id)
-        accounts_data = self.product_id.product_tmpl_id.get_product_accounts()
+        if self.picking_id and hasattr(self.picking_id,'issuance_request_id') and self.picking_id.issuance_request_id:
+            return True
 
-        acc_src = self._get_src_account(accounts_data)
-        if self.picking_type_id.issued == True and self.partner_id:
-            acc_dest = self.property_account_payable_id.id
-        else:
-            acc_dest = self._get_dest_account(accounts_data)
+        return res
 
-        acc_valuation = accounts_data.get('stock_valuation', False)
-        if acc_valuation:
-            acc_valuation = acc_valuation.id
-        if not accounts_data.get('stock_journal', False):
-            raise UserError(
-                _('You don\'t have any stock journal defined on your product category, check if you have installed a chart of accounts.'))
-        if not acc_src:
-            raise UserError(
-                _('Cannot find a stock input account for the product %s. You must define one on the product category, or on the location, before processing this operation.') % (
-                    self.product_id.display_name))
-        if not acc_dest:
-            raise UserError(
-                _('Cannot find a stock output account for the product %s. You must define one on the product category, or on the location, before processing this operation.') % (
-                    self.product_id.display_name))
-        if not acc_valuation:
-            raise UserError(
-                _('You don\'t have any stock valuation account defined on your product category. You must define one before processing this operation.'))
-        journal_id = accounts_data['stock_journal'].id
-        return journal_id, acc_src, acc_dest, acc_valuation
+    def _get_account_move_line_vals(self):
+        if not (self.picking_id and hasattr(self.picking_id,
+                                            'issuance_request_id') and self.picking_id.issuance_request_id):
+            return super()._get_account_move_line_vals()
+
+        picking = self.picking_id
+        accounts = self.product_id._get_product_accounts()
+        valuation_account = accounts.get('stock_valuation')
+
+        if not valuation_account:
+            raise UserError("No stock valuation account defined for product.")
+
+        debit_acc = valuation_account
+        credit_acc = valuation_account
+
+        target_debit_account = False
+        target_partner = False
+
+        if picking.x_studio_issuance_type == 'external_issuance' and picking.partner_id:
+            target_debit_account = picking.partner_id.property_account_payable_id.id
+            target_partner = picking.partner_id.id
+
+        elif picking.x_studio_issuance_type == 'internal_issuance':
+
+            product_expense_account = self.product_id.property_account_expense_id
+
+            if product_expense_account:
+                target_debit_account = product_expense_account.id
+            else:
+
+                category_expense_account = self.product_id.categ_id.property_account_expense_categ_id
+
+                if category_expense_account:
+                    target_debit_account = category_expense_account.id
+                else:
+                    raise UserError("No expense account defined on product or category.")
+
+        value = self._get_aml_value()
+
+        return [
+            {
+                'account_id': credit_acc.id,
+                'name': (self.reference or '') + ' - ' + self.product_id.name,
+                'debit': 0,
+                'credit': value,
+                'product_id': self.product_id.id,
+            },
+            {
+                'account_id': target_debit_account or debit_acc.id,
+                'name': (self.reference or '') + ' - ' + self.product_id.name,
+                'debit': value,
+                'credit': 0,
+                'product_id': self.product_id.id,
+                'partner_id': target_partner,
+            }
+        ]
+
+    def _action_done(self, cancel_backorder=False):
+        moves = super()._action_done(cancel_backorder=cancel_backorder)
+        for move in moves:
+            if move.picking_id and hasattr(move.picking_id,
+                                           'x_studio_issuance_type') and move.picking_id.x_studio_issuance_type:
+                if not move.account_move_id:
+                    move._create_account_move()
+
+        return moves
+
+
+
+
+
+
+
 
 
 

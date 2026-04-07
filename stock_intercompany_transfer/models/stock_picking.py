@@ -129,13 +129,14 @@ class StockPickingInherit(models.Model):
                     move_vals = {
                         'picking_id': picking_id.id,
                         'picking_type_id': operation_type_id.id,
-                        'name': move.name,
+                        # 'name': move.name,
                         'product_id': move.product_id.id,
                         'product_uom': move.product_uom.id,
                         'product_uom_qty': done_qty,
                         'location_id': location_id,
                         'location_dest_id': location_dest_id,
                         'company_id': company_id.id,
+                        'description_picking': move.product_id.display_name,
                     }
                     self.env['stock.move'].sudo().create(move_vals)
                 if picking_id:
