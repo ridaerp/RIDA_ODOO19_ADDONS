@@ -72,15 +72,13 @@ class Expenses(models.Model):
                 return action
 
 #     ###############ekhlas code -odoo 17-journal entreus
-    def _do_approve(self):
-        # super(ExpensesWorkflow, self)._do_approve()
-        sheets_to_approve = self.filtered(lambda s: s.state in {'submit', 'draft','ccso','site'})
+    def _do_approve(self, check=False, **kwargs):
+        sheets_to_approve = self.filtered(lambda s: s.state in {'submit', 'draft', 'ccso', 'site'})
         sheets_to_approve._check_can_create_move()
-        # sheets_to_approve._do_create_moves()
+
         for sheet in sheets_to_approve:
             sheet.write({
-                'approval_state': 'approve',
-                'user_id': sheet.user_id.id or self.env.user.id,
+                'approval_state': 'approved',
                 'approval_date': fields.Date.context_today(sheet),
             })
         # self.activity_update()
@@ -92,7 +90,7 @@ class Expenses(models.Model):
 
     def action_submit_sheet(self):
         if self.user_type_=='rohax':
-            self.action_submit_expenses()
+            self.action_submit()
         else:
             self.write({'state': 'lm'})
             # self.activity_update()
