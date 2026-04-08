@@ -22,7 +22,7 @@
 
     # any module necessary for this one to work correctly
 
-    'depends': ['base', 'mail','maintenance','base_rida', 'account', 'accountant', 'purchase', 'mrp', 'project','purchase_stock','stock_last_purchase_price','purchase_requisition','stock', 'purchase_discount','mrp_landed_costs','stock_landed_costs_currency','sale', 'mrp', 'base_rida', 'purchase_order_delivery_status',],
+    'depends': ['base', 'mail','maintenance','base_rida', 'account', 'accountant', 'purchase', 'mrp', 'project','purchase_stock','stock_last_purchase_price','purchase_requisition','stock','stock_account', 'purchase_discount','mrp_landed_costs','stock_landed_costs_currency','sale', 'mrp', 'base_rida', 'purchase_order_delivery_status',],
     # 'hr_employee_main',
 
 
