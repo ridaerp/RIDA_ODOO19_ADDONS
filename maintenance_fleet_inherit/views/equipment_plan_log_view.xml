@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_equipment_plan_log_tree" model="ir.ui.view">
+        <field name="name">equipment.plan.log.tree</field>
+        <field name="model">equipment.plan.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="equipment_id"/>
+                <field name="usage_start"/>
+                <field name="usage_end"/>
+                <field name="duration_hours" widget="float_time" />
+                <field name="odometer_used"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_equipment_plan_log_form" model="ir.ui.view">
+        <field name="name">equipment.plan.log.form</field>
+        <field name="model">equipment.plan.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve_fleet" type="object" string="Approve Fleet" class="btn-primary" invisible="state != 'under_production'" groups="maintenance.group_equipment_manager"/>
+                     <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+
+                            <field name="equipment_type_id" readonly="state != 'under_production'"/>
+                            <field name="usage_start" readonly="state != 'under_production'"/>
+                            <field name="usage_end" readonly="state != 'under_production'"/>
+
+                        </group>
+                        <group>
+                            <field name="equipment_id" readonly="state != 'under_production'"/>
+                            <field name="production_id" readonly="1"/>
+                            <field name="odometer_start" readonly="state != 'under_production'"  groups="maintenance.group_equipment_manager"/>
+                            <field name="odometer_end" readonly="state != 'under_production'"  groups="maintenance.group_equipment_manager"/>
+                            <field name="duration_hours" readonly="1"  widget="float_time"/>
+                            <field name="odometer_used" readonly="1"   groups="maintenance.group_equipment_manager"/>
+
+                            <field name="is_replaced"/>
+                            <field name="replacement_time"  invisible="is_replaced == False" readonly="state != 'under_production'"/>
+                            <field name="replacement_equipment_id" invisible="is_replaced == False" readonly="state != 'under_production'"/>
+                            <field name="replacement_reason" invisible="is_replaced == False" readonly="state != 'under_production'"/>
+                            <field name="replacement_odometer_start" invisible="is_replaced == False" readonly="state != 'under_production'" groups="maintenance.group_equipment_manager"/>
+                            <field name="replacement_odometer_end" invisible="is_replaced == False" readonly="state != 'under_production'" groups="maintenance.group_equipment_manager"/>
+                            <field name="replacement_odometer_used" invisible="is_replaced == False" readonly="1"  groups="maintenance.group_equipment_manager"/>
+
+
+                        </group>
+                   </group>
+                     <field name="note"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_equipment_plan_log" model="ir.actions.act_window">
+        <field name="name">Equipment plan Log</field>
+        <field name="res_model">equipment.plan.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first log entry</p>
+        </field>
+    </record>
+
+    <!-- Menu item -->
+    <menuitem id="menu_equipment_plan_log_root" name="Equipment Plan Logs" sequence="3"  parent="maintenance_fleet_inherit.menu_vechile_request_forrm_user"/>
+
+    <menuitem id="menu_equipment_plan_ch_log" name="Usage Logs"
+              parent="menu_equipment_plan_log_root"
+              action="action_equipment_plan_log"/>
+</odoo>
