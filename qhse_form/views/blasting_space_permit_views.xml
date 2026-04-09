@@ -215,9 +215,9 @@
                                         <field name="issuer_date"/>
                                     </group>
                                 </group>
-<!--                                <div class="alert alert-info" role="alert" style="margin-top: 20px;">-->
-<!--                                    أقر بأنني قد راجعت هذا التصريح وتم تنفيذ جميع إجراءات التحكم اللازمة.-->
-<!--                                </div>-->
+                                <group string="سجل اعتمادات الأقسام" name="approval_history" invisible="not approval_log">
+                                    <field name="approval_log" nolabel="1"/>
+                                </group>
                             </page>
                         </notebook>
                         <group>

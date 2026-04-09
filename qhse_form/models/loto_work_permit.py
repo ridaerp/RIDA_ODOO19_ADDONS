@@ -12,7 +12,8 @@ class LotoWorkPermit(models.Model):
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
-    approved_dept_ids = fields.Many2many('hr.department', 'hot_work_dept_rel', string='الأقسام التي وافقت')
+    approved_dept_ids = fields.Many2many('hr.department', 'loto_work_dept_rel', string='الأقسام التي وافقت')
+    approval_log = fields.Html(string='سجل اعتمادات الأقسام / Dept Approvals Log', readonly=True)
     state = fields.Selection([
         ('draft', 'مسودة / Draft'),
         ('dept_approval', 'انتظار اعتماد الأقسام / Dept Approval'),
@@ -264,26 +265,61 @@ class LotoWorkPermit(models.Model):
                 rec.state = 'submitted'
                 rec.action_update_activities()
 
+    # def action_dept_approve(self):
+    #     for rec in self:
+    #         # التأكد أن المستخدم الحالي هو مدير لأحد الأقسام المعنية
+    #         user_employee = self.env.user.employee_id
+    #         managed_depts = self.env['hr.department'].search([('manager_id', '=', user_employee.id)])
+            
+    #         # تقاطع الأقسام التي يديرها المستخدم مع الأقسام المطلوبة في التصريح
+    #         depts_to_approve = rec.department_ids.filtered(lambda d: d.id in managed_depts.ids)
+            
+    #         if not depts_to_approve:
+    #             raise UserError("عذراً، أنت لست مديراً لأي من الأقسام المعنية بهذا التصريح.")
+
+    #         # إضافة القسم للقائمة التي وافقت
+    #         rec.approved_dept_ids |= depts_to_approve
+            
+    #         # التحقق: هل وافقت كل الأقسام المطلوبة؟
+    #         if all(dept in rec.approved_dept_ids for dept in rec.department_ids):
+    #             rec.state = 'submitted' # الانتقال لمسؤول السلامة
+    #             rec.message_post(body="تم اعتماد جميع الأقسام المعنية. الطلب الآن بانتظار مسؤول السلامة.")
+    #             rec.action_update_activities() # تنبيه مسؤولي السلامة
+    #         else:
+    #             rec.message_post(body=f"تم الاعتماد من قبل قسم {depts_to_approve.mapped('name')}. بانتظار بقية الأقسام.")
     def action_dept_approve(self):
         for rec in self:
             # التأكد أن المستخدم الحالي هو مدير لأحد الأقسام المعنية
             user_employee = self.env.user.employee_id
             managed_depts = self.env['hr.department'].search([('manager_id', '=', user_employee.id)])
             
-            # تقاطع الأقسام التي يديرها المستخدم مع الأقسام المطلوبة في التصريح
-            depts_to_approve = rec.department_ids.filtered(lambda d: d.id in managed_depts.ids)
+            # تحسين: نفلتر الأقسام التي يديرها المستخدم "ولم توافق بعد" لتجنب التكرار
+            depts_to_approve = rec.department_ids.filtered(
+                lambda d: d.id in managed_depts.ids and d.id not in rec.approved_dept_ids.ids
+            )
             
             if not depts_to_approve:
-                raise UserError("عذراً، أنت لست مديراً لأي من الأقسام المعنية بهذا التصريح.")
+                # رسالة تنبيه إذا كان قد وافق مسبقاً أو ليس مديراً
+                raise UserError("عذراً، لا توجد أقسام معنية تحتاج لاعتمادك حالياً أو تم الاعتماد مسبقاً.")
 
-            # إضافة القسم للقائمة التي وافقت
+            # تجهيز الأسطر الجديدة
+            new_lines = ""
+            current_time = fields.Datetime.now().strftime('%Y-%m-%d %H:%M')
+            for dept in depts_to_approve:
+                new_lines += f"<li><b>{dept.name}:</b> تم الاعتماد بواسطة {self.env.user.name} بتاريخ {current_time}</li>"
+
+            # تحديث السجل النصي (HTML)
+            existing_log = rec.approval_log or ""
+            rec.approval_log = f"{existing_log}<ul style='list-style-type: circle; margin: 0;'>{new_lines}</ul>"
+
+            # إضافة القسم لقائمة الموافقين (Many2many)
             rec.approved_dept_ids |= depts_to_approve
             
-            # التحقق: هل وافقت كل الأقسام المطلوبة؟
+            # التحقق من اكتمال كافة الموافقات
             if all(dept in rec.approved_dept_ids for dept in rec.department_ids):
-                rec.state = 'submitted' # الانتقال لمسؤول السلامة
+                rec.state = 'submitted'
                 rec.message_post(body="تم اعتماد جميع الأقسام المعنية. الطلب الآن بانتظار مسؤول السلامة.")
-                rec.action_update_activities() # تنبيه مسؤولي السلامة
+                rec.action_update_activities()
             else:
                 rec.message_post(body=f"تم الاعتماد من قبل قسم {depts_to_approve.mapped('name')}. بانتظار بقية الأقسام.")
 
