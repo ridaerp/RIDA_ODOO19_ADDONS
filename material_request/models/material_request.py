@@ -1362,7 +1362,11 @@ class MaterialRequest(models.Model):
         view_id = self.env.ref('material_request.view_purchase_contract_custom_form1')
         order_line = []
         account_analytic_id = self.analytic_account_id.id if self.analytic_account_id else False
-        type = self.env['purchase.requisition.type'].search([('exclusive', '=', 'exclusive')], limit=1)
+        # type = self.env['purchase.requisition.type'].search([('exclusive', '=', 'exclusive')], limit=1)
+        requisition_type_model = self.env.get('purchase.requisition.type')
+        ptype = False
+        if requisition_type_model:
+            ptype = requisition_type_model.search([('exclusive', '=', 'exclusive')], limit=1)
         for line in self.line_ids:
             product = line.product_id
             # if self.env.uid == SUPERUSER_ID:
