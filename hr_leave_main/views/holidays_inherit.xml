@@ -80,6 +80,7 @@
             </xpath>
             <xpath expr="//field[@name='name']" position="before">
                <!-- Add your fields or attributes here -->
+               <field name="remaining_balance"/>
                <field name="attachment"/>
                <field name="justification"/>
                <field name="click" invisible="1"/>
