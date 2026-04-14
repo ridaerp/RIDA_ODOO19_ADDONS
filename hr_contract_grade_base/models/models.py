@@ -187,12 +187,6 @@ class Employee(models.Model):
                     total += line.amount
             rec.total_allowance = total 
 
-
-
-
-
-
-
 class EmployeeVersion(models.Model):
     _inherit = 'hr.version'
 
@@ -200,7 +194,6 @@ class EmployeeVersion(models.Model):
     band_id = fields.Many2one(comodel_name='job.band', string='Job Band')
     grade_id = fields.Many2one('hr.grade.configuration', string="Grade")
     total_allowance = fields.Float(string='Total Allowance')
-    grade_id = fields.Many2one('hr.grade.configuration', string="Grade", readony=True)
     grade_line_id = fields.One2many(comodel_name='hr.grade.line', inverse_name='contract_id', string='Old Benefits')
     wage = fields.Monetary(string='Take Home', store=True)
     payroll_wage = fields.Monetary(string='Gross')
@@ -210,12 +203,79 @@ class EmployeeVersion(models.Model):
     basic_percentage = fields.Float(string='Basic Salary(%)' , default= 61.00)
     cola_percentage = fields.Float(string='Cola(%)', default= 15.00)
     housing_percentage = fields.Float(string='Housing(%)', default= 10.00)
-    transportion_percentage = fields.Float(string='Transportion(%)', default= 14.00)
     basic_salary = fields.Float(string='Basic Salary' , readonly=True )
     cola = fields.Float(string='Cola', readonly=True)
     housing = fields.Float(string='Housing' ,readonly=True,)
     transportion = fields.Float(string='Transportion', readonly=True, )
     salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
-    contract_date_start = fields.Date(readonly=False, inherited=True, groups="base.group_user")
-    wage_type = fields.Selection(readonly=False, inherited=True, groups="base.group_user")
+    transportion_allowance = fields.Float("Transportation Allowance")
+    car_allowance = fields.Float("Car Allowance")
+    fuel_allowance = fields.Float("Fuel Allowance")
+    phone_allowance = fields.Float("Phone Allowance")
+    seconment_allowance = fields.Float("Seconment Allowance")
+    medical_allowance = fields.Float("Medical Allowance")
+    medicine_allowance = fields.Float("Medicine Allowance")
+    other_recevible = fields.Float("Other Receivables")
+    other_deductions = fields.Float("Other Deductions")
+    acting_allowance = fields.Boolean("Acting Allowance")
+    acting_type = fields.Selection([('50', '50%'), ('30', '30%'), ('15', '15%')], "Acting Allowance")
+    acting_amount = fields.Float("Acting Allowance")
+    has_fuel_allows = fields.Boolean("Fuel Allowance", default=False)
+    has_transport_allows = fields.Boolean("Transportation Allowance", default=False)
+    has_car_allows = fields.Boolean("Car Allowance", default=False)
+    has_phone_allows = fields.Boolean("Phone Allowance", default=False)
+    has_scarcity_allowance = fields.Boolean("Scarcity Allowance", default=False)
+    employee_type = fields.Selection(related="employee_id.rida_employee_type")
+    analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
+    workeddays = fields.Float("Working Days ")
+
+    @api.onchange('department_id')
+    def get_analytic_account_id(self):
+        for rec in self:
+            if rec.department_id.analytic_account_id:
+                rec.analytic_account_id = rec.department_id.analytic_account_id
+            else:
+                rec.analytic_account_id = False
+
+    @api.onchange('acting_type')
+    def get_acting_amount(self):
+        if self.acting_allowance:
+            self.acting_amount = float(str(self.acting_type))
+        else:
+            pass
+
+    def _compute_dummy(self):
+        pass
+
+    @api.onchange('has_transport_allows')
+    def get_trans_allowances(self):
+        for rec in self:
+            allowance_ids = self.env['hr.contract.allowance'].search([], limit=1)
+            for recc in allowance_ids:
+                if rec.has_transport_allows:
+                    rec.transportion_allowance = recc.transportion_allowance
+
+    @api.onchange('has_car_allows')
+    def get_car_allowances(self):
+        for rec in self:
+            allowance_ids = self.env['hr.contract.allowance'].search([], limit=1)
+            for recc in allowance_ids:
+                if rec.has_car_allows:
+                    rec.car_allowance = recc.car_allowance
+
+    @api.onchange('has_fuel_allows')
+    def get_fuel_allowance(self):
+        for rec in self:
+            allowance_ids = self.env['hr.contract.allowance'].search([], limit=1)
+            for recc in allowance_ids:
+                if rec.has_fuel_allows:
+                    rec.fuel_allowance = recc.fuel_allowance
+
+    @api.onchange('has_phone_allows')
+    def get_phone_allowance(self):
+        for rec in self:
+            allowance_ids = self.env['hr.contract.allowance'].search([], limit=1)
+            for recc in allowance_ids:
+                if rec.has_phone_allows:
+                    rec.phone_allowance = recc.phone_allowance
 

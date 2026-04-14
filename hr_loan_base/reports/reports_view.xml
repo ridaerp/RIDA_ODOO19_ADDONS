@@ -1,13 +1,15 @@
 <odoo>
     <data>
-        <report
-            id="hr_lo_report_pdf"
-            model="hr.loan"
-            string="Loan Report"
-            report_type="qweb-pdf"
-            name="hr_loan_base.hr_loan_report_pdf"
-            file="hr_loan_base.hr_loan_report_pdf"
-            attachment_use="True"
-        />
+        <record id="hr_lo_report_pdf" model="ir.actions.report">
+            <field name="name">Loan Report</field>
+            <field name="model">hr.loan</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_loan_base.hr_loan_report_pdf</field>
+            <field name="report_file">hr_loan_base.hr_loan_report_pdf</field>
+            <field name="print_report_name">'Loan - %s' % (object.name)</field>
+            <field name="attachment">'Loan_%s.pdf' % (object.name)</field>
+            <field name="binding_model_id" ref="model_hr_loan"/>
+            <field name="binding_type">report</field>
+        </record>
     </data>
 </odoo>

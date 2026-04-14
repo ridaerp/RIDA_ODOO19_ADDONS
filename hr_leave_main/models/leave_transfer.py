@@ -22,7 +22,7 @@ class hrLeavetransferLine(models.Model):
         ('hr_manager', 'HR Manager Approve'),
         ('approve','Approved'),
         ('reject','Rejected'),
-    ], string='Status', default = 'draft',tracking=True)
+    ], string='Status', default = 'draft',track_visibility='onchange')
 
     def _get_employee(self):
         if len(self.env.user.employee_ids) > 0:

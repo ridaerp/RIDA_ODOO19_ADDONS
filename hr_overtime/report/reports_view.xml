@@ -1,15 +1,16 @@
 <odoo>
     <data>
-        <report
-            id="hr_overtime_report_id"
-            model="hr.over.time"
-            string="Overtime Report"
-            report_type="qweb-pdf"
-            name="hr_overtime.over_time_report_op_temp_id"
-            file="hr_overtime.over_time_report_op_temp_id"
-            attachment_use="True"
-            menu="True"
-        />
+        <record id="hr_overtime_report_id" model="ir.actions.report">
+            <field name="name">Overtime Report</field>
+            <field name="model">hr.over.time</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_overtime.over_time_report_op_temp_id</field>
+            <field name="report_file">hr_overtime.over_time_report_op_temp_id</field>
+            <field name="print_report_name">'Overtime - %s' % (object.name)</field>
+            <field name="attachment">'Overtime_%s.pdf' % (object.name)</field>
+            <field name="binding_model_id" ref="model_hr_over_time"/>
+            <field name="binding_type">report</field>
+        </record>
 
         <record id="paperformat_overtime" model="report.paperformat">
             <field name="name">European A4</field>

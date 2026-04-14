@@ -88,6 +88,15 @@
                 <field name="mercy_relation" invisible="not show_mercy_relation"/>
                 <field name="show_mercy_relation" invisible="1"/>
             </xpath>
+<!--            <xpath expr="//field[@name='duration_display']" position="after">-->
+<!--                <field name="delegated_employee_id" invisible="leave_type_test == 'sick'"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='delegated_employee_id']" position="after">-->
+<!--                <field name="leave_type_test" invisible="1"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='attachment']" position="replace">-->
+<!--               <field name="attachment" invisible="leave_type_test != 'sick'" required="leave_type_test == 'sick'"/>-->
+<!--            </xpath>-->
 
          </field>
       </record>
