@@ -179,9 +179,6 @@
                                         <field name="issuer_sig" widget="signature"/>
                                     </group>
                                 </group>
-                                <group string="سجل اعتمادات الأقسام" name="approval_history" invisible="not approval_log">
-                                    <field name="approval_log" nolabel="1"/>
-                                </group>
                             </page>
 
                             <page string="Closure / الإغلاق" invisible="state not in ('issued', 'extended', 'closed')">

@@ -216,9 +216,6 @@
                                     <field name="authorizer_signature" widget="signature"/>
                                     <field name="authorizer_date"/>
                                 </group>
-                                <group string="سجل اعتمادات الأقسام" name="approval_history" invisible="not approval_log">
-                                    <field name="approval_log" nolabel="1"/>
-                                </group>
                             </group>
 
                             <hr/>

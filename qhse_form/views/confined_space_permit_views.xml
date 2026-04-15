@@ -221,9 +221,6 @@
                                     <field name="authorizer_id" options="{'no_create': True}" required="True"/>
                                     <field name="safety_officer_id" options="{'no_create': True}"/>
                                 </group>
-                                <group string="سجل اعتمادات الأقسام" name="approval_history" invisible="not approval_log">
-                                    <field name="approval_log" nolabel="1"/>
-                                </group>
                             </page>
                         </notebook>
                         <group>

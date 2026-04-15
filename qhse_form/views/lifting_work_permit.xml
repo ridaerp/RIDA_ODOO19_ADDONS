@@ -266,9 +266,6 @@
                                     <field name="approver_sign_time" nolabel="1"/>
                                 </group>
                             </group>
-                            <group string="سجل اعتمادات الأقسام" name="approval_history" invisible="not approval_log">
-                                <field name="approval_log" nolabel="1"/>
-                            </group>
 
                             <hr style="border-top: 2px solid #bbb;"/>
 

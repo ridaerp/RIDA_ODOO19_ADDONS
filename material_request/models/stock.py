@@ -192,7 +192,7 @@ class StockLandedCost(models.Model):
         partner_bank_id = self.partner_id.bank_ids.filtered_domain(
             ['|', ('company_id', '=', False), ('company_id', '=', self.company_id.id)])[:1]
         invoice_vals = {
-            'ref': '',
+            'ref': self.name,   # or any custom value you want
             'move_type': 'in_invoice',
             'currency_id': self.currency_id.id,
             # 'invoice_user_id': self.user_id and self.user_id.id or self.env.user.id,
@@ -206,6 +206,42 @@ class StockLandedCost(models.Model):
             'company_id': self.company_id.id,
         }
         return invoice_vals
+
+
+    # def _prepare_invoice(self):
+    #     """Prepare the dict of values to create the new invoice for a purchase order."""
+    #     self.ensure_one()
+    #     move_type = self.env.context.get('default_move_type', 'in_invoice')
+
+    #     partner_invoice = self.env['res.partner'].browse(
+    #         self.partner_id.address_get(['invoice'])['invoice']
+    #     )
+    #     partner_bank_id = self.partner_id.commercial_partner_id.bank_ids.filtered_domain([
+    #         '|', ('company_id', '=', False), ('company_id', '=', self.company_id.id)
+    #     ])[:1]
+
+    #     invoice_vals = {
+    #         'move_type': move_type,
+    #         # 'narration': self.note,
+    #         'currency_id': self.currency_id.id,
+    #         'partner_id': partner_invoice.id,
+    #         # 'fiscal_position_id': (
+    #         #     self.fiscal_position_id
+    #         #     or self.fiscal_position_id._get_fiscal_position(partner_invoice)
+    #         # ).id,
+    #         'partner_bank_id': partner_bank_id.id,
+    #         'invoice_origin': self.name,
+
+    #         # 👇 ADD THIS LINE
+    #         'ref': self.name,   # or any custom value you want
+
+    #         # 'invoice_payment_term_id': self.payment_term_id.id,
+    #         'invoice_line_ids': [],
+    #         'company_id': self.company_id.id,
+    #     }
+    #     return invoice_vals
+
+
 
     def create_transporter_invoices(self):
         """Create the invoice associated to the PO."""
