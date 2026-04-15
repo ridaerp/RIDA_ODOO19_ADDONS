@@ -139,12 +139,12 @@ class Bills_Workflow(models.Model):
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
 
-    # stop duplicate function
-    @api.depends('ref', 'commercial_partner_id', 'company_id')
-    def _compute_duplicated_ref_ids(self):
+    # # stop duplicate function
+    # @api.depends('ref', 'commercial_partner_id', 'company_id')
+    # def _compute_duplicated_ref_ids(self):
 
-        for move in self:
-            move.duplicated_ref_ids = self.env['account.move']
+    #     for move in self:
+    #         move.duplicated_ref_ids = self.env['account.move']
 
     ############################## change function by ekhlas    
     def action_submit(self):

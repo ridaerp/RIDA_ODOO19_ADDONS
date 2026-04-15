@@ -41,22 +41,53 @@ class hr_payroll_workflow(models.Model):
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
-    
-    @api.model
-    def create(self, vals):
-        res = super(hr_payroll_workflow, self).create(vals)
-        # allowed_input_types = res.struct_id.input_line_type_ids
-        allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
-        # Get existing input lines
-        # Create or update input lines
-        for input_type in allowed_input_types:
-                input_line = self.env['hr.payslip.input'].create({
-                    'payslip_id': res.id,
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        payslips = super().create(vals_list)
+
+        for payslip in payslips:
+            if not payslip.struct_id:
+                continue
+
+            existing_input_type_ids = payslip.input_line_ids.mapped('input_type_id').ids
+            allowed_input_types = payslip.struct_id.input_line_type_ids.sorted(
+                key=lambda x: x.sequence, reverse=True
+            )
+
+            for input_type in allowed_input_types:
+                if input_type.id in existing_input_type_ids:
+                    continue
+
+                values = {
+                    'payslip_id': payslip.id,
                     'input_type_id': input_type.id,
-                    'amount': 0.0,  # Default amount
-                    'version_id': res.version_id.id,
-                })
-        return res
+                    'amount': 0.0,
+                }
+
+                if 'version_id' in self.env['hr.payslip.input']._fields and payslip.version_id:
+                    values['version_id'] = payslip.version_id.id
+
+                self.env['hr.payslip.input'].create(values)
+
+        return payslips
+
+
+    # @api.model
+    # def create(self, vals):
+    #     res = super(hr_payroll_workflow, self).create(vals)
+    #     # allowed_input_types = res.struct_id.input_line_type_ids
+    #     allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
+    #     # Get existing input lines
+    #     # Create or update input lines
+    #     for input_type in allowed_input_types:
+    #             input_line = self.env['hr.payslip.input'].create({
+    #                 'payslip_id': res.id,
+    #                 'input_type_id': input_type.id,
+    #                 'amount': 0.0,  # Default amount
+    #                 'version_id': res.version_id.id,
+    #             })
+    #     return res
 
     def unlink(self):
         if any(payslip.state not in ('draft', 'verify','close','cancel') for payslip in self):
@@ -279,6 +310,11 @@ class hr_payroll_workflow_run(models.Model):
     _inherit = 'hr.payslip.run'
     _description = 'Added workflows to payroll stages'
     state = fields.Selection([
+        ('01_ready', 'Ready'),
+        ('02_close', 'Done'),
+        ('03_paid', 'Paid'),
+        ('04_cancel', 'Cancelled'),
+
         ('draft', 'Draft'), 
         ('director_approve','HR Director Approve'),
         ('ccso_approve','CCSO Approve'),
