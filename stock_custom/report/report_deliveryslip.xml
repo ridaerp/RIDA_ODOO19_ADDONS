@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
-
-    <report
-            id="action_report_delivery_custom"
-            model="stock.picking"
-            string="MATERIAL ISSUANCE VOUCHER (MIV)"
-            report_type="qweb-pdf"
-            name="stock_custom.report_deliveryslip_custom"
-            file="stock_custom.report_deliveryslip_custom"
-            attachment_use="True"
-            menu="True"
-    />
-
+    <record id="action_report_delivery_custom" model="ir.actions.report">
+        <field name="name">MATERIAL ISSUANCE VOUCHER (MIV)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock_custom.report_deliveryslip_custom</field>
+        <field name="report_file">stock_custom.report_deliveryslip_custom</field>
+        <field name="print_report_name">'MIV - %s' % (object.name)</field>
+        <field name="attachment">'MIV_%s.pdf' % (object.name)</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
 
     <template id="report_deliveryslip_custom">
         <t t-call="web.html_container">
