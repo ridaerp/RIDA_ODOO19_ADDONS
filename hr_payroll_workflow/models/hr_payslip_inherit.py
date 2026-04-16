@@ -114,8 +114,7 @@ class hr_payroll_workflow(models.Model):
 
 
 
-    @api.depends('date_from','mazaya_id')
-    # @api.depends('date_from','mazaya_id','payslip_day')
+    @api.depends('date_from','mazaya_id','payslip_day')
     def compute_mazaya(self):
         for record in self:
             mazaya_total = mazaya_tax = 0
@@ -153,7 +152,6 @@ class hr_payroll_workflow(models.Model):
 
 
 
-    ############ekhlas code ###################
 
     def _compute_basic_net(self):
         super(hr_payroll_workflow,self)._compute_basic_net()
@@ -227,7 +225,10 @@ class hr_payroll_workflow(models.Model):
     def compute_sheet(self):
         self.caculate_workdays_take_home()
         self.compute_mazaya()
-        return super().compute_sheet()
+        # return super().compute_sheet()
+        return super(hr_payroll_workflow, self).compute_sheet()
+
+
 
     # def compute_sheet(self):
     #     self.caculate_workdays_take_home()
@@ -368,7 +369,7 @@ class hr_payroll_workflow_run(models.Model):
         ('paid', 'Paid'),
         ('close','Confirmed'),
         ('to_pay','To pay'),
-        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='draft')
+        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
     currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
     # Submit Button function

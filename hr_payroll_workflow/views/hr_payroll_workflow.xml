@@ -18,7 +18,7 @@
                             invisible="state != 'verify'" class="oe_highlight" context="{'payslip_generate_pdf': False}"/>
 
                     <button string="Compute Sheet" type="object" name="compute_sheet" groups="hr.group_hr_user"
-                            invisible="state != 'draft'" class="oe_highlight"
+                            class="oe_highlight"
                             title="Recompute the payslip lines"/>
 
                     <button string="Refund" name="refund_sheet"   invisible="state != 'done'" type="object"/>
