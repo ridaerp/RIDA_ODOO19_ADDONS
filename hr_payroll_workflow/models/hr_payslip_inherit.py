@@ -34,7 +34,7 @@ class hr_payroll_workflow(models.Model):
                 \n* If the payslip is confirmed then status is set to \'Confirmed\'.
                 \n* When user cancel payslip the status is \'Rejected\'.""")
 
-    payslip_day = fields.Float(string="WorkedDays",readonly=True,compute="caculate_workdays_take_home")
+    payslip_day = fields.Float(string="WorkedDays",readonly=True)
 
     take_home_wage = fields.Monetary(compute='_compute_basic_net')
 
@@ -43,12 +43,6 @@ class hr_payroll_workflow(models.Model):
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
 
 
-    mazaya_cash = fields.Float(compute='compute_mazaya', store=True)
-    mazaya_dress = fields.Float(compute='compute_mazaya', store=True)
-    mazaya_midical = fields.Float(compute='compute_mazaya', store=True)
-    mazaya_grant = fields.Float(compute='compute_mazaya', store=True)
-    mazaya_total = fields.Float(compute='compute_mazaya', store=True)
-    mazaya_tax = fields.Float(compute='compute_mazaya', store=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -120,7 +114,7 @@ class hr_payroll_workflow(models.Model):
 
 
 
-    @api.depends('date_from', 'mazaya_id', 'mazaya_id.based_on', 'payslip_day', 'version_id.payroll_wage')
+    @api.depends('date_from','mazaya_id')
     # @api.depends('date_from','mazaya_id','payslip_day')
     def compute_mazaya(self):
         for record in self:
@@ -167,6 +161,7 @@ class hr_payroll_workflow(models.Model):
             payslip.basic_wage = payslip._get_salary_line_total('BASIC')
             payslip.net_wage = payslip._get_salary_line_total('NET')
             payslip.take_home_wage = payslip._get_salary_line_total('TH')
+
 
     def caculate_workdays_take_home(self):
         for rec in self:
@@ -229,22 +224,19 @@ class hr_payroll_workflow(models.Model):
     #         else:
     #             rec.payslip_day=30
 
-
     def compute_sheet(self):
         self.caculate_workdays_take_home()
         self.compute_mazaya()
-        res = super().compute_sheet()
-        self.write({'state': 'draft'})
-        return res
+        return super().compute_sheet()
 
     # def compute_sheet(self):
-    #     res = super(hr_payroll_workflow,self).compute_sheet()
-    #     # for payslip in payslips:
-    #     self.write({'state':'draft'})
     #     self.caculate_workdays_take_home()
     #     self.compute_mazaya()
-
+    #     res = super().compute_sheet()
+    #     self.write({'state': 'draft'})
     #     return res
+
+
 
     # Submit Button function
     def submit_draft_state(self):
