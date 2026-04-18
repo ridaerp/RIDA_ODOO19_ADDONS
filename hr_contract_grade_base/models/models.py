@@ -228,6 +228,7 @@ class EmployeeVersion(models.Model):
     employee_type = fields.Selection(related="employee_id.rida_employee_type")
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
     workeddays = fields.Float("Working Days ")
+    contract_date_start = fields.Date(groups="base.group_user")
 
     @api.onchange('department_id')
     def get_analytic_account_id(self):
