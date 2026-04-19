@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+        <record id="hr_employee_view_form_inherited" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherited</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr_contract_benefit.hr_employee_view_form_inherited_benefit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <field name="is_worker"/>
+                    <field name="is_section_head"/>
+                    <field name="band_id" invisible="1" />
+                    <field name="grade_id" invisible="1" />
+                </xpath>
+
+                <xpath expr="//page[@name='payroll_information']" position="attributes">
+                    <attribute name="groups">hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_date_start']" position="replace">
+                    <field name="contract_date_start"/>
+                </xpath>
+                <xpath expr="//field[@name='wage_type']" position="replace">
+                    <field name="wage_type"/>
+                </xpath>
+
+                <xpath expr="//group[@name='benefits_group']" position="after">
+                    <group name="group_top">
+                        <group name="group_left">
+                            <field name="basic"/>
+                            <field name="min"/>
+                            <field name="max"/>
+                            <field name="salary_currency" groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+                        </group>
+                        <group name="group_right">
+                            <field name="payroll_wage" groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+                        </group>
+                    </group>
+                        <group>
+                            <field name="grade_line_id" nolabel="1" colspan="2" class="o_full_width">
+                                <list editable="top" >
+                                    <field name="name" readonly="True" force_save="1" required="1"/>
+                                    <field name="code" readonly="True" force_save="1" required="1"/>
+                                    <field name="type" readonly="1" force_save="1"/>
+                                    <field name="percentage" readonly="type == 'fixed'"  force_save="1"/>
+                                    <field name="amount" readonly="type != 'fixed'"  force_save="1"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="total_allowance"/>
+                            <field name="wage" string="Take Home/Month"/>
+                        </group>
+                        <group string="Salary Calculations" name="salary_calculation"   groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site">
+                            <group name="group_left">
+                                <field name="payroll_wage" invisible="1" />
+                                <field name="basic_percentage" />
+                                <field name="cola_percentage" />
+                                <field name="housing_percentage" />
+                                <field name="transportion_percentage" />
+                            </group>
+                            <group name="group_right">
+                                <field name="basic_salary"   force_save="1"/>
+                                <field name="cola"   force_save="1"/>
+                                <field name="housing"   force_save="1"/>
+                                <field name="transportion"   force_save="1"/>
+                            </group>
+                        </group>
+                    </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

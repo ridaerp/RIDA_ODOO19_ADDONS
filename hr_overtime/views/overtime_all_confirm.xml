@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+        <!-- to submit all records-->
+       <record id="view_submit_all_records" model="ir.actions.server">
+            <field name="name">Submit overtime </field>
+            <field name="model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="binding_model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="state">code</field>
+            <field name="code">action = records.button_submit()</field>
+        </record>
+
+        <record id="hr_officer_overtime_bulk_approve" model="ir.actions.server">
+            <field name="name">HR Officer Approve</field>
+            <field name="model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="binding_model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="state">code</field>
+            <field name="code">action = records.button_hr_officer_approval()</field>
+        </record>
+
+        <record id="hr_manager_overtime_bulk_approve" model="ir.actions.server">
+            <field name="name">HR Manager Approve</field>
+            <field name="model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="binding_model_id" ref="hr_overtime.model_hr_over_time"/>
+            <field name="state">code</field>
+            <field name="code">action = records.button_hr_manager_approval()</field>
+        </record>
+
+
+
+    </data>
+</odoo>

@@ -1,0 +1,233 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="mr_settings_privilege" model="res.groups.privilege">
+        <field name="name">Purchase Material</field>
+    </record>
+
+    <!-- <record model="ir.module.category" id="mr_settings">
+        <field name="name">Purchase Material</field>
+        <field name="sequence">3</field>
+    </record> -->
+
+    <record id="wr_settings_privilege" model="res.groups.privilege">
+        <field name="name">Ore Delivery Module</field>
+    </record>
+
+    <!-- <record model="ir.module.category" id="wr_settings">
+        <field name="name">Ore Delivery Module</field>
+        <field name="sequence">3</field>
+    </record> -->
+
+    <!-- Rida Line Manager Group -->
+    <record id="group_purchase_request_user" model="res.groups">
+        <field name="name">Purchase Request User</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Rida buyer Manager Group -->
+    <record id="group_buyers" model="res.groups">
+        <field name="name">Purchase Executive Buyers</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- add group by ekhlas -->
+    <!-- Rida fleet Director Group -->
+
+    <record id="group_mr_reader" model="res.groups">
+        <field name="name">Purchase Material Reader</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_contract_manager" model="res.groups">
+        <field name="name">Contract Manager</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <!-- <field name="implied_ids" eval="[(4, ref('group_contract_manager'))]"/> -->
+    </record>
+
+    <!-- ore/rock -->
+
+    <record id="group_ore_rock_purchase_user" model="res.groups">
+        <field name="name">Ore/Rock Purchaser</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_rock_supply_chain_manager" model="res.groups">
+        <field name="name">Ore/Rock Manager</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('group_ore_rock_purchase_user'))]"/>
+    </record>
+
+
+    <record id="group_equipment_manager" model="res.groups">
+        <field name="name">Equipemnt Manager</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_user_coscenter" model="res.groups">
+        <field name="name">Restrict Analytic account /User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_user_product_category" model="res.groups">
+        <field name="name">Restrict Product Category/User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="costcenter_user_rule" model="ir.rule">
+        <field name="name">Cost Center/User</field>
+        <field name="model_id" ref="analytic.model_account_analytic_account"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('id','in',user.analytic_account_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_user_coscenter'))]"/>
+    </record>
+
+    <record id="product_category_user_rule" model="ir.rule">
+        <field name="name">Product Category/User</field>
+        <field name="model_id" ref="product.model_product_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('id','in',user.product_category_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_user_product_category'))]"/>
+    </record>
+
+    <record id="product_category_user2_rule" model="ir.rule">
+        <field name="name">Product Category/User 2</field>
+        <field name="model_id" ref="product.model_product_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('parent_id.id','in',user.product_category_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_user_product_category'))]"/>
+    </record>
+
+    <record id="product_category_user3_rule" model="ir.rule">
+        <field name="name">Product Category/User 3</field>
+        <field name="model_id" ref="product.model_product_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('parent_id.parent_id.id','in',user.product_category_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_user_product_category'))]"/>
+    </record>
+
+
+    <record id="purchase.purchase_user_account_move_rule" model="ir.rule">
+        <field name="name">Purchase User Account Move</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[('move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+    </record>
+
+
+    <!-- Weight unit Group -->
+    <record id="group_weight_unit_user" model="res.groups">
+        <field name="name">Scaling Unit/Requester</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_rock_db_geology_user" model="res.groups">
+        <field name="name">Ore/DB geologist</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+    </record>
+
+
+    <record id="group_opu_user" model="res.groups">
+        <field name="name">Ore/MATERIAL MINDS</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+    </record>
+
+
+
+    <record id="group_ore_reader_user" model="res.groups">
+        <field name="name">Ore Delivery /Scale unit /Reader</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_ore_reader_sale" model="res.groups">
+        <field name="name">Scale unit /Reader Rock Sale</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_ore_reader_stock" model="res.groups">
+        <field name="name">Scale unit /Reader Rock Stock</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_reader_pro" model="res.groups">
+        <field name="name">Scale unit /Reader Production</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_reader_planning" model="res.groups">
+        <field name="name">Scale unit /Reader Planning</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="ore_lab_requester" model="res.groups">
+        <field name="name">Ore/Lab requester</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_chemical_receiver_user" model="res.groups">
+        <field name="name">Chem-Lab /Receiver</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_rock_chemical_user" model="res.groups">
+        <field name="name">Chem-Lab Assayer</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_chemical_requester_reader" model="res.groups">
+        <field name="name">Chem-Lab Reader (CIC/CIL Sample Only)</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_chemical_requester_user1" model="res.groups">
+        <field name="name">Chem-Lab Reader/All Sample Type</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+    </record>
+
+    <record id="group_meta_lab_Metallurgist_user" model="res.groups">
+        <field name="name">Meta-Lab Metallurgist</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.ore_lab_requester'))]"/>
+    </record>
+
+
+    <record id="group_meta_lab_manager" model="res.groups">
+        <field name="name">Meta-Lab Manager</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.group_meta_lab_Metallurgist_user'))]"/>
+    </record>
+
+    <record id="group_meta_lab_reader" model="res.groups">
+        <field name="name">Ore Delivery/Meta-Lab Reader</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+</odoo>

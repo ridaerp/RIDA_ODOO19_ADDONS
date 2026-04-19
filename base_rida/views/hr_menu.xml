@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<openerp>
+    <data>
+		<record model="ir.ui.menu" id="cus_menu_hr_root">
+			<field name="name">Human Resource</field>
+			<field name="web_icon">hr,static/description/icon.png</field>
+		</record>
+
+		<record model="ir.ui.menu" id="hr.menu_hr_root">
+			<field name="name">Employees</field>
+			<field name="parent_id"  ref="base_rida.cus_menu_hr_root"/>
+			<field name="sequence" eval="1"/>
+		</record>
+
+		<record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_root">
+			<field name="name">Leaves</field>
+			<field name="parent_id"  ref="base_rida.cus_menu_hr_root"/>
+			<field name="sequence" eval="2"/>
+		</record>
+
+		<record model="ir.ui.menu" id="hr_work_entry_enterprise.menu_hr_payroll_root">
+			<field name="name">Payroll</field>
+			<field name="parent_id"  ref="base_rida.cus_menu_hr_root"/>
+			<field name="sequence" eval="4"/>
+		</record>
+
+		<record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_root">
+			<field name="name">Attendances</field>
+			<field name="parent_id"  ref="base_rida.cus_menu_hr_root"/>
+			<field name="sequence" eval="3"/>
+		</record>
+
+        <!-- Approval activities -->
+        <record id="mail_act_notification_approval" model="mail.activity.type">
+            <field name="name">Action Required</field>
+            <field name="icon">fa-check</field>
+        </record>
+ 
+    </data>
+</openerp>

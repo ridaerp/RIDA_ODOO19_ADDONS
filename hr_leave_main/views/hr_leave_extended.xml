@@ -1,0 +1,33 @@
+<odoo>
+    <record id="hr_leave_extension_view" model="ir.ui.view">
+        <field name="name">hr leave extended</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='name']" position="after">
+                <field name="delegated_employee_id"/>
+            </xpath> -->
+
+            <xpath expr="//field[@name='duration_display']" position="after">
+
+                    <field name="delegated_employee_id" invisible="leave_type_test == 'sick'"/>
+
+            </xpath>
+            <xpath expr="//field[@name='delegated_employee_id']" position="after">
+
+                <field name="leave_type_test" invisible="1"/>
+             <!--
+                  <field name="attachment" attrs="{'invisible': [('leave_type_test', '!=', 'sick')], 'required':[('leave_type_test', '=', 'sick')]}"/> -->
+
+              <!-- comment by ekhlas  <field name="medical_report" attrs="{'invisible': [('leave_type_test', '!=', 'sick')], 'required':[('leave_type_test', '=', 'sick')]}"/> -->
+            </xpath>
+
+
+            <xpath expr="//field[@name='attachment']" position="replace">
+
+                  <field name="attachment" invisible="leave_type_test != 'sick'" required="leave_type_test == 'sick'"/>
+              </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,81 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_scrap_custom,scrap.custom,model_stock_scrap,base.group_user,1,1,1,1
+access_stock_picking_type_manager,stock.picking.type manager,stock.model_stock_picking_type,stock.group_stock_manager,1,0,0,0
+access_stock_picking_type_admin,stock.picking.type admin,stock.model_stock_picking_type,base.group_system,1,1,1,1
+
+
+stock.access_stock_warehouse_manager,stock.warehouse.manager,stock.model_stock_warehouse,stock.group_stock_manager,1,0,0,0
+
+
+stock.access_stock_location_manager,stock.location.manager,stock.model_stock_location,stock.group_stock_manager,1,0,0,0
+
+
+stock.access_stock_picking_type_manager,stock.picking.type manager,stock.model_stock_picking_type,stock.group_stock_manager,1,0,0,0
+
+stock.access_product_group_res_partner_stock_manager,res_partner group_stock_manager,base.model_res_partner,stock.group_stock_manager,1,0,0,0
+
+
+stock.access_uom_uom_stock_manager,uom.uom stock_manager,uom.model_uom_uom,stock.group_stock_manager,1,0,0,0
+
+stock.access_product_product_stock_manager,product stock_manager,product.model_product_product,stock.group_stock_manager,1,0,0,0
+
+stock.access_product_template_stock_manager,product stock_manager,product.model_product_template,stock.group_stock_manager,1,0,0,0
+
+stock.access_product_category_stock_manager,product.category stock_manager,product.model_product_category,stock.group_stock_manager,1,0,0,0
+
+purchase.access_uom_uom_purchase_manager,uom.uom purchase_manager,uom.model_uom_uom,purchase.group_purchase_manager,1,0,0,0
+
+
+purchase.access_product_category_purchase_manager,product.category purchase_manager,product.model_product_category,purchase.group_purchase_manager,1,0,0,0
+
+purchase.access_product_product_purchase_manager,product.product purchase_manager,product.model_product_product,purchase.group_purchase_manager,1,0,0,0
+
+purchase.access_product_template_purchase_manager,product.template purchase_manager,product.model_product_template,purchase.group_purchase_manager,1,0,0,0
+
+purchase.access_product_supplierinfo_purchase_manager,product.supplierinfo purchase_manager,product.model_product_supplierinfo,purchase.group_purchase_manager,1,0,0,0
+
+
+access_product_supplierinfo_purchase_manager_admin,product.supplierinfo purchase_manager,product.model_product_supplierinfo,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_product_template_purchase_manager_amdin,product.template purchase_manager,product.model_product_template,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_product_product_purchase_manager,product.product purchase_manager,product.model_product_product,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_product_category_purchase_manager_admin,product.category purchase_manager,product.model_product_category,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_uom_uom_purchase_manager_admin,uom.uom purchase_manager,uom.model_uom_uom,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_product_group_res_partner_admin,res_partner,base.model_res_partner,base_rida.rida_group_master_data_manager,1,1,1,1
+
+access_stock_picking_type_manager_admin,stock.picking.type manager,stock.model_stock_picking_type,base_rida.rida_group_master_data_manager,1,1,1,1
+
+
+access_stock_warehouse_manager_admin,stock.warehouse.manager,stock.model_stock_warehouse,base_rida.rida_group_master_data_manager,1,1,1,1
+access_stock_warehouse_admin,access_stock_warehouse_admin,stock.model_stock_warehouse,base.group_system,1,1,1,1
+
+access_stock_location_manager_admin,stock.location.manager,stock.model_stock_location,base_rida.rida_group_master_data_manager,1,1,1,1
+access_stock_location_manager_admin2,access_stock_location_manager_admin,stock.model_stock_location,base.group_system,1,1,1,1
+
+
+
+hr_expense.access_product_product_hr_expense_user,product.product.hr.expense.user,product.model_product_product,hr_expense.group_hr_expense_manager,1,0,0,0
+
+hr_expense.access_product_template_hr_expense_user,product.template.hr.expense.user,product.model_product_template,hr_expense.group_hr_expense_manager,1,0,0,0
+
+hr_expense.access_account_journal_user,account.journal.user,account.model_account_journal,hr_expense.group_hr_expense_team_approver,1,0,0,0
+
+
+
+
+mrp.access_product_category_mrp_manager,product.category mrp_manager,product.model_product_category,mrp.group_mrp_manager,1,1,0,0
+
+mrp.access_product_template_mrp_manager,product.template mrp_manager,product.model_product_template,mrp.group_mrp_manager,1,1,0,0
+
+mrp.access_product_product_mrp_manager,product.product mrp_manager,product.model_product_product,mrp.group_mrp_manager,1,1,0,0
+
+mrp.access_product_pricelist_mrp_manager,product.pricelist mrp_manager,product.model_product_pricelist,mrp.group_mrp_manager,1,1,0,0
+
+
+
+
+access_adjesment_custom,adjesment.custom,model_stock_quant,base.group_user,1,0,0,0

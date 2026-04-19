@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="daily_availability_report_wizard_form" model="ir.ui.view">
+            <field name="name">Daily Availability Report Wizard</field>
+            <field name="model">daily.availability.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Daily Report">
+                    <group>
+                        <field name="report_day"/>
+                    </group>
+                    <footer>
+                        <button name="generate_machines_availability_report"
+                        string="Generate Fleet Operation Availability Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_daily_availability_report_wizard" model="ir.actions.act_window">
+            <field name="name">Daily Fleet Operation Report</field>
+            <field name="res_model">daily.availability.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <menuitem id="menu_daily_availability_report_report"
+                  name="Daily Fleet Operation Report" parent="fleet.menu_fleet_reporting"
+                  action="action_daily_availability_report_wizard"
+                  sequence="51"/>
+
+    </data>
+</odoo>

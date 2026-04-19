@@ -1,0 +1,52 @@
+<!-- Copyright 2019 ForgeFlow S.L.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl-3.0) -->
+<odoo>
+    <record id="equipment_request_view_form" model="ir.ui.view">
+        <field name="name">equipment.request.form</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form" />
+        <field name="priority" eval="999" />
+        <field name="arch" type="xml">
+
+            
+            <xpath expr="//sheet/div" position="before">
+                <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_view_mr" class="oe_stat_button" icon="fa-truck"
+                            invisible="mr_count == 0">
+                        <field name="mr_count" string="Material Request" widget="statinfo"/>
+                    </button>
+
+                    <button name="set_vehicle_request"
+                            groups="maintenance_fleet_inherit.group_maintenance_technician,maintenance_fleet_inherit.group_maintenance_supervisor"
+                            invisible="vehicle_request_count == 0"
+                            type="object" class="oe_stat_button" icon="fa-list-alt">
+                        <field name="vehicle_request_count" string="Vehicle Request" widget="statinfo"/>
+                    </button>
+                    <button type="object" name="action_view_issuance" class="oe_stat_button" icon="fa-truck"
+                            invisible="issuance_count == 0">
+                        <field name="issuance_count" string="Issuance Request" widget="statinfo"/>
+                    </button>
+
+                </div>
+            </xpath>
+
+            <field name="description" position="replace">
+            </field>
+
+            <xpath expr="//notebook" position="inside">
+            <page name="description_page" string="Description">
+                        <field name="description" />
+                    </page>
+                        </xpath>
+
+
+            <xpath expr="//notebook" position="inside">
+                <page name="maintenace_task_page" string="Maintenance Task"
+              invisible="maintenance_type != 'preventive'" >
+                          <field name="maintenace_task" />
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

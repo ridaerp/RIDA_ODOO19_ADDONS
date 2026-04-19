@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="device_request_form_view" model="ir.ui.view">
+            <field name="name">device.request.form</field>
+            <field name="model">device.request</field>
+            <field name="arch" type="xml">
+                <form string="Device Request">
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                        <button string="approve" name="set_confirm" type="object" invisible="state != 'lmn_approve'"
+                                class="oe_highlight" groups="base_rida.rida_group_line_manager"/>
+                        <button string="Confirm" name="set_approve" type="object" invisible="state != 'ict_approved'"
+                                class="oe_highlight" groups="base_rida.rida_group_ict_team"/>
+                        <button string="Set To Draft" name="set_to_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight" groups="base.group_user"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state in ['draft','lmn_approve','ict_approved']" string="Reject"
+                                groups="base.group_user"
+                        />
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,lmn_approve,ict_approved,confirm"/>
+                    </header>
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>DEVICE REQUEST</b>
+                            </h3>
+                        </center>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"
+                                       options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+                                <field name="job_id"/>
+                                <field name="phone"/>
+                                <field name="cust_id" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                       readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="company_id"/>
+                                <field name="email"/>
+                                <field name="date" required="1" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" readonly="state != 'draft'"/>
+                        </group>
+                        <notebook>
+                            <page string="Approval and Signature">
+                                <group>
+                                    <group>
+                                        <field name="emp_l_mng" readonly="1"
+                                               invisible="emp_l_mng == 'False'"/>
+                                        <field name="emp_l_mng_date" readonly="1"
+                                               invisible="emp_l_mng == 'False'"/>
+                                    </group>
+                                    <group>
+                                        <field name="prov_id" invisible="prov_id == 'False'"
+                                               readonly="1"/>
+                                        <field name="prov_date_approval"
+                                               readonly="1" invisible="prov_id == 'False'"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record id="relocation_device_request_form_view" model="ir.ui.view">
+            <field name="name">realocation.device.request.form</field>
+            <field name="model">realocation.device.request</field>
+            <field name="arch" type="xml">
+                <form string="RELOCATION FORM">
+                    <header>
+                        <button string="Submit" name="set_submit" type="object" invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                        <button string="approve" name="set_confirm" type="object" invisible="state != 'lmn_approve'"
+                                class="oe_highlight" groups="base_rida.rida_group_line_manager"/>
+                        <button string="Confirm" name="set_approve" type="object" invisible="state != 'ict_approved'"
+                                class="oe_highlight" groups="base_rida.rida_group_ict_team"/>
+                        <button string="Set To Draft" name="set_to_draft" type="object" invisible="state != 'reject'"
+                                class="oe_highlight" groups="base.group_user"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                invisible="state not in ['draft','lmn_approve','ict_approved']" string="Reject"
+                                groups="base.group_user"
+                        />
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,lmn_approve,ict_approved,confirm"/>
+                    </header>
+                    <sheet>
+                        <center>
+                            <h3>
+                                <b>RELOCATION FORM</b>
+                            </h3>
+                        </center>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"
+                                       options="{'no_quick_create': True, 'no_create_edit' : True}"/>
+                                <field name="job_id"/>
+                                <field name="phone"/>
+                                <field name="cust_id" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                       readonly="state != 'draft'"/>
+                                <field name="from_where" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="company_id"/>
+                                <field name="email"/>
+                                <field name="date" readonly="state != 'draft'"/>
+                                <field name="to_where" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" readonly="state != 'ict_approved'"/>
+                        </group>
+                        <notebook>
+                            <page string="Approval and Signature">
+                                <group>
+                                    <group>
+                                        <field name="emp_l_mng" readonly="1"
+                                               invisible="emp_l_mng == 'ict_director_approval'"/>
+                                        <field name="emp_l_mng_date" readonly="1"
+                                               invisible="emp_l_mng == 'ict_director_approval'"/>
+                                    </group>
+                                    <group>
+                                        <field name="prov_id" invisible="prov_id == False"
+                                               readonly="1"/>
+                                        <field name="prov_date_approval"
+                                               readonly="1" invisible="prov_id == False"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="device_request_tree_view" model="ir.ui.view">
+            <field name="name">device.request.tree</field>
+            <field name="model">device.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="cust_id"/>
+                    <field name="prov_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="relocation_device_request_tree_view" model="ir.ui.view">
+            <field name="name">realocation.device.request.tree</field>
+            <field name="model">realocation.device.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="cust_id"/>
+                    <field name="prov_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="device_request_search_view" model="ir.ui.view">
+            <field name="name">device.request.search</field>
+            <field name="model">device.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <filter string="Device Type" name="group_type" domain="[]"
+                            context="{'group_by':'cust_id'}"/>
+                    <filter string="Provided By" name="group_prov_id" domain="[]"
+                            context="{'group_by':'prov_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="relocation_device_request_search_view" model="ir.ui.view">
+            <field name="name">realocation.device.request.search</field>
+            <field name="model">realocation.device.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <filter string="Device Type" name="group_type" domain="[]"
+                            context="{'group_by':'cust_id'}"/>
+                    <filter string="Provided By" name="group_prov_id" domain="[]"
+                            context="{'group_by':'prov_id'}"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="it_device_request_action" model="ir.actions.act_window">
+            <field name="name">DEVICE REQUEST</field>
+            <field name="res_model">device.request</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="relocation_it_device_request_action" model="ir.actions.act_window">
+            <field name="name">RELOCATION FORM</field>
+            <field name="res_model">realocation.device.request</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem name="DEVICE REQUEST" sequence="2" id="it_device_request_menu" parent="ict_prodcedures"
+                  action="it_device_request_action"/>
+        <menuitem name="RELOCATION DEVICE REQUEST" sequence="3" id="relocation_it_device_request_menu"
+                  parent="ict_prodcedures"
+                  action="relocation_it_device_request_action"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="0">
+
+    <record model="ir.module.category" id="external_service_management">
+        <field name="name">External Service Managment </field>
+        <field name="description">purchase_custom Security Groups</field>
+        <field name="sequence">7</field>
+    </record>
+
+    <!-- croporate groups-->
+ 
+
+    
+   
+    <record id="group_general_manager" model="res.groups">
+        <field name="name">General Manager</field>
+        <!-- <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/> -->
+        <field name="category_id" ref="external_service_management"/>
+    </record>
+
+    
+
+</data>
+</odoo>

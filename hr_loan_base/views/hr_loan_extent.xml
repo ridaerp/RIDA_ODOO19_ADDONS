@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="hr_loan_extent_form">
+            <field name="name">hr.loan.form</field>
+            <field name="model">hr.loan</field>
+            <field name="inherit_id" ref="hr_loan_base.view_hr_loan_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='job_id']" position="after">
+                 <field name="start_date"/>
+                 <field name="expiry_date"/>
+               </xpath>
+            </field>
+        </record>
+    </data>
+
+<!--Message Wizard -->
+<record id="mymodule_message_wizard_form" model="ir.ui.view">
+    <field name="name">mymodule.message.wizard.form</field>
+    <field name="model">mymodule.message.wizard</field>
+    <field name="arch" type="xml">
+        <form>
+            <field name="message" readonly="True"/>
+            <footer>
+                <button name="action_close" string="Ok" type="object" class="oe_highlight"/>
+            </footer>
+        </form>
+    </field>
+</record>
+    
+</odoo>

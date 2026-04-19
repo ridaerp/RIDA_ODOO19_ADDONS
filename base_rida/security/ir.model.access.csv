@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_base_rida_accountant,base_rida.base_rida,hr.model_hr_employee,account.group_account_user,1,1,0,0
+access_base_rida_hr_directory,base_rida.base_rida,hr.model_hr_employee,rida_group_hr_director,1,1,1,1
+access_base_rida_ccso,base_rida.base_rida,hr.model_hr_employee,rida_group_CCSO,1,1,0,0
+access_base_rida_coo,base_rida.base_rida,hr.model_hr_employee,rida_group_COO,1,1,0,0
+access_hr_job,access_hr_job,hr.model_hr_job,base.group_user,1,0,0,0

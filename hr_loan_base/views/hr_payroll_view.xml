@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="hr_payslip_form_inherit_view" model="ir.ui.view">
+			<field name="name">hr.payslip.inherit.form</field>
+			<field name="model">hr.payslip</field>
+			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//page[1]" position="after">
+					<page string="Loans" name="loans">
+						<button name="get_loan" string="Update Loans" type="object"/>
+						<field name="loan_ids" force_save="1">
+							<list string="Loans" editable="bottom" create="false" delete="false">
+								<field name="loan_id" readonly="1" force_save="1"/>
+								<field name="paid_date" readonly="1" force_save="1"/>
+								<field name="paid_amount" readonly="1" force_save="1"/>
+								<field name="paid" readonly="1" force_save="1"/>
+								<field name="notes"/>
+							</list>
+						</field>
+						<group class="oe_subtotal_footer oe_right">
+							<field name="total_amount_paid"/>
+						</group>
+					</page>
+				</xpath>
+				<field name="credit_note" position="after">
+					<field name="loan"/>
+				</field>
+			</field>
+		</record>
+		
+	</data>
+</odoo>

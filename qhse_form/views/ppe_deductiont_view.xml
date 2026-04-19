@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ppe_deduction_list" model="ir.ui.view">
+        <field name="name">ppe.deduction.list</field>
+        <field name="model">ppe.deduction</field>
+        <field name="arch" type="xml">
+            <list string="PPE Deduction Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="total_deduction" sum="Total"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state in ('officer', 'manager')" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ppe_deduction_form" model="ir.ui.view">
+        <field name="name">ppe.deduction.form</field>
+        <field name="model">ppe.deduction</field>
+        <field name="arch" type="xml">
+            <form string="PPE Deduction Document">
+                <header>
+                    <button name="action_officer" string="Submit to Officer" type="object" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_manager" string="Confirm" type="object" invisible="state != 'officer'"
+                            groups="base_rida.rida_group_safety_officer,base_rida.rida_group_senior_officer" class="oe_highlight"/>
+                    <button name="action_hr" string="Approve" type="object" invisible="state != 'manager'"
+                            groups="base_rida.rida_group_qhse_manager" class="oe_highlight"/>
+                    <button name="action_finance" string="Approve" type="object" invisible="state != 'hr'"
+                            groups="base_rida.rida_hr_manager_notify" class="oe_highlight"/>
+                    <button name="action_done" string="Approve" type="object" invisible="state != 'finance'"
+                            groups="base_rida.rida_finance_manager" class="oe_highlight"/>
+                    <button name="%(maintenance_fleet_inherit.rejection_wizard_reject_action)d" string="Reject"
+                            invisible="state in ['draft', 'done']"
+                            groups="base_rida.rida_group_safety_officer,base_rida.rida_group_qhse_manager,base_rida.rida_group_senior_officer" type="action"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,officer,manager,hr,finance,done"/>
+                </header>
+                <sheet>
+                    <div class="text-center" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h2 style="color: #714B67;">
+                            <field name="doc_no" readonly="1"/>
+                        </h2>
+                        <div class="text-muted">PPE Deduction DOCUMENT (For Individuals/Contractor)</div>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Sequence Number"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee Information">
+                            <field name="requester_id"/>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="emp_code"/>
+                            <field name="emp_department_id"/>
+                            <field name="job_id"/>
+                        </group>
+                        <group string="Document Details">
+                            <field name="date"/>
+                            <field name="contract_number"/>
+                            <field name="line_supervisor_id"/>
+                            <field name="position_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="PPE Details" name="ppe_lines">
+                            <field name="ppe_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="ppe_type" options="{'no_create': True}" domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
+                                    <field name="brand_sn"/>
+                                    <field name="last_data" string="Last Issued" readonly="1" force_save="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price" readonly="0" force_save="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_deduction" widget="monetary"/>
+                            </group>
+                        </page>
+                        <page string="Safety Officer Use" name="safety_use">
+                            <group>
+                                <group>
+                                    <field name="deduction_reason"/>
+                                    <field name="other" invisible="deduction_reason != 'other'"/>
+                                </group>
+                                <group>
+                                    <field name="responsible_safety_officer_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Justification"/>
+                            <field name="justification" placeholder="Enter justification here..."/>
+                            <separator string="Recommendation"/>
+                            <field name="recommendation" placeholder="Enter recommendation..."/>
+                        </page>
+                        <page string="Authorization" name="authorization">
+                            <group>
+                                <field name="authorization_confirm"/>
+                                <field name="requester_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <group invisible="not reason_reject">
+                        <field name="reason_reject" readonly="1" decoration-danger="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ppe_deduction" model="ir.actions.act_window">
+        <field name="name">PPE Deduction</field>
+        <field name="res_model">ppe.deduction</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first PPE Deduction request!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ppe_deduction" name="PPE Deductions" parent="menu_ppe_root" action="action_ppe_deduction" sequence="3"/>
+</odoo>

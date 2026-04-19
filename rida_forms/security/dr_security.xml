@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+
+        <!--  Internal User rule(change by ekhlas code ) -->
+        <!-- <record id="internal_request_rule" model="ir.rule">
+            <field name="name">Requester Rule</field>
+            <field name="model_id" ref="model_transportation_request"/>
+            <field name="domain_force">
+                ['|',
+                 ('company_id', '=',  company_id),('requested_by', '=', user.id),
+                 ('company_id','in', company_ids),('requested_by', '=', user.id)] 
+            </field>
+
+
+
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+ -->
+
+
+        <!-- <record id="internal_line_manager_rule" model="ir.rule">
+            <field name="name">Requester Line Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+                ['|',
+                 ('company_id', '=',  company_id),('line_manager_id', '=', user.id),
+                 ('company_id','in', company_ids),('line_manager_id', '=', user.id)] 
+
+              </field>
+           
+
+
+            <field name="groups" eval="[(4, ref('material_request.group_department_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record> -->
+
+
+        <!-- <record id="internal_line_line_manager_rule" model="ir.rule">
+            <field name="name"> Line Line Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+
+                ['|',
+                 ('company_id', '=',  company_id),('line_line_manager_id', '=', user.id),
+                 ('company_id','in', company_ids),('line_line_manager_id', '=', user.id)] 
+
+
+
+            </field>
+            <field name="groups" eval="[(4, ref('material_request.group_department_line_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+          <record id="internal_ict_hod_manager" model="ir.rule">
+            <field name="name">MR Read</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">[['|',
+                 ('company_id', '=',  company_id),('requested_by', '=', user.id),
+                 ('company_id','in', company_ids),('requested_by', '=', user.id)] </field>
+            <field name="groups" eval="[(4, ref('material_request.group_department_ict_hod_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record>
+
+
+
+
+
+
+        <record id="internal_line_line_manager_rule" model="ir.rule">
+            <field name="name"> Line Line Rule</field>
+            <field name="model_id" ref="model_material_request"/>
+            <field name="domain_force">
+
+                ['|',
+                 ('company_id', '=',  company_id),('line_line_manager_id', '=', user.id),
+                 ('company_id','in', company_ids),('line_line_manager_id', '=', user.id)] 
+
+
+
+            </field>
+            <field name="groups" eval="[(4, ref('material_request.group_department_ict_hod_manager'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+
+        </record> -->
+
+
+    </data>
+</odoo>

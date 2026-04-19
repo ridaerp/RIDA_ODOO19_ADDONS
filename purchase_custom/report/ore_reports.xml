@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_ore_report_view" model="ir.ui.view">
+        <field name="name">Ore Report Report</field>
+        <field name="model">ore.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <label for="date_from" string="Period of Review "/>
+                        <div>
+                            <field name="date_from" invisible="1"/>
+                            <field name="date_to" invisible="1"/>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline">
+                                    From
+                                </span>
+                                <field name="date_from" class="oe_inline" nolabel="1" required="1"/>
+                                <span class="oe_inline">
+                                    To
+                                </span>
+                                <field name="date_to" class="oe_inline" required="1"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="rock_vendor" domain="[('category_id.id','in',[103])]"
+                               options="{'no_create': True,'no_open':True}"/>
+                    </group>
+                    <group>
+                        <field name="area_id" options="{'no_create': True,'no_open':True}"/>
+                    </group>
+
+                 
+
+
+                </group>
+                <group string="Grade From (0.0 - 100)"
+                       groups="base_rida.group_department_ict_hod_manager,material_request.group_ore_rock_db_geology_user">
+                    <group>
+                        <field name="min_grade" required="max_grade != False"
+                               groups="base_rida.group_department_ict_hod_manager,material_request.group_ore_rock_db_geology_user"/>
+                    </group>
+                    <group>
+                        <field name="max_grade" required="max_grade != False"
+                               groups="base_rida.group_department_ict_hod_manager,material_request.group_ore_rock_db_geology_user"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+<!--                    <button name="view_print" string="View Report" type="object" default_focus="1"-->
+<!--                            class="oe_highlight"/>-->
+                    <button name="print_xlsx" string="Print Excel" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+<!--    accounting-->
+    <record id="report_ore_report_accounting_view" model="ir.ui.view">
+        <field name="name">Ore Report Report</field>
+        <field name="model">ore.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <label for="date_from" string="Period of Review "/>
+                        <div>
+                            <field name="date_from" invisible="1"/>
+                            <field name="date_to" invisible="1"/>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <span class="oe_inline">
+                                    From
+                                </span>
+                                <field name="date_from" class="oe_inline" nolabel="1" required="1"/>
+                                <span class="oe_inline">
+                                    To
+                                </span>
+                                <field name="date_to" class="oe_inline" required="1"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="rock_vendor" domain="[('category_id.id','in',[103])]"
+                               options="{'no_create': True,'no_open':True}"/>
+                    </group>
+                    <group>
+                        <field name="area_id" options="{'no_create': True,'no_open':True}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <template id="ore_rock_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page" style="direction: rtl; text-align: right;">
+                    <h2 class="text-center">Rock Purchases Report</h2>
+
+                    <div class="row mt32 mb32">
+                        <div class="col-6">
+                            <strong>From: </strong> <span t-esc="form.get('date_from')" t-options='{"widget": "datetime"}'/><br/>
+                            <strong>To: </strong> <span t-esc="form.get('date_to')" t-options='{"widget": "datetime"}'/>
+                        </div>
+                        <div class="col-6 text-right">
+                            <t t-if="form.get('rock_vendor')">
+                                <strong>Vendor: </strong> <span t-esc="form.get('rock_vendor')"/><br/>
+                            </t>
+                            <t t-if="form.get('area_id')">
+                                <strong>Area: </strong> <span t-esc="form.get('area_id')"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <style>
+                        .custom-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        .custom-table th, .custom-table td { border: 1px solid black; padding: 5px; text-align: center; }
+                        .custom-table th { background-color: #f2f2f2; }
+                    </style>
+
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>العدد</th>
+                                <th>أسم العميل</th>
+                                <th>منطقة الخام</th>
+                                <th>الولاية</th>
+                                <th>CIC/CIL</th>
+                                <th>تاريخ الأستلام</th>
+                                <th>وزن الحمولة بالطن</th>
+                                <t t-if="form.get('show_average')">
+                                    <th>سعر الشراء للطن</th> </t>
+                                <th>سعر الطن</th> <th>تحمل العميل</th> <th>سعر الشراء</th> <t t-if="form.get('show_average')">
+                                    <th>ملحوظة</th> </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="form.get('list_ore_purchases', [])" t-as="rec">
+                                <tr>
+                                    <td t-esc="rec[0]"/> <td t-esc="rec[1]"/> <td t-esc="rec[2]"/> <td t-esc="rec[3]"/> <td t-esc="rec[4]"/> <td t-esc="rec[5]"/> <td t-esc="rec[6]"/> <t t-if="form.get('show_average')">
+                                        <td t-esc="rec[7]"/> </t>
+                                    <td t-esc="rec[8]"/> <td t-esc="rec[9]"/> <td t-esc="rec[10]"/> <t t-if="form.get('show_average')">
+                                        <td t-esc="rec[11]"/> </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <h4></h4>
+                    <table class="custom-table" style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2; text-align: center;">
+                                <th style="border: 1px solid black; padding: 5px;">عدد المعاملات</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 200px;">الولايات (طن)</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">متوسط تركيز الولاية</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">CIC/CIL (طن)</th>
+                                <th style="border: 1px solid black; padding: 5px; width: 150px;">متوسط تركيز النوع</th>
+                                <th style="border: 1px solid black; padding: 5px;">الوزن الكلي (طن)</th>
+                                <t t-if="form.get('show_average')">
+                                    <th style="border: 1px solid black; padding: 5px;">متوسط التركيز العام</th>
+                                </t>
+                                <th style="border: 1px solid black; padding: 5px;">سعر الشراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="form.get('list_totals_ore_purchase', [])" t-as="total">
+                                <tr>
+                                    <td style="border: 1px solid black; text-align: center;" t-esc="total[0]"/>
+
+                                    <td style="border: 1px solid black; text-align: right; padding: 5px;">
+                                        <t t-foreach="form.get('state_details', [])" t-as="state">
+                                            <div style="border-bottom: 1px dashed #ccc;">
+                                                <span t-esc="state['name']"/>: <span style="float: left; font-weight: bold;" t-esc="state['weight']"/>
+                                            </div>
+                                        </t>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; padding: 5px; background-color: #f9f9f9;">
+                                        <t t-foreach="form.get('state_details', [])" t-as="state">
+                                            <div style="border-bottom: 1px dashed #ccc;">
+                                                <span style="font-weight: bold;" t-esc="state['average']"/>
+                                            </div>
+                                        </t>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: right; padding: 5px;">
+                                        <div>CIL: <span style="float: left; font-weight: bold;" t-esc="form.get('cil_weight')"/></div>
+                                        <div style="margin-top: 5px; border-top: 1px solid #eee;">
+                                            CIC: <span style="float: left; font-weight: bold;" t-esc="form.get('cic_weight')"/>
+                                        </div>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; padding: 5px; background-color: #f9f9f9;">
+                                        <div t-esc="form.get('cil_avg')"/>
+                                        <div style="margin-top: 5px; border-top: 1px solid #eee;" t-esc="form.get('cic_avg')"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align: center; font-weight: bold;" t-esc="total[1]"/>
+                                    <t t-if="form.get('show_average')">
+                                        <td style="border: 1px solid black; text-align: center;" t-esc="total[2]"/>
+                                    </t>
+                                    <td style="border: 1px solid black; text-align: center;" t-esc="total[3]"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <h4></h4>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>الكمية غير المشترى بالطن</th>
+                                <th>الكمية المشترى بالطن</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="form.get('list_of_purchase_analysis')">
+                                <tr>
+                                    <td>
+                                        <span t-esc="form['list_of_purchase_analysis'][0][1]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="form['list_of_purchase_analysis'][0][0]"/>
+                                    </td>
+                                </tr>
+                                <t t-if="form.get('show_average')">
+                                    <tr>
+                                        <td>
+                                            <strong>متوسط التركيز: </strong>
+                                            <span t-esc="form['list_of_purchase_analysis'][1][1]"/>
+                                        </td>
+                                        <td>
+                                            <strong>متوسط التركيز: </strong>
+                                            <span t-esc="form['list_of_purchase_analysis'][1][0]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!--    <act_window-->
+    <!--            id="action_act_windows_ore_rock_report"-->
+    <!--            name="Ore Rock Report"-->
+    <!--            res_model="ore.report"-->
+    <!--            view_mode="form"-->
+    <!--            view_id="report_ore_report_view"-->
+    <!--            target="new"/>-->
+
+    <record id="action_act_windows_ore_rock_report" model="ir.actions.act_window">
+        <field name="name">Rock Action Report</field>
+        <field name="res_model">ore.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="report_ore_report_view"/> <!-- Replace module_name with the actual module name -->
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_custom_rock_report_accounting" model="ir.actions.act_window">
+        <field name="name">Rock Action Report</field>
+        <field name="res_model">ore.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="report_ore_report_accounting_view"/> <!-- Replace module_name with the actual module name -->
+        <field name="target">new</field>
+    </record>
+
+
+<!--    <report-->
+<!--            id="report_ore_rock_report"-->
+<!--            string="Rock Purchase Report"-->
+<!--            model="purchase.order.line"-->
+<!--            report_type="qweb-pdf"-->
+<!--            file="purchase_custom.ore_rock_report"-->
+<!--            name="purchase_custom.ore_rock_report"-->
+<!--            menu="False"-->
+<!--            paperformat="hr_holidays.paperformat_hrsummary"-->
+<!--    />-->
+
+
+    <record id="report_ore_rock_report" model="ir.actions.report">
+        <field name="name">Rock Purchase Report</field>
+        <field name="model">purchase.order.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_custom.ore_rock_report</field>
+        <field name="report_file">purchase_custom.ore_rock_report</field>
+            <field name="paperformat_id" ref="hr_holidays.paperformat_hrsummary"/>
+<!--        <field name="binding_model_id" ref="account.model_purchase_order_line"/>-->
+<!--        <field name="binding_type">report</field>-->
+    </record>
+
+
+
+    <report
+            id="view_report_ore_rock_report"
+            string="Rock Purchase Report"
+            model="purchase.order.line"
+            report_type="qweb-html"
+            file="purchase_custom.ore_rock_report"
+            name="purchase_custom.ore_rock_report"
+            menu="False"
+            paperformat="hr_holidays.paperformat_hrsummary"
+    />
+
+    <menuitem id="menu_rock_report_"
+              name="Reporting"
+              sequence="10"
+              groups="material_request.group_ore_rock_purchase_user"
+              parent="material_request.menu_ore_poo_maiin"
+    />
+        <menuitem id="menu_custom_rock_report_"
+                  name="Ore Rock Purchase Report"
+                  sequence="10"
+                  action="action_act_windows_ore_rock_report"
+                  parent="menu_rock_report_"
+                  groups="material_request.group_ore_rock_purchase_user"
+
+        />
+
+    <menuitem id="menu_custom_rock_report_accounting"
+                  name="Ore Rock Purchase Report"
+                  sequence="10"
+                  action="action_custom_rock_report_accounting"
+                  parent="account.account_reports_legal_statements_menu"
+                  groups="account.group_account_user"
+
+        />
+
+</odoo>

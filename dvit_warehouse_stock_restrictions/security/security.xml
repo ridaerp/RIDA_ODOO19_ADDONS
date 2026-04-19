@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stock_restrictions_group" model="res.groups">
+            <field name="name">Warehouse Restrictions</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="filter_user_stock_picking_type_allowed" model="ir.rule">
+            <field name="name">Warehouse Restrictions Picking Types</field>
+            <field name="model_id" search="[('model','=','stock.picking.type')]" model="ir.model"/>
+            <field name="groups"
+                   eval="[(4, ref('dvit_warehouse_stock_restrictions.stock_restrictions_group'))]"/>
+            <field name="domain_force">[('id','in', user.default_picking_type_ids.ids)]</field>
+        </record>
+
+        <record id="filter_user_stock_picking_allowed" model="ir.rule">
+            <field name="name">Warehouse Restrictions Pickings</field>
+            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+            <field name="groups" eval="[(4, ref('dvit_warehouse_stock_restrictions.stock_restrictions_group'))]"/>
+            <field name="domain_force">
+              [('picking_type_id','in', user.default_picking_type_ids.ids),
+              '|','|','|',
+              ('location_id','in', user.stock_location_ids.ids),
+              ('location_dest_id','in', user.stock_location_ids.ids),
+              ('location_id.location_id','in', user.stock_location_ids.ids),
+              ('location_dest_id.location_id','in', user.stock_location_ids.ids)]
+            </field>
+        </record>
+
+<!--        <record id="filter_user_stock_inventory_allowed" model="ir.rule">-->
+<!--            <field name="name">Warehouse Restrictions locations</field>-->
+<!--            <field name="model_id" search="[('model','=','stock.inventory')]" model="ir.model"/>-->
+<!--            <field name="groups" eval="[(4, ref('dvit_warehouse_stock_restrictions.stock_restrictions_group'))]"/>-->
+<!--            <field name="domain_force">-->
+<!--              [ ('location_ids','in', user.stock_location_ids.ids)]-->
+<!--            </field>-->
+<!--        </record>-->
+    </data>
+</odoo>

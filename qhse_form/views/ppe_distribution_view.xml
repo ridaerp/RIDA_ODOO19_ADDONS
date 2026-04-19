@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ppe_distribution_list" model="ir.ui.view">
+        <field name="name">ppe.distribution.list</field>
+        <field name="model">ppe.distribution</field>
+        <field name="arch" type="xml">
+            <list string="Routine PPE Distribution">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="date"/>
+                <field name="originator_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('junior_approve', 'senior_approve')"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ppe_distribution_form" model="ir.ui.view">
+        <field name="name">ppe.distribution.form</field>
+        <field name="model">ppe.distribution</field>
+        <field name="arch" type="xml">
+            <form string="Routine PPE Distribution">
+                <header>
+                    <button name="action_junior_approve" string="Submit" type="object"
+                            invisible="state != 'draft'" class="oe_highlight"/>
+
+                    <button name="action_senior_approve" string="Approve" type="object"
+                            invisible="state != 'junior_approve'" groups="base_rida.rida_group_safety_officer" class="oe_highlight"/>
+
+                    <button name="action_done" string="Approve &amp; Issue" type="object"
+                            invisible="state != 'senior_approve'" groups="base_rida.rida_group_senior_officer" class="oe_highlight"/>
+
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancel')"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,junior_approve,senior_approve,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_issuance_requests" type="object" class="oe_stat_button" icon="fa-truck" invisible="state != 'done'">
+                            <field name="issuance_count" string="Issuance" widget="statinfo"/>
+                        </button>
+                    </div>
+
+                    <div class="text-center mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h2 style="color: #714B67;">
+                            <field name="doc_no" readonly="1"/>
+                        </h2>
+                        <div class="text-muted text-uppercase fw-bold">Routine PPE Distribution Form</div>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Distribution Number"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="department_id" required="1" readonly="state != 'draft'"/>
+                            <field name="date" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Originator Details">
+                            <field name="originator_id" widget="many2one_avatar_user" readonly="state != 'draft'"/>
+                            <field name="originator_position" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <group string="Historical Distribution Data" class="bg-light p-2 border">
+                        <field name="justification" readonly="state != 'draft'" placeholder="Reason for extra quantity..." decoration-danger="state == 'draft' and not justification"/>
+                    </group>
+
+                    <notebook>
+                        <page string="PPE Items &amp; Quantities" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="ppe_type" options="{'no_create': True}" domain="[('categ_id', 'child_of', 'QHSE / PPE')]"/>
+                                    <field name="brand_sn"/>
+                                    <field name="unit"/>
+                                    <field name="last_distributed_date"/> 
+                                    <field name="last_distributed_qty"/>
+                                    <field name="quantity" sum="Total Requested"/>
+                                    <field name="qty_approved" sum="Total Approved"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Safety Review &amp; Issuance" name="review">
+                            <group>
+                                <group string="Junior Safety Action">
+                                    <field name="junior_safety_executive_id" readonly="1" widget="many2one_avatar_user"/>
+                                    <field name="junior_comment" readonly="state == 'done'"/>
+                                    <field name="junior_voucher_sn" readonly="state == 'done'"/>
+                                </group>
+                                <group string="Senior Safety Action">
+                                    <field name="senior_safety_executive_id" readonly="1" widget="many2one_avatar_user"/>
+                                    <field name="senior_comment" readonly="state == 'done'"/>
+                                    <field name="senior_voucher_sn" readonly="state == 'done'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Rejection Info" name="rejection" invisible="not reason_reject">
+                            <group>
+                                <field name="reason_reject" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                 <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ppe_distribution" model="ir.actions.act_window">
+        <field name="name">Routine PPE Distribution</field>
+        <field name="res_model">ppe.distribution</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Routine PPE Distribution request.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ppe_distribution"
+              name="PPE Routine Distributions"
+              parent="menu_ppe_root"
+              action="action_ppe_distribution"
+              sequence="7"/>
+</odoo>
