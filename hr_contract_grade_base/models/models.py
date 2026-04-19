@@ -111,8 +111,8 @@ class Employee(models.Model):
     housing = fields.Float(string='Housing' ,readonly=True,compute="compute_salary_amount" )
     transportion = fields.Float(string='Transportion', readonly=True,compute="compute_salary_amount" )
     salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
-    contract_date_start = fields.Date(readonly=False, related="version_id.contract_date_start", inherited=True, groups="base.group_user")
-    wage_type = fields.Selection(readonly=False, related="version_id.wage_type", inherited=True, groups="base.group_user")
+    # contract_date_start = fields.Date(readonly=False, related="version_id.contract_date_start", inherited=True, groups="base.group_user")
+    # wage_type = fields.Selection(readonly=False, related="version_id.wage_type", inherited=True, groups="base.group_user")
 
     @api.onchange('payroll_wage','basic_percentage','cola_percentage','housing_percentage','transportion_percentage')
     @api.depends('payroll_wage','basic_percentage','cola_percentage','housing_percentage','transportion_percentage')
@@ -228,7 +228,6 @@ class EmployeeVersion(models.Model):
     employee_type = fields.Selection(related="employee_id.rida_employee_type")
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
     workeddays = fields.Float("Working Days ")
-    contract_date_start = fields.Date(groups="base.group_user")
 
     @api.onchange('department_id')
     def get_analytic_account_id(self):
