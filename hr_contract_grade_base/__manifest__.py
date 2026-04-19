@@ -9,7 +9,7 @@
     'version': '14.0.1',
     'sequence': 4,
     # any module necessary for this one to work correctly
-    'depends': ['hr_payroll','hr_contract_benefit'],
+    'depends': ['hr','hr_payroll','hr_contract_benefit'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',
