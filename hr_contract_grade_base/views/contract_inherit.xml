@@ -9,23 +9,16 @@
                     <field name="is_worker"/>
                     <field name="is_section_head"/>
                     <field name="band_id" invisible="1" />
-                    <field name="grade_id" invisible="1" />
                 </xpath>
 
                 <xpath expr="//page[@name='payroll_information']" position="attributes">
                     <attribute name="groups">hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site</attribute>
                 </xpath>
-                <xpath expr="//field[@name='contract_date_start']" position="replace">
-                    <field name="contract_date_start"/>
-                </xpath>
-                <xpath expr="//field[@name='wage_type']" position="replace">
-                    <field name="wage_type"/>
-                </xpath>
-
                 <xpath expr="//group[@name='benefits_group']" position="after">
                     <group name="group_top">
                         <group name="group_left">
                             <field name="basic"/>
+                            <field name="grade_id"/>
                             <field name="min"/>
                             <field name="max"/>
                             <field name="salary_currency" groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
@@ -67,6 +60,44 @@
                     </xpath>
             </field>
         </record>
+
+        <record id="inherited_version_view_id" model="ir.ui.view">
+        <field name="name">version.inherit.view.form</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hr.hr_contract_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='top_info_right']" position="after">
+                <group>
+                    <field name="grade_id" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="has_transport_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="transportion_allowance" invisible="not has_transport_allows"
+                           groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="has_car_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="car_allowance" invisible="not has_car_allows"
+                           groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="has_fuel_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="fuel_allowance" invisible="not has_fuel_allows"
+                           groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="has_phone_allows" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="phone_allowance" invisible="not has_phone_allows"
+                           groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="has_scarcity_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                </group>
+                <group>
+                    <field name="seconment_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="acting_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="acting_type" invisible="not acting_allowance"
+                           groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="acting_amount" invisible="1" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="workeddays" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="medical_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="medicine_allowance" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="other_recevible" groups="hr_payroll.group_hr_payroll_user"/>
+                    <field name="other_deductions" groups="hr_payroll.group_hr_payroll_user"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
 
     </data>
 </odoo>
