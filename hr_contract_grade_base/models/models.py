@@ -71,8 +71,31 @@ class HRGradeConfiguration(models.Model):
 class EmployeePublicInherit(models.Model):
     _inherit = 'hr.employee.public'
 
-    basic = fields.Float(string='Net Salary')
-    total_allowance = fields.Float(string='Total Allowance',)
+    def _get_public_fields(self):
+        fields_list = super()._get_public_fields()
+        fields_list.extend([
+            'basic',
+            'total_allowance',
+            'grade_id',
+            'payroll_wage',
+            'min',
+            'max',
+            'location',
+            'basic_percentage',
+            'cola_percentage',
+            'housing_percentage',
+            'transportion_percentage',
+            'wage',
+            'salary_currency',
+            'is_worker',
+        ])
+        return fields_list
+        
+
+    basic = fields.Float(related='employee_id.basic', readonly=True)
+    total_allowance = fields.Float(related='employee_id.total_allowance', readonly=True)
+    # basic = fields.Float(string='Net Salary')
+    # total_allowance = fields.Float(string='Total Allowance',)
     grade_id = fields.Many2one('hr.grade.configuration', string="Grade",)
     payroll_wage = fields.Float(string='Gross')
     min = fields.Float(string='Min. Amount',  related='grade_id.min', readonly=True,  store=True)

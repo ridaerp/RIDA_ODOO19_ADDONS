@@ -14,7 +14,6 @@ class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
 
     bank_account_id = fields.Many2one("res.partner.bank")
-    
 
 class User(models.Model):
     _inherit = "res.users"
