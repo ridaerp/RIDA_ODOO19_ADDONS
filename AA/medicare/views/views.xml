@@ -1,0 +1,491 @@
+<odoo>
+    <data>
+
+        <record id="doctor_visit_forms" model="ir.ui.view">
+            <field name="name">doctor.visit.form</field>
+            <field name="model">doctor.visit</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Create Lab Test" groups="medicare.group_medicare_doctor" name="action_lab_test"
+                                class="oe_highlight" type="object"
+                                invisible="state not in ['diagnosing', 'lab', 'lab_result', 'minor_room', 'pharmacy']"/>
+                        <button string="Medicine Request" groups="medicare.group_medicare_doctor" name="action_pharmacy"
+                                class="oe_highlight"
+                                type="object"
+                                invisible="state not in ['diagnosing', 'lab', 'lab_result', 'minor_room', 'pharmacy']"/>
+                        <button string="Referring" groups="medicare.group_medicare_doctor" name="action_referring"
+                                class="oe_highlight"
+                                invisible="state not in ['diagnosing', 'lab', 'lab_result', 'minor_room', 'pharmacy']"
+                                type="object"/>
+                        <button string="Request Minor Room" groups="medicare.group_medicare_doctor"
+                                name="action_minor_room" class="oe_highlight"
+                                invisible="state not in ['diagnosing', 'lab', 'lab_result', 'minor_room', 'pharmacy']"
+                                type="object"/>
+                        <button string="Close" groups="medicare.group_medicare_doctor" name="action_close"
+                                class="oe_highlight"
+                                invisible="state not in ['diagnosing', 'referring','lab','lab_result', 'minor_room', 'pharmacy']"
+                                type="object"/>
+                        <button string="Diagnosing" groups="medicare.group_medicare_doctor" name="action_diagnosing"
+                                class="oe_highlight" invisible="state != 'draft'"
+                                type="object"/>
+                        <button string="Set to Draft" groups="medicare.group_medicare_doctor" name="action_draft"
+                                class="oe_highlight" invisible="state != 'reject'"
+                                type="object"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                groups="medicare.group_medicare_doctor"
+                                invisible="state not in ['draft','diagnosing', 'referring','lab','lab_result', 'minor_room', 'pharmacy']"
+                                string="Reject"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,diagnosing,referring,lab,lab_result,minor_room,pharmacy,close"/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button name="set_lab_test" invisible="lab_test_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="lab_test_count" string="Lab Tests" widget="statinfo"/>
+                            </button>
+                            <button name="set_minor_room" invisible="minor_room_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="minor_room_count" string="Minor Room Requests" widget="statinfo"/>
+                            </button>
+                            <button name="set_pharmacy" invisible="issuance_request_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="issuance_request_count" string="Issuance Request" widget="statinfo"/>
+                            </button>
+                            <button name="set_doctor_visit" string='Clinic Visit'
+                                    invisible="doctor_visit_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="doctor_visit_count" string="Clinic Visit" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="req_id"/>
+                                <field name="account_analytic_id" invisible="1"/>
+                                <field name="patient" invisible="1"/>
+                                <field name="show_referring" invisible="1"/>
+                                <field name="doctor_visit_count" invisible="1"/>
+                                <field name="type" widget="radio" readonly="state != 'draft'"/>
+                                <field name="p_employee"
+                                       invisible="type != 'employee'" required="type == 'employee'"
+                                       readonly="state != 'draft'" options="{'no_create': True,'no_open':True}"
+                                />
+                                <field name="p_contractor"
+                                       invisible="type != 'contractor'" required="type == 'contractor'"
+                                       readonly="state != 'draft'"/>
+                                <field name="p_quest"
+                                       invisible="type != 'quest'" required="type == 'quest'"
+                                       readonly="state != 'draft'"/>
+                                <field name="age"/>
+                                <field name="department_id"
+                                       invisible="type != 'employee'" required="type == 'employee'"
+                                       readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="appointment_date" readonly="1"/>
+                                <field name="company_id"
+                                       invisible="type != 'employee'" readonly="state not in ['draft']"/>
+                                <field name="job_id" invisible="type != 'employee'" readonly="1"/>
+                                <field name="gender" readonly="1"/>
+                                <field name="blood_group" readonly="1"/>
+                                <field name="line_manager_id" invisible="type != 'employee'"
+                                       readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="urgency_level" widget="radio"
+                                       readonly="state not in ['draft', 'diagnosing']"/>
+                                <field name="description" readonly="state in ['close']"/>
+                                <field name="dieases_ids" options="{'no_create': True,'no_open':True}"
+                                       widget="many2many_tags"
+                                       invisible="state in ['draft']" readonly="state in ['close']"/>
+                                <field name="last_lab_test_id" invisible="last_lab_test_id == 0"
+                                       readonly="1"/>
+                                <field name="last_minor_room_id"
+                                       invisible="last_minor_room_id == False" readonly="1"/>
+                                <field name="last_issuance_request_id"
+                                       invisible="last_issuance_request_id == False" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="work_related"
+                                       readonly="state not in ['draft','diagnosing']"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Info">
+                                <group>
+                                    <field name="spot_diagnostic" readonly="state in ['close']"/>
+                                    <field name="pre_notes" readonly="state in ['close']"/>
+                                </group>
+                                <group>
+                                </group>
+                            </page>
+                            <page string="Referring Case" invisible="show_referring == False">
+                                <group>
+                                    <field name="partner_id"
+                                           required="state in ['referring']" readonly="state in ['close']"
+                                           options="{'no_create': True,'no_open':True}"/>
+                                    <field name="diagnostic_result"
+                                           required="state in ['referring']" readonly="state in ['close']"/>
+                                    <field name="sick_leaves" readonly="state in ['close']"/>
+                                </group>
+                            </page>
+                            <page string="Invoice">
+                                <group>
+                                    <group>
+                                        <field name="lab_total_invoice"/>
+                                        <field name="pharmacy_total_invoice"/>
+                                        <label string="Total Invoice" for="total_invoice"
+                                               style="color: green;"/>
+                                        <field name="total_invoice" style="color: green;" nolabel="1"
+                                               readonly="1"/>
+                                    </group>
+                                    <group>
+
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="doctor_visit_tree" model="ir.ui.view">
+            <field name="name">Clinic Visit tree</field>
+            <field name="model">doctor.visit</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="patient"/>
+                    <field name="spot_diagnostic"/>
+                    <field name="appointment_date"/>
+                    <field name="work_related"/>
+                    <field name="total_invoice"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="product_medcare_forms" model="ir.ui.view">
+            <field name="name">product medicare form</field>
+            <field name="model">product.medicare</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="product_id" options="{'no_create': True,'no_open':True}"/>
+                                <field name="uom_id"/>
+                                <field name="qty_available"/>
+                                <field name="qty"/>
+                                <field name="price"/>
+                                <field name="manufacture"/>
+                                <field name="site_effect"/>
+                            </group>
+                            <group>
+                                <field name="default_code"/>
+                                <field name="categ_id"/>
+                                <field name="dosage_instruction"/>
+                                <field name="expire_date"/>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="medicare_product_scrap" model="ir.ui.view">
+            <field name="name">medicare product scrap form</field>
+            <field name="model">medicare.product.scrap</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Confirm" groups="medicare.group_medicare_medicare" name="set_approve"
+                                type="object" invisible="state != 'draft'"
+                                class="oe_highlight"/>
+                        <button string="Set to Draft" groups="medicare.group_medicare_medicare" name="action_draft"
+                                type="object" invisible="state != 'reject'"/>
+                        <button name="%(material_request.purchase_order_reject_action)d" type="action"
+                                groups="medicare.group_medicare_medicare" invisible="state != 'draft'" string="Reject"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="type_product" invisible="1"/>
+                                <field name="req_id"/>
+                                <field name="product_id" readonly="state in ['done']" required="1"
+                                       domain="[('type_product','=',type_product)]"
+                                       options="{'no_create': True,'no_open':True}"/>
+                                <field name="uom_id"/>
+                                <field name="qty" readonly="state in ['done']" required="1"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="expire_date"/>
+                                <field name="description" readonly="state in ['done']" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="medicare_product_scrap_tree" model="ir.ui.view">
+            <field name="name">medicare product scrap tree</field>
+            <field name="model">medicare.product.scrap</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="qty"/>
+                    <field name="date"/>
+                    <field name="expire_date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="product_medcare_tree" model="ir.ui.view">
+            <field name="name">product medicare tree</field>
+            <field name="model">product.medicare</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="default_code"/>
+                    <field name="uom_id"/>
+                    <field name="qty_available"/>
+                    <field name="qty"/>
+                    <field name="manufacture"/>
+                    <field name="expire_date"/>
+                    <field name="price"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="patient_quest_forms" model="ir.ui.view">
+            <field name="name">patient.quest.form</field>
+            <field name="model">patient.quset</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="birthday"/>
+                                <field name="gender"/>
+                                <field name="mobile_phone"/>
+                                <field name="work_email"/>
+                                <field name="info"/>
+                            </group>
+                            <group>
+                                <field name="emp_code"/>
+                                <field name="age"/>
+                                <field name="organization"/>
+                                <field name="blood_group"/>
+                                <field name="marital"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="patient_contractors_forms" model="ir.ui.view">
+            <field name="name">patient.contractors.form</field>
+            <field name="model">patient.contractors</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="department_id" required="1"/>
+                                <field name="birthday"/>
+                                <field name="gender"/>
+                                <field name="partner_id" options="{'no_create': True,'no_open':True}"/>
+                                <field name="mobile_phone"/>
+                                <field name="work_email"/>
+                            </group>
+                            <group>
+                                <field name="emp_code"/>
+                                <field name="blood_group"/>
+                                <field name="age"/>
+                                <field name="marital"/>
+                                <field name="info"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_employee_form_inherit_medicare">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bank_account_id']" position="after">
+                    <field name="blood_group"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="medicare_employee_form" model="ir.ui.view">
+            <field name="name">medicare.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                            <button name="set_doctor_visit" string='Clinic Visit'
+                                    invisible="doctor_visit_count == 0"
+                                    type="object" class="oe_stat_button" icon="fa-list-alt">
+                                <field name="doctor_visit_count" string="Clinic Visit" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="doctor_visit_count" invisible="1"/>
+                                <field name="emp_code"/>
+                                <field name="blood_group"/>
+                                <field name="age" groups="medicare.group_medicare_medicare"/>
+                                <field name="sex"/>
+                                <field name="work_email"/>
+                            </group>
+                            <group>
+                                <field name="line_manager_id"/>
+                                <field name="marital"/>
+                                <field name="work_phone"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="medicare_hr_employee_tree_view" model="ir.ui.view">
+            <field name="name">Employee tree</field>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <list delete="0">
+                    <field name="emp_code"/>
+                    <field name="name"/>
+                    <field name="sex"/>
+                    <field name="department_id"/>
+                    <field name="job_id"/>
+                    <field name="line_manager_id"/>
+                    <field name="work_email"/>
+                    <field name="marital"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="medicare_contractor_tree_view" model="ir.ui.view">
+            <field name="name">Contractor tree</field>
+            <field name="model">patient.contractors</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="emp_code"/>
+                    <field name="name"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="mobile_phone"/>
+                    <field name="work_email"/>
+                    <field name="marital"/>
+                </list>
+            </field>
+        </record>
+        <record id="medicare_quest_tree_view" model="ir.ui.view">
+            <field name="name">Quest tree</field>
+            <field name="model">patient.quset</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="emp_code"/>
+                    <field name="name"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="mobile_phone"/>
+                    <field name="work_email"/>
+                    <field name="marital"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="employee_patient_act_window" model="ir.actions.act_window">
+            <field name="name">Employee</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'edit': 0,'create': 0}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('medicare.medicare_hr_employee_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('medicare.medicare_employee_form')})]"/>
+        </record>
+
+        <record id="contractors_patient_act_window" model="ir.actions.act_window">
+            <field name="name">Contractors</field>
+            <field name="res_model">patient.contractors</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="quest_patient_act_window" model="ir.actions.act_window">
+            <field name="name">Guest</field>
+            <field name="res_model">patient.quset</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="doctor_visit_act_window" model="ir.actions.act_window">
+            <field name="name">Clinic Visit</field>
+            <field name="res_model">doctor.visit</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem name="Medicare" groups="medicare.group_medicare_medicare" id="medicare_menu" web_icon="medicare,static/description/icon.png"
+        />
+        <menuitem name="Patients" groups="medicare.group_medicare_doctor" id="patient_menu" parent="medicare_menu"
+                  sequence="2"/>
+        <menuitem name="Employee" groups="medicare.group_medicare_doctor" id="employee_patient" parent="patient_menu"
+                  action="employee_patient_act_window" sequence="1"
+        />
+        <menuitem name="Contractors" groups="medicare.group_medicare_doctor" id="contractors_patient"
+                  parent="patient_menu"
+                  action="contractors_patient_act_window" sequence="2"
+        />
+        <menuitem name="Guests" groups="medicare.group_medicare_doctor" id="quest_patient" parent="patient_menu"
+                  action="quest_patient_act_window" sequence="3"
+        />
+        <menuitem name="Clinic Visit" groups="medicare.group_medicare_doctor" id="doctor_visit" parent="medicare_menu"
+                  action="doctor_visit_act_window" sequence="1"
+        />
+    </data>
+</odoo>

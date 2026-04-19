@@ -80,9 +80,9 @@
                     <field name="quantity" string="Quantity" sum="quantity"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning,base_rida.rida_internal_audit"/>
                     <field name="average" string="Average" sum="average"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
+                           groups="material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
                     <field name="qy_average" string="Quantity/Average" sum="qty_average"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
+                           groups="material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
 
                     <field name="area_id"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning"/>
@@ -137,7 +137,7 @@
                                statusbar_visible="draft,db_geologist,chem_lab,db_price,rock_user,done"
                                invisible="form_type == 'external_visit'"
                                statusbar_colors='{"manager_approved":"blue"}'/>
-                        <field name="state" widget="statusbar"
+                        <field name="external_visit_state" widget="statusbar"
                                statusbar_visible="draft,db_geologist,chem_lab,waiting_rock,close"
                                statusbar_colors='{"manager_aaterapproved":"blue"}'
                                invisible="form_type != 'external_visit'"/>

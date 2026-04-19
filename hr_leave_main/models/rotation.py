@@ -124,7 +124,7 @@ class RotationBatch(models.Model):
                     'request_date_to': emp.date_to,
                     'number_of_days': emp.number_of_days,
                 })
-                self.write({'leave_ids': [(4,
+                self.sudo().write({'leave_ids': [(4,
                                            leave.id
                                            )]})
         return self.write({'state': 'wlm'})

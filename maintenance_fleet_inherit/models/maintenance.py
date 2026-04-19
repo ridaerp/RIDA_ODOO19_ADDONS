@@ -1580,7 +1580,7 @@ class FleetVehicleOdometer(models.Model):
             # نتحقق من وجود المفتاح في القاموس ومن وجود المعدة في السجل
             if vals.get('location_id') and rec.equipment_id:
                 # تحديث موقع المعدة بناءً على قيمة الموقع في الأودومتر
-                rec.equipment_id.location = rec.location_id.name
+                rec.equipment_id.location_id = rec.location_id.id
                 
         return recs
 

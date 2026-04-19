@@ -22,7 +22,7 @@
 
     # any module necessary for this one to work correctly
 
-    'depends': ['base', 'mail','maintenance','base_rida', 'account', 'accountant', 'purchase', 'mrp', 'project','purchase_stock','stock_last_purchase_price','purchase_requisition','stock', 'purchase_discount','mrp_landed_costs','stock_landed_costs_currency','sale', 'mrp', 'base_rida', 'purchase_order_delivery_status',],
+    'depends': ['base', 'mail','maintenance','base_rida', 'account', 'accountant', 'purchase', 'mrp', 'project','purchase_stock','stock_last_purchase_price','purchase_requisition','stock','stock_account', 'purchase_discount','mrp_landed_costs','stock_landed_costs_currency','sale', 'mrp', 'base_rida', 'purchase_order_delivery_status',],
     # 'hr_employee_main',
 
 
@@ -52,7 +52,7 @@
         ############added by ekhas code
         'views/ore_rock_purchases_view.xml',
         'report/purchase_contract.xml',
-        # 'report/mr_print_pdf.xml',
+        'report/mr_print_pdf.xml',
         'wizards/advance_payments_wizard_view.xml',
         'views/weight_unit_view.xml',
         'views/chemical_view.xml',
