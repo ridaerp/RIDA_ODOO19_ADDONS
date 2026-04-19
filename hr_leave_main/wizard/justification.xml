@@ -18,13 +18,13 @@
                 </form>
             </field>
         </record>
-        <act_window
-            id="justification_open_wizard"
-            name="Justification"
-            res_model="justification.justification"
-            view_mode="form"
-            view_id="wizard_justification_view_form"
-            target="new"/>
+<!--        <act_window-->
+<!--            id="justification_open_wizard"-->
+<!--            name="Justification"-->
+<!--            res_model="justification.justification"-->
+<!--            view_mode="form"-->
+<!--            view_id="wizard_justification_view_form"-->
+<!--            target="new"/>-->
             
             <!-- <menuitem id="Justification_wizard_menu" groups="hr.group_hr_user" name="Justification" action="justification_open_wizard" parent="hr_holidays.menu_hr_holidays_root" sequence="10"/> -->
     </data>

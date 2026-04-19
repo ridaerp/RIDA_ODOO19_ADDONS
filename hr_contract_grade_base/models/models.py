@@ -111,6 +111,9 @@ class Employee(models.Model):
     housing = fields.Float(string='Housing' ,readonly=True,compute="compute_salary_amount" )
     transportion = fields.Float(string='Transportion', readonly=True,compute="compute_salary_amount" )
     salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
+    date_end = fields.Date(
+    string="End Date",
+    groups="hr.group_hr_user")
     # contract_date_start = fields.Date(readonly=False, related="version_id.contract_date_start", inherited=True, groups="base.group_user")
     # wage_type = fields.Selection(readonly=False, related="version_id.wage_type", inherited=True, groups="base.group_user")
 
@@ -187,12 +190,6 @@ class Employee(models.Model):
                     total += line.amount
             rec.total_allowance = total 
 
-
-
-
-
-
-
 class EmployeeVersion(models.Model):
     _inherit = 'hr.version'
 
@@ -200,7 +197,6 @@ class EmployeeVersion(models.Model):
     band_id = fields.Many2one(comodel_name='job.band', string='Job Band')
     grade_id = fields.Many2one('hr.grade.configuration', string="Grade")
     total_allowance = fields.Float(string='Total Allowance')
-    grade_id = fields.Many2one('hr.grade.configuration', string="Grade", readony=True)
     grade_line_id = fields.One2many(comodel_name='hr.grade.line', inverse_name='contract_id', string='Old Benefits')
     wage = fields.Monetary(string='Take Home', store=True)
     payroll_wage = fields.Monetary(string='Gross')
@@ -210,14 +206,11 @@ class EmployeeVersion(models.Model):
     basic_percentage = fields.Float(string='Basic Salary(%)' , default= 61.00)
     cola_percentage = fields.Float(string='Cola(%)', default= 15.00)
     housing_percentage = fields.Float(string='Housing(%)', default= 10.00)
-    transportion_percentage = fields.Float(string='Transportion(%)', default= 14.00)
     basic_salary = fields.Float(string='Basic Salary' , readonly=True )
     cola = fields.Float(string='Cola', readonly=True)
     housing = fields.Float(string='Housing' ,readonly=True,)
     transportion = fields.Float(string='Transportion', readonly=True, )
     salary_currency = fields.Many2one("res.currency",required=True,string="Contract Currency",default=lambda self: self.env.company.currency_id)
-    # contract_date_start = fields.Date(readonly=False, inherited=True, groups="base.group_user")
-    # wage_type = fields.Selection(readonly=False, inherited=True, groups="base.group_user")
     transportion_allowance = fields.Float("Transportation Allowance")
     car_allowance = fields.Float("Car Allowance")
     fuel_allowance = fields.Float("Fuel Allowance")
@@ -238,6 +231,8 @@ class EmployeeVersion(models.Model):
     employee_type = fields.Selection(related="employee_id.rida_employee_type")
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", )
     workeddays = fields.Float("Working Days ")
+    contract_date_start = fields.Date(groups="hr.group_hr_user")
+    contract_date_end = fields.Date(groups="hr.group_hr_user")
 
     @api.onchange('department_id')
     def get_analytic_account_id(self):
@@ -288,5 +283,4 @@ class EmployeeVersion(models.Model):
             for recc in allowance_ids:
                 if rec.has_phone_allows:
                     rec.phone_allowance = recc.phone_allowance
->>>>>>> 5cad524b076aa9459b71135d67c6fcaeb23e2d25
 

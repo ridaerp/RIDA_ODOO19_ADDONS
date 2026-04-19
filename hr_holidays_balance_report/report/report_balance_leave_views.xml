@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_balance_leave_view_search" model="ir.ui.view">
+        <field name="name">report.balance.leave.view.search</field>
+        <field name="model">report.balance.leave</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="emp_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="leave_type_id"/>
+                <separator/>
+                <filter name="group_by_emp_id" string="Employee" context="{'group_by': 'emp_id'}"/>
+                <filter name="group_by_department_id" string="Department" context="{'group_by': 'department_id'}"/>
+                <filter name="group_by_leave_type_id" string="Leave Type" context="{'group_by': 'leave_type_id'}"/>
+                <filter name="group_by_job_id" string="Job" context="{'group_by': 'job_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="report_balance_leave_view_list" model="ir.ui.view">
+        <field name="name">report.balance.leave.view.list</field>
+        <field name="model">report.balance.leave</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="emp_id"/>
+                <field name="gender"/>
+                <field name="country_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="leave_type_id"/>
+                <field name="allocated_days" sum="Allocated"/>
+                <field name="taken_days" sum="Taken"/>
+                <field name="balance_days" sum="Balance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="report_balance_leave_action" model="ir.actions.act_window">
+        <field name="name">Balance Leave Report</field>
+        <field name="res_model">report.balance.leave</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="report_balance_leave_view_search"/>
+    </record>
+
+    <menuitem id="report_balance_leave_menu_root"
+              name="Leave Balance Report"
+              action="report_balance_leave_action"
+              parent="hr_holidays.menu_hr_holidays_report"
+              sequence="3"/>
+</odoo>
