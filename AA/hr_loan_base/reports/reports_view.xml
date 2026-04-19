@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <report
+            id="hr_lo_report_pdf"
+            model="hr.loan"
+            string="Loan Report"
+            report_type="qweb-pdf"
+            name="hr_loan_base.hr_loan_report_pdf"
+            file="hr_loan_base.hr_loan_report_pdf"
+            attachment_use="True"
+        />
+    </data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="wizard_justification_view_form" model="ir.ui.view">
+            <field name="name">wizard_justification_view_form.form</field>
+            <field name="model">justification.justification</field>
+            <field name="arch" type="xml">
+                <form string="Enter a justification">
+                  <group>
+                            <field name="justification"/>
+                </group>
+                   <footer>
+                    <button string='Confirm' name="button_confirm" type="object"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    
+                </footer>
+
+                </form>
+            </field>
+        </record>
+        <act_window
+            id="justification_open_wizard"
+            name="Justification"
+            res_model="justification.justification"
+            view_mode="form"
+            view_id="wizard_justification_view_form"
+            target="new"/>
+            
+            <!-- <menuitem id="Justification_wizard_menu" groups="hr.group_hr_user" name="Justification" action="justification_open_wizard" parent="hr_holidays.menu_hr_holidays_root" sequence="10"/> -->
+    </data>
+</odoo>

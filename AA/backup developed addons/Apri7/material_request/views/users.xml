@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="res_user_form_view" model="ir.ui.view">
+            <field name="name">res.user.form.view</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='access_rights']/group[1]" position="after">
+                    <group>
+
+                        <field name="fleet"/>
+                        <field name="line_manager_id"/>
+                        <field name="line_line_manager_id"/>
+                        <field name="analytic_account_ids"
+                               widget="many2many_tags"/>
+                        <field name="default_analytic_account_id"
+                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"/>
+                        <field name="product_category_ids"
+                               widget="many2many_tags"/>
+                        <field name="default_product_category_id"
+                               options="{'no_open':True,'no_create': True, 'no_create_edit':True}"/>
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Inherit res partner form view  -->
+        <record model="ir.ui.view" id="res_partner_form_inheetis_view">
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='purchase']" position="inside">
+                    <field
+                            name="max_grade"
+                             invisible="is_company == False and parent_id != False" />
+                            
+                           <!--  <h3>Ore Info</h3>
+                            <field name="east" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="north" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="rock_type" groups="material_request.group_ore_rock_db_geology_user"/>
+                            <field name="rea_ids" groups="material_request.group_ore_rock_db_geology_user" widget="many2many_tags"/> -->
+
+                </xpath>
+
+                
+                <!-- <xpath expr="//group[@name='purchase']" position="inside">
+                     <field name="partner_type"/>
+                </xpath> -->
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
