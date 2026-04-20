@@ -41,22 +41,61 @@ class hr_payroll_workflow(models.Model):
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
-    
-    @api.model
-    def create(self, vals):
-        res = super(hr_payroll_workflow, self).create(vals)
-        # allowed_input_types = res.struct_id.input_line_type_ids
-        allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
-        # Get existing input lines
-        # Create or update input lines
-        for input_type in allowed_input_types:
-                input_line = self.env['hr.payslip.input'].create({
-                    'payslip_id': res.id,
+
+    # mazaya_cash = fields.Float(compute='compute_mazaya', store=True)
+    # mazaya_dress = fields.Float(compute='compute_mazaya', store=True)
+    # mazaya_midical = fields.Float(compute='compute_mazaya', store=True)
+    # mazaya_grant = fields.Float(compute='compute_mazaya', store=True)
+    # mazaya_total = fields.Float(compute='compute_mazaya', store=True)
+    # mazaya_tax = fields.Float(compute='compute_mazaya', store=True)
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        payslips = super().create(vals_list)
+
+        for payslip in payslips:
+            if not payslip.struct_id:
+                continue
+
+            existing_input_type_ids = payslip.input_line_ids.mapped('input_type_id').ids
+            allowed_input_types = payslip.struct_id.input_line_type_ids.sorted(
+                key=lambda x: x.sequence, reverse=True
+            )
+
+            for input_type in allowed_input_types:
+                if input_type.id in existing_input_type_ids:
+                    continue
+
+                values = {
+                    'payslip_id': payslip.id,
                     'input_type_id': input_type.id,
-                    'amount': 0.0,  # Default amount
-                    'version_id': res.version_id.id,
-                })
-        return res
+                    'amount': 0.0,
+                }
+
+                if 'version_id' in self.env['hr.payslip.input']._fields and payslip.version_id:
+                    values['version_id'] = payslip.version_id.id
+
+                self.env['hr.payslip.input'].create(values)
+
+        return payslips
+
+
+    # @api.model
+    # def create(self, vals):
+    #     res = super(hr_payroll_workflow, self).create(vals)
+    #     # allowed_input_types = res.struct_id.input_line_type_ids
+    #     allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
+    #     # Get existing input lines
+    #     # Create or update input lines
+    #     for input_type in allowed_input_types:
+    #             input_line = self.env['hr.payslip.input'].create({
+    #                 'payslip_id': res.id,
+    #                 'input_type_id': input_type.id,
+    #                 'amount': 0.0,  # Default amount
+    #                 'version_id': res.version_id.id,
+    #             })
+    #     return res
 
     def unlink(self):
         if any(payslip.state not in ('draft', 'verify','close','cancel') for payslip in self):
@@ -78,6 +117,7 @@ class hr_payroll_workflow(models.Model):
 
         return super(hr_payroll_workflow, self).unlink()
 
+
     @api.depends('date_from','mazaya_id','payslip_day')
     def compute_mazaya(self):
         for record in self:
@@ -85,12 +125,12 @@ class hr_payroll_workflow(models.Model):
             Y,m,d = str(record.date_from).split('-')
             months = int(m)
             maz_lin_obj = self.env['rida.mazaya.line']
+            self.caculate_workdays_take_home()
+            basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
 
-            basic_sal =((record.employee_id.payroll_wage/30)*record.payslip_day)* 61/100
-
-            gross_sal = record.employee_id.payroll_wage
+            gross_sal = record.version_id.payroll_wage
             if record.mazaya_id:
-                maz_mon = maz_lin_obj.search([('month','=',months), ('mazaya_id','=',record.mazaya_id.id)])
+                maz_mon = maz_lin_obj.search([('month','=',months), ('mazaya_id','=',record.mazaya_id.id)],limit=1)
                 if maz_mon:
                     if record.mazaya_id.based_on == 'basic':
                         mazaya_cash = maz_mon.cash_allow * basic_sal /100 # Calcccccccccccccu
@@ -106,14 +146,54 @@ class hr_payroll_workflow(models.Model):
                         mazaya_grant = maz_mon.grant_allow * gross_sal /100# Calcccccccccccccu
                         mazaya_total = maz_mon.new_allow * gross_sal /100# Calcccccccccccccu
                         mazaya_tax = mazaya_total*maz_mon.tax_allow/100
-                    self.mazaya_cash= mazaya_cash
-                    self.mazaya_dress= mazaya_dress
-                    self.mazaya_midical= mazaya_midical
-                    self.mazaya_grant= mazaya_grant
-                    self.mazaya_total= mazaya_total
-                    self.mazaya_tax = mazaya_tax
+                    record.mazaya_cash= mazaya_cash
+                    record.mazaya_dress= mazaya_dress
+                    record.mazaya_midical= mazaya_midical
+                    record.mazaya_grant= mazaya_grant
+                    record.mazaya_total= mazaya_total
+                    record.mazaya_tax = mazaya_tax
 
-    ############ekhlas code ###################
+
+
+
+
+
+
+    # @api.depends('date_from','mazaya_id','payslip_day')
+    # def compute_mazaya(self):
+    #     for record in self:
+    #         mazaya_total = mazaya_tax = 0
+    #         Y,m,d = str(record.date_from).split('-')
+    #         months = int(m)
+    #         maz_lin_obj = self.env['rida.mazaya.line']
+
+    #         basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
+
+    #         gross_sal = record.version_id.payroll_wage
+    #         if record.mazaya_id:
+    #             maz_mon = maz_lin_obj.search([('month','=',months), ('mazaya_id','=',record.mazaya_id.id)])
+    #             if maz_mon:
+    #                 if record.mazaya_id.based_on == 'basic':
+    #                     mazaya_cash = maz_mon.cash_allow * basic_sal /100 # Calcccccccccccccu
+    #                     mazaya_dress = maz_mon.dress_allow * basic_sal /100 # Calcccccccccccccu
+    #                     mazaya_midical = maz_mon.midical_allow * basic_sal /100 # Calcccccccccccccu
+    #                     mazaya_grant = maz_mon.grant_allow * basic_sal /100 # Calcccccccccccccu
+    #                     mazaya_total = maz_mon.new_allow * basic_sal /100 # Calcccccccccccccu
+    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
+    #                 elif record.mazaya_id.based_on =='gross':
+    #                     mazaya_cash = maz_mon.cash_allow * gross_sal /100# Calcccccccccccccu
+    #                     mazaya_dress = maz_mon.dress_allow * gross_sal /100# Calcccccccccccccu
+    #                     mazaya_midical = maz_mon.midical_allow * gross_sal /100# Calcccccccccccccu
+    #                     mazaya_grant = maz_mon.grant_allow * gross_sal /100# Calcccccccccccccu
+    #                     mazaya_total = maz_mon.new_allow * gross_sal /100# Calcccccccccccccu
+    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
+    #                 self.mazaya_cash= mazaya_cash
+    #                 self.mazaya_dress= mazaya_dress
+    #                 self.mazaya_midical= mazaya_midical
+    #                 self.mazaya_grant= mazaya_grant
+    #                 self.mazaya_total= mazaya_total
+    #                 self.mazaya_tax = mazaya_tax
+
 
     def _compute_basic_net(self):
         super(hr_payroll_workflow,self)._compute_basic_net()
@@ -123,43 +203,75 @@ class hr_payroll_workflow(models.Model):
             payslip.take_home_wage = payslip._get_salary_line_total('TH')
 
 
-    ############end of code ###################
-
-
-    ############ekhlas code ###################
     def caculate_workdays_take_home(self):
         for rec in self:
-            rec.analytic_account_id=rec.employee_id.analytic_account_id
-            lines=self.env['hr.payslip.line'].search([('slip_id','=',rec.id),('code','=','TH')])
+            rec.analytic_account_id = rec.employee_id.analytic_account_id
+            rec.take_home = 0.0
+
+            lines = self.env['hr.payslip.line'].search([
+                ('slip_id', '=', rec.id),
+                ('code', '=', 'TH')
+            ])
             for line in lines:
-                rec.take_home=line.amount
-            if rec.employee_id.date_start<=rec.date_to and rec.employee_id.date_start>=rec.date_from:
-                d1=datetime.strptime(str(rec.employee_id.date_start),"%Y-%m-%d").day
-                d2=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
+                rec.take_home = line.amount
 
-                if d2==d1:
-                    rec.payslip_day=30
+            employee_start = rec.employee_id.date_start
+            date_from = rec.date_from
+            date_to = rec.date_to
 
+            if not employee_start or not date_from or not date_to:
+                rec.payslip_day = 30
+                continue
+
+            if employee_start <= date_to and employee_start >= date_from:
+                d1 = employee_start.day
+                d2 = date_from.day
+
+                if d2 == d1:
+                    rec.payslip_day = 30
                 else:
-                    d11=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
-                    d22=datetime.strptime(str(rec.date_to),"%Y-%m-%d").day
-                    if d22-d11!=29:
-                        rec.payslip_day=32-d1
-
+                    d11 = date_from.day
+                    d22 = date_to.day
+                    if d22 - d11 != 29:
+                        rec.payslip_day = 32 - d1
                     else:
-                        rec.payslip_day=31-d1
-
+                        rec.payslip_day = 31 - d1
             else:
-                rec.payslip_day=30
+                rec.payslip_day = 30
+
+    # def caculate_workdays_take_home(self):
+    #     for rec in self:
+    #         rec.analytic_account_id=rec.employee_id.analytic_account_id
+    #         lines=self.env['hr.payslip.line'].search([('slip_id','=',rec.id),('code','=','TH')])
+    #         for line in lines:
+    #             rec.take_home=line.amount
+    #         if rec.employee_id.date_start<=rec.date_to and rec.employee_id.date_start>=rec.date_from:
+    #             d1=datetime.strptime(str(rec.employee_id.date_start),"%Y-%m-%d").day
+    #             d2=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
+
+    #             if d2==d1:
+    #                 rec.payslip_day=30
+
+    #             else:
+    #                 d11=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
+    #                 d22=datetime.strptime(str(rec.date_to),"%Y-%m-%d").day
+    #                 if d22-d11!=29:
+    #                     rec.payslip_day=32-d1
+
+    #                 else:
+    #                     rec.payslip_day=31-d1
+
+    #         else:
+    #             rec.payslip_day=30
 
 
     def compute_sheet(self):
-        res = super(hr_payroll_workflow,self).compute_sheet()
-        # for payslip in payslips:
-        self.write({'state':'draft'})
         self.caculate_workdays_take_home()
-
+        self.compute_mazaya()
+        res = super(hr_payroll_workflow,self).compute_sheet()
         return res
+
+
 
     # Submit Button function
     def submit_draft_state(self):
@@ -279,6 +391,11 @@ class hr_payroll_workflow_run(models.Model):
     _inherit = 'hr.payslip.run'
     _description = 'Added workflows to payroll stages'
     state = fields.Selection([
+        ('01_ready', 'Ready'),
+        ('02_close', 'Done'),
+        ('03_paid', 'Paid'),
+        ('04_cancel', 'Cancelled'),
+
         ('draft', 'Draft'), 
         ('director_approve','HR Director Approve'),
         ('ccso_approve','CCSO Approve'),
@@ -286,7 +403,7 @@ class hr_payroll_workflow_run(models.Model):
         ('paid', 'Paid'),
         ('close','Confirmed'),
         ('to_pay','To pay'),
-        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='draft')
+        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
     currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
     # Submit Button function
@@ -323,6 +440,8 @@ class hr_payroll_workflow_run(models.Model):
             "domain": [['id', 'in', self.slip_ids.ids]],
             "name": "Payslips",
         }
+
+
 
 
 class HrContract(models.Model):
