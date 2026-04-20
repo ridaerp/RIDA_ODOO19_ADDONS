@@ -20,9 +20,8 @@ class HrPayslip(models.Model):
     analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
     take_home = fields.Float(string="Take Home",readonly=False)
 
-    payslip_day = fields.Float(string="WorkedDays",readonly=True,compute="caculate_workdays_take_home")
-
-    take_home_wage = fields.Monetary(compute='_compute_basic_net')
+    payslip_day = fields.Float(string="WorkedDays",readonly=True,store=True,compute="caculate_workdays_take_home")
+    take_home_wage = fields.Monetary(compute='_compute_basic_net',)
 
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
@@ -129,25 +128,14 @@ class HrPayslip(models.Model):
 
 
 
-    def _compute_basic_net(self):
-        super(HrPayslip,self)._compute_basic_net()
-        for payslip in self:
-            payslip.basic_wage = payslip._get_salary_line_total('BASIC')
-            payslip.net_wage = payslip._get_salary_line_total('NET')
-            payslip.take_home_wage = payslip._get_salary_line_total('TH')
-
-
+    @api.depends('employee_id.date_start', 'date_from', 'date_to', 'line_ids.amount', 'line_ids.code')
     def caculate_workdays_take_home(self):
         for rec in self:
             rec.analytic_account_id = rec.employee_id.analytic_account_id
             rec.take_home = 0.0
 
-            lines = self.env['hr.payslip.line'].search([
-                ('slip_id', '=', rec.id),
-                ('code', '=', 'TH')
-            ])
-            for line in lines:
-                rec.take_home = line.amount
+            lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
+            rec.take_home = sum(lines.mapped('total')) if lines else 0.0
 
             employee_start = rec.employee_id.date_start
             date_from = rec.date_from
@@ -157,21 +145,28 @@ class HrPayslip(models.Model):
                 rec.payslip_day = 30
                 continue
 
-            if employee_start <= date_to and employee_start >= date_from:
+            if date_from <= employee_start <= date_to:
                 d1 = employee_start.day
                 d2 = date_from.day
-
                 if d2 == d1:
                     rec.payslip_day = 30
                 else:
                     d11 = date_from.day
                     d22 = date_to.day
-                    if d22 - d11 != 29:
-                        rec.payslip_day = 32 - d1
-                    else:
-                        rec.payslip_day = 31 - d1
+                    rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
             else:
                 rec.payslip_day = 30
+
+
+
+
+    def _compute_basic_net(self):
+        super(HrPayslip,self)._compute_basic_net()
+        for payslip in self:
+            payslip.basic_wage = payslip._get_salary_line_total('BASIC')
+            payslip.net_wage = payslip._get_salary_line_total('NET')
+            payslip.take_home_wage = payslip._get_salary_line_total('TH')
+
 
 
 
