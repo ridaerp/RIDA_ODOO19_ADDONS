@@ -35,12 +35,6 @@ class HrPayslip(models.Model):
             slip.compute_mazaya()
         return res
 
-    # def compute_sheet(self):
-    #     res = super().compute_sheet()
-    #     for slip in self:
-    #         slip.caculate_workdays_take_home()
-    #         slip.compute_mazaya()
-    #     return res
 
 
 
@@ -105,7 +99,7 @@ class HrPayslip(models.Model):
             Y,m,d = str(record.date_from).split('-')
             months = int(m)
             maz_lin_obj = self.env['rida.mazaya.line']
-            self.caculate_workdays_take_home()
+            # record.caculate_workdays_take_home()
             basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
 
             gross_sal = record.version_id.payroll_wage
