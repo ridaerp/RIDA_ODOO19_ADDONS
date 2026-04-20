@@ -19,22 +19,12 @@ class HrPayslip(models.Model):
     salary_currency = fields.Many2one(related='employee_id.salary_currency')
     analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
     take_home = fields.Float(string="Take Home",readonly=False)
-
     payslip_day = fields.Float(string="WorkedDays",readonly=True,store=True,compute="caculate_workdays_take_home")
     take_home_wage = fields.Monetary(compute='_compute_basic_net',)
 
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
-    
-    def compute_sheet(self):
-        res = super(HrPayslip, self).compute_sheet()
-        for slip in self:
-            # slip.caculate_workdays_take_home()
-            slip.compute_mazaya()
-        return res
-
-
 
 
     @api.model_create_multi
@@ -68,6 +58,58 @@ class HrPayslip(models.Model):
         return payslips
 
 
+    # @api.depends('employee_id', 'employee_id.analytic_account_id')
+    # def _compute_analytic_account_id(self):
+    #     for rec in self:
+    #         rec.analytic_account_id = rec.employee_id.analytic_account_id
+
+
+    # @api.depends('line_ids.total', 'line_ids.code')
+    # def _compute_take_home(self):
+    #     for rec in self:
+    #         lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
+    #         rec.take_home = sum(lines.mapped('total')) if lines else 0.0
+
+
+    # @api.depends('employee_id', 'employee_id.date_start', 'date_from', 'date_to')
+    # def _compute_payslip_day(self):
+    #     for rec in self:
+    #         employee_start = rec.employee_id.date_start
+    #         date_from = rec.date_from
+    #         date_to = rec.date_to
+
+    #         if not employee_start or not date_from or not date_to:
+    #             rec.payslip_day = 30
+    #             continue
+
+    #         if date_from <= employee_start <= date_to:
+    #             d1 = employee_start.day
+    #             d11 = date_from.day
+    #             d22 = date_to.day
+
+    #             if d11 == d1:
+    #                 rec.payslip_day = 30
+    #             else:
+    #                 rec.payslip_day = 32 - d1 if (d22 - d11) != 29 else 31 - d1
+    #         else:
+    #             rec.payslip_day = 30
+
+    # def compute_sheet(self):
+    #     res = super().compute_sheet()
+
+    #     self._compute_take_home()
+    #     self._compute_payslip_day()
+    #     self._compute_analytic_account_id()
+    #     self.compute_mazaya()
+
+    #     return res
+
+    def compute_sheet(self):
+        res = super(HrPayslip, self).compute_sheet()
+        for slip in self:
+            slip.caculate_workdays_take_home()
+            slip.compute_mazaya()
+        return res
 
 
     def unlink(self):
@@ -91,14 +133,13 @@ class HrPayslip(models.Model):
         return super(HrPayslip, self).unlink()
 
 
-    @api.depends('date_from','mazaya_id','payslip_day')
+    # @api.depends('date_from','mazaya_id','payslip_day')
     def compute_mazaya(self):
         for record in self:
             mazaya_total = mazaya_tax = 0
             Y,m,d = str(record.date_from).split('-')
             months = int(m)
             maz_lin_obj = self.env['rida.mazaya.line']
-            # record.caculate_workdays_take_home()
             basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
 
             gross_sal = record.version_id.payroll_wage
@@ -128,7 +169,7 @@ class HrPayslip(models.Model):
 
 
 
-    @api.depends('employee_id.date_start', 'date_from', 'date_to', 'line_ids.amount', 'line_ids.code')
+    @api.depends('employee_id.date_start', 'date_from', 'date_to')
     def caculate_workdays_take_home(self):
         for rec in self:
             rec.analytic_account_id = rec.employee_id.analytic_account_id
@@ -156,7 +197,6 @@ class HrPayslip(models.Model):
                     rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
             else:
                 rec.payslip_day = 30
-
 
 
 
