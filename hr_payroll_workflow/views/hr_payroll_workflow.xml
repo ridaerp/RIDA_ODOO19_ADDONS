@@ -6,7 +6,7 @@
         <field name="model">hr.payslip</field>
         <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//header" position="replace">
+    <!--         <xpath expr="//header" position="replace">
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
 
@@ -37,7 +37,7 @@
                     <button string="Export Payslip" name="action_export_payslip" type="object"
                             invisible="not is_superuser"/>
                 </header>
-            </xpath>
+            </xpath> -->
                         <xpath expr="//field[@name='struct_id']" position="before">
                             <!-- Add your fields here -->
                             <field name="analytic_account_id"/>

@@ -12,42 +12,36 @@ from odoo.tools.misc import format_date
 from odoo.tools import float_compare, float_is_zero
 from odoo.tools.safe_eval import safe_eval
 
-class hr_payroll_workflow(models.Model):
+class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
     _description = 'Added workflows to payroll stages'
 
     salary_currency = fields.Many2one(related='employee_id.salary_currency')
     analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
     take_home = fields.Float(string="Take Home",readonly=False)
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('director_approve','Payroll Manager Approve'),
-        ('ccso_approve','CCSO Approve'),
-        ('verify','verify'),
-        ('paid' , 'Paid'),
-        ('done', 'Confirmed'),
-        ('cancel', 'Rejected'),
-        ('to_pay','To pay')
-    ], string='Status', index=True, readonly=True, copy=False, default='draft',
-        help="""* When the payslip is created the status is \'Draft\'
-                \n* If the payslip is under verification, the status is \'Waiting\'.
-                \n* If the payslip is confirmed then status is set to \'Confirmed\'.
-                \n* When user cancel payslip the status is \'Rejected\'.""")
 
-    payslip_day = fields.Float(string="WorkedDays",readonly=True)
+    payslip_day = fields.Float(string="WorkedDays",readonly=True,compute="caculate_workdays_take_home")
 
     take_home_wage = fields.Monetary(compute='_compute_basic_net')
 
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
+    
+    def compute_sheet(self):
+        res = super(HrPayslip, self).compute_sheet()
+        for slip in self:
+            # slip.caculate_workdays_take_home()
+            slip.compute_mazaya()
+        return res
 
-    # mazaya_cash = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_dress = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_midical = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_grant = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_total = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_tax = fields.Float(compute='compute_mazaya', store=True)
+    # def compute_sheet(self):
+    #     res = super().compute_sheet()
+    #     for slip in self:
+    #         slip.caculate_workdays_take_home()
+    #         slip.compute_mazaya()
+    #     return res
+
 
 
     @api.model_create_multi
@@ -81,21 +75,7 @@ class hr_payroll_workflow(models.Model):
         return payslips
 
 
-    # @api.model
-    # def create(self, vals):
-    #     res = super(hr_payroll_workflow, self).create(vals)
-    #     # allowed_input_types = res.struct_id.input_line_type_ids
-    #     allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
-    #     # Get existing input lines
-    #     # Create or update input lines
-    #     for input_type in allowed_input_types:
-    #             input_line = self.env['hr.payslip.input'].create({
-    #                 'payslip_id': res.id,
-    #                 'input_type_id': input_type.id,
-    #                 'amount': 0.0,  # Default amount
-    #                 'version_id': res.version_id.id,
-    #             })
-    #     return res
+
 
     def unlink(self):
         if any(payslip.state not in ('draft', 'verify','close','cancel') for payslip in self):
@@ -115,7 +95,7 @@ class hr_payroll_workflow(models.Model):
                 line.paid = False
 
 
-        return super(hr_payroll_workflow, self).unlink()
+        return super(HrPayslip, self).unlink()
 
 
     @api.depends('date_from','mazaya_id','payslip_day')
@@ -155,48 +135,8 @@ class hr_payroll_workflow(models.Model):
 
 
 
-
-
-
-
-    # @api.depends('date_from','mazaya_id','payslip_day')
-    # def compute_mazaya(self):
-    #     for record in self:
-    #         mazaya_total = mazaya_tax = 0
-    #         Y,m,d = str(record.date_from).split('-')
-    #         months = int(m)
-    #         maz_lin_obj = self.env['rida.mazaya.line']
-
-    #         basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
-
-    #         gross_sal = record.version_id.payroll_wage
-    #         if record.mazaya_id:
-    #             maz_mon = maz_lin_obj.search([('month','=',months), ('mazaya_id','=',record.mazaya_id.id)])
-    #             if maz_mon:
-    #                 if record.mazaya_id.based_on == 'basic':
-    #                     mazaya_cash = maz_mon.cash_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_dress = maz_mon.dress_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_midical = maz_mon.midical_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_grant = maz_mon.grant_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_total = maz_mon.new_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
-    #                 elif record.mazaya_id.based_on =='gross':
-    #                     mazaya_cash = maz_mon.cash_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_dress = maz_mon.dress_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_midical = maz_mon.midical_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_grant = maz_mon.grant_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_total = maz_mon.new_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
-    #                 self.mazaya_cash= mazaya_cash
-    #                 self.mazaya_dress= mazaya_dress
-    #                 self.mazaya_midical= mazaya_midical
-    #                 self.mazaya_grant= mazaya_grant
-    #                 self.mazaya_total= mazaya_total
-    #                 self.mazaya_tax = mazaya_tax
-
-
     def _compute_basic_net(self):
-        super(hr_payroll_workflow,self)._compute_basic_net()
+        super(HrPayslip,self)._compute_basic_net()
         for payslip in self:
             payslip.basic_wage = payslip._get_salary_line_total('BASIC')
             payslip.net_wage = payslip._get_salary_line_total('NET')
@@ -239,37 +179,8 @@ class hr_payroll_workflow(models.Model):
             else:
                 rec.payslip_day = 30
 
-    # def caculate_workdays_take_home(self):
-    #     for rec in self:
-    #         rec.analytic_account_id=rec.employee_id.analytic_account_id
-    #         lines=self.env['hr.payslip.line'].search([('slip_id','=',rec.id),('code','=','TH')])
-    #         for line in lines:
-    #             rec.take_home=line.amount
-    #         if rec.employee_id.date_start<=rec.date_to and rec.employee_id.date_start>=rec.date_from:
-    #             d1=datetime.strptime(str(rec.employee_id.date_start),"%Y-%m-%d").day
-    #             d2=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
-
-    #             if d2==d1:
-    #                 rec.payslip_day=30
-
-    #             else:
-    #                 d11=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
-    #                 d22=datetime.strptime(str(rec.date_to),"%Y-%m-%d").day
-    #                 if d22-d11!=29:
-    #                     rec.payslip_day=32-d1
-
-    #                 else:
-    #                     rec.payslip_day=31-d1
-
-    #         else:
-    #             rec.payslip_day=30
 
 
-    def compute_sheet(self):
-        self.caculate_workdays_take_home()
-        self.compute_mazaya()
-        res = super(hr_payroll_workflow,self).compute_sheet()
-        return res
 
 
 
@@ -294,7 +205,7 @@ class hr_payroll_workflow(models.Model):
 
     
     def _prepare_line_values(self, line, account_id, date, debit, credit):
-        # res = super(hr_payroll_workflow, self)._prepare_line_values()
+        # res = super(HrPayslip, self)._prepare_line_values()
 
         """ Extend Odoo Default method _prepare_line_values() 
             - Add multi currency feature to the function by comparing currency of payroll with the default company currency
@@ -387,59 +298,59 @@ class hr_payroll_workflow(models.Model):
             self.make_visible = True
 
 
-class hr_payroll_workflow_run(models.Model):
-    _inherit = 'hr.payslip.run'
-    _description = 'Added workflows to payroll stages'
-    state = fields.Selection([
-        ('01_ready', 'Ready'),
-        ('02_close', 'Done'),
-        ('03_paid', 'Paid'),
-        ('04_cancel', 'Cancelled'),
+# class hr_payroll_workflow_run(models.Model):
+#     _inherit = 'hr.payslip.run'
+#     _description = 'Added workflows to payroll stages'
+#     state = fields.Selection([
+#         ('01_ready', 'Ready'),
+#         ('02_close', 'Done'),
+#         ('03_paid', 'Paid'),
+#         ('04_cancel', 'Cancelled'),
 
-        ('draft', 'Draft'), 
-        ('director_approve','HR Director Approve'),
-        ('ccso_approve','CCSO Approve'),
-        ('verify', 'Payslips Approve'),
-        ('paid', 'Paid'),
-        ('close','Confirmed'),
-        ('to_pay','To pay'),
-        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
-    currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
-    structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
-    # Submit Button function
-    def set_to_submit_state_batch(self):  
-        # self.write({'state': 'director_approve'})
-        self.write({'state': 'director_approve'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').submit_draft_state()
+#         ('draft', 'Draft'), 
+#         ('director_approve','HR Director Approve'),
+#         ('ccso_approve','CCSO Approve'),
+#         ('verify', 'Payslips Approve'),
+#         ('paid', 'Paid'),
+#         ('close','Confirmed'),
+#         ('to_pay','To pay'),
+#         ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
+#     currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
+#     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
+#     # Submit Button function
+#     def set_to_submit_state_batch(self):  
+#         # self.write({'state': 'director_approve'})
+#         self.write({'state': 'director_approve'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').submit_draft_state()
 
-    def action_draft(self):
-        self.write({'state': 'draft'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_draft_state()
+#     def action_draft(self):
+#         self.write({'state': 'draft'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_draft_state()
 
-    # HR Director Approve Button function
-    def set_to_director_approve_state_batch(self):  
-        # self.write({'state': 'ccso_approve'})
-        self.write({'state': 'verify'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').director_approve_state()
+#     # HR Director Approve Button function
+#     def set_to_director_approve_state_batch(self):  
+#         # self.write({'state': 'ccso_approve'})
+#         self.write({'state': 'verify'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').director_approve_state()
 
-    # CCSO Approve Button function
-    def set_to_ccso_approve_state_batch(self):  
-        self.write({'state': 'verify'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').ccso_approve_state()
+#     # CCSO Approve Button function
+#     def set_to_ccso_approve_state_batch(self):  
+#         self.write({'state': 'verify'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').ccso_approve_state()
 
-    def action_open_payslip_for_report(self):
-        self.ensure_one()
-        view = self.env.ref('hr_payroll_workflow.view_hr_payslip_treee')
+#     def action_open_payslip_for_report(self):
+#         self.ensure_one()
+#         view = self.env.ref('hr_payroll_workflow.view_hr_payslip_treee')
 
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": "hr.payslip",
-            "view_id": view.id,
-            "view_mode": 'tree',
-            # "view_id": [[hr_pay, "tree"], [False, "form"]],
-            "domain": [['id', 'in', self.slip_ids.ids]],
-            "name": "Payslips",
-        }
+#         return {
+#             "type": "ir.actions.act_window",
+#             "res_model": "hr.payslip",
+#             "view_id": view.id,
+#             "view_mode": 'tree',
+#             # "view_id": [[hr_pay, "tree"], [False, "form"]],
+#             "domain": [['id', 'in', self.slip_ids.ids]],
+#             "name": "Payslips",
+#         }
 
 
 
