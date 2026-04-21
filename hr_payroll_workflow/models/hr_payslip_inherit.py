@@ -2,6 +2,8 @@
 
 from odoo import api, fields, models, _
 import base64
+import logging
+_logger = logging.getLogger(__name__)
 
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
@@ -80,14 +82,83 @@ class HrPayslip(models.Model):
 
         return payslips
 
+    ##########first one############
+    # def compute_sheet(self):
+    #     for slip in self:
+    #         # set custom values BEFORE salary rules
+    #         slip.caculate_workdays_take_home()
+
+    #         # compute this payslip alone
+    #         super(HrPayslip, slip).compute_sheet()
+
+    #         # post-compute custom values
+    #         slip.compute_mazaya()
+    #         lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+    #         slip.take_home = sum(lines.mapped('total')) if lines else 0.0
+
+    #     return True
+
+    ##########second one############
+
+    # def compute_sheet(self):
+    #     results = []
+    #     for slip in self:
+    #         slip.caculate_workdays_take_home()
+
+    #         res = super(HrPayslip, slip).compute_sheet()
+    #         results.append(res)
+
+    #         slip.compute_mazaya()
+    #         th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+    #         slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
+
+    #     return results[-1] if results else True
 
 
     def compute_sheet(self):
-        res = super(HrPayslip, self).compute_sheet()
+        result = True
         for slip in self:
             slip.caculate_workdays_take_home()
+            result = super(HrPayslip, slip).compute_sheet()
+
             slip.compute_mazaya()
-        return res
+            th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+            slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
+
+        return result
+
+    def caculate_workdays_take_home(self):
+        for rec in self:
+            rec.analytic_account_id = rec.employee_id.analytic_account_id
+
+            employee_start = rec.employee_id.date_start
+            date_from = rec.date_from
+            date_to = rec.date_to
+
+            if not employee_start or not date_from or not date_to:
+                rec.payslip_day = 30
+                continue
+
+            if date_from <= employee_start <= date_to:
+                d1 = employee_start.day
+                d2 = date_from.day
+
+                if d1 == d2:
+                    rec.payslip_day = 30
+                else:
+                    d22 = date_to.day
+                    rec.payslip_day = 32 - d1 if (d22 - d2) != 29 else 31 - d1
+            else:
+                rec.payslip_day = 30
+
+
+
+    # def compute_sheet(self):
+    #     res = super(HrPayslip, self).compute_sheet()
+    #     for slip in self:
+    #         slip.caculate_workdays_take_home()
+    #         slip.compute_mazaya()
+    #     return res
 
 
     def unlink(self):
@@ -146,34 +217,34 @@ class HrPayslip(models.Model):
                     record.mazaya_tax = mazaya_tax
 
 
-    @api.depends('employee_id.date_start', 'date_from', 'date_to')
-    def caculate_workdays_take_home(self):
-        for rec in self:
-            rec.analytic_account_id = rec.employee_id.analytic_account_id
-            rec.take_home = 0.0
+    # @api.depends('employee_id.date_start', 'date_from', 'date_to')
+    # def caculate_workdays_take_home(self):
+    #     for rec in self:
+    #         rec.analytic_account_id = rec.employee_id.analytic_account_id
+    #         rec.take_home = 0.0
 
-            lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
-            rec.take_home = sum(lines.mapped('total')) if lines else 0.0
+    #         lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
+    #         rec.take_home = sum(lines.mapped('total')) if lines else 0.0
 
-            employee_start = rec.employee_id.date_start
-            date_from = rec.date_from
-            date_to = rec.date_to
+    #         employee_start = rec.employee_id.date_start
+    #         date_from = rec.date_from
+    #         date_to = rec.date_to
 
-            if not employee_start or not date_from or not date_to:
-                rec.payslip_day = 30
-                continue
+    #         if not employee_start or not date_from or not date_to:
+    #             rec.payslip_day = 30
+    #             continue
 
-            if date_from <= employee_start <= date_to:
-                d1 = employee_start.day
-                d2 = date_from.day
-                if d2 == d1:
-                    rec.payslip_day = 30
-                else:
-                    d11 = date_from.day
-                    d22 = date_to.day
-                    rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
-            else:
-                rec.payslip_day = 30
+    #         if date_from <= employee_start <= date_to:
+    #             d1 = employee_start.day
+    #             d2 = date_from.day
+    #             if d2 == d1:
+    #                 rec.payslip_day = 30
+    #             else:
+    #                 d11 = date_from.day
+    #                 d22 = date_to.day
+    #                 rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
+    #         else:
+    #             rec.payslip_day = 30
 
 
 
