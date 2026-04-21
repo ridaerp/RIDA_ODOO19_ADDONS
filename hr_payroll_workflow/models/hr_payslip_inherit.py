@@ -232,87 +232,164 @@ class HrPayslip(models.Model):
         self.write({'state': 'draft'})
 
 
-    
-    def _prepare_line_values(self, line, account_id, date, debit, credit):
-        # res = super(HrPayslip, self)._prepare_line_values()
 
-        """ Extend Odoo Default method _prepare_line_values() 
-            - Add multi currency feature to the function by comparing currency of payroll with the default company currency
-              if it's differet from the company currency then we will convert it to the default currency by function:
-              payroll_currency._convert(amount,company_currency,company,date) """
-              
-        if self.salary_currency.id != self.env.company.currency_id.id:
-            cur_credit = cur_debit = amount_currency = 0.00
-            if debit > 0:
-                cur_debit = self.salary_currency._convert(debit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
-                amount_currency = debit
-            if credit > 0:
-                cur_credit = self.salary_currency._convert(credit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
-                amount_currency = -credit
+    def _prepare_line_values(self, line, account, date, debit, credit):
+        batch_lines = self.company_id.batch_payroll_move_lines
+        partner = self.employee_id.work_contact_id if (
+            not batch_lines and line.salary_rule_id.employee_move_line
+        ) else line.partner_id
 
+        company_currency = self.env.company.currency_id
+        salary_currency = self.salary_currency
+        move_date = date or fields.Date.today()
+
+        def _amount_vals(local_debit, local_credit):
+            if salary_currency.id != company_currency.id:
+                cur_debit = 0.0
+                cur_credit = 0.0
+                amount_currency = 0.0
+
+                if local_debit > 0:
+                    cur_debit = salary_currency._convert(
+                        local_debit, company_currency, line.company_id, move_date
+                    )
+                    amount_currency = local_debit
+
+                if local_credit > 0:
+                    cur_credit = salary_currency._convert(
+                        local_credit, company_currency, line.company_id, move_date
+                    )
+                    amount_currency = -local_credit
+
+                return {
+                    'currency_id': salary_currency.id,
+                    'debit': cur_debit,
+                    'credit': cur_credit,
+                    'amount_currency': amount_currency,
+                }
 
             return {
-            'name': line.name,
-            'partner_id': line.partner_id.id,
-            'account_id': account_id,
+                'debit': local_debit,
+                'credit': local_credit,
+            }
+
+        base_vals = {
+            'name': line.name if line.salary_rule_id.split_move_lines else line.salary_rule_id.name,
+            'partner_id': partner.id,
+            'account_id': account.id,
             'journal_id': line.slip_id.struct_id.journal_id.id,
-            'currency_id': line.slip_id.salary_currency.id,
-            'date': date,
-            'debit': cur_debit,
-            'credit': cur_credit,
-            'amount_currency': amount_currency,
-                'analytic_distribution': {
-                    str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100} if (
-                            line.salary_rule_id.analytic_account_id or line.slip_id.employee_id.analytic_account_id) else False,
-           
+            'date': move_date,
+            'analytic_distribution': line.salary_rule_id.analytic_distribution or line.slip_id.version_id.analytic_distribution,
+            'tax_tag_ids': line.debit_tag_ids.ids if account.id == line.salary_rule_id.account_debit.id else line.credit_tag_ids.ids,
+            'tax_ids': [(4, tax_id) for tax_id in account.tax_ids.ids],
         }
-        else:
 
-            if line.salary_rule_id.apper_on_journal:
+        if (
+            not batch_lines
+            and line.salary_rule_id.employee_move_line
+            and self.employee_id.has_multiple_bank_accounts
+        ):
+            line_vals = []
+            debit_allocations = self.compute_salary_allocations(debit)
+            credit_allocations = self.compute_salary_allocations(credit)
 
-                return {
-                    'name': line.name,
-                    'partner_id': line.partner_id.id,
-                    'account_id': account_id,
-                    'journal_id': line.slip_id.struct_id.journal_id.id,
-                    'date': date,
-                    'debit': debit,
-                    'credit': credit,
-                    'analytic_distribution': {str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100} if (line.salary_rule_id.analytic_account_id or
-                        line.slip_id.employee_id.analytic_account_id) else False,
+            for ba in self.employee_id.bank_account_ids:
+                subdebit = debit_allocations.get(str(ba.id), 0.0)
+                subcredit = credit_allocations.get(str(ba.id), 0.0)
+
+                vals = dict(base_vals)
+                vals.update({
+                    'employee_bank_account_id': ba.id,
+                })
+                vals.update(_amount_vals(subdebit, subcredit))
+                line_vals.append(vals)
+
+            return line_vals
+
+        vals = dict(base_vals)
+        vals.update(_amount_vals(debit, credit))
+        return [vals]
+
+    
+    # def _prepare_line_values(self, line, account_id, date, debit, credit):
+    #     # res = super(HrPayslip, self)._prepare_line_values()
+
+    #     """ Extend Odoo Default method _prepare_line_values() 
+    #         - Add multi currency feature to the function by comparing currency of payroll with the default company currency
+    #           if it's differet from the company currency then we will convert it to the default currency by function:
+    #           payroll_currency._convert(amount,company_currency,company,date) """
+              
+    #     if self.salary_currency.id != self.env.company.currency_id.id:
+    #         cur_credit = cur_debit = amount_currency = 0.00
+    #         if debit > 0:
+    #             cur_debit = self.salary_currency._convert(debit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             amount_currency = debit
+    #         if credit > 0:
+    #             cur_credit = self.salary_currency._convert(credit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             amount_currency = -credit
+
+
+    #         return {
+    #         'name': line.name,
+    #         'partner_id': line.partner_id.id,
+    #         'account_id': account_id,
+    #         'journal_id': line.slip_id.struct_id.journal_id.id,
+    #         'currency_id': line.slip_id.salary_currency.id,
+    #         'date': date,
+    #         'debit': cur_debit,
+    #         'credit': cur_credit,
+    #         'amount_currency': amount_currency,
+    #             'analytic_distribution': {
+    #                 str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (
+    #                         line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
+           
+    #     }
+    #     else:
+
+    #         if line.salary_rule_id.apper_on_journal:
+
+    #             return {
+    #                 'name': line.name,
+    #                 'partner_id': line.partner_id.id,
+    #                 'account_id': account_id,
+    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
+    #                 'date': date,
+    #                 'debit': debit,
+    #                 'credit': credit,
+    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (line.salary_rule_id.analytic_distribution or
+    #                     line.slip_id.employee_id.analytic_distribution) else False,
                     
-                }
+    #             }
 
-            else:                
+    #         else:                
 
-                return {
-                    'name': line.name,
-                    'account_id': account_id,
-                    'journal_id': line.slip_id.struct_id.journal_id.id,
-                    'date': date,
-                    'debit': debit,
-                    'credit': credit,
-                    'analytic_distribution': {str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100}
-                    if (line.salary_rule_id.analytic_account_id or line.slip_id.employee_id.analytic_account_id) else False,
+    #             return {
+    #                 'name': line.name,
+    #                 'account_id': account_id,
+    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
+    #                 'date': date,
+    #                 'debit': debit,
+    #                 'credit': credit,
+    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100}
+    #                 if (line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
                     
-                }
+    #             }
 
 
-    #############################added by ekhlas code
-    def action_payslip_done(self):
-        current_company = self.env.company
-        for payslip in self:
-            payslip_company = payslip.payslip_run_id.company_id if payslip.payslip_run_id else payslip.company_id
-            if payslip_company != current_company:
-                raise ValidationError(
-                    _("You are currently logged into '%s', but the payslip belongs to '%s'.\n"
-                      "Please switch to the correct company to proceed.") % (
-                          current_company.name, payslip_company.name)
-                )
 
-        res = super().action_payslip_done()
-        self._action_create_account_move()
-        return res
+    # def action_payslip_done(self):
+    #     current_company = self.env.company
+    #     for payslip in self:
+    #         payslip_company = payslip.payslip_run_id.company_id if payslip.payslip_run_id else payslip.company_id
+    #         if payslip_company != current_company:
+    #             raise ValidationError(
+    #                 _("You are currently logged into '%s', but the payslip belongs to '%s'.\n"
+    #                   "Please switch to the correct company to proceed.") % (
+    #                       current_company.name, payslip_company.name)
+    #             )
+    #     res = super().action_payslip_done()
+    #     return res
+
 
 
     make_visible = fields.Boolean(string="User", compute='get_user')
