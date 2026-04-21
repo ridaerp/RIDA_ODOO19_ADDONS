@@ -80,7 +80,7 @@ class hr_payslip(models.Model):
                     line.payroll_id = False
 
             rec.loan_ids = array
-            rec.state = 'done'
+            rec.state = 'validated'
             return res
 
     def action_payslip_cancel(self):

@@ -34,6 +34,6 @@ class MassConfirmPayslip(models.TransientModel):
         for each in record_ids:
             payslip_id = self.env['hr.payslip'].search([('id', '=', each),
                                                         ('state', 'not in',
-                                                         ['cancel', 'done'])])
+                                                         ['cancel', 'validated'])])
             if payslip_id:
                 payslip_id.action_payslip_done()
