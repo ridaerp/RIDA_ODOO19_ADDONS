@@ -119,9 +119,9 @@ class HrPayslip(models.Model):
         result = True
         for slip in self:
             slip.caculate_workdays_take_home()
+            slip.compute_mazaya()
             result = super(HrPayslip, slip).compute_sheet()
 
-            slip.compute_mazaya()
             th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
             slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
 
