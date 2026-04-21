@@ -107,7 +107,7 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         res = super(HrPayslip, self).compute_sheet()
         for slip in self:
-            slip.caculate_workdays_take_home()
+            # slip.caculate_workdays_take_home()
             slip.compute_mazaya()
         return res
 
