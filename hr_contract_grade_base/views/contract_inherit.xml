@@ -1,5 +1,21 @@
 <odoo>
     <data>
+
+        <record model="ir.ui.view" id="view_employee_form_inherit_custom_contract_date_start">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="before">
+                    <group>
+                        <group>
+                            <field name="contract_date_start"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
         <record id="hr_employee_view_form_inherited" model="ir.ui.view">
             <field name="name">hr.employee.form.inherited</field>
             <field name="model">hr.employee</field>
@@ -9,6 +25,13 @@
                     <field name="is_worker"/>
                     <field name="is_section_head"/>
                     <field name="band_id" invisible="1" />
+                </xpath>
+                <xpath expr="//notebook" position="before">
+                    <group>
+                        <group>
+                            <field name="contract_date_start" groups="hr.group_hr_user"/>
+                        </group>
+                    </group>
                 </xpath>
 
                 <xpath expr="//page[@name='payroll_information']" position="attributes">

@@ -2,6 +2,8 @@
 
 from odoo import api, fields, models, _
 import base64
+import logging
+_logger = logging.getLogger(__name__)
 
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
@@ -12,42 +14,42 @@ from odoo.tools.misc import format_date
 from odoo.tools import float_compare, float_is_zero
 from odoo.tools.safe_eval import safe_eval
 
-class hr_payroll_workflow(models.Model):
+class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
     _description = 'Added workflows to payroll stages'
 
-    salary_currency = fields.Many2one(related='employee_id.salary_currency')
-    analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
-    take_home = fields.Float(string="Take Home",readonly=False)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('director_approve','Payroll Manager Approve'),
-        ('ccso_approve','CCSO Approve'),
-        ('verify','verify'),
-        ('paid' , 'Paid'),
-        ('done', 'Confirmed'),
-        ('cancel', 'Rejected'),
-        ('to_pay','To pay')
-    ], string='Status', index=True, readonly=True, copy=False, default='draft',
+        ('validated', 'Validated'),
+        ('paid', 'Paid'),
+        ('cancel', 'Canceled')],
+        string='State', index=True, readonly=True, copy=False,
+        default='draft', tracking=True,
         help="""* When the payslip is created the status is \'Draft\'
-                \n* If the payslip is under verification, the status is \'Waiting\'.
-                \n* If the payslip is confirmed then status is set to \'Confirmed\'.
-                \n* When user cancel payslip the status is \'Rejected\'.""")
-
-    payslip_day = fields.Float(string="WorkedDays",readonly=True)
-
-    take_home_wage = fields.Monetary(compute='_compute_basic_net')
+                \n* If the payslip is confirmed then status is set to \'Done\'.
+                \n* When the user cancels a payslip, the status is \'Canceled\'.""")
+    state_display = fields.Selection([
+            ('draft', 'Draft'),
+            ('validated', 'Done'),
+            ('paid', 'Paid'),
+            ('cancel', 'Canceled'),
+            ('warning', 'Warning'),
+            ('error', 'Error'),
+        ],
+        string='Status',
+        compute='_compute_state_display',
+        store=True,
+        readonly=True,
+    )
+    salary_currency = fields.Many2one(related='version_id.salary_currency')
+    analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
+    take_home = fields.Float(string="Take Home",readonly=False)
+    payslip_day = fields.Float(string="WorkedDays",readonly=True,store=True)
+    take_home_wage = fields.Monetary(compute='_compute_basic_net',)
 
     employee_code=fields.Char(related="employee_id.emp_code")
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
-
-    # mazaya_cash = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_dress = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_midical = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_grant = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_total = fields.Float(compute='compute_mazaya', store=True)
-    # mazaya_tax = fields.Float(compute='compute_mazaya', store=True)
 
 
     @api.model_create_multi
@@ -80,22 +82,84 @@ class hr_payroll_workflow(models.Model):
 
         return payslips
 
+    ##########first one############
+    # def compute_sheet(self):
+    #     for slip in self:
+    #         # set custom values BEFORE salary rules
+    #         slip.caculate_workdays_take_home()
 
-    # @api.model
-    # def create(self, vals):
-    #     res = super(hr_payroll_workflow, self).create(vals)
-    #     # allowed_input_types = res.struct_id.input_line_type_ids
-    #     allowed_input_types = res.struct_id.input_line_type_ids.sorted(key=lambda x: x.sequence, reverse=True)
-    #     # Get existing input lines
-    #     # Create or update input lines
-    #     for input_type in allowed_input_types:
-    #             input_line = self.env['hr.payslip.input'].create({
-    #                 'payslip_id': res.id,
-    #                 'input_type_id': input_type.id,
-    #                 'amount': 0.0,  # Default amount
-    #                 'version_id': res.version_id.id,
-    #             })
+    #         # compute this payslip alone
+    #         super(HrPayslip, slip).compute_sheet()
+
+    #         # post-compute custom values
+    #         slip.compute_mazaya()
+    #         lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+    #         slip.take_home = sum(lines.mapped('total')) if lines else 0.0
+
+    #     return True
+
+    ##########second one############
+
+    # def compute_sheet(self):
+    #     results = []
+    #     for slip in self:
+    #         slip.caculate_workdays_take_home()
+
+    #         res = super(HrPayslip, slip).compute_sheet()
+    #         results.append(res)
+
+    #         slip.compute_mazaya()
+    #         th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+    #         slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
+
+    #     return results[-1] if results else True
+
+
+    def compute_sheet(self):
+        result = True
+        for slip in self:
+            slip.caculate_workdays_take_home()
+            slip.compute_mazaya()
+            result = super(HrPayslip, slip).compute_sheet()
+
+            th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
+            slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
+
+        return result
+
+    def caculate_workdays_take_home(self):
+        for rec in self:
+            rec.analytic_account_id = rec.employee_id.analytic_account_id
+
+            employee_start = rec.employee_id.date_start
+            date_from = rec.date_from
+            date_to = rec.date_to
+
+            if not employee_start or not date_from or not date_to:
+                rec.payslip_day = 30
+                continue
+
+            if date_from <= employee_start <= date_to:
+                d1 = employee_start.day
+                d2 = date_from.day
+
+                if d1 == d2:
+                    rec.payslip_day = 30
+                else:
+                    d22 = date_to.day
+                    rec.payslip_day = 32 - d1 if (d22 - d2) != 29 else 31 - d1
+            else:
+                rec.payslip_day = 30
+
+
+
+    # def compute_sheet(self):
+    #     res = super(HrPayslip, self).compute_sheet()
+    #     for slip in self:
+    #         slip.caculate_workdays_take_home()
+    #         slip.compute_mazaya()
     #     return res
+
 
     def unlink(self):
         if any(payslip.state not in ('draft', 'verify','close','cancel') for payslip in self):
@@ -115,17 +179,16 @@ class hr_payroll_workflow(models.Model):
                 line.paid = False
 
 
-        return super(hr_payroll_workflow, self).unlink()
+        return super(HrPayslip, self).unlink()
 
 
-    @api.depends('date_from','mazaya_id','payslip_day')
+    # @api.depends('date_from','mazaya_id','payslip_day')
     def compute_mazaya(self):
         for record in self:
             mazaya_total = mazaya_tax = 0
             Y,m,d = str(record.date_from).split('-')
             months = int(m)
             maz_lin_obj = self.env['rida.mazaya.line']
-            self.caculate_workdays_take_home()
             basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
 
             gross_sal = record.version_id.payroll_wage
@@ -154,122 +217,47 @@ class hr_payroll_workflow(models.Model):
                     record.mazaya_tax = mazaya_tax
 
 
+    # @api.depends('employee_id.date_start', 'date_from', 'date_to')
+    # def caculate_workdays_take_home(self):
+    #     for rec in self:
+    #         rec.analytic_account_id = rec.employee_id.analytic_account_id
+    #         rec.take_home = 0.0
 
+    #         lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
+    #         rec.take_home = sum(lines.mapped('total')) if lines else 0.0
 
+    #         employee_start = rec.employee_id.date_start
+    #         date_from = rec.date_from
+    #         date_to = rec.date_to
 
+    #         if not employee_start or not date_from or not date_to:
+    #             rec.payslip_day = 30
+    #             continue
 
+    #         if date_from <= employee_start <= date_to:
+    #             d1 = employee_start.day
+    #             d2 = date_from.day
+    #             if d2 == d1:
+    #                 rec.payslip_day = 30
+    #             else:
+    #                 d11 = date_from.day
+    #                 d22 = date_to.day
+    #                 rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
+    #         else:
+    #             rec.payslip_day = 30
 
-    # @api.depends('date_from','mazaya_id','payslip_day')
-    # def compute_mazaya(self):
-    #     for record in self:
-    #         mazaya_total = mazaya_tax = 0
-    #         Y,m,d = str(record.date_from).split('-')
-    #         months = int(m)
-    #         maz_lin_obj = self.env['rida.mazaya.line']
-
-    #         basic_sal =((record.version_id.payroll_wage/30)*record.payslip_day)* 61/100
-
-    #         gross_sal = record.version_id.payroll_wage
-    #         if record.mazaya_id:
-    #             maz_mon = maz_lin_obj.search([('month','=',months), ('mazaya_id','=',record.mazaya_id.id)])
-    #             if maz_mon:
-    #                 if record.mazaya_id.based_on == 'basic':
-    #                     mazaya_cash = maz_mon.cash_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_dress = maz_mon.dress_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_midical = maz_mon.midical_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_grant = maz_mon.grant_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_total = maz_mon.new_allow * basic_sal /100 # Calcccccccccccccu
-    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
-    #                 elif record.mazaya_id.based_on =='gross':
-    #                     mazaya_cash = maz_mon.cash_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_dress = maz_mon.dress_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_midical = maz_mon.midical_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_grant = maz_mon.grant_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_total = maz_mon.new_allow * gross_sal /100# Calcccccccccccccu
-    #                     mazaya_tax = mazaya_total*maz_mon.tax_allow/100
-    #                 self.mazaya_cash= mazaya_cash
-    #                 self.mazaya_dress= mazaya_dress
-    #                 self.mazaya_midical= mazaya_midical
-    #                 self.mazaya_grant= mazaya_grant
-    #                 self.mazaya_total= mazaya_total
-    #                 self.mazaya_tax = mazaya_tax
 
 
     def _compute_basic_net(self):
-        super(hr_payroll_workflow,self)._compute_basic_net()
+        super(HrPayslip,self)._compute_basic_net()
         for payslip in self:
             payslip.basic_wage = payslip._get_salary_line_total('BASIC')
             payslip.net_wage = payslip._get_salary_line_total('NET')
             payslip.take_home_wage = payslip._get_salary_line_total('TH')
 
 
-    def caculate_workdays_take_home(self):
-        for rec in self:
-            rec.analytic_account_id = rec.employee_id.analytic_account_id
-            rec.take_home = 0.0
-
-            lines = self.env['hr.payslip.line'].search([
-                ('slip_id', '=', rec.id),
-                ('code', '=', 'TH')
-            ])
-            for line in lines:
-                rec.take_home = line.amount
-
-            employee_start = rec.employee_id.date_start
-            date_from = rec.date_from
-            date_to = rec.date_to
-
-            if not employee_start or not date_from or not date_to:
-                rec.payslip_day = 30
-                continue
-
-            if employee_start <= date_to and employee_start >= date_from:
-                d1 = employee_start.day
-                d2 = date_from.day
-
-                if d2 == d1:
-                    rec.payslip_day = 30
-                else:
-                    d11 = date_from.day
-                    d22 = date_to.day
-                    if d22 - d11 != 29:
-                        rec.payslip_day = 32 - d1
-                    else:
-                        rec.payslip_day = 31 - d1
-            else:
-                rec.payslip_day = 30
-
-    # def caculate_workdays_take_home(self):
-    #     for rec in self:
-    #         rec.analytic_account_id=rec.employee_id.analytic_account_id
-    #         lines=self.env['hr.payslip.line'].search([('slip_id','=',rec.id),('code','=','TH')])
-    #         for line in lines:
-    #             rec.take_home=line.amount
-    #         if rec.employee_id.date_start<=rec.date_to and rec.employee_id.date_start>=rec.date_from:
-    #             d1=datetime.strptime(str(rec.employee_id.date_start),"%Y-%m-%d").day
-    #             d2=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
-
-    #             if d2==d1:
-    #                 rec.payslip_day=30
-
-    #             else:
-    #                 d11=datetime.strptime(str(rec.date_from),"%Y-%m-%d").day
-    #                 d22=datetime.strptime(str(rec.date_to),"%Y-%m-%d").day
-    #                 if d22-d11!=29:
-    #                     rec.payslip_day=32-d1
-
-    #                 else:
-    #                     rec.payslip_day=31-d1
-
-    #         else:
-    #             rec.payslip_day=30
 
 
-    def compute_sheet(self):
-        self.caculate_workdays_take_home()
-        self.compute_mazaya()
-        res = super(hr_payroll_workflow,self).compute_sheet()
-        return res
 
 
 
@@ -292,87 +280,164 @@ class hr_payroll_workflow(models.Model):
         self.write({'state': 'draft'})
 
 
-    
-    def _prepare_line_values(self, line, account_id, date, debit, credit):
-        # res = super(hr_payroll_workflow, self)._prepare_line_values()
 
-        """ Extend Odoo Default method _prepare_line_values() 
-            - Add multi currency feature to the function by comparing currency of payroll with the default company currency
-              if it's differet from the company currency then we will convert it to the default currency by function:
-              payroll_currency._convert(amount,company_currency,company,date) """
-              
-        if self.salary_currency.id != self.env.company.currency_id.id:
-            cur_credit = cur_debit = amount_currency = 0.00
-            if debit > 0:
-                cur_debit = self.salary_currency._convert(debit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
-                amount_currency = debit
-            if credit > 0:
-                cur_credit = self.salary_currency._convert(credit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
-                amount_currency = -credit
+    def _prepare_line_values(self, line, account, date, debit, credit):
+        batch_lines = self.company_id.batch_payroll_move_lines
+        partner = self.employee_id.work_contact_id if (
+            not batch_lines and line.salary_rule_id.employee_move_line
+        ) else line.partner_id
 
+        company_currency = self.env.company.currency_id
+        salary_currency = self.salary_currency
+        move_date = date or fields.Date.today()
+
+        def _amount_vals(local_debit, local_credit):
+            if salary_currency.id != company_currency.id:
+                cur_debit = 0.0
+                cur_credit = 0.0
+                amount_currency = 0.0
+
+                if local_debit > 0:
+                    cur_debit = salary_currency._convert(
+                        local_debit, company_currency, line.company_id, move_date
+                    )
+                    amount_currency = local_debit
+
+                if local_credit > 0:
+                    cur_credit = salary_currency._convert(
+                        local_credit, company_currency, line.company_id, move_date
+                    )
+                    amount_currency = -local_credit
+
+                return {
+                    'currency_id': salary_currency.id,
+                    'debit': cur_debit,
+                    'credit': cur_credit,
+                    'amount_currency': amount_currency,
+                }
 
             return {
-            'name': line.name,
-            'partner_id': line.partner_id.id,
-            'account_id': account_id,
+                'debit': local_debit,
+                'credit': local_credit,
+            }
+
+        base_vals = {
+            'name': line.name if line.salary_rule_id.split_move_lines else line.salary_rule_id.name,
+            'partner_id': partner.id,
+            'account_id': account.id,
             'journal_id': line.slip_id.struct_id.journal_id.id,
-            'currency_id': line.slip_id.salary_currency.id,
-            'date': date,
-            'debit': cur_debit,
-            'credit': cur_credit,
-            'amount_currency': amount_currency,
-                'analytic_distribution': {
-                    str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100} if (
-                            line.salary_rule_id.analytic_account_id or line.slip_id.employee_id.analytic_account_id) else False,
-           
+            'date': move_date,
+            'analytic_distribution': line.salary_rule_id.analytic_distribution or line.slip_id.version_id.analytic_distribution,
+            'tax_tag_ids': line.debit_tag_ids.ids if account.id == line.salary_rule_id.account_debit.id else line.credit_tag_ids.ids,
+            'tax_ids': [(4, tax_id) for tax_id in account.tax_ids.ids],
         }
-        else:
 
-            if line.salary_rule_id.apper_on_journal:
+        if (
+            not batch_lines
+            and line.salary_rule_id.employee_move_line
+            and self.employee_id.has_multiple_bank_accounts
+        ):
+            line_vals = []
+            debit_allocations = self.compute_salary_allocations(debit)
+            credit_allocations = self.compute_salary_allocations(credit)
 
-                return {
-                    'name': line.name,
-                    'partner_id': line.partner_id.id,
-                    'account_id': account_id,
-                    'journal_id': line.slip_id.struct_id.journal_id.id,
-                    'date': date,
-                    'debit': debit,
-                    'credit': credit,
-                    'analytic_distribution': {str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100} if (line.salary_rule_id.analytic_account_id or
-                        line.slip_id.employee_id.analytic_account_id) else False,
+            for ba in self.employee_id.bank_account_ids:
+                subdebit = debit_allocations.get(str(ba.id), 0.0)
+                subcredit = credit_allocations.get(str(ba.id), 0.0)
+
+                vals = dict(base_vals)
+                vals.update({
+                    'employee_bank_account_id': ba.id,
+                })
+                vals.update(_amount_vals(subdebit, subcredit))
+                line_vals.append(vals)
+
+            return line_vals
+
+        vals = dict(base_vals)
+        vals.update(_amount_vals(debit, credit))
+        return [vals]
+
+    
+    # def _prepare_line_values(self, line, account_id, date, debit, credit):
+    #     # res = super(HrPayslip, self)._prepare_line_values()
+
+    #     """ Extend Odoo Default method _prepare_line_values() 
+    #         - Add multi currency feature to the function by comparing currency of payroll with the default company currency
+    #           if it's differet from the company currency then we will convert it to the default currency by function:
+    #           payroll_currency._convert(amount,company_currency,company,date) """
+              
+    #     if self.salary_currency.id != self.env.company.currency_id.id:
+    #         cur_credit = cur_debit = amount_currency = 0.00
+    #         if debit > 0:
+    #             cur_debit = self.salary_currency._convert(debit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             amount_currency = debit
+    #         if credit > 0:
+    #             cur_credit = self.salary_currency._convert(credit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             amount_currency = -credit
+
+
+    #         return {
+    #         'name': line.name,
+    #         'partner_id': line.partner_id.id,
+    #         'account_id': account_id,
+    #         'journal_id': line.slip_id.struct_id.journal_id.id,
+    #         'currency_id': line.slip_id.salary_currency.id,
+    #         'date': date,
+    #         'debit': cur_debit,
+    #         'credit': cur_credit,
+    #         'amount_currency': amount_currency,
+    #             'analytic_distribution': {
+    #                 str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (
+    #                         line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
+           
+    #     }
+    #     else:
+
+    #         if line.salary_rule_id.apper_on_journal:
+
+    #             return {
+    #                 'name': line.name,
+    #                 'partner_id': line.partner_id.id,
+    #                 'account_id': account_id,
+    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
+    #                 'date': date,
+    #                 'debit': debit,
+    #                 'credit': credit,
+    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (line.salary_rule_id.analytic_distribution or
+    #                     line.slip_id.employee_id.analytic_distribution) else False,
                     
-                }
+    #             }
 
-            else:                
+    #         else:                
 
-                return {
-                    'name': line.name,
-                    'account_id': account_id,
-                    'journal_id': line.slip_id.struct_id.journal_id.id,
-                    'date': date,
-                    'debit': debit,
-                    'credit': credit,
-                    'analytic_distribution': {str(line.salary_rule_id.analytic_account_id.id or line.slip_id.employee_id.analytic_account_id.id): 100}
-                    if (line.salary_rule_id.analytic_account_id or line.slip_id.employee_id.analytic_account_id) else False,
+    #             return {
+    #                 'name': line.name,
+    #                 'account_id': account_id,
+    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
+    #                 'date': date,
+    #                 'debit': debit,
+    #                 'credit': credit,
+    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100}
+    #                 if (line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
                     
-                }
+    #             }
 
 
-    #############################added by ekhlas code
-    def action_payslip_done(self):
-        current_company = self.env.company
-        for payslip in self:
-            payslip_company = payslip.payslip_run_id.company_id if payslip.payslip_run_id else payslip.company_id
-            if payslip_company != current_company:
-                raise ValidationError(
-                    _("You are currently logged into '%s', but the payslip belongs to '%s'.\n"
-                      "Please switch to the correct company to proceed.") % (
-                          current_company.name, payslip_company.name)
-                )
 
-        res = super().action_payslip_done()
-        self._action_create_account_move()
-        return res
+    # def action_payslip_done(self):
+    #     current_company = self.env.company
+    #     for payslip in self:
+    #         payslip_company = payslip.payslip_run_id.company_id if payslip.payslip_run_id else payslip.company_id
+    #         if payslip_company != current_company:
+    #             raise ValidationError(
+    #                 _("You are currently logged into '%s', but the payslip belongs to '%s'.\n"
+    #                   "Please switch to the correct company to proceed.") % (
+    #                       current_company.name, payslip_company.name)
+    #             )
+    #     res = super().action_payslip_done()
+    #     return res
+
 
 
     make_visible = fields.Boolean(string="User", compute='get_user')
@@ -387,59 +452,59 @@ class hr_payroll_workflow(models.Model):
             self.make_visible = True
 
 
-class hr_payroll_workflow_run(models.Model):
-    _inherit = 'hr.payslip.run'
-    _description = 'Added workflows to payroll stages'
-    state = fields.Selection([
-        ('01_ready', 'Ready'),
-        ('02_close', 'Done'),
-        ('03_paid', 'Paid'),
-        ('04_cancel', 'Cancelled'),
+# class hr_payroll_workflow_run(models.Model):
+#     _inherit = 'hr.payslip.run'
+#     _description = 'Added workflows to payroll stages'
+#     state = fields.Selection([
+#         ('01_ready', 'Ready'),
+#         ('02_close', 'Done'),
+#         ('03_paid', 'Paid'),
+#         ('04_cancel', 'Cancelled'),
 
-        ('draft', 'Draft'), 
-        ('director_approve','HR Director Approve'),
-        ('ccso_approve','CCSO Approve'),
-        ('verify', 'Payslips Approve'),
-        ('paid', 'Paid'),
-        ('close','Confirmed'),
-        ('to_pay','To pay'),
-        ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
-    currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
-    structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
-    # Submit Button function
-    def set_to_submit_state_batch(self):  
-        # self.write({'state': 'director_approve'})
-        self.write({'state': 'director_approve'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').submit_draft_state()
+#         ('draft', 'Draft'), 
+#         ('director_approve','HR Director Approve'),
+#         ('ccso_approve','CCSO Approve'),
+#         ('verify', 'Payslips Approve'),
+#         ('paid', 'Paid'),
+#         ('close','Confirmed'),
+#         ('to_pay','To pay'),
+#         ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
+#     currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
+#     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
+#     # Submit Button function
+#     def set_to_submit_state_batch(self):  
+#         # self.write({'state': 'director_approve'})
+#         self.write({'state': 'director_approve'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').submit_draft_state()
 
-    def action_draft(self):
-        self.write({'state': 'draft'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_draft_state()
+#     def action_draft(self):
+#         self.write({'state': 'draft'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_draft_state()
 
-    # HR Director Approve Button function
-    def set_to_director_approve_state_batch(self):  
-        # self.write({'state': 'ccso_approve'})
-        self.write({'state': 'verify'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').director_approve_state()
+#     # HR Director Approve Button function
+#     def set_to_director_approve_state_batch(self):  
+#         # self.write({'state': 'ccso_approve'})
+#         self.write({'state': 'verify'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').director_approve_state()
 
-    # CCSO Approve Button function
-    def set_to_ccso_approve_state_batch(self):  
-        self.write({'state': 'verify'})
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').ccso_approve_state()
+#     # CCSO Approve Button function
+#     def set_to_ccso_approve_state_batch(self):  
+#         self.write({'state': 'verify'})
+#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').ccso_approve_state()
 
-    def action_open_payslip_for_report(self):
-        self.ensure_one()
-        view = self.env.ref('hr_payroll_workflow.view_hr_payslip_treee')
+#     def action_open_payslip_for_report(self):
+#         self.ensure_one()
+#         view = self.env.ref('hr_payroll_workflow.view_hr_payslip_treee')
 
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": "hr.payslip",
-            "view_id": view.id,
-            "view_mode": 'tree',
-            # "view_id": [[hr_pay, "tree"], [False, "form"]],
-            "domain": [['id', 'in', self.slip_ids.ids]],
-            "name": "Payslips",
-        }
+#         return {
+#             "type": "ir.actions.act_window",
+#             "res_model": "hr.payslip",
+#             "view_id": view.id,
+#             "view_mode": 'tree',
+#             # "view_id": [[hr_pay, "tree"], [False, "form"]],
+#             "domain": [['id', 'in', self.slip_ids.ids]],
+#             "name": "Payslips",
+#         }
 
 
 

@@ -31,7 +31,7 @@ class SimCardAvailable(models.Model):
         ('stolen', 'Stolen')     # Added stolen
     ], string='Status', default='inactive', readonly=True, copy=False,tracking=True)
     sim_card_count = fields.Integer(string='SIM Card History', compute='_compute_sim_card_count')
-    employee_id = fields.Many2one('hr.employee', string='Employee',readonly=True,compute='employee_sim_card',tracking=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee',store=True,readonly=True,compute='employee_sim_card',tracking=True)
     guest_name = fields.Char('Name',tracking=True)
     emp_type = fields.Boolean('Non RIDA Staff')
 
