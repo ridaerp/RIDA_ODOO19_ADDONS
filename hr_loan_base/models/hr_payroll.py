@@ -28,6 +28,7 @@ class HrPayslip(models.Model):
             loan_ids = self.env['hr.loan.line'].search([
                 ('loan_id.employee_id', '=', rec.employee_id.id),
                 ('paid', '=', False),
+                ('active', '=', True),
                 ('loan_id.state', '=', 'paid'),   # change to 'paid' only if your hr.loan.line state is really paid
                 ('paid_date', '>=', rec.date_from),
                 ('paid_date', '<=', rec.date_to),
