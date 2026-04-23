@@ -115,6 +115,7 @@ class Employee(models.Model):
     string="End Date",
     groups="hr.group_hr_user")
     contract_date_start = fields.Date(groups="hr.group_hr_user")
+    wage_type = fields.Selection(groups="hr.group_hr_user")
     # contract_date_start = fields.Date(readonly=False, related="version_id.contract_date_start", inherited=True, groups="base.group_user")
     # wage_type = fields.Selection(readonly=False, related="version_id.wage_type", inherited=True, groups="base.group_user")
 
