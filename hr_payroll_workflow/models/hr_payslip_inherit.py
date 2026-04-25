@@ -7,12 +7,17 @@ _logger = logging.getLogger(__name__)
 
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
+from collections import defaultdict
 
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
 from odoo.tools.misc import format_date
 from odoo.tools import float_compare, float_is_zero
 from odoo.tools.safe_eval import safe_eval
+from collections import defaultdict
+
+from odoo.exceptions import UserError
+
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
@@ -52,6 +57,7 @@ class HrPayslip(models.Model):
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
 
 
+
     @api.model_create_multi
     def create(self, vals_list):
         payslips = super().create(vals_list)
@@ -59,7 +65,7 @@ class HrPayslip(models.Model):
         for payslip in payslips:
             if not payslip.struct_id:
                 continue
-
+            # payslip.analytic_account_id = payslip.employee_id.analytic_account_id
             existing_input_type_ids = payslip.input_line_ids.mapped('input_type_id').ids
             allowed_input_types = payslip.struct_id.input_line_type_ids.sorted(
                 key=lambda x: x.sequence, reverse=True
@@ -82,38 +88,7 @@ class HrPayslip(models.Model):
 
         return payslips
 
-    ##########first one############
-    # def compute_sheet(self):
-    #     for slip in self:
-    #         # set custom values BEFORE salary rules
-    #         slip.caculate_workdays_take_home()
-
-    #         # compute this payslip alone
-    #         super(HrPayslip, slip).compute_sheet()
-
-    #         # post-compute custom values
-    #         slip.compute_mazaya()
-    #         lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
-    #         slip.take_home = sum(lines.mapped('total')) if lines else 0.0
-
-    #     return True
-
-    ##########second one############
-
-    # def compute_sheet(self):
-    #     results = []
-    #     for slip in self:
-    #         slip.caculate_workdays_take_home()
-
-    #         res = super(HrPayslip, slip).compute_sheet()
-    #         results.append(res)
-
-    #         slip.compute_mazaya()
-    #         th_lines = slip.line_ids.filtered(lambda l: l.code == 'TH')
-    #         slip.take_home = sum(th_lines.mapped('total')) if th_lines else 0.0
-
-    #     return results[-1] if results else True
-
+ 
 
     def compute_sheet(self):
         result = True
@@ -151,14 +126,6 @@ class HrPayslip(models.Model):
             else:
                 rec.payslip_day = 30
 
-
-
-    # def compute_sheet(self):
-    #     res = super(HrPayslip, self).compute_sheet()
-    #     for slip in self:
-    #         slip.caculate_workdays_take_home()
-    #         slip.compute_mazaya()
-    #     return res
 
 
     def unlink(self):
@@ -217,35 +184,6 @@ class HrPayslip(models.Model):
                     record.mazaya_tax = mazaya_tax
 
 
-    # @api.depends('employee_id.date_start', 'date_from', 'date_to')
-    # def caculate_workdays_take_home(self):
-    #     for rec in self:
-    #         rec.analytic_account_id = rec.employee_id.analytic_account_id
-    #         rec.take_home = 0.0
-
-    #         lines = rec.line_ids.filtered(lambda l: l.code == 'TH')
-    #         rec.take_home = sum(lines.mapped('total')) if lines else 0.0
-
-    #         employee_start = rec.employee_id.date_start
-    #         date_from = rec.date_from
-    #         date_to = rec.date_to
-
-    #         if not employee_start or not date_from or not date_to:
-    #             rec.payslip_day = 30
-    #             continue
-
-    #         if date_from <= employee_start <= date_to:
-    #             d1 = employee_start.day
-    #             d2 = date_from.day
-    #             if d2 == d1:
-    #                 rec.payslip_day = 30
-    #             else:
-    #                 d11 = date_from.day
-    #                 d22 = date_to.day
-    #                 rec.payslip_day = 32 - d1 if d22 - d11 != 29 else 31 - d1
-    #         else:
-    #             rec.payslip_day = 30
-
 
 
     def _compute_basic_net(self):
@@ -281,162 +219,293 @@ class HrPayslip(models.Model):
 
 
 
-    def _prepare_line_values(self, line, account, date, debit, credit):
-        batch_lines = self.company_id.batch_payroll_move_lines
-        partner = self.employee_id.work_contact_id if (
-            not batch_lines and line.salary_rule_id.employee_move_line
-        ) else line.partner_id
+    def _action_create_account_move(self):
+        AccountMove = self.env["account.move"]
+        created_moves = self.env["account.move"]
 
-        company_currency = self.env.company.currency_id
-        salary_currency = self.salary_currency
-        move_date = date or fields.Date.today()
+        grouped_slips = defaultdict(list)
 
-        def _amount_vals(local_debit, local_credit):
-            if salary_currency.id != company_currency.id:
-                cur_debit = 0.0
-                cur_credit = 0.0
-                amount_currency = 0.0
+        for slip in self:
+            analytic = slip.version_id.analytic_distribution or {}
+            analytic_key = tuple(sorted(analytic.items()))
+            grouped_slips[analytic_key].append(slip.id)
 
-                if local_debit > 0:
-                    cur_debit = salary_currency._convert(
-                        local_debit, company_currency, line.company_id, move_date
+        for analytic_key, slip_ids in grouped_slips.items():
+            slips = self.browse(slip_ids)
+            analytic_dict = dict(analytic_key)
+
+            company = slips[0].company_id
+            currency = company.currency_id
+
+            grouped_lines = defaultdict(lambda: {
+                "name": "",
+                "account_id": False,
+                "debit": 0.0,
+                "credit": 0.0,
+                "analytic_distribution": {},
+            })
+
+            for slip in slips:
+                for line in slip.line_ids:
+                    rule = line.salary_rule_id
+                    amount = currency.round(line.total)
+
+                    if float_is_zero(amount, precision_rounding=currency.rounding):
+                        continue
+
+                    if rule.account_debit:
+                        debit = amount if amount > 0 else 0.0
+                        credit = -amount if amount < 0 else 0.0
+
+                        key = (
+                            rule.account_debit.id,
+                            "debit",
+                            analytic_key,
+                        )
+
+                        grouped_lines[key]["name"] = rule.name
+                        grouped_lines[key]["account_id"] = rule.account_debit.id
+                        grouped_lines[key]["debit"] += debit
+                        grouped_lines[key]["credit"] += credit
+                        grouped_lines[key]["analytic_distribution"] = analytic_dict
+
+                    if rule.account_credit:
+                        debit = -amount if amount < 0 else 0.0
+                        credit = amount if amount > 0 else 0.0
+
+                        key = (
+                            rule.account_credit.id,
+                            "credit",
+                        )
+
+                        grouped_lines[key]["name"] = rule.name
+                        grouped_lines[key]["account_id"] = rule.account_credit.id
+                        grouped_lines[key]["debit"] += debit
+                        grouped_lines[key]["credit"] += credit
+                        grouped_lines[key]["analytic_distribution"] = {}
+
+            move_lines = []
+
+            for data in grouped_lines.values():
+                debit = currency.round(data["debit"])
+                credit = currency.round(data["credit"])
+
+                if (
+                    float_is_zero(debit, precision_rounding=currency.rounding)
+                    and float_is_zero(credit, precision_rounding=currency.rounding)
+                ):
+                    continue
+
+                move_lines.append((0, 0, {
+                    "name": data["name"] or "Payroll",
+                    "account_id": data["account_id"],
+                    "debit": debit,
+                    "credit": credit,
+                    "analytic_distribution": data["analytic_distribution"],
+                }))
+
+            total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
+            total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
+            difference = currency.round(total_debit - total_credit)
+
+            if not float_is_zero(difference, precision_rounding=currency.rounding):
+                if difference < 0:
+                    adjustment_account = company.expense_currency_exchange_account_id
+                    adjustment_debit = abs(difference)
+                    adjustment_credit = 0.0
+                else:
+                    adjustment_account = company.income_currency_exchange_account_id
+                    adjustment_debit = 0.0
+                    adjustment_credit = difference
+
+                if not adjustment_account:
+                    raise UserError(
+                        "Missing exchange difference account.\n"
+                        "Please configure Exchange Gain/Loss accounts in Accounting settings.\n"
+                        "Analytic Distribution: %s\n"
+                        "Difference: %s"
+                        % (analytic_dict, difference)
                     )
-                    amount_currency = local_debit
 
-                if local_credit > 0:
-                    cur_credit = salary_currency._convert(
-                        local_credit, company_currency, line.company_id, move_date
+                move_lines.append((0, 0, {
+                    "name": "Exchange Difference Adjustment",
+                    "account_id": adjustment_account.id,
+                    "debit": currency.round(adjustment_debit),
+                    "credit": currency.round(adjustment_credit),
+                    "analytic_distribution": {},
+                }))
+
+            total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
+            total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
+
+            if float_compare(
+                total_debit,
+                total_credit,
+                precision_rounding=currency.rounding,
+            ) != 0:
+                raise UserError(
+                    "Grouped payroll entry is not balanced.\n"
+                    "Analytic Distribution: %s\n"
+                    "Debit: %s\n"
+                    "Credit: %s\n"
+                    "Difference: %s"
+                    % (
+                        analytic_dict,
+                        total_debit,
+                        total_credit,
+                        currency.round(total_debit - total_credit),
                     )
-                    amount_currency = -local_credit
+                )
 
-                return {
-                    'currency_id': salary_currency.id,
-                    'debit': cur_debit,
-                    'credit': cur_credit,
-                    'amount_currency': amount_currency,
-                }
+            move = AccountMove.create({
+                "journal_id": slips[0].struct_id.journal_id.id,
+                "date": slips[0].date_to,
+                "ref": "Payroll - Grouped by Analytic",
+                "company_id": company.id,
+                "line_ids": move_lines,
+                "state":'draft'
+            })
 
-            return {
-                'debit': local_debit,
-                'credit': local_credit,
-            }
+            slips.write({"move_id": move.id})
+            created_moves |= move
 
-        base_vals = {
-            'name': line.name if line.salary_rule_id.split_move_lines else line.salary_rule_id.name,
-            'partner_id': partner.id,
-            'account_id': account.id,
-            'journal_id': line.slip_id.struct_id.journal_id.id,
-            'date': move_date,
-            'analytic_distribution': line.salary_rule_id.analytic_distribution or line.slip_id.version_id.analytic_distribution,
-            'tax_tag_ids': line.debit_tag_ids.ids if account.id == line.salary_rule_id.account_debit.id else line.credit_tag_ids.ids,
-            'tax_ids': [(4, tax_id) for tax_id in account.tax_ids.ids],
-        }
+        return created_moves
 
-        if (
-            not batch_lines
-            and line.salary_rule_id.employee_move_line
-            and self.employee_id.has_multiple_bank_accounts
-        ):
-            line_vals = []
-            debit_allocations = self.compute_salary_allocations(debit)
-            credit_allocations = self.compute_salary_allocations(credit)
+    # def _prepare_line_values(self, line, account, date, debit, credit):
+    #     company_currency = self.env.company.currency_id
+    #     salary_currency = self.salary_currency
+    #     move_date = date or fields.Date.today()
 
-            for ba in self.employee_id.bank_account_ids:
-                subdebit = debit_allocations.get(str(ba.id), 0.0)
-                subcredit = credit_allocations.get(str(ba.id), 0.0)
+    #     analytic_distribution = {}
+    #     analytic_account = (
+    #         line.salary_rule_id.analytic_distribution
+    #         or line.slip_id.version_id.analytic_distribution
+    #     )
+    #     if analytic_account:
+    #         analytic_distribution = {str(analytic_account): 100}
 
-                vals = dict(base_vals)
-                vals.update({
-                    'employee_bank_account_id': ba.id,
-                })
-                vals.update(_amount_vals(subdebit, subcredit))
-                line_vals.append(vals)
+    #     # IMPORTANT: no partner, so lines can merge
+    #     partner = False
 
-            return line_vals
+    #     if salary_currency and salary_currency != company_currency:
+    #         cur_debit = 0.0
+    #         cur_credit = 0.0
+    #         amount_currency = 0.0
 
-        vals = dict(base_vals)
-        vals.update(_amount_vals(debit, credit))
-        return [vals]
-
-    
-    # def _prepare_line_values(self, line, account_id, date, debit, credit):
-    #     # res = super(HrPayslip, self)._prepare_line_values()
-
-    #     """ Extend Odoo Default method _prepare_line_values() 
-    #         - Add multi currency feature to the function by comparing currency of payroll with the default company currency
-    #           if it's differet from the company currency then we will convert it to the default currency by function:
-    #           payroll_currency._convert(amount,company_currency,company,date) """
-              
-    #     if self.salary_currency.id != self.env.company.currency_id.id:
-    #         cur_credit = cur_debit = amount_currency = 0.00
     #         if debit > 0:
-    #             cur_debit = self.salary_currency._convert(debit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             cur_debit = salary_currency._convert(
+    #                 debit, company_currency, line.company_id, move_date
+    #             )
     #             amount_currency = debit
+
     #         if credit > 0:
-    #             cur_credit = self.salary_currency._convert(credit, self.env.company.currency_id, line.company_id, date or fields.Date.today())
+    #             cur_credit = salary_currency._convert(
+    #                 credit, company_currency, line.company_id, move_date
+    #             )
     #             amount_currency = -credit
 
+    #         return [{
+    #             'name': line.salary_rule_id.name,
+    #             'partner_id': False,
+    #             'account_id': account.id,
+    #             'journal_id': line.slip_id.struct_id.journal_id.id,
+    #             'currency_id': salary_currency.id,
+    #             'date': move_date,
+    #             'debit': cur_debit,
+    #             'credit': cur_credit,
+    #             'amount_currency': amount_currency,
+    #             'analytic_distribution': analytic_distribution,
+    #         }]
+
+    #     return [{
+    #         'name': line.salary_rule_id.name,
+    #         'partner_id': False,
+    #         'account_id': account.id,
+    #         'journal_id': line.slip_id.struct_id.journal_id.id,
+    #         'date': move_date,
+    #         'debit': debit,
+    #         'credit': credit,
+    #         'analytic_distribution': analytic_distribution,
+    #     }]
+
+
+
+    # def _prepare_line_values(self, line, account, date, debit, credit):
+    #     batch_lines = self.company_id.batch_payroll_move_lines
+    #     partner = self.employee_id.work_contact_id if (
+    #         not batch_lines and line.salary_rule_id.employee_move_line
+    #     ) else line.partner_id
+
+    #     company_currency = self.env.company.currency_id
+    #     salary_currency = self.salary_currency
+    #     move_date = date or fields.Date.today()
+
+    #     def _amount_vals(local_debit, local_credit):
+    #         if salary_currency.id != company_currency.id:
+    #             cur_debit = 0.0
+    #             cur_credit = 0.0
+    #             amount_currency = 0.0
+
+    #             if local_debit > 0:
+    #                 cur_debit = salary_currency._convert(
+    #                     local_debit, company_currency, line.company_id, move_date
+    #                 )
+    #                 amount_currency = local_debit
+
+    #             if local_credit > 0:
+    #                 cur_credit = salary_currency._convert(
+    #                     local_credit, company_currency, line.company_id, move_date
+    #                 )
+    #                 amount_currency = -local_credit
+
+    #             return {
+    #                 'currency_id': salary_currency.id,
+    #                 'debit': cur_debit,
+    #                 'credit': cur_credit,
+    #                 'amount_currency': amount_currency,
+    #             }
 
     #         return {
-    #         'name': line.name,
-    #         'partner_id': line.partner_id.id,
-    #         'account_id': account_id,
+    #             'debit': local_debit,
+    #             'credit': local_credit,
+    #         }
+
+    #     base_vals = {
+    #         'name': line.name if line.salary_rule_id.split_move_lines else line.salary_rule_id.name,
+    #         'partner_id': partner.id,
+    #         'account_id': account.id,
     #         'journal_id': line.slip_id.struct_id.journal_id.id,
-    #         'currency_id': line.slip_id.salary_currency.id,
-    #         'date': date,
-    #         'debit': cur_debit,
-    #         'credit': cur_credit,
-    #         'amount_currency': amount_currency,
-    #             'analytic_distribution': {
-    #                 str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (
-    #                         line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
-           
+    #         'date': move_date,
+    #         'analytic_distribution': line.salary_rule_id.analytic_distribution or line.slip_id.version_id.analytic_distribution,
+    #         'tax_tag_ids': line.debit_tag_ids.ids if account.id == line.salary_rule_id.account_debit.id else line.credit_tag_ids.ids,
+    #         'tax_ids': [(4, tax_id) for tax_id in account.tax_ids.ids],
     #     }
-    #     else:
 
-    #         if line.salary_rule_id.apper_on_journal:
+    #     if (
+    #         not batch_lines
+    #         and line.salary_rule_id.employee_move_line
+    #         and self.employee_id.has_multiple_bank_accounts
+    #     ):
+    #         line_vals = []
+    #         debit_allocations = self.compute_salary_allocations(debit)
+    #         credit_allocations = self.compute_salary_allocations(credit)
 
-    #             return {
-    #                 'name': line.name,
-    #                 'partner_id': line.partner_id.id,
-    #                 'account_id': account_id,
-    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
-    #                 'date': date,
-    #                 'debit': debit,
-    #                 'credit': credit,
-    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100} if (line.salary_rule_id.analytic_distribution or
-    #                     line.slip_id.employee_id.analytic_distribution) else False,
-                    
-    #             }
+    #         for ba in self.employee_id.bank_account_ids:
+    #             subdebit = debit_allocations.get(str(ba.id), 0.0)
+    #             subcredit = credit_allocations.get(str(ba.id), 0.0)
 
-    #         else:                
+    #             vals = dict(base_vals)
+    #             vals.update({
+    #                 'employee_bank_account_id': ba.id,
+    #             })
+    #             vals.update(_amount_vals(subdebit, subcredit))
+    #             line_vals.append(vals)
 
-    #             return {
-    #                 'name': line.name,
-    #                 'account_id': account_id,
-    #                 'journal_id': line.slip_id.struct_id.journal_id.id,
-    #                 'date': date,
-    #                 'debit': debit,
-    #                 'credit': credit,
-    #                 'analytic_distribution': {str(line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution): 100}
-    #                 if (line.salary_rule_id.analytic_distribution or line.slip_id.employee_id.analytic_distribution) else False,
-                    
-    #             }
+    #         return line_vals
 
-
-
-    # def action_payslip_done(self):
-    #     current_company = self.env.company
-    #     for payslip in self:
-    #         payslip_company = payslip.payslip_run_id.company_id if payslip.payslip_run_id else payslip.company_id
-    #         if payslip_company != current_company:
-    #             raise ValidationError(
-    #                 _("You are currently logged into '%s', but the payslip belongs to '%s'.\n"
-    #                   "Please switch to the correct company to proceed.") % (
-    #                       current_company.name, payslip_company.name)
-    #             )
-    #     res = super().action_payslip_done()
-    #     return res
+    #     vals = dict(base_vals)
+    #     vals.update(_amount_vals(debit, credit))
+    #     return [vals]
 
 
 
@@ -451,60 +520,6 @@ class HrPayslip(models.Model):
         else:
             self.make_visible = True
 
-
-# class hr_payroll_workflow_run(models.Model):
-#     _inherit = 'hr.payslip.run'
-#     _description = 'Added workflows to payroll stages'
-#     state = fields.Selection([
-#         ('01_ready', 'Ready'),
-#         ('02_close', 'Done'),
-#         ('03_paid', 'Paid'),
-#         ('04_cancel', 'Cancelled'),
-
-#         ('draft', 'Draft'), 
-#         ('director_approve','HR Director Approve'),
-#         ('ccso_approve','CCSO Approve'),
-#         ('verify', 'Payslips Approve'),
-#         ('paid', 'Paid'),
-#         ('close','Confirmed'),
-#         ('to_pay','To pay'),
-#         ('cancel', 'Rejected')], string='Status', index=True, readonly=True, copy=False, default='01_ready')
-#     currency_id = fields.Many2one("res.currency",required=False,default=lambda self: self.env.company.currency_id,tracking=True)
-#     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
-#     # Submit Button function
-#     def set_to_submit_state_batch(self):  
-#         # self.write({'state': 'director_approve'})
-#         self.write({'state': 'director_approve'})
-#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').submit_draft_state()
-
-#     def action_draft(self):
-#         self.write({'state': 'draft'})
-#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_draft_state()
-
-#     # HR Director Approve Button function
-#     def set_to_director_approve_state_batch(self):  
-#         # self.write({'state': 'ccso_approve'})
-#         self.write({'state': 'verify'})
-#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').director_approve_state()
-
-#     # CCSO Approve Button function
-#     def set_to_ccso_approve_state_batch(self):  
-#         self.write({'state': 'verify'})
-#         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').ccso_approve_state()
-
-#     def action_open_payslip_for_report(self):
-#         self.ensure_one()
-#         view = self.env.ref('hr_payroll_workflow.view_hr_payslip_treee')
-
-#         return {
-#             "type": "ir.actions.act_window",
-#             "res_model": "hr.payslip",
-#             "view_id": view.id,
-#             "view_mode": 'tree',
-#             # "view_id": [[hr_pay, "tree"], [False, "form"]],
-#             "domain": [['id', 'in', self.slip_ids.ids]],
-#             "name": "Payslips",
-#         }
 
 
 
