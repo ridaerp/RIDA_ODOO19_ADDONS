@@ -65,7 +65,7 @@ class HrPayslip(models.Model):
         for payslip in payslips:
             if not payslip.struct_id:
                 continue
-            # payslip.analytic_account_id = payslip.employee_id.analytic_account_id
+            payslip.analytic_account_id = payslip.employee_id.department_id.analytic_account_id
             existing_input_type_ids = payslip.input_line_ids.mapped('input_type_id').ids
             allowed_input_types = payslip.struct_id.input_line_type_ids.sorted(
                 key=lambda x: x.sequence, reverse=True
@@ -104,7 +104,7 @@ class HrPayslip(models.Model):
 
     def caculate_workdays_take_home(self):
         for rec in self:
-            rec.analytic_account_id = rec.employee_id.department_id.analytic_account_id
+            # rec.analytic_account_id = rec.employee_id.department_id.analytic_account_id
 
             employee_start = rec.employee_id.date_start
             date_from = rec.date_from
@@ -218,18 +218,13 @@ class HrPayslip(models.Model):
         self.write({'state': 'draft'})
 
 
-
     def _action_create_account_move(self):
         AccountMove = self.env["account.move"]
         created_moves = self.env["account.move"]
 
-        # Avoid recursive/repeated creation
         if self.env.context.get("skip_grouped_payroll_move"):
             return created_moves
 
-        # IMPORTANT:
-        # Odoo/custom code may call this method per payslip.
-        # So we always collect all payslips from the same payslip run.
         runs = self.mapped("payslip_run_id")
 
         if runs:
@@ -256,80 +251,137 @@ class HrPayslip(models.Model):
             analytic_dict = dict(analytic_key)
 
             company = slips[0].company_id
-            currency = slips[0].salary_currency or company.currency_id
+            company_currency = company.currency_id
+            date = slips[0].date_to or fields.Date.today()
 
             grouped_lines = defaultdict(lambda: {
                 "name": "",
                 "account_id": False,
                 "debit": 0.0,
                 "credit": 0.0,
+                "amount_currency": 0.0,
+                "currency_id": False,
                 "analytic_distribution": {},
             })
 
             for slip in slips:
+                salary_currency = slip.salary_currency 
+
                 for line in slip.line_ids:
                     rule = line.salary_rule_id
-                    amount = currency.round(line.total)
+                    amount = salary_currency.round(line.total)
 
-                    if float_is_zero(amount, precision_rounding=currency.rounding):
+                    if float_is_zero(amount, precision_rounding=salary_currency.rounding):
                         continue
+
+                    def _convert_amount(debit, credit):
+                        amount_currency = 0.0
+                        debit_company = debit
+                        credit_company = credit
+                        currency_id = False
+
+                        if salary_currency != company_currency:
+                            currency_id = salary_currency.id
+
+                            if debit > 0:
+                                debit_company = salary_currency._convert(
+                                    debit,
+                                    company_currency,
+                                    company,
+                                    date,
+                                )
+                                amount_currency = debit
+
+                            if credit > 0:
+                                credit_company = salary_currency._convert(
+                                    credit,
+                                    company_currency,
+                                    company,
+                                    date,
+                                )
+                                amount_currency = -credit
+
+                        return (
+                            company_currency.round(debit_company),
+                            company_currency.round(credit_company),
+                            salary_currency.round(amount_currency),
+                            currency_id,
+                        )
 
                     if rule.account_debit:
                         debit = amount if amount > 0 else 0.0
                         credit = -amount if amount < 0 else 0.0
 
+                        debit_company, credit_company, amount_currency, currency_id = _convert_amount(debit, credit)
+
                         key = (
                             rule.account_debit.id,
                             "debit",
                             analytic_key,
+                            currency_id,
                         )
 
                         grouped_lines[key]["name"] = rule.name
                         grouped_lines[key]["account_id"] = rule.account_debit.id
-                        grouped_lines[key]["debit"] += debit
-                        grouped_lines[key]["credit"] += credit
+                        grouped_lines[key]["debit"] += debit_company
+                        grouped_lines[key]["credit"] += credit_company
+                        grouped_lines[key]["amount_currency"] += amount_currency
+                        grouped_lines[key]["currency_id"] = currency_id
                         grouped_lines[key]["analytic_distribution"] = analytic_dict
 
                     if rule.account_credit:
                         debit = -amount if amount < 0 else 0.0
                         credit = amount if amount > 0 else 0.0
 
+                        debit_company, credit_company, amount_currency, currency_id = _convert_amount(debit, credit)
+
                         key = (
                             rule.account_credit.id,
                             "credit",
+                            currency_id,
                         )
 
                         grouped_lines[key]["name"] = rule.name
                         grouped_lines[key]["account_id"] = rule.account_credit.id
-                        grouped_lines[key]["debit"] += debit
-                        grouped_lines[key]["credit"] += credit
+                        grouped_lines[key]["debit"] += debit_company
+                        grouped_lines[key]["credit"] += credit_company
+                        grouped_lines[key]["amount_currency"] += amount_currency
+                        grouped_lines[key]["currency_id"] = currency_id
                         grouped_lines[key]["analytic_distribution"] = {}
 
             move_lines = []
 
             for data in grouped_lines.values():
-                debit = currency.round(data["debit"])
-                credit = currency.round(data["credit"])
+                debit = company_currency.round(data["debit"])
+                credit = company_currency.round(data["credit"])
 
                 if (
-                    float_is_zero(debit, precision_rounding=currency.rounding)
-                    and float_is_zero(credit, precision_rounding=currency.rounding)
+                    float_is_zero(debit, precision_rounding=company_currency.rounding)
+                    and float_is_zero(credit, precision_rounding=company_currency.rounding)
                 ):
                     continue
 
-                move_lines.append((0, 0, {
+                vals = {
                     "name": data["name"] or "Payroll",
                     "account_id": data["account_id"],
                     "debit": debit,
                     "credit": credit,
                     "analytic_distribution": data["analytic_distribution"],
-                }))
+                }
 
-            total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
-            total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
-            difference = currency.round(total_debit - total_credit)
+                if data["currency_id"]:
+                    vals.update({
+                        "currency_id": data["currency_id"],
+                        "amount_currency": data["amount_currency"],
+                    })
 
-            if not float_is_zero(difference, precision_rounding=currency.rounding):
+                move_lines.append((0, 0, vals))
+
+            total_debit = company_currency.round(sum(line[2]["debit"] for line in move_lines))
+            total_credit = company_currency.round(sum(line[2]["credit"] for line in move_lines))
+            difference = company_currency.round(total_debit - total_credit)
+
+            if not float_is_zero(difference, precision_rounding=company_currency.rounding):
                 if difference < 0:
                     adjustment_account = company.expense_currency_exchange_account_id
                     adjustment_debit = abs(difference)
@@ -342,48 +394,33 @@ class HrPayslip(models.Model):
                 if not adjustment_account:
                     raise UserError(
                         "Missing exchange difference account.\n"
-                        "Please configure Exchange Gain/Loss accounts in Accounting settings.\n"
-                        "Analytic Distribution: %s\n"
-                        "Difference: %s"
-                        % (analytic_dict, difference)
+                        "Difference: %s" % difference
                     )
 
                 move_lines.append((0, 0, {
                     "name": "Exchange Difference Adjustment",
                     "account_id": adjustment_account.id,
-                    "debit": currency.round(adjustment_debit),
-                    "credit": currency.round(adjustment_credit),
+                    "debit": company_currency.round(adjustment_debit),
+                    "credit": company_currency.round(adjustment_credit),
                     "analytic_distribution": {},
                 }))
 
-            total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
-            total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
+            total_debit = company_currency.round(sum(line[2]["debit"] for line in move_lines))
+            total_credit = company_currency.round(sum(line[2]["credit"] for line in move_lines))
 
-            if float_compare(
-                total_debit,
-                total_credit,
-                precision_rounding=currency.rounding,
-            ) != 0:
+            if float_compare(total_debit, total_credit, precision_rounding=company_currency.rounding) != 0:
                 raise UserError(
                     "Grouped payroll entry is not balanced.\n"
-                    "Analytic Distribution: %s\n"
-                    "Debit: %s\n"
-                    "Credit: %s\n"
-                    "Difference: %s"
-                    % (
-                        analytic_dict,
-                        total_debit,
-                        total_credit,
-                        currency.round(total_debit - total_credit),
-                    )
+                    "Debit: %s\nCredit: %s\nDifference: %s"
+                    % (total_debit, total_credit, company_currency.round(total_debit - total_credit))
                 )
 
             move = AccountMove.create({
                 "journal_id": slips[0].journal_id.id,
-                "date": slips[0].date_to,
-                "ref": "Payroll - Grouped by Analytic",
+                "date": date,
                 "company_id": company.id,
                 "line_ids": move_lines,
+                "ref": "Payroll - Grouped by Analytic"+str(slips[0].analytic_account_id.name),
                 'state':'draft'
             })
 
@@ -394,6 +431,183 @@ class HrPayslip(models.Model):
             created_moves |= move
 
         return created_moves
+
+    # def _action_create_account_move(self):
+    #     AccountMove = self.env["account.move"]
+    #     created_moves = self.env["account.move"]
+
+    #     # Avoid recursive/repeated creation
+    #     if self.env.context.get("skip_grouped_payroll_move"):
+    #         return created_moves
+
+    #     # IMPORTANT:
+    #     # Odoo/custom code may call this method per payslip.
+    #     # So we always collect all payslips from the same payslip run.
+    #     runs = self.mapped("payslip_run_id")
+
+    #     if runs:
+    #         slips_to_process = runs.mapped("slip_ids").filtered(
+    #             lambda s: s.journal_id and not s.move_id and s.state != "cancel"
+    #         )
+    #     else:
+    #         slips_to_process = self.filtered(
+    #             lambda s: s.journal_id and not s.move_id and s.state != "cancel"
+    #         )
+
+    #     if not slips_to_process:
+    #         return created_moves
+
+    #     grouped_slips = defaultdict(list)
+
+    #     for slip in slips_to_process:
+    #         analytic = slip.version_id.analytic_distribution or {}
+    #         analytic_key = tuple(sorted(analytic.items()))
+    #         grouped_slips[analytic_key].append(slip.id)
+
+    #     for analytic_key, slip_ids in grouped_slips.items():
+    #         slips = self.browse(slip_ids)
+    #         analytic_dict = dict(analytic_key)
+
+    #         company = slips[0].company_id
+    #         currency = slips[0].salary_currency
+    #          # or company.currency_id
+
+    #         grouped_lines = defaultdict(lambda: {
+    #             "name": "",
+    #             "account_id": False,
+    #             "debit": 0.0,
+    #             "credit": 0.0,
+    #             "analytic_distribution": {},
+    #         })
+
+    #         for slip in slips:
+    #             for line in slip.line_ids:
+    #                 rule = line.salary_rule_id
+    #                 amount = currency.round(line.total)
+
+    #                 if float_is_zero(amount, precision_rounding=currency.rounding):
+    #                     continue
+
+    #                 if rule.account_debit:
+    #                     debit = amount if amount > 0 else 0.0
+    #                     credit = -amount if amount < 0 else 0.0
+
+    #                     key = (
+    #                         rule.account_debit.id,
+    #                         "debit",
+    #                         analytic_key,
+    #                     )
+
+    #                     grouped_lines[key]["name"] = rule.name
+    #                     grouped_lines[key]["account_id"] = rule.account_debit.id
+    #                     grouped_lines[key]["debit"] += debit
+    #                     grouped_lines[key]["credit"] += credit
+    #                     grouped_lines[key]["analytic_distribution"] = analytic_dict
+
+    #                 if rule.account_credit:
+    #                     debit = -amount if amount < 0 else 0.0
+    #                     credit = amount if amount > 0 else 0.0
+
+    #                     key = (
+    #                         rule.account_credit.id,
+    #                         "credit",
+    #                     )
+
+    #                     grouped_lines[key]["name"] = rule.name
+    #                     grouped_lines[key]["account_id"] = rule.account_credit.id
+    #                     grouped_lines[key]["debit"] += debit
+    #                     grouped_lines[key]["credit"] += credit
+    #                     grouped_lines[key]["analytic_distribution"] = {}
+
+    #         move_lines = []
+
+    #         for data in grouped_lines.values():
+    #             debit = currency.round(data["debit"])
+    #             credit = currency.round(data["credit"])
+
+    #             if (
+    #                 float_is_zero(debit, precision_rounding=currency.rounding)
+    #                 and float_is_zero(credit, precision_rounding=currency.rounding)
+    #             ):
+    #                 continue
+
+    #             move_lines.append((0, 0, {
+    #                 "name": data["name"] or "Payroll",
+    #                 "account_id": data["account_id"],
+    #                 "debit": debit,
+    #                 "credit": credit,
+    #                 "analytic_distribution": data["analytic_distribution"],
+    #             }))
+
+    #         total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
+    #         total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
+    #         difference = currency.round(total_debit - total_credit)
+
+    #         if not float_is_zero(difference, precision_rounding=currency.rounding):
+    #             if difference < 0:
+    #                 adjustment_account = company.expense_currency_exchange_account_id
+    #                 adjustment_debit = abs(difference)
+    #                 adjustment_credit = 0.0
+    #             else:
+    #                 adjustment_account = company.income_currency_exchange_account_id
+    #                 adjustment_debit = 0.0
+    #                 adjustment_credit = difference
+
+    #             if not adjustment_account:
+    #                 raise UserError(
+    #                     "Missing exchange difference account.\n"
+    #                     "Please configure Exchange Gain/Loss accounts in Accounting settings.\n"
+    #                     "Analytic Distribution: %s\n"
+    #                     "Difference: %s"
+    #                     % (analytic_dict, difference)
+    #                 )
+
+    #             move_lines.append((0, 0, {
+    #                 "name": "Exchange Difference Adjustment",
+    #                 "account_id": adjustment_account.id,
+    #                 "debit": currency.round(adjustment_debit),
+    #                 "credit": currency.round(adjustment_credit),
+    #                 "analytic_distribution": {},
+    #             }))
+
+    #         total_debit = currency.round(sum(line[2]["debit"] for line in move_lines))
+    #         total_credit = currency.round(sum(line[2]["credit"] for line in move_lines))
+
+    #         if float_compare(
+    #             total_debit,
+    #             total_credit,
+    #             precision_rounding=currency.rounding,
+    #         ) != 0:
+    #             raise UserError(
+    #                 "Grouped payroll entry is not balanced.\n"
+    #                 "Analytic Distribution: %s\n"
+    #                 "Debit: %s\n"
+    #                 "Credit: %s\n"
+    #                 "Difference: %s"
+    #                 % (
+    #                     analytic_dict,
+    #                     total_debit,
+    #                     total_credit,
+    #                     currency.round(total_debit - total_credit),
+    #                 )
+    #             )
+
+    #         move = AccountMove.create({
+    #             "journal_id": slips[0].journal_id.id,
+    #             "date": slips[0].date_to,
+    #             "ref": "Payroll - Grouped by Analytic"+str(slips[0].analytic_account_id.name),
+    #             "company_id": company.id,
+    #             "line_ids": move_lines,
+    #             'state':'draft'
+    #         })
+
+    #         slips.with_context(skip_grouped_payroll_move=True).write({
+    #             "move_id": move.id
+    #         })
+
+    #         created_moves |= move
+
+    #     return created_moves
 
     # def _action_create_account_move(self):
     #     AccountMove = self.env["account.move"]
