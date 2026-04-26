@@ -46,7 +46,7 @@ class HrPayslip(models.Model):
         store=True,
         readonly=True,
     )
-    salary_currency = fields.Many2one(related='version_id.salary_currency')
+    salary_currency = fields.Many2one(related='employee_id.salary_currency')
     analytic_account_id = fields.Many2one("account.analytic.account",string='Analytic Account')
     take_home = fields.Float(string="Take Home",readonly=False)
     payslip_day = fields.Float(string="WorkedDays",readonly=True,store=True)
