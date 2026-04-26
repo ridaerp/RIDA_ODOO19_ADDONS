@@ -420,7 +420,7 @@ class HrPayslip(models.Model):
                 "date": date,
                 "company_id": company.id,
                 "line_ids": move_lines,
-                "ref": "Payroll - Grouped by Analytic"+str(slips[0].analytic_account_id.name),
+                "ref": "Payroll - Grouped by Analytic",
                 'state':'draft'
             })
 
