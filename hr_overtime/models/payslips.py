@@ -13,16 +13,16 @@ class hr_payslip(models.Model):
     site_overtime = fields.Float("Site Overtime", readonly=True)
     employee_type = fields.Selection(string='Employee type', selection=[('hq', 'HQ Staff'), ('site', 'Site Staff')],required=True, related = "employee_id.rida_employee_type")
     
-    def compute_sheet(self):
-        for payslip in self:
-            # Ensure single record processing
-            payslip.ensure_one()
-            if payslip.employee_type == 'hq':
-                self.compute_overtime()
-        else:
-            self.compute_site_overtime()
-        res = super(hr_payslip,self).compute_sheet()
-        return res
+    # def compute_sheet(self):
+    #     for payslip in self:
+    #         # Ensure single record processing
+    #         payslip.ensure_one()
+    #         if payslip.employee_type == 'hq':
+    #             self.compute_overtime()
+    #     else:
+    #         self.compute_site_overtime()
+    #     res = super(hr_payslip,self).compute_sheet()
+    #     return res
 
     def compute_overtime(self):
         for rec in self:

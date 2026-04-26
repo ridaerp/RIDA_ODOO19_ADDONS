@@ -56,7 +56,7 @@
             <field name="res_model">mrp.workcenter.productivity</field>
             <field name="view_mode">list,form,graph,pivot</field>
 
-            <field name="domain">[('production_ref_id', '=', id),
+            <field name="domain">[('production_ref_id', '=', active_id),
                 ('loss_id.loss_type', 'in', ['availability', 'performance','quality'])]
             </field>
 

@@ -56,24 +56,45 @@ class MrpProduction(models.Model):
             record.pregnant_result_count = self.env['pregnant.sample.result'].search_count(
                 [('production_id', '=', record.id)])
 
+    # def action_generate_serial(self):
+    #     for production in self:
+    #         product = production.product_id
+    #         if product.name and 'Gold 21' in product.name:
+    #             sequence_name = self.env['ir.sequence'].next_by_code('gold_21_serial_mrp')
+    #         else:
+    #             sequence_name = self.env['ir.sequence'].next_by_code('default_lot_sequence')
+    #         if not sequence_name:
+    #             raise UserError("لم يتم العثور على تسلسل صالح! الرجاء التأكد من إعداد التسلسل في الإعدادات.")
+    #
+    #
+    #         lot = self.env['stock.lot'].create({
+    #             'name': sequence_name,
+    #             'product_id': product.id,
+    #             'company_id': production.company_id.id,
+    #         })
+    #
+    #         production.lot_producing_id = lot.id
     def action_generate_serial(self):
         for production in self:
             product = production.product_id
+
             if product.name and 'Gold 21' in product.name:
                 sequence_name = self.env['ir.sequence'].next_by_code('gold_21_serial_mrp')
             else:
                 sequence_name = self.env['ir.sequence'].next_by_code('default_lot_sequence')
-            if not sequence_name:
-                raise UserError("لم يتم العثور على تسلسل صالح! الرجاء التأكد من إعداد التسلسل في الإعدادات.")
 
-               
+            if not sequence_name:
+                raise UserError(
+                    "لم يتم العثور على رقم تسلسلي! الرجاء التأكد من إعداد التسلسل في الإعدادات."
+                )
+
             lot = self.env['stock.lot'].create({
                 'name': sequence_name,
                 'product_id': product.id,
                 'company_id': production.company_id.id,
             })
 
-            production.lot_producing_id = lot.id
+            production.lot_producing_ids = [(4, lot.id)]
 
     def action_create_Pregnant_sample(self):
         self.ensure_one()

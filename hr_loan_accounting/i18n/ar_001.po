@@ -112,14 +112,7 @@ msgstr ""
 "                           انقر لإنشاء للمستندات الجديدة\n"
 "                        </p>"
 
-#. module: hr_gratuity_settlement
-#: model_terms:ir.ui.view,arch_db:hr_gratuity_settlement.employee_gratuity_form
-msgid ""
-"<span attrs=\"{'invisible': [('wage_type', '=', 'hourly')]}\">/ month</span>\n"
-"                                    <span attrs=\"{'invisible': [('wage_type', '!=', 'hourly')]}\">/ hour</span>"
-msgstr ""
-"<span attrs=\"{'invisible': [('wage_type', '=', 'hourly')]}\">/ شهر</span>\n"
-"                                    <span attrs=\"{'invisible': [('wage_type', '!=', 'hourly')]}\">/ ساعة</span>"
+
 #. module: hr_gratuity_settlement
 #: model_terms:ir.ui.view,arch_db:hr_gratuity_settlement.gratuity_configuration_form_view
 msgid "<span class=\"oe_inline\">-days gratuity pay.</span>"

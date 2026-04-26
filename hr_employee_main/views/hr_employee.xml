@@ -73,6 +73,7 @@
                 <field name="birthday" position="replace">
                     <field name="birthday" groups="hr.group_hr_user"/>
                 </field>
+         
 
 
                 <xpath expr="//field[@name='user_id']" position="attributes">
