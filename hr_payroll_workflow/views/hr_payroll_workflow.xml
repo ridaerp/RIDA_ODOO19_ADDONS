@@ -48,8 +48,8 @@
                             <field name="bank_acc_id" string="Bank Acc No."/>
                             <field name="bank_id" string="Bank Name"/>
 
-                            <field name="salary_currency"/>
-                            <field name="salary_currency"/>
+                            <field name="salary_currency"  groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
+                            <field name="currency_id"  groups="hr_payroll.group_hr_payroll_manager,base_rida.rida_payroll_site"/>
                             <field name="make_visible"  invisible="1"/>
                         </xpath>
 
@@ -212,12 +212,14 @@
 
 
     <!-- Employee Form Inherit -->
-    <record id="inherited_employee_view_id" model="ir.ui.view">
+    <record id="payroll_inherit_view" model="ir.ui.view">
         <field name="name">employee.inherit.view.form</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr_contract_grade_base.hr_employee_view_form_inherited"/>
+        <field name="inherit_id" ref="hr_contract_grade_base.hr_employee_view_form_inherited2"/>
         <field name="arch" type="xml">
+
             <xpath expr="//group[@name='salary_calculation']" position="after">
+                <group>
                 <group>
                     <field name="has_transport_allows" groups="hr_payroll.group_hr_payroll_user"/>
                     <field name="transportion_allowance" invisible="not has_transport_allows"
@@ -248,9 +250,16 @@
                     <field name="other_recevible" groups="hr_payroll.group_hr_payroll_user"/>
                     <field name="other_deductions" groups="hr_payroll.group_hr_payroll_user"/>
                 </group>
+                </group>
+
             </xpath>
+
         </field>
     </record>
+
+      
+
+
 
     <record id="hr_contract_allowance_tree" model="ir.ui.view">
         <field name="name">Other Allowances</field>
