@@ -56,8 +56,14 @@ class HrPayslip(models.Model):
     bank_acc_id=fields.Many2one(related="employee_id.bank_account_id",string="Bank Account Number",store=True)
     bank_id=fields.Many2one(related="bank_acc_id.bank_id",string="Bank Account Number",store=True)
 
+    def _check_send_payslip_mail(self):
+        # Skip sending email for all payslips
+        return False
 
-
+    def _generate_pdf(self):
+        # Prevent PDF generation and email sending
+        return False
+        
     @api.model_create_multi
     def create(self, vals_list):
         payslips = super().create(vals_list)
@@ -491,7 +497,7 @@ class HrContract(models.Model):
                 rec.analytic_account_id = False
                 rec.analytic_distribution = {}
 
-            
+
     # @api.onchange('department_id')
     # def get_analytic_account_id(self):
     #     for rec in self:
