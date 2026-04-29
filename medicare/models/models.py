@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from odoo import models, fields, api
 # import datetime
 from datetime import datetime, date, timedelta
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class DoctorVisit(models.Model):
@@ -67,6 +68,7 @@ class DoctorVisit(models.Model):
     partner_id = fields.Many2one('res.partner', 'Converted To')
     sick_leaves = fields.Char("Sick Leaves")
     last_lab_test_id = fields.Many2one('lab.request', 'Last Lab Test')
+    last_lab_test_date = fields.Datetime(related="last_lab_test_id.date_of_analysis", string=' Lab Analysis Date')
     lab_test_count = fields.Integer(string="Lab Tests", compute='_compute_lab_test_count')
     lab_total_invoice = fields.Float(compute='_compute_lab_total_invoice', string='Lab Invoice')
     minor_room_count = fields.Integer(string="Minor Room", compute='_compute_minor_room_count')
@@ -79,8 +81,11 @@ class DoctorVisit(models.Model):
     total_invoice = fields.Float(compute='_compute_total_invoice', string='Total Invoice')
     minor_room_invoice = fields.Float(string="Minor Room Invoice", compute="_compute_minor_room_invoice")
     
-
-
+    closing_date = fields.Datetime(string="Closing Date")
+    total_service_time = fields.Char(
+        string='Total Service Time',compute="get_service_duration")
+    total_service_hours = fields.Float(string="Service Hours", compute="get_service_duration")
+    
     def compute_doctor_visit_count(self):
         if self.p_employee:
             self.doctor_visit_count = self.env['doctor.visit'].sudo().search_count(
@@ -197,6 +202,41 @@ class DoctorVisit(models.Model):
 
 
 
+    # @api.depends('appointment_date', 'closing_date')
+    # def get_service_duration(self):
+    #     for rec in self:
+    #         if rec.appointment_date and rec.closing_date:
+
+    #             requested_date = datetime.strptime(rec.appointment_date.strftime('%Y-%m-%d %H:%M:%S'),
+    #                                                DEFAULT_SERVER_DATETIME_FORMAT)
+    #             complete_date = datetime.strptime(rec.closing_date.strftime('%Y-%m-%d %H:%M:%S'),
+    #                                               DEFAULT_SERVER_DATETIME_FORMAT)
+
+    #             diff = complete_date - requested_date
+    #             diff_s = diff.total_seconds()
+    #             rec.total_service_time = round(diff_s / 60, 2)  # rounded to 2 decimals
+
+    #         else:
+    #             rec.total_service_time = 0.0
+
+
+
+    @api.depends('appointment_date', 'closing_date')
+    def get_service_duration(self):
+        for rec in self:
+            if rec.appointment_date and rec.closing_date:
+                diff = rec.closing_date - rec.appointment_date
+                total_seconds = int(diff.total_seconds())
+
+                days, rem = divmod(total_seconds, 86400)
+                hours, rem = divmod(rem, 3600)
+                minutes, seconds = divmod(rem, 60)
+                rec.total_service_hours = round(total_seconds / 3600, 2)
+                rec.total_service_time = f"{days}d {hours}h {minutes}m {seconds}s"
+            else:
+                rec.total_service_time = "0d 0h 0m 0s"
+                rec.total_service_hours = 0.0
+
     def _compute_minor_room_count(self):
         self.minor_room_count = self.env['minor.room'].search_count(
             [('doctor_visitor_id.id', '=', self.id)])
@@ -299,7 +339,12 @@ class DoctorVisit(models.Model):
         return self.write({'state': 'diagnosing'})
 
     def action_close(self):
+
+        self.write({
+            'closing_date': datetime.now(),
+        })
         return self.write({'state': 'close'})
+
 
     def action_draft(self):
         return self.write({'state': 'draft'})

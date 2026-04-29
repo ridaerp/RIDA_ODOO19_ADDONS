@@ -109,6 +109,10 @@
                                        invisible="state in ['draft']" readonly="state in ['close']"/>
                                 <field name="last_lab_test_id" invisible="last_lab_test_id == 0"
                                        readonly="1"/>
+                                <field name="last_lab_test_date" invisible="last_lab_test_id == 0"
+                                       readonly="1"/>
+
+
                                 <field name="last_minor_room_id"
                                        invisible="last_minor_room_id == False" readonly="1"/>
                                 <field name="last_issuance_request_id"
@@ -153,6 +157,18 @@
                                     <group>
 
                                     </group>
+                                </group>
+                            </page>
+                             <page string="LeadTime">
+
+                                <group>
+                                    <field name="appointment_date"/>
+                                    <field name="last_lab_test_date"/>
+                                    <field name="closing_date"/>
+                                    <field name="total_service_time"/>
+                                    <field name="total_service_hours"/>
+                                    
+
                                 </group>
                             </page>
                         </notebook>
