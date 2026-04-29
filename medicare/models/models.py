@@ -77,6 +77,9 @@ class DoctorVisit(models.Model):
     dieases_ids = fields.Many2many(comodel_name="dieases", string="Dieases")
     doctor_visit_count = fields.Integer(string="Doctor Visits", compute='compute_doctor_visit_count')
     total_invoice = fields.Float(compute='_compute_total_invoice', string='Total Invoice')
+    minor_room_invoice = fields.Float(string="Minor Room Invoice", compute="_compute_minor_room_invoice")
+    
+
 
     def compute_doctor_visit_count(self):
         if self.p_employee:
@@ -163,12 +166,36 @@ class DoctorVisit(models.Model):
             else:
                 rec.pharmacy_total_invoice = 0
 
+
+    def _compute_minor_room_invoice(self):
+        for rec in self:
+            minor_request = self.env['minor.room'].search([
+                ('doctor_visitor_id.id', '=', rec.id),
+                ('state', 'not in', ['draft', 'reject'])
+            ])
+
+            if minor_request:
+                # ✅ correct field name
+                items = minor_request.mapped('minor_items')
+
+                if items:
+                    rec.minor_room_invoice = sum(items.mapped('price'))
+                else:
+                    rec.minor_room_invoice = 0
+            else:
+                rec.minor_room_invoice = 0
+
+
+
     def _compute_total_invoice(self):
         for rec in self:
-            if rec.lab_total_invoice or rec.pharmacy_total_invoice:
-                rec.total_invoice = rec.lab_total_invoice + rec.pharmacy_total_invoice
+            if rec.lab_total_invoice or rec.pharmacy_total_invoice or rec.minor_room_invoice:
+                rec.total_invoice = rec.lab_total_invoice + rec.pharmacy_total_invoice+ rec.minor_room_invoice
             else:
                 rec.total_invoice = 0
+
+
+
 
     def _compute_minor_room_count(self):
         self.minor_room_count = self.env['minor.room'].search_count(

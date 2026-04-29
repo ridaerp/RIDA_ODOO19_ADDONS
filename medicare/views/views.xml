@@ -141,10 +141,12 @@
                             <page string="Invoice">
                                 <group>
                                     <group>
+                                        <field name="minor_room_invoice"/>
                                         <field name="lab_total_invoice"/>
                                         <field name="pharmacy_total_invoice"/>
                                         <label string="Total Invoice" for="total_invoice"
                                                style="color: green;"/>
+                                               
                                         <field name="total_invoice" style="color: green;" nolabel="1"
                                                readonly="1"/>
                                     </group>
