@@ -212,7 +212,7 @@
 
 
     <!-- Employee Form Inherit -->
-    <record id="payroll_inherit_view" model="ir.ui.view">
+    <record id="payroll_inherit_view_new" model="ir.ui.view">
         <field name="name">employee.inherit.view.form</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr_contract_grade_base.hr_employee_view_form_inherited2"/>

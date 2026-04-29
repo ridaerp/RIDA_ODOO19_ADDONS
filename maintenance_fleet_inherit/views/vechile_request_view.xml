@@ -255,7 +255,10 @@
                                        invisible="state in ['draft', 'operation_movement_approve']"
                                        readonly="True"/>
 
-                                <field name="operator_driver_name"
+                             <field name="operator_driver_name"
+                                        readonly="1"/>
+
+                                <field name="operator_driver_name_e"
                                        invisible="state == 'draft'" readonly="state == 'sr_created'"/>
                             </group>
                             <group>

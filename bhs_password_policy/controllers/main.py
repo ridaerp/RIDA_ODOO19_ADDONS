@@ -18,19 +18,30 @@ _logger = logging.getLogger(__name__)
 
 
 class PasswordSecurityHome(AuthSignupHome):
-    def do_signup(self, qcontext):
-        """Check whether the password complies with policy when signup or reset password"""
+    def do_signup(self, qcontext, *args, **kwargs):
+        """Check whether the password complies with policy when signup or reset password.
+
+        Odoo 19 may call this method with extra keyword arguments such as
+        do_login. Keep *args/**kwargs and pass them to super() for compatibility.
+        """
 
         password = qcontext.get("password")
         login = qcontext.get("login")
-        token = qcontext.get('token')
+        token = qcontext.get("token")
+
         if token:
-            user_id = request.env['res.users'].sudo().search([('login', '=', login)], limit=1)
+            user_id = request.env["res.users"].sudo().search(
+                [("login", "=", login)], limit=1
+            )
         else:
             user_id = request.env.user
-        user_id._check_password(password)
 
-        return super(PasswordSecurityHome, self).do_signup(qcontext)
+        if user_id and password:
+            user_id._check_password(password)
+
+        return super(PasswordSecurityHome, self).do_signup(
+            qcontext, *args, **kwargs
+        )
 
     @http.route()
     def web_login(self, *args, **kw):
