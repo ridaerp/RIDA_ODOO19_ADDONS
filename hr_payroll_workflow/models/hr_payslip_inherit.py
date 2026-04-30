@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, _
+from odoo import  api, fields, models, _
 import base64
 import logging
 _logger = logging.getLogger(__name__)
+from odoo.fields import Domain
 
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
@@ -569,6 +570,64 @@ class HrContract(models.Model):
     has_phone_allows=fields.Boolean("Phone Allowance",default=False)
     has_scarcity_allowance=fields.Boolean("Scarcity Allowance",default=False)
     workeddays=fields.Float("Working Days ")
+
+
+class HrPayslipRun(models.Model):
+    _inherit = 'hr.payslip.run'
+
+    def _get_valid_version_ids(self, date_start=None, date_end=None, structure_id=None, company_id=None, employee_ids=None, schedule_pay=None):
+        date_start = date_start or self.date_start
+        date_end = date_end or self.date_end
+        structure = self.env["hr.payroll.structure"].browse(structure_id) if structure_id else self.structure_id
+        schedule_pay = schedule_pay or self.schedule_pay
+        company = company_id or self.company_id.id
+        version_domain = Domain([
+            ('company_id', '=', company),
+            ('employee_id', '!=', False),
+            ('employee_id.is_susupend', '=', False),
+            ('contract_date_start', '<=', date_end),
+            '|',
+                ('contract_date_end', '=', False),
+                ('contract_date_end', '>=', date_start),
+            ('date_version', '<=', date_end),
+            ('structure_type_id', '!=', False),
+        ])
+        if structure:
+            version_domain &= Domain([('structure_type_id', '=', structure.type_id.id)])
+        if employee_ids:
+            version_domain &= Domain([('employee_id', 'in', employee_ids)])
+        if schedule_pay:
+            version_domain &= Domain([('schedule_pay', '=', schedule_pay)])
+        all_versions = self.env['hr.version']._read_group(
+            domain=version_domain,
+            groupby=['employee_id', 'date_version:day'],
+            order="date_version:day DESC",
+            aggregates=['id:recordset'],
+        )
+        all_employee_versions = defaultdict(list)
+        for employee, _, version in all_versions:
+            all_employee_versions[employee] += [*version]
+        valid_versions = self.env["hr.version"]
+        for employee_versions in all_employee_versions.values():
+            employee_valid_versions = self.env["hr.version"]
+            for i in range(len(employee_versions)):
+                version = employee_versions[i]
+                if version.date_version <= date_start or employee_versions[-1] == version:
+                    # End case: The first version in contract before the pay run start or the last version of the list
+                    employee_valid_versions |= version
+                    break
+                if employee_valid_versions:
+                    # Version already added => new contract?
+                    if (employee_valid_versions[-1].contract_date_start > version.contract_date_start
+                        and (version.contract_date_start >= version.date_version
+                            or version.contract_date_start > employee_versions[i + 1].contract_date_start)):
+                        # Take only the first version of the new contract founded
+                        employee_valid_versions |= version
+                elif version.contract_date_start >= version.date_version or version.contract_date_start > employee_versions[i + 1].contract_date_start:
+                    # Take only the first version of the first contract founded
+                    employee_valid_versions |= version
+            valid_versions |= employee_valid_versions
+        return valid_versions.ids
 
 
 
