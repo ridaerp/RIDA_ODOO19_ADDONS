@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from odoo.exceptions import UserError
+from datetime import datetime, date, timedelta
 
 
 class MedicareIssuanceRequest(models.Model):
@@ -36,6 +37,7 @@ class MedicareIssuanceRequest(models.Model):
     patient = fields.Char(string="Patient")
     description = fields.Text('Description')
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
+    closing_date = fields.Datetime(string="Closing Date")
 
     def action_correct_ticket(self):
         x = self.env['medicare.issuance.request.line'].search([])
@@ -107,7 +109,9 @@ class MedicareIssuanceRequest(models.Model):
             if rec.qty:
                 rec.product_id.qty -= rec.qty
         self.state = 'done'
-
+        self.write({
+            'closing_date': datetime.now(),
+        })
 
 class MedicareIssuanceRequestLine(models.Model):
     _name = 'medicare.issuance.request.line'

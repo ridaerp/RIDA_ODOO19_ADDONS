@@ -60,6 +60,9 @@
                                        invisible="type != 'employee'" readonly="state in ['confirmed']"
                                        options="{'no_create': True,'no_open':True}"/>
                                 <field name="description" readonly="state == 'confirmed'"/>
+
+                                <field name="closing_date" readonly="1"/>
+
                             </group>
                         </group>
                         <field name="minor_items" readonly="state == 'confirmed'"

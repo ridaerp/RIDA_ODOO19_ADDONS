@@ -59,7 +59,8 @@
                                        invisible="type != 'employee'" readonly="state != 'draft'"
                                        options="{'no_create': True,'no_open':True}"/>
                                 <field name="description" readonly="state == 'done'"/>
-                            </group>
+                             <field name="closing_date" readonly="1"/>
+                   </group>
                         </group>
                         <notebook>
                             <page string="Products">
