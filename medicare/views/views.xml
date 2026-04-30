@@ -109,9 +109,7 @@
                                        invisible="state in ['draft']" readonly="state in ['close']"/>
                                 <field name="last_lab_test_id" invisible="last_lab_test_id == 0"
                                        readonly="1"/>
-                                <field name="last_lab_test_date" invisible="last_lab_test_id == 0"
-                                       readonly="1"/>
-
+                               
 
                                 <field name="last_minor_room_id"
                                        invisible="last_minor_room_id == False" readonly="1"/>
