@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from odoo.exceptions import UserError
-import datetime
+# import datetime
+from datetime import datetime, date, timedelta
 
 
 class MinorRoom(models.Model):
@@ -11,7 +12,7 @@ class MinorRoom(models.Model):
     name = fields.Char(readonly=True, default=lambda self: 'NEW')
     req_id = fields.Many2one('res.users', string='Requested By', default=lambda self: self.env.user, tracking=True,
                              readonly=True)
-    date = fields.Datetime(string="Request Date", default=datetime.datetime.now())
+    date = fields.Datetime(string="Request Date", default=fields.Datetime.now)
     confirmed_by = fields.Many2one('res.users', string='Confirmed By', default=lambda self: self.env.user,
                                    tracking=True,
                                    readonly=True)
@@ -40,6 +41,7 @@ class MinorRoom(models.Model):
     reason_reject = fields.Text(string='Reject Reason', track_visibility="onchange")
     last_minor_id = fields.Many2one('medicare.issuance.request', 'Last Minor Consumable Request')
     minor_consumble_count = fields.Integer(string="Minor Consumable", compute='_compute_minor_consumble_count')
+    closing_date = fields.Datetime(string="Closing Date")
 
     def _compute_minor_consumble_count(self):
         self.minor_consumble_count = self.env['medicare.issuance.request'].search_count(
@@ -110,6 +112,9 @@ class MinorRoom(models.Model):
 
 
     def action_confirm(self):
+        self.write({
+            'closing_date': datetime.now(),
+        })
         return self.write({'state': 'confirmed'})
 
     def action_draft(self):

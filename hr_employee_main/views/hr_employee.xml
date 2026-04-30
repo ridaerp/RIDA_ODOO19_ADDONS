@@ -48,14 +48,17 @@
                 </xpath>
                 <xpath expr="//field[@name='user_id']"
                        position="after">
-                    <field name="is_susupend"/>
+                    <!-- <field name="is_susupend"/> -->
                     <field name="employee_partner_id" groups="hr.group_hr_user"/>
+
                     <field name="allowed_department_ids" widget="many2many_tags"/>
                 </xpath>
 
                 <xpath expr="//field[@name='department_id']" position="before">
                     <field name="arabic_name" placeholder="Arabic Name"/>
                     <field name="emp_code" groups="hr.group_hr_user"/>
+                                        <field name="is_susupend"/>
+
                 </xpath>
                 <xpath expr="//field[@name='passport_id']" position="after">
                     <field name="passport_expiry_date" invisible="passport_id in  [None,False]"/>
