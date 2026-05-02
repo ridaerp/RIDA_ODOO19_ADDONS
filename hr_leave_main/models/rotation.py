@@ -376,7 +376,7 @@ class EmployeesRotationLine(models.Model):
     @api.onchange('employee_id')
     def check_employee_id(self):
         if self.employee_id:
-            rec = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
+            rec = self.env['hr.employee'].sudo().search([('id', '=', self.employee_id.id)])
             if rec.location_id:
                 self.location_id = rec.location_id
                 self.amount = self.location_id.amount
