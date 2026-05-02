@@ -192,8 +192,7 @@ class StockLandedCost(models.Model):
         partner_bank_id = self.partner_id.bank_ids.filtered_domain(
             ['|', ('company_id', '=', False), ('company_id', '=', self.company_id.id)])[:1]
         invoice_vals = {
-            'ref': self.name,   # or any custom value you want
-            # 'ref': '',
+            'ref': '',
             'move_type': 'in_invoice',
             'currency_id': self.currency_id.id,
             # 'invoice_user_id': self.user_id and self.user_id.id or self.env.user.id,
@@ -466,6 +465,7 @@ class StockMove(models.Model):
 
         if not valuation_account:
             raise UserError("No stock valuation account defined for product.")
+        is_return = self.origin_returned_move_id
 
         debit_acc = valuation_account
         credit_acc = valuation_account
@@ -493,6 +493,27 @@ class StockMove(models.Model):
                     raise UserError("No expense account defined on product or category.")
 
         value = self._get_aml_value()
+        if is_return:
+            return [
+                {
+                    'account_id': target_debit_account or valuation_account.id,
+                    'name': (self.reference or '') + ' - ' + self.product_id.name,
+                    'debit': 0,
+                    'credit': value,
+                    'product_id': self.product_id.id,
+                    'partner_id': target_partner,
+                },
+                {
+                    'account_id': valuation_account.id,
+                    'name': (self.reference or '') + ' - ' + self.product_id.name,
+                    'debit': value,
+                    'credit': 0,
+                    'product_id': self.product_id.id,
+                    'analytic_distribution': {
+                        str(self.picking_id.analytic_account_id.id): 100
+                    } if self.picking_id.analytic_account_id else False,
+                }
+            ]
 
         return [
             {
