@@ -2,16 +2,16 @@
 <odoo>
 
 
-    <report
-            id="action_report_delivery_custom"
-            model="stock.picking"
-            string="MATERIAL ISSUANCE VOUCHER (MIV)"
-            report_type="qweb-pdf"
-            name="stock_custom.report_deliveryslip_custom"
-            file="stock_custom.report_deliveryslip_custom"
-            attachment_use="True"
-            menu="True"
-    />
+<!--    <report-->
+<!--            id="action_report_delivery_custom"-->
+<!--            model="stock.picking"-->
+<!--            string="MATERIAL ISSUANCE VOUCHER (MIV)"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="stock_custom.report_deliveryslip_custom"-->
+<!--            file="stock_custom.report_deliveryslip_custom"-->
+<!--            attachment_use="True"-->
+<!--            menu="True"-->
+<!--    />-->
 
 
     <template id="report_deliveryslip_custom">

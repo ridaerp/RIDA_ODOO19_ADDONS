@@ -6,6 +6,38 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+class StockReturnPicking(models.TransientModel):
+    _inherit = 'stock.return.picking'
+
+    @api.model
+    def default_get(self, fields):
+        # 1. محاولة جلب المعرف من السياق الافتراضي
+        active_id = self.env.context.get('active_id')
+
+        # 2. إذا فشل، نحاول جلبه من الرابط (URL) مباشرة
+        if not active_id and self.env.context.get('params'):
+            active_id = self.env.context.get('params').get('id')
+
+        # 3. تمرير المعرف الصحيح للدالة الأصلية
+        res = super(StockReturnPicking, self.with_context(active_id=active_id)).default_get(fields)
+
+        # 4. تأكيد إضافي: إذا ظلت السطور فارغة، نقوم بتعبئتها يدوياً
+        if active_id and not res.get('product_return_moves'):
+            picking_id = self.env['stock.picking'].browse(active_id)
+            if picking_id:
+                return_moves = []
+                for move in picking_id.move_ids.filtered(lambda m: m.state == 'done'):
+                    return_moves.append((0, 0, {
+                        'product_id': move.product_id.id,
+                        'quantity': move.quantity,
+                        'move_id': move.id,
+                        'uom_id': move.product_uom.id,
+                    }))
+                res.update({'product_return_moves': return_moves})
+
+        return res
+
+
 class RidaStockPiking(models.Model):
     _inherit = 'stock.picking'
 
@@ -33,7 +65,7 @@ class RidaStockPiking(models.Model):
         res = super(RidaStockPiking, self).button_validate()
 
         ############################## Update MEDICARE Products ################################
-        
+
         if self.picking_type_id.code == 'outgoing' and self.issuance_request_id :
             if self.issuance_request_id.security_number:
                 if not self.receipt_id:
