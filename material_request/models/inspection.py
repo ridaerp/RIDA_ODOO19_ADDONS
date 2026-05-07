@@ -117,7 +117,7 @@ class MaterialInspection(models.Model):
         # 2. Update Transfer Quantities (Picking)
         if self.purchase_id.picking_ids and not self.purchase_id.ore_purchased:
             # Target the first picking record
-            target_picking = self.purchase_id.picking_ids[0]
+            target_picking = self.purchase_id.picking_ids[0].sudo()
             for insp_line in self.inspection_ids:
                 for move_line in target_picking.move_ids:
                     # Compare Product ID to Product ID (more reliable than Template ID)
