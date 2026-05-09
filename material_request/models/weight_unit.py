@@ -159,6 +159,10 @@ class WeightRequest(models.Model):
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
     x_studio_supplier_type = fields.Many2many("res.partner.category",)
 
+    def action_reset_price(self):
+        for rec in self:
+            rec.state = 'db_price'
+
 
     @api.depends('x_studio_supplier_type')
     def _compute_is_opu_po(self):
