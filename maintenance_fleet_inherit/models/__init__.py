@@ -6,3 +6,4 @@ from . import vehcile_request
 
 from . import equipment_plan
 from . import fleet_operation
+from . import fleet_operation_pivot

@@ -8,7 +8,8 @@
             <field name="arch" type="xml">
                 <form string="Daily Report">
                     <group>
-                        <field name="report_day"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
                     </group>
                     <footer>
                         <button name="generate_machines_availability_report"
