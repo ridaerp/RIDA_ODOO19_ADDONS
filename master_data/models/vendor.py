@@ -286,7 +286,7 @@ class RequestVendor(models.Model):
 
                 return self.write({'state': 'w_adv','analytic_account_req_id':Analyti_account})
             else:
-                return self.write({'state': 'md'})
+                return self.write({'state': 'w_account'})
         else:
             return self.write({'state': 'w_scm_director'})
 
@@ -297,10 +297,10 @@ class RequestVendor(models.Model):
                 rec.activity_update()
 
     def internal_audit(self):
-            for rec in self:
-                if rec.is_rock_vendor:
-                    rec.state = 'md'
-                    rec.activity_update()
+        for rec in self:
+            if rec.is_rock_vendor:
+                rec.state = 'md'
+                rec.activity_update()
 
     def set_draft(self):
         for rec in self:

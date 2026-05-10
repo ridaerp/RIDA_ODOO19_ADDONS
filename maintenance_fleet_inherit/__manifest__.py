@@ -35,6 +35,7 @@
         'views/vechile_request_view.xml',
         'views/equipment_plan_log_view.xml',
         'views/fleet_operation_view.xml',
+        'views/fleet_operation_pivot_view.xml',
         'wizard/daily_report.xml',
         'wizard/daily_availability_report.xml',
         'wizard/oil_consumption_view.xml',

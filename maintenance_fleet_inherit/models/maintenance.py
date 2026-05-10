@@ -195,14 +195,20 @@ class MaintenanceEquiement(models.Model):
             return res
         return False
 
+    # @api.model
+    # def name_search(self, name='', args=None, operator='ilike', limit=100):
+    #     args = args or []
+    #     domain = []
+    #     if name:
+    #         domain = ['|', ('name', operator, name), ('code', operator, name)]
+    #     pos = self.search(domain + args, limit=limit)
+    #     return pos.name_get()
     @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
+    def name_search(self, name='', args=None, operator='ilike', limit=100, **kwargs):
         args = args or []
-        domain = []
         if name:
-            domain = ['|', ('name', operator, name), ('code', operator, name)]
-        pos = self.search(domain + args, limit=limit)
-        return pos.name_get()
+            args = ['|', ('name', operator, name), ('code', operator, name)] + args
+        return super().name_search(name=name, args=args, operator=operator, limit=limit, **kwargs)
 
 
     def get_fleet(self):

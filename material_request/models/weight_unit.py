@@ -3,7 +3,7 @@ from odoo import models, fields, api, exceptions, _
 from odoo.tools import format_datetime
 from datetime import datetime, date
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
+from odoo.tools.float_utils import float_compare
 from odoo.exceptions import UserError, ValidationError
 import dateutil
 from dateutil.relativedelta import relativedelta
@@ -158,6 +158,10 @@ class WeightRequest(models.Model):
     landed_costs_count = fields.Integer(string="Count", compute='compute_landed_costs_count')
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
     x_studio_supplier_type = fields.Many2many("res.partner.category",)
+
+    def action_reset_price(self):
+        for rec in self:
+            rec.state = 'db_price'
 
 
     @api.depends('x_studio_supplier_type')
@@ -818,6 +822,8 @@ class WeightSamples(models.Model):
             ], limit=1)
 
             record.unit_price = price_list.unit_price / len(lines) if price_list else 0.0  # Default to 0 if no match
+
+
 
 
 class TransportationCar(models.Model):
@@ -2139,43 +2145,12 @@ class WeightOrderLine(models.Model):
 
     percentage = fields.Float(string="Percentage (%)")
 
-    # analytic_account_id = fields.Many2one("account.analytic.account",
-    #                                       string="Analytic Account", )
-
-
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account",
                                           inverse='_compute_dummy',
                                           compute='get_analytic_account_id', readonly=False, store=True)
 
 
 
-
-
-    # @api.onchange('incentive_price')
-    # def get_analytic_account_id(self):
-    #     for rec in self:
-    #         analytic = self.env['account.analytic.account'].search(
-    #             [('partner_id', '=', rec.weight_id.rock_vendor.id)],
-    #             limit=1
-    #         )
-    #         if rec.weight_id.x_studio_supplier_type=='OPU':
-    #             rec.analytic_account_id = analytic
-
-
-
-    # @api.onchange('product_id', 'incentive_price')
-    # def get_analytic_account_id(self):
-    #     for rec in self:
-    #         supplier_type = rec.weight_id.x_studio_supplier_type
-    #         if rec.incentive_price == 100 and supplier_type and 'MATERIAL MINDS' in supplier_type.mapped('name'):     
-    #             analytic = self.env['account.analytic.account'].search(
-    #                 [('partner_id', '=', rec.weight_id.rock_vendor.id)],
-    #                 limit=1)
-    #             rec.analytic_account_id = analytic if analytic else False
-    #         else:
-    #             rec.analytic_account_id = rec.weight_id.analytic_account_id if rec.weight_id.analytic_account_id else False
-
-   
 
     @api.onchange('product_id', 'incentive_price')
     def get_analytic_account_id(self):
@@ -2210,14 +2185,6 @@ class WeightOrderLine(models.Model):
 
 
 
-    # is_opu_user = fields.Boolean(compute='_compute_is_opu_user', store=False)
-
-    # @api.depends()
-    # def _compute_is_opu_user(self):
-    #     for rec in self:
-    #         rec.is_opu_user = self.env.user.has_group('material_request.group_opu_user')
-
-
 
     @api.depends('product_qty', 'unit_price', 'incentive_price')
     def _compute_total(self):
@@ -2226,335 +2193,519 @@ class WeightOrderLine(models.Model):
 
 
 
-    @api.depends('product_id', 'product_qty','percentage', 'weight_id.quantity')
+    # @api.depends('product_id', 'product_qty','percentage', 'weight_id.quantity')
+    # def get_unit_price(self):
+
+    #     for rec in self:
+    #         rec.unit_price = 0.0
+    #         rec.discount = 0.0
+
+    #         # 🚫 Skip calculation for company share line
+    #         if rec.product_id.is_company_percentage:
+    #             continue
+
+    #         produt_qty = rec.weight_id.quantity
+    #         average_qty = rec.weight_id.average
+    #         if rec.product_id.landed_cost_ok:
+    #             rec.is_landed_costs_line = True
+    #         else:
+    #             rec.is_landed_costs_line = False
+
+    #         rec.product_qty = produt_qty
+
+    #         # print ("@@@@@@@@@@@@@",rec.product_qty)
+
+    #         # if rec.product_id.type=='product':
+    #         discount = 0.0
+    #         rec.discount = 0.0
+    #         rec.unit_price = 0.0
+
+    #         price_list = self.env['purchase.price.list'].search([])
+    #         for line in price_list:
+    #             price = 0.0
+    #             # qty=rec.product_qty
+    #             # print ("@@@@@@@@@@@@@",qty)
+
+    #             price_max = line.qty_max
+    #             price_min = line.qty_min
+
+    #             # area_list=self.env['x_area'].search([('id','=',rec.weight_id.area_id.id),('x_studio_vendor','=',rec.weight_id.transporter_id.id)],limit=1)
+    #             area_list = self.env['x_area'].search([('id', '=', rec.weight_id.area_id.id)], limit=1)
+    #             #####################discount for vendoer
+
+    #             if rec.weight_id.partner_id == rec.weight_id.transporter_id:
+    #                 discount = 100
+
+    #             # elif getattr(line, 'incentive_price', 0) > 0:
+    #             #     rec.discount = line.incentive_price
+    #             #     print ("########################################3",rec.discount)
+
+    #             else:
+    #                 # If not, continue with the regular discount logic
+    #                 discount = line.discount
+
+    #             if rec.weight_id.rock_vendor.max_grade:
+    #                 grade = rec.weight_id.rock_vendor.max_grade
+    #                 ###############################high grade################################
+    #                 if average_qty >= grade:
+    #                     if rec.product_id.type == 'consu':
+    #                         if average_qty >= price_min and average_qty <= price_max:
+    #                             rec.unit_price = price
+    #                             rec.discount = 0.0
+    #                             price = line.unit_price
+    #                             rec.unit_price = price
+    #                             rec.discount = 0.0
+
+    #                     else:
+    #                         # if average_qty >=price_min and average_qty<=price_max:
+    #                         rec.unit_price = area_list.x_studio_unit_price
+    #                         if rec.product_id.product_tmpl_id.self_deportation:
+    #                             rec.discount = 0.0
+    #                         else:
+    #                             rec.discount = 100
+    #                 #########################################################################
+
+    #                 else:
+    #                     ############################discount on area#########################
+    #                     if area_list.x_studio_discount_on_ore_price:
+
+    #                         if average_qty < area_list.x_studio_discount_on_ore_price:
+    #                             if rec.product_id.type == 'consu':
+    #                                 price = 0.0
+    #                                 rec.unit_price = price
+    #                                 rec.discount = 0.0
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 # if average_qty >=price_min and average_qty<=price_max:
+    #                                 # rec.unit_price=price
+
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+    #                                     rec.discount = 100
+
+    #                         ###################new code ##########################################
+    #                         elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.unit_price = price
+    #                                     rec.discount = 0.0
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 # if average_qty >=price_min and average_qty<=price_max:
+    #                                 # rec.unit_price=price
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+    #                                    rec.discount = 75
+
+    #                         ###############################################################
+
+    #                         else:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.unit_price = price
+    #                                     rec.discount = 0.0
+
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     # discount = line.discount
+    #                                     if rec.product_id.product_tmpl_id.self_deportation:
+    #                                         rec.discount = 0.0
+    #                                     else:
+
+    #                                         rec.discount = discount
+
+    #                     ############################discount on area#########################
+    #                     if area_list.x_studio_discount_on_transportation:
+
+    #                         if average_qty < area_list.x_studio_discount_on_transportation:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.discount = 0.0
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 # if average_qty >=price_min and average_qty<=price_max:
+    #                                 # rec.unit_price=price
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+    #                                     rec.discount = 100
+
+
+
+    #                         else:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.unit_price = price
+    #                                     rec.discount = 0.0
+
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     # discount = line.discount
+    #                                     if rec.product_id.product_tmpl_id.self_deportation:
+    #                                         rec.discount = 0.0
+    #                                     else:
+
+    #                                         rec.discount = discount
+
+
+
+
+    #                     ############################discount on area#########################
+
+    #                     else:
+    #                         if rec.product_id.type == 'consu':
+    #                             if average_qty >= price_min and average_qty <= price_max:
+    #                                 rec.unit_price = price
+    #                                 rec.discount = 0.0
+    #                                 price = line.unit_price
+    #                                 rec.unit_price = price
+    #                                 rec.discount = 0.0
+
+    #                         else:
+    #                             rec.unit_price = area_list.x_studio_unit_price
+    #                             if average_qty >= price_min and average_qty <= price_max:
+    #                                 # discount = line.discount
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+
+    #                                     rec.discount = discount
+
+
+    #             else:
+    #                 ##########################discount for specific area with
+    #                 if area_list.x_studio_discount_on_ore_price:
+    #                     if average_qty < area_list.x_studio_discount_on_ore_price:
+    #                         if rec.product_id.type == 'consu':
+    #                             price = 0.0
+    #                             rec.unit_price = price
+    #                             rec.discount = 0.0
+    #                         else:
+    #                             rec.unit_price = area_list.x_studio_unit_price
+    #                             # if average_qty >=price_min and average_qty<=price_max:
+    #                             # rec.unit_price=price
+    #                             if rec.product_id.product_tmpl_id.self_deportation:
+    #                                 rec.discount = 0.0
+    #                             else:
+    #                                 rec.discount = 100
+
+
+
+
+    #                     #############################new code #######################
+    #                     elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
+    #                         if rec.product_id.type == 'consu':
+    #                             if average_qty >= price_min and average_qty <= price_max:
+    #                                 price = line.unit_price
+    #                                 rec.unit_price = price
+    #                                 rec.discount = 0.0
+    #                         else:
+    #                             rec.unit_price = area_list.x_studio_unit_price
+    #                             # if average_qty >=price_min and average_qty<=price_max:
+    #                             # rec.unit_price=price
+    #                             if rec.product_id.product_tmpl_id.self_deportation:
+    #                                 rec.discount = 0.0
+    #                             else:
+    #                                 rec.discount = 75
+
+    #                     #######################################################################
+
+    #                     else:
+    #                         if rec.product_id.type == 'consu':
+    #                             if average_qty >= price_min and average_qty <= price_max:
+    #                                 rec.unit_price = price
+    #                                 rec.discount = 0.0
+
+    #                                 price = line.unit_price
+    #                                 rec.unit_price = price
+    #                                 # discount=line.discount
+    #                                 rec.discount = 0.0
+
+    #                         else:
+    #                             rec.unit_price = area_list.x_studio_unit_price
+    #                             if average_qty >= price_min and average_qty <= price_max:
+    #                                 # discount = line.discount
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+
+    #                                     rec.discount = discount
+    #                             else:
+    #                                 pass
+
+    #                     ############################discount on area#########################
+    #                     if area_list.x_studio_discount_on_transportation:
+
+    #                         if average_qty < area_list.x_studio_discount_on_transportation:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.discount = 0.0
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 # if average_qty >=price_min and average_qty<=price_max:
+    #                                 # rec.unit_price=price
+    #                                 if rec.product_id.product_tmpl_id.self_deportation:
+    #                                     rec.discount = 0.0
+    #                                 else:
+    #                                     rec.discount = 100
+
+
+
+    #                         else:
+    #                             if rec.product_id.type == 'consu':
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     price = line.unit_price
+    #                                     rec.unit_price = price
+    #                                     rec.discount = 0.0
+
+    #                             else:
+    #                                 rec.unit_price = area_list.x_studio_unit_price
+    #                                 if average_qty >= price_min and average_qty <= price_max:
+    #                                     # discount = line.discount
+    #                                     if rec.product_id.product_tmpl_id.self_deportation:
+    #                                         rec.discount = 0.0
+    #                                     else:
+
+    #                                         rec.discount = discount
+
+
+
+
+
+    #                 else:
+    #                     if rec.product_id.type == 'consu':
+    #                         if average_qty >= price_min and average_qty <= price_max:
+    #                             rec.unit_price = price
+    #                             rec.discount = 0.0
+
+    #                             price = line.unit_price
+    #                             rec.unit_price = price
+    #                             # discount=line.discount
+    #                             rec.discount = 0.0
+
+    #                     else:
+    #                         rec.unit_price = area_list.x_studio_unit_price
+    #                         if average_qty >= price_min and average_qty <= price_max:
+
+    #                             if rec.product_id.product_tmpl_id.self_deportation:
+    #                                 rec.discount = 0.0
+    #                             else:
+
+    #                                 rec.discount = discount
+    #                         else:
+    #                             pass
+
+
+    #         # ✅ Final override: apply incentive if present
+    #         if rec.incentive_price:
+    #             if rec.product_id.type=='service':
+    #                 incentive_price=rec.incentive_price
+    #                 rec.discount = incentive_price
+
+
+    #         # ✅ Call update after all price logic is finished
+    #         if rec.product_id.type == 'consu' and rec.weight_id:
+    #             rec.weight_id._update_company_share_line()
+
+
+
+
+    @api.depends('product_id', 'product_qty', 'percentage', 'weight_id.quantity', 'weight_id.average')
     def get_unit_price(self):
+        def in_range(avg, min_value, max_value):
+            avg = round(avg or 0.0, 2)
+            min_value = round(min_value or 0.0, 2)
+            max_value = round(max_value or 0.0, 2)
+            return min_value <= avg <= max_value
+
+        def in_special_range(avg):
+            avg = round(avg or 0.0, 2)
+            return 1.50 <= avg <= 1.99
 
         for rec in self:
             rec.unit_price = 0.0
             rec.discount = 0.0
 
-            # 🚫 Skip calculation for company share line
             if rec.product_id.is_company_percentage:
                 continue
 
             produt_qty = rec.weight_id.quantity
-            average_qty = rec.weight_id.average
-            if rec.product_id.landed_cost_ok:
-                rec.is_landed_costs_line = True
-            else:
-                rec.is_landed_costs_line = False
+            average_qty = round(rec.weight_id.average or 0.0, 2)
 
+            rec.is_landed_costs_line = bool(rec.product_id.landed_cost_ok)
             rec.product_qty = produt_qty
 
-            # print ("@@@@@@@@@@@@@",rec.product_qty)
+            area_list = self.env['x_area'].search([
+                ('id', '=', rec.weight_id.area_id.id)
+            ], limit=1)
 
-            # if rec.product_id.type=='product':
-            discount = 0.0
-            rec.discount = 0.0
-            rec.unit_price = 0.0
+            price_list = self.env['purchase.price.list'].search([], order='qty_min asc')
 
-            price_list = self.env['purchase.price.list'].search([])
             for line in price_list:
-                price = 0.0
-                # qty=rec.product_qty
-                # print ("@@@@@@@@@@@@@",qty)
-
                 price_max = line.qty_max
                 price_min = line.qty_min
 
-                # area_list=self.env['x_area'].search([('id','=',rec.weight_id.area_id.id),('x_studio_vendor','=',rec.weight_id.transporter_id.id)],limit=1)
-                area_list = self.env['x_area'].search([('id', '=', rec.weight_id.area_id.id)], limit=1)
-                #####################discount for vendoer
-
                 if rec.weight_id.partner_id == rec.weight_id.transporter_id:
                     discount = 100
-
-                # elif getattr(line, 'incentive_price', 0) > 0:
-                #     rec.discount = line.incentive_price
-                #     print ("########################################3",rec.discount)
-
                 else:
-                    # If not, continue with the regular discount logic
                     discount = line.discount
 
+                matched_range = in_range(average_qty, price_min, price_max)
+
                 if rec.weight_id.rock_vendor.max_grade:
-                    grade = rec.weight_id.rock_vendor.max_grade
-                    ###############################high grade################################
+                    grade = round(rec.weight_id.rock_vendor.max_grade or 0.0, 2)
+
                     if average_qty >= grade:
                         if rec.product_id.type == 'consu':
-                            if average_qty >= price_min and average_qty <= price_max:
-                                rec.unit_price = price
+                            if matched_range:
+                                rec.unit_price = line.unit_price
                                 rec.discount = 0.0
-                                price = line.unit_price
-                                rec.unit_price = price
-                                rec.discount = 0.0
-
+                                break
                         else:
-                            # if average_qty >=price_min and average_qty<=price_max:
                             rec.unit_price = area_list.x_studio_unit_price
-                            if rec.product_id.product_tmpl_id.self_deportation:
-                                rec.discount = 0.0
-                            else:
-                                rec.discount = 100
-                    #########################################################################
+                            rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 100
 
                     else:
-                        ############################discount on area#########################
                         if area_list.x_studio_discount_on_ore_price:
-
-                            if average_qty < area_list.x_studio_discount_on_ore_price:
+                            if average_qty < round(area_list.x_studio_discount_on_ore_price or 0.0, 2):
                                 if rec.product_id.type == 'consu':
-                                    price = 0.0
-                                    rec.unit_price = price
+                                    rec.unit_price = 0.0
                                     rec.discount = 0.0
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    # if average_qty >=price_min and average_qty<=price_max:
-                                    # rec.unit_price=price
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 100
 
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
-                                        rec.discount = 100
-
-                            ###################new code ##########################################
-                            elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
+                            elif in_special_range(average_qty) and area_list.x_studio_special_discount_1:
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
-                                        rec.unit_price = price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    # if average_qty >=price_min and average_qty<=price_max:
-                                    # rec.unit_price=price
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
-                                       rec.discount = 75
-
-                            ###############################################################
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 75
 
                             else:
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
-                                        rec.unit_price = price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
-
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        # discount = line.discount
-                                        if rec.product_id.product_tmpl_id.self_deportation:
-                                            rec.discount = 0.0
-                                        else:
+                                    if matched_range:
+                                        rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
-                                            rec.discount = discount
-
-                        ############################discount on area#########################
                         if area_list.x_studio_discount_on_transportation:
-
-                            if average_qty < area_list.x_studio_discount_on_transportation:
+                            if average_qty < round(area_list.x_studio_discount_on_transportation or 0.0, 2):
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    # if average_qty >=price_min and average_qty<=price_max:
-                                    # rec.unit_price=price
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
-                                        rec.discount = 100
-
-
-
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 100
                             else:
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
-                                        rec.unit_price = price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
-
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        # discount = line.discount
-                                        if rec.product_id.product_tmpl_id.self_deportation:
-                                            rec.discount = 0.0
-                                        else:
-
-                                            rec.discount = discount
-
-
-
-
-                        ############################discount on area#########################
+                                    if matched_range:
+                                        rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
                         else:
                             if rec.product_id.type == 'consu':
-                                if average_qty >= price_min and average_qty <= price_max:
-                                    rec.unit_price = price
+                                if matched_range:
+                                    rec.unit_price = line.unit_price
                                     rec.discount = 0.0
-                                    price = line.unit_price
-                                    rec.unit_price = price
-                                    rec.discount = 0.0
-
+                                    break
                             else:
                                 rec.unit_price = area_list.x_studio_unit_price
-                                if average_qty >= price_min and average_qty <= price_max:
-                                    # discount = line.discount
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
-
-                                        rec.discount = discount
-
+                                if matched_range:
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
                 else:
-                    ##########################discount for specific area with
                     if area_list.x_studio_discount_on_ore_price:
-                        if average_qty < area_list.x_studio_discount_on_ore_price:
+                        if average_qty < round(area_list.x_studio_discount_on_ore_price or 0.0, 2):
                             if rec.product_id.type == 'consu':
-                                price = 0.0
-                                rec.unit_price = price
+                                rec.unit_price = 0.0
                                 rec.discount = 0.0
                             else:
                                 rec.unit_price = area_list.x_studio_unit_price
-                                # if average_qty >=price_min and average_qty<=price_max:
-                                # rec.unit_price=price
-                                if rec.product_id.product_tmpl_id.self_deportation:
-                                    rec.discount = 0.0
-                                else:
-                                    rec.discount = 100
+                                rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 100
 
-
-
-
-                        #############################new code #######################
-                        elif average_qty >= 1.50 and average_qty <= 1.99 and area_list.x_studio_special_discount_1 == True:
+                        elif in_special_range(average_qty) and area_list.x_studio_special_discount_1:
                             if rec.product_id.type == 'consu':
-                                if average_qty >= price_min and average_qty <= price_max:
-                                    price = line.unit_price
-                                    rec.unit_price = price
+                                if matched_range:
+                                    rec.unit_price = line.unit_price
                                     rec.discount = 0.0
+                                    break
                             else:
                                 rec.unit_price = area_list.x_studio_unit_price
-                                # if average_qty >=price_min and average_qty<=price_max:
-                                # rec.unit_price=price
-                                if rec.product_id.product_tmpl_id.self_deportation:
-                                    rec.discount = 0.0
-                                else:
-                                    rec.discount = 75
-
-                        #######################################################################
+                                rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 75
 
                         else:
                             if rec.product_id.type == 'consu':
-                                if average_qty >= price_min and average_qty <= price_max:
-                                    rec.unit_price = price
+                                if matched_range:
+                                    rec.unit_price = line.unit_price
                                     rec.discount = 0.0
-
-                                    price = line.unit_price
-                                    rec.unit_price = price
-                                    # discount=line.discount
-                                    rec.discount = 0.0
-
+                                    break
                             else:
                                 rec.unit_price = area_list.x_studio_unit_price
-                                if average_qty >= price_min and average_qty <= price_max:
-                                    # discount = line.discount
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
+                                if matched_range:
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
-                                        rec.discount = discount
-                                else:
-                                    pass
-
-                        ############################discount on area#########################
                         if area_list.x_studio_discount_on_transportation:
-
-                            if average_qty < area_list.x_studio_discount_on_transportation:
+                            if average_qty < round(area_list.x_studio_discount_on_transportation or 0.0, 2):
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    # if average_qty >=price_min and average_qty<=price_max:
-                                    # rec.unit_price=price
-                                    if rec.product_id.product_tmpl_id.self_deportation:
-                                        rec.discount = 0.0
-                                    else:
-                                        rec.discount = 100
-
-
-
+                                    rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else 100
                             else:
                                 if rec.product_id.type == 'consu':
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        price = line.unit_price
-                                        rec.unit_price = price
+                                    if matched_range:
+                                        rec.unit_price = line.unit_price
                                         rec.discount = 0.0
-
+                                        break
                                 else:
                                     rec.unit_price = area_list.x_studio_unit_price
-                                    if average_qty >= price_min and average_qty <= price_max:
-                                        # discount = line.discount
-                                        if rec.product_id.product_tmpl_id.self_deportation:
-                                            rec.discount = 0.0
-                                        else:
-
-                                            rec.discount = discount
-
-
-
-
+                                    if matched_range:
+                                        rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
                     else:
                         if rec.product_id.type == 'consu':
-                            if average_qty >= price_min and average_qty <= price_max:
-                                rec.unit_price = price
+                            if matched_range:
+                                rec.unit_price = line.unit_price
                                 rec.discount = 0.0
-
-                                price = line.unit_price
-                                rec.unit_price = price
-                                # discount=line.discount
-                                rec.discount = 0.0
-
+                                break
                         else:
                             rec.unit_price = area_list.x_studio_unit_price
-                            if average_qty >= price_min and average_qty <= price_max:
+                            if matched_range:
+                                rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
-                                if rec.product_id.product_tmpl_id.self_deportation:
-                                    rec.discount = 0.0
-                                else:
+            if rec.incentive_price and rec.product_id.type == 'service':
+                rec.discount = rec.incentive_price
 
-                                    rec.discount = discount
-                            else:
-                                pass
-
-
-            # ✅ Final override: apply incentive if present
-            if rec.incentive_price:
-                if rec.product_id.type=='service':
-                    incentive_price=rec.incentive_price
-                    rec.discount = incentive_price
-
-
-            # ✅ Call update after all price logic is finished
             if rec.product_id.type == 'consu' and rec.weight_id:
                 rec.weight_id._update_company_share_line()
 
-
-    # @api.constrains('percentage')
-    # def _constrain_update_company_share(self):
-    #     for line in self:
-    #         if line.product_id.is_company_percentage and line.weight_id:
-    #             line.weight_id._update_company_share_line()
 
     @api.onchange('percentage')
     def _onchange_percentage(self):

@@ -127,6 +127,7 @@
                         <button name="button_db_geologist_re_assay"
                                 invisible="state not in ['db_price','chem_lab','waiting_rock']"
                                 string="Re-Assay" type="object" groups="material_request.group_ore_rock_purchase_user"/>
+                        
 
                         <button name="%(material_request.purchase_order_reject_action)d" type="action"
                                 invisible="state not in ['db_geologist','chem_lab','db_price']" string="Reject"

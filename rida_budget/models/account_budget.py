@@ -5,6 +5,14 @@ from odoo.exceptions import UserError
 import itertools
 import psycopg2
 
+class AnalyticPlanFieldsMixinInherit(models.AbstractModel):
+    """ Add one field per analytic plan to the model """
+    _inherit = 'analytic.plan.fields.mixin'
+
+    @api.constrains(lambda self: self._get_plan_fnames())
+    def _check_account_id(self):
+        pass
+
 
 class CrossoveredBudget(models.Model):
     _inherit = 'budget.analytic'

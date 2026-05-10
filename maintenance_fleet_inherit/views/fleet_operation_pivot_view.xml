@@ -1,0 +1,86 @@
+<odoo>
+    <record id="view_fleet_operation_pivot" model="ir.ui.view">
+        <field name="name">fleet.operation.pivot.view</field>
+        <field name="model">fleet.operation.pivot</field>
+        <field name="arch" type="xml">
+
+            <pivot string="Fleet Operation Pivot">
+
+                <field name="equipment_code" type="row"/>
+
+                <field name="location_id" type="col"/>
+                <field name="type_of" type="row"/>
+                <field name="target_hrs" type="measure"/>
+                <field name="actual_hrs" type="measure"/>
+                <field name="downtime_hrs" type="measure"/>
+                <field name="fuel_consumption" type="measure"/>
+
+            </pivot>
+
+        </field>
+    </record>
+    <record id="fleet_operation_pivot_search" model="ir.ui.view">
+        <field name="name">fleet.operation.pivot.search</field>
+        <field name="model">fleet.operation.pivot</field>
+        <field name="arch" type="xml">
+
+            <search string="Fleet Operation Analysis">
+
+                <!-- Search Fields -->
+                <field name="operation_date"/>
+                <field name="equipment_id"/>
+                <field name="location_id"/>
+                <field name="type_of"/>
+
+                <separator/>
+
+                <!-- Filters -->
+                <filter string="Operational"
+                        name="operational"
+                        domain="[('operation_type','=','operation')]"/>
+
+                <filter string="Non Operational"
+                        name="non_operational"
+                        domain="[('operation_type','=','non_operation')]"/>
+
+                <!-- Group By -->
+                <filter string="Date"
+                        name="group_date"
+                        domain="[]"
+                        context="{'group_by':'operation_date'}"/>
+
+                <filter string="Equipment"
+                        name="group_equipment"
+                        domain="[]"
+                        context="{'group_by':'equipment_id'}"/>
+
+                <filter string="Location"
+                        name="group_location"
+                        domain="[]"
+                        context="{'group_by':'location_id'}"/>
+
+                <filter string="Type"
+                        name="group_type"
+                        domain="[]"
+                        context="{'group_by':'type_of'}"/>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <record id="action_fleet_operation_pivot" model="ir.actions.act_window">
+        <field name="name">Fleet Pivot Analysis</field>
+        <field name="res_model">fleet.operation.pivot</field>
+        <field name="view_mode">pivot,graph,list</field>
+    </record>
+
+
+    <menuitem
+        id="menu_fleet_operation_pivot"
+        name="Fleet Pivot Analysis"
+        parent="fleet.menu_fleet_reporting"
+        action="action_fleet_operation_pivot"
+        sequence="20"/>
+</odoo>

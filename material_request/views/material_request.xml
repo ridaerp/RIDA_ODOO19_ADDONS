@@ -166,7 +166,7 @@
                         <!-- add by ekhlas -->
 
                         <button name="%(reassigned_buyer_action)d" string="Re-Assigne"
-                                invisible="state not in ['purchased','done']"
+                                invisible="state not in ['purchased','done','waiting_po']"
                                 groups="base_rida.rida_group_supply_chain_manager,material_request.group_contract_manager"
                                 type="action"/>
 

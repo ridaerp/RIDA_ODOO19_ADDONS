@@ -13,7 +13,7 @@
       <change afterPath="$PROJECT_DIR$/../AA/master_data/.idea/master_data.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../AA/material_request/.idea/material_request.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../AA/mrp_custom/.idea/mrp_custom.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../AA/odoo_dynamic_dashboard/.idea/odoo_dynamic_dashboard.iml" afterDir="false" />
+      <!-- <change afterPath="$PROJECT_DIR$/../AA/odoo_dynamic_dashboard/.idea/odoo_dynamic_dashboard.iml" afterDir="false" /> -->
       <change afterPath="$PROJECT_DIR$/../AA/stock_custom/.idea/stock_custom.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../base_rida/.idea/base_rida.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../bhs_password_policy/.idea/bhs_password_policy.iml" afterDir="false" />
