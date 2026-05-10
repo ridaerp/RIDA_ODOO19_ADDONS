@@ -164,11 +164,13 @@ class MaintenanceEquiement(models.Model):
             record.odometer_count = Odometer.search_count([('vehicle_id', '=', record.vechicle_id.id)])
 
     ####################function to add code in search filed
-    def name_get(self):
-        result = []
+    @api.depends('name', 'code')
+    def _compute_display_name(self):
         for record in self:
-            result.append((record.id, ('[' + record.code + ']') + "" + record.name if record.code else ''))
-        return result
+            if record.code:
+                record.display_name = f"[{record.code}] {record.name}"
+            else:
+                record.display_name = record.name
 
     def _get_odometer(self):
         FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
@@ -195,20 +197,21 @@ class MaintenanceEquiement(models.Model):
             return res
         return False
 
-    # @api.model
-    # def name_search(self, name='', args=None, operator='ilike', limit=100):
-    #     args = args or []
-    #     domain = []
-    #     if name:
-    #         domain = ['|', ('name', operator, name), ('code', operator, name)]
-    #     pos = self.search(domain + args, limit=limit)
-    #     return pos.name_get()
     @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100, **kwargs):
-        args = args or []
+    def name_search(self, name='', domain=None, operator='ilike', limit=100):
+        domain = domain or []
+
         if name:
-            args = ['|', ('name', operator, name), ('code', operator, name)] + args
-        return super().name_search(name=name, args=args, operator=operator, limit=limit, **kwargs)
+            domain = ['|',
+                    ('name', operator, name),
+                    ('code', operator, name)] + domain
+
+        records = self.search(domain, limit=limit)
+
+        return records.name_get()
+    
+    
+        
 
 
     def get_fleet(self):
