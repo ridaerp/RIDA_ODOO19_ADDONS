@@ -273,23 +273,19 @@ class RequestVendor(models.Model):
 
     def account_verification(self):
         for rec in self:
-            if rec.is_rock_vendor:
+            if rec.is_rock_vendor or rec.is_tailing_vendor:
                 rec.state = 'w_audit'
                 rec.activity_update()
 
-            if rec.is_tailing_vendor:
-                rec.state = 'w_audit'
-                rec.activity_update()
+
 
     def internal_audit(self):
         for rec in self:
-            if rec.is_rock_vendor:
+            if rec.is_rock_vendor or rec.is_tailing_vendor:
                 rec.state = 'md'
                 rec.activity_update()
             
-            if rec.is_tailing_vendor:
-                rec.state = 'md'
-                rec.activity_update()
+
 
     def set_draft(self):
         for rec in self:
