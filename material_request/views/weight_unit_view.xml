@@ -133,7 +133,13 @@
 
                         <button name="make_purchase_quotation" invisible="state not in ['db_price','rock_user']"
                                 string="Create RFQ" type="object"
-                                groups="material_request.group_ore_rock_purchase_user,group_ore_tailing_purchase_user"/>
+                                groups="material_request.group_ore_rock_purchase_user"/>
+                            
+                        <button name="make_tail_purchase_quotation" invisible="state not in ['db_price','tailing_user']"
+                                string="Create RFQ" type="object"
+                                groups="material_request.group_ore_tailing_purchase_user"/>
+
+                                
                         <button name="button_rock_close" invisible="state not in ['waiting_rock']"
                                 string="Close" type="object" groups="material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_db_geology_user"
                                 class="btn-primary"/>

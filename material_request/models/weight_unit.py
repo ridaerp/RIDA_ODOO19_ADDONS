@@ -161,9 +161,9 @@ class WeightRequest(models.Model):
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
     x_studio_supplier_type = fields.Many2many("res.partner.category",)
 
-    def action_reset_price(self):
-        for rec in self:
-            rec.state = 'db_price'
+    # def action_reset_price(self):
+    #     for rec in self:
+    #         rec.state = 'db_price'
 
 
     @api.depends('x_studio_supplier_type')
@@ -404,6 +404,7 @@ class WeightRequest(models.Model):
         # Change state and return an action to open the created record
         self.state = 'rock_user'
 
+            
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -413,6 +414,80 @@ class WeightRequest(models.Model):
             'context': {'form_view_initial_mode': 'edit'},
         }
 
+
+    def make_tail_purchase_quotation(self):
+        self.ensure_one()
+        order_line_ids = []
+
+        self.po_request = datetime.today()
+
+        # Prepare purchase order lines
+        for line in self.line_ids:
+            unit_price = line.unit_price
+            incentive_price = line.incentive_price
+            if line.is_landed_costs_line and not line.product_id.product_tmpl_id.self_deportation:
+                unit_price = -abs(unit_price)
+            if line.product_id.is_company_percentage:
+                unit_price = -abs(unit_price)
+            else:
+                unit_price = unit_price
+            analytic_distribution = {}
+
+            if line.analytic_account_id:
+                analytic_distribution[line.analytic_account_id.id] = 100
+
+            order_line = {
+                'product_id': line.product_id.id,
+                'product_uom_id': line.product_id.uom_id.id,
+                'price_unit': unit_price+incentive_price,
+                'incentive_price':incentive_price,
+                'product_qty': line.product_qty,
+                'percentage': line.percentage,
+                'discount': line.discount,
+                'is_landed_costs_line': line.is_landed_costs_line,
+                'self_deportation': line.self_deportation,
+                'name': line.product_id.name,
+                'date_planned': self.date_request.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                'x_studio_batch_no': self.batch,
+                'lot_id': self.lot_id.id,
+                'average': self.average,
+                'analytic_distribution': analytic_distribution,
+            }
+            order_line_ids.append((0, 0, order_line))
+
+
+        delivery_obj = self.env['stock.picking.type'].search([
+            ('code', '=', 'incoming'),
+            ('warehouse_id.code', '=', 'Tail')
+        ], limit=1)
+
+        # Create the purchase order
+        purchase_order = self.env['purchase.order'].sudo().create({
+            'partner_id': self.rock_vendor.id,
+            'order_line': order_line_ids,
+            'is_opu_po':self.is_opu_po,
+            'weight_request_id': self.id,
+            'x_studio_transporter': self.car_id.transporter_id.id,
+            'analytic_account_id': self.analytic_account_id.id,
+            'x_studio_many2one_field_t3bCi': self.area_id.id,
+            'company_id': self.company_id.id,
+            'lot_id': self.lot_id.id,
+            'tailing_purchased': True,
+            'picking_type_id':delivery_obj.id
+        })
+
+        # Change state and return an action to open the created record
+        self.state = 'tailing_user'
+
+            
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'purchase.order',
+            'res_id': purchase_order.id,
+            'view_id': self.env.ref('material_request.purchase_order_form_inherith').id,
+            'context': {'form_view_initial_mode': 'edit'},
+        }
     @api.model
     def create(self, vals):
         for val in vals:
