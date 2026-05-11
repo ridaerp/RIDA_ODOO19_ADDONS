@@ -19,6 +19,7 @@ _STATES = [
     ('chem_lab', 'Chem-Lab Assaying'),
     ('db_price', 'Waiting Pricing '),
     ('rock_user', 'Waiting Rock Purchaser  '),
+    ('tailing_user', 'Waiting Tailing Purchaser  '),
     ('done', 'Purchase Order'),
     ('reject', 'Rejected'),
     ('cancel', 'Cancelled'),
@@ -64,7 +65,7 @@ class WeightRequest(models.Model):
     car_plate = fields.Char(related="car_id.car_plate", string="Plate license No.")
     driver_id = fields.Many2one(related="car_id.driver_id", string="Driver")
     transporter_id = fields.Many2one(related="car_id.transporter_id", string="Transporter" )
-    rock_vendor = fields.Many2one("res.partner", "Rock Vendor" )
+    rock_vendor = fields.Many2one("res.partner", "Rock/Tail Vendor" )
     quantity = fields.Float("Quantity" )
     area_id = fields.Many2one("x_area", "Area", required=True )
     state = fields.Selection(selection=_STATES, string='Status', index=True, readonly=True,
@@ -87,6 +88,7 @@ class WeightRequest(models.Model):
     dump = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="dumped after analysis")
     oven = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="Oven Option for Samples")
     is_sack = fields.Boolean( string="Is Sack")
+    is_tailing = fields.Boolean( string="Is Tailing")
 
     disposal_info = fields.Char(default="STRUCTION FOR DISPOSAL OF SAMPLES AND RECEIPT OF RESULTS", readonly="1")
 

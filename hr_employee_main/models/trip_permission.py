@@ -309,6 +309,7 @@ class TripPermissionLine(models.Model):
     @api.depends('employee_id')
     def check_employee_id(self):
         for rec in self:
+            rec.gross = 0.0
             if rec.employee_id:
                 emp = self.env['hr.employee'].search([('id', '=', rec.employee_id.id)], limit=1)
                 if emp and emp.sudo():
@@ -316,8 +317,8 @@ class TripPermissionLine(models.Model):
                         rec.gross = emp.sudo().payroll_wage
                     else:
                         raise UserError(f'The Employee {emp.name} doesn\'t have a Gross Salary in the Contract.')
-                else:
-                    raise UserError(f'The Employee {emp.emp_code} doesn\'t have a valid contract.')
-                    print(f"Employee Code: {emp.emp_code}")
+                # else:
+                #     raise UserError(f'The Employee {emp.emp_code} doesn\'t have a valid contract.')
+                #     print(f"Employee Code: {emp.emp_code}")
             else:
                 rec.gross = 0 

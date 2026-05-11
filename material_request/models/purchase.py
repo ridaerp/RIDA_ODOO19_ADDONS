@@ -129,6 +129,7 @@ class PurchaseOrder(models.Model):
     supply_user_id = fields.Many2one('res.users')
     supply_user = fields.Many2one('res.users', related='request_id.assigned_to_supply')
     ore_purchased = fields.Boolean(default=False, string="IS ORE/ROCK Purchase")
+    tailing_purchased = fields.Boolean(default=False, string="IS ORE/Tailing Purchase")
 
     contract_purchased = fields.Boolean(default=False, string="IS Payment Contract")
 

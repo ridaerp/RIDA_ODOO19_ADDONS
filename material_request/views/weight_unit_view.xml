@@ -20,6 +20,8 @@
                     <field name="name" string="Request No."/>
                     <field name="date_request" string="Date"/>
                     <field name="is_sack"/>
+                    <field name="is_tailing"/>
+
                     <field name="area_id" string="Aera"/>
                     <field name="rock_vendor" string="Vendor"/>
                     <field name="quantity" string="Quantity"/>
@@ -55,40 +57,45 @@
                     <field name="name"/>
                     <field name="date_request"/>
                     <field name="is_sack"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
+
+                           
+                    <field name="is_tailing"
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
                     <field name="car_id"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
 
                     <field name="car_plate"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
+
                     <field name="batch" invisible="1"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_stock"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_stock,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
                     <field name="rock_vendor"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
                     <field name="is_opu_po"
                            groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
 
 
                     <field name="transporter_id"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_stock"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_stock,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
 
                     <field name="quantity" string="Quantity" sum="quantity"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning,base_rida.rida_internal_audit"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user,material_request.group_ore_reader_sale,material_request.group_ore_reader_stock,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning,base_rida.rida_internal_audit"/>
                     <field name="average" string="Average" sum="average"
                            groups="material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
                     <field name="qy_average" string="Quantity/Average" sum="qty_average"
                            groups="material_request.group_ore_reader_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_planning"/>
 
                     <field name="area_id"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_planning,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
                     <field name="company_id"/>
                     <field name="requested_by"
-                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user"/>
+                           groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
                     <field name="state"/>
 
                 </list>
