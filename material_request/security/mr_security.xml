@@ -603,7 +603,7 @@
   <record id="reader_scale_all22_read" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
-            <field name="domain_force">[('is_tailing', '=',False)]</field>
+            <field name="domain_force">[('is_tailing', '=',True)]</field>
             <field name="groups"
                    eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
             <field name="perm_unlink" eval="1"/>
@@ -614,7 +614,7 @@
         </record>
 
 
-        <record id="reader_scal_all_ule" model="ir.rule">
+<!--         <record id="reader_scal_all_ule" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
             <field name="domain_force">[(1, '=',1)]</field>
@@ -624,7 +624,7 @@
             <field name="perm_write" eval="1"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="0"/>
-        </record>
+        </record> -->
 
         <record id="reader_scal_all2_ule" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>

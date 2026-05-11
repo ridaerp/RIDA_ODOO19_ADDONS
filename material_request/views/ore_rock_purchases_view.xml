@@ -67,7 +67,7 @@
                                 string="Send To Procurement Manager" class="oe_highlight"/>
                         <button name="button_approve" type="object" invisible="state not in ['to_approve']"
                                 string="Approve Order" class="oe_highlight"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="action_create_invoice" string="Create Bill" type="object" class="oe_highlight"
                                 context="{'create_bill':True}"
                                 invisible="state not in ('purchase', 'done') or invoice_status in ('no', 'invoiced')"
@@ -89,9 +89,9 @@
                                 string="Reject" groups="base.group_user"/>
                         <button name="go_to_ccso" type="object" invisible="state != 'sum'" string="Approve"
                                 class="oe_highlight"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="%(purchase_order_reject_action)d" type="action" invisible="state != 'sum'"
-                                string="Reject" groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                string="Reject" groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="button_confirm" type="object"
                                 invisible="state not in ['site','fleet_director','ccso']" string="Confirm Order"
                                 class="oe_highlight"
@@ -113,7 +113,7 @@
                                 string="Cancel" type="object"/>
                         <button name="button_lock" type="object" string="Lock" invisible="state not in ['purchase']"/>
                         <button name="button_unlock" type="object" string="Unlock" invisible="state not in ['done']"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1"/>
                     </header>
                     <sheet>

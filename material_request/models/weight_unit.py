@@ -667,6 +667,67 @@ class WeightRequest(models.Model):
 
         return self.write({'state': 'chem_lab'})
 
+
+
+    def button_tailing_db_geologist(self):
+        if not self.request_samples_ids:
+            raise UserError('Please Click to generate Samples')
+        chemical_samples = []
+        sample_line = []
+        for rec in self:
+
+            if not rec.store:
+                raise UserError(_("Answer The DISPOSAL store Yes/NO "))
+            if not rec.dump:
+                raise UserError(_("Answer The DISPOSAL dump Yes/NO "))
+
+            if not rec.oven:
+                raise UserError(_("Answer The Oven Option Yes/NO "))
+
+            for line in rec.request_samples_ids:
+
+                if line.quantity == 0.0:
+                    raise UserError(_("Please Enter the Quantity"))
+
+                sample_line = (0, 0, {'name': line.name,
+                                      'sample_no1': line.sample_no,
+                                      'quantity': line.quantity,
+                                      'batch': line.batch,
+                                      'lot_id': line.lot_id.id,
+                                      'sample_type': line.sample_type,
+                                      'weight_request_id': line.id,
+                                      'analysis_required': 'au'
+                                      })
+                chemical_samples.append(sample_line)
+
+            create_chemical_sample = {
+                'request_id': rec.id,
+                'company_id': rec.company_id.id,
+                'requested_by': self.env.user.id,
+                'email': rec.requested_by.email,
+                'phone': rec.requested_by.phone,
+                'date': datetime.today(),
+                'request_samples_ids': chemical_samples,
+                'state': 'receive',
+                'sample_type': 'tailing',
+                'form_type': 'scaling_unit',
+                'store': rec.store,
+                'store_time': rec.store_time,
+                'dump': rec.dump,
+                'dump_time': rec.dump_time,
+                'sample_no_from': rec.sample_no_from,
+                'sample_no_to': rec.sample_no_to,
+
+            }
+
+            chemical = self.env['chemical.samples.request'].create(create_chemical_sample)
+        if self.form_type != 'external_visit' and not self.car_id.x_studio_no_landed_cost:
+            self.button_create_landed_costs()
+        else:
+            pass
+
+        return self.write({'state': 'chem_lab'})
+
     def action_view_chemical_assay(self):
         return {
             'name': "Samples Assay Request",
@@ -1767,7 +1828,7 @@ class ChemicalSamplesLine(models.Model):
     methods = fields.Char("Methods", default="AAS")
     comments = fields.Char("Comments")
     # weight_request_id=fields.Char("Request")
-    sample_type = fields.Selection([('rock', 'Rock'), ('blank', 'Blank'), ('double', 'Double'), ('std', 'STD') , ('cic', 'CIC'),],
+    sample_type = fields.Selection([('rock', 'Rock/Tail'), ('blank', 'Blank'), ('double', 'Double'), ('std', 'STD') , ('cic', 'CIC'),],
                                    default="rock")
 
     company_id = fields.Many2one(related="chemical_request_id.company_id")
