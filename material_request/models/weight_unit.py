@@ -494,15 +494,27 @@ class WeightRequest(models.Model):
             val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
             request = super(WeightRequest, self).create(vals)
             product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
+            product_tailing = self.env['product.product'].search([('custom_sequence', '=', 'tailing_landed_cost_product')], limit=1)
 
-            if product:
+            landed_product = (
+                product_tailing if request.is_tailing else product
+            )
+
+            if landed_product:
                 self.env['weight.request.landedcost.line'].create({
-                    'product_id': product.id,
+                    'product_id': landed_product.id,
                     'weight_id': request.id,
                 })
-            if  product.custom_analytic_account_id:
-              request.analytic_account_id = product.custom_analytic_account_id
+
+                if landed_product.custom_analytic_account_id:
+                    request.analytic_account_id = (
+                        landed_product.custom_analytic_account_id
+                    )
+
         return request
+
+
+
 
     def get_requested_by(self):
         user = self.env.user.id
@@ -625,6 +637,26 @@ class WeightRequest(models.Model):
                     'sample_no_to': rec.sample_no_to,
                     'area_id': rec.area_id.display_name,
                     'rock_vendor': rec.rock_vendor.name,
+                }
+            if rec.is_tailing == True:
+                create_chemical_sample = {
+                    'request_id': rec.id,
+                    'company_id': rec.company_id.id,
+                    'requested_by': self.env.user.id,
+                    'email': rec.requested_by.email,
+                    'phone': rec.requested_by.phone,
+                    'date': datetime.today(),
+                    'request_samples_ids': chemical_samples,
+                    'state': 'receive',
+                    'sample_type': 'tailing',
+                    'form_type': 'scaling_unit',
+                    'store': rec.store,
+                    'store_time': rec.store_time,
+                    'dump': rec.dump,
+                    'dump_time': rec.dump_time,
+                    'sample_no_from': rec.sample_no_from,
+                    'sample_no_to': rec.sample_no_to,
+
                 }
             else:
                 create_chemical_sample = {

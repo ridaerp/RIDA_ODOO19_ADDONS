@@ -200,8 +200,8 @@
                                             class="oe_link" type="action"
                                             context="{'search_default_partner_id': partner_id}">
                                         <span invisible="on_time_rate &lt; 0"><field name="on_time_rate"
-                                                                                     widget="integer"
-                                                                                     class="oe_inline"/>% On-Time
+                                                 widget="integer"
+                                                 class="oe_inline"/>% On-Time
                                             Delivery
                                         </span>
                                         <span invisible="on_time_rate &gt; 0">No On-time Delivery Data</span>

@@ -812,7 +812,7 @@ class PurchaseOrder(models.Model):
             if not (
                     self.company_id.id != self.request_id.company_id.id and self.request_id.purchase_type == 'overseas') and self.requested_by.user_type != 'rohax':
                 # if not order.ore_purchased and self.picking_type_id.code == 'incoming':
-                if not (order.ore_purchased or order.tailing_purchase) and self.picking_type_id.code == 'incoming':
+                if not (order.ore_purchased or order.tailing_purchased) and self.picking_type_id.code == 'incoming':
                     env = self.env(user=1)
                     inspection_line_ids = []
                     if self.order_line:
