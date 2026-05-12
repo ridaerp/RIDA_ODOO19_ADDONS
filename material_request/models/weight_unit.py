@@ -488,17 +488,54 @@ class WeightRequest(models.Model):
             'view_id': self.env.ref('material_request.purchase_order_form_inherith').id,
             'context': {'form_view_initial_mode': 'edit'},
         }
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
-            request = super(WeightRequest, self).create(vals)
-            product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
-            product_tailing = self.env['product.product'].search([('custom_sequence', '=', 'tailing_landed_cost_product')], limit=1)
+    # @api.model
+    # def create(self, vals):
+    #     for val in vals:
+    #         val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
+    #         request = super(WeightRequest, self).create(vals)
+    #         product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
+    #         product_tailing = self.env['product.product'].search([('custom_sequence', '=', 'tailing_landed_cost_product')], limit=1)
 
-            landed_product = (
-                product_tailing if request.is_tailing else product
+    #         landed_product = (
+    #             product_tailing if request.is_tailing else product
+    #         )
+
+    #         if landed_product:
+    #             self.env['weight.request.landedcost.line'].create({
+    #                 'product_id': landed_product.id,
+    #                 'weight_id': request.id,
+    #             })
+
+    #             if landed_product.custom_analytic_account_id:
+    #                 request.analytic_account_id = (
+    #                     landed_product.custom_analytic_account_id
+    #                 )
+
+    #     return request
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
+
+        requests = super(WeightRequest, self).create(vals_list)
+
+        for request, vals in zip(requests, vals_list):
+            is_tailing = vals.get('is_tailing', request.is_tailing)
+
+            product_sequence = (
+                'tailing_landed_cost_product'
+                if is_tailing
+                else 'landed_cost_product'
             )
+
+            print ("###########################3",product_sequence)
+
+            landed_product = self.env['product.product'].search([
+                ('custom_sequence', '=', product_sequence)
+            ], limit=1)
+            print ("###########################3",landed_product)
 
             if landed_product:
                 self.env['weight.request.landedcost.line'].create({
@@ -507,12 +544,9 @@ class WeightRequest(models.Model):
                 })
 
                 if landed_product.custom_analytic_account_id:
-                    request.analytic_account_id = (
-                        landed_product.custom_analytic_account_id
-                    )
+                    request.analytic_account_id = landed_product.custom_analytic_account_id.id
 
-        return request
-
+        return requests
 
 
 
