@@ -71,7 +71,7 @@
         
                     <field name="is_tailing"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
-                           
+
                     <field name="batch" invisible="1"
                            groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_stock,material_request.group_ore_tailing_purchase_user,material_request.group_ore_tailing_db_geology_user"/>
 
@@ -212,9 +212,7 @@
                                 <field name="is_sack" readonly="state not in (['draft','db_geologist'])"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_db_geology_user"/>
 
-                                    <field name="is_tailing" readonly="state not in (['draft','db_geologist'])"
-                                       groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_tailing_purchase_user,,material_request.group_ore_tailing_db_geology_user"/>
-
+                                  
 
                                 <field name="car_id"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_tailing_purchase_user"
@@ -286,6 +284,8 @@
                                 <field name="is_opu_po"
                                        groups="material_request.group_opu_user,base_rida.rida_group_COO,base_rida.rida_group_CCSO"/>
 
+                                <field name="is_tailing" readonly="state not in (['draft','db_geologist'])"
+                                       groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_tailing_purchase_user,,material_request.group_ore_tailing_db_geology_user"/>
 
                                 <field name="batch"
                                        groups="material_request.group_weight_unit_user,material_request.group_ore_reader_user,material_request.group_ore_rock_purchase_user,material_request.group_ore_tailing_purchase_user,material_request.group_ore_rock_db_geology_user,material_request.group_ore_tailing_db_geology_user,material_request.group_ore_reader_pro,material_request.group_ore_reader_stock,material_request.group_ore_reader_planning"
