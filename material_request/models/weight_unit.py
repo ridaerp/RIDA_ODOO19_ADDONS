@@ -161,6 +161,19 @@ class WeightRequest(models.Model):
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
     x_studio_supplier_type = fields.Many2many("res.partner.category",)
 
+
+    lot_product_id = fields.Many2one(
+        'product.product',
+        compute='_compute_lot_product_id',
+        store=False
+    )
+
+    @api.depends('is_tailing')
+    def _compute_lot_product_id(self):
+        for rec in self:
+            rec.lot_product_id = self.env['product.product'].browse(
+                60398 if rec.is_tailing else 63326  
+            )
     # def action_reset_price(self):
     #     for rec in self:
     #         rec.state = 'db_price'
