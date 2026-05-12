@@ -170,10 +170,23 @@ class WeightRequest(models.Model):
 
     @api.depends('is_tailing')
     def _compute_lot_product_id(self):
+
+        product_rock = self.env['product.product'].search(
+            [('custom_sequence', '=', 'rock')],
+            limit=1
+        )
+
+        product_tailing = self.env['product.product'].search(
+            [('custom_sequence', '=', 'tailing')],
+            limit=1
+        )
+
         for rec in self:
-            rec.lot_product_id = self.env['product.product'].browse(
-                60398 if rec.is_tailing else 63326  
-            )
+            if rec.is_tailing:
+                rec.lot_product_id = product_tailing
+            else:
+                rec.lot_product_id = product_rock
+
     # def action_reset_price(self):
     #     for rec in self:
     #         rec.state = 'db_price'
