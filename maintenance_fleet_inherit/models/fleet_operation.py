@@ -222,7 +222,8 @@ class FleetVehicleOdometerLine(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string='Equipment Name')
     equipment_id = fields.Many2one('maintenance.equipment', 'Equipment Type', ondelete="cascade")
     equipment_code = fields.Char(string='Equipment Code', compute='_compute_equipment_code', store=True)
-    location_id = fields.Many2one('vehicle.location', string='Location', tracking=True)
+    location_id = fields.Many2one('vehicle.location', string='Location', tracking=True,
+    ondelete='set null')
     start_value = fields.Float(string='Start Value', tracking=True)
     end_value = fields.Float(string='End Value', tracking=True)
     custom_sequence = fields.Integer("sequence",related='equipment_id.custom_sequence')

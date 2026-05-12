@@ -18,6 +18,15 @@ class IssuanceRequest(models.Model):
     _rec_name = 'name'
     _order = 'name desc'
 
+
+    @api.onchange('line_ids')
+    def _onchange_ore_rock_product(self):
+        ramp_location = self.env['stock.location'].search([('complete_name', 'ilike', 'Pro/ramp')], limit=1)
+        for line in self.line_ids:
+            if line.product_id and 'ore rock' in line.product_id.name.lower():
+                if ramp_location:
+                    self.issuance_new_location = ramp_location.id
+
     def _default_analytic_account_id(self):
         if self.env.user.default_analytic_account_id.id:
             return self.env.user.default_analytic_account_id.id
