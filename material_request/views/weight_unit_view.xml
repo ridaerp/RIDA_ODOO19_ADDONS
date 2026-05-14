@@ -1081,5 +1081,4 @@
                   groups="material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
                   action="weight_request_tailing_area_action"/>
     </data>
-    </data>
 </odoo>

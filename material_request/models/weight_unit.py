@@ -2645,9 +2645,9 @@ class PurchasePriceList(models.Model):
 
 class TailingPurchasePriceList(models.Model):
     _name = "tailing.purchase.price.list"
-
+    _rec_name="partner_id"
     name = fields.Char("Name")
-    qty_min = fields.Many2one("res.partner","partner_id")
+    partner_id = fields.Many2one("res.partner","partner_id")
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
 
