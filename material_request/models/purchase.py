@@ -129,6 +129,7 @@ class PurchaseOrder(models.Model):
     supply_user_id = fields.Many2one('res.users')
     supply_user = fields.Many2one('res.users', related='request_id.assigned_to_supply')
     ore_purchased = fields.Boolean(default=False, string="IS ORE/ROCK Purchase")
+    tailing_purchased = fields.Boolean(default=False, string="IS ORE/Tailing Purchase")
 
     contract_purchased = fields.Boolean(default=False, string="IS Payment Contract")
 
@@ -711,7 +712,7 @@ class PurchaseOrder(models.Model):
                     # elif rec.supply_user_type == 'hq':
                     elif rec.supply_user.user_type == 'hq':
                         return rec.write({'state': 'sud'})
-                    elif rec.ore_purchased:
+                    elif rec.ore_purchased or rec.tailing_purchased:
                         return rec.write({'state': 'site'})
                     ###############################add new line##########
                     #####################ekhlas code #############
@@ -754,13 +755,13 @@ class PurchaseOrder(models.Model):
 
     def go_to_ccso(self):
         for rec in self:
-            if rec.supply_user.user_type == 'site' and rec.ore_purchased == False:
+            if rec.supply_user.user_type == 'site' and (rec.ore_purchased == False or rec.tailing_purchased==False):
                 return rec.write({'state': 'ccso'})
             #########################add new line #############
             ######################ekhlas code################3            
             if rec.supply_user.user_type == 'fleet':
                 return rec.write({'state': 'ccso'})
-            if rec.ore_purchased == True:
+            if rec.ore_purchased == True or rec.tailing_purchased==True:
                 return rec.write({'state': 'site'})
 
             else:
@@ -810,7 +811,8 @@ class PurchaseOrder(models.Model):
             #############################################inspection material##########################
             if not (
                     self.company_id.id != self.request_id.company_id.id and self.request_id.purchase_type == 'overseas') and self.requested_by.user_type != 'rohax':
-                if not order.ore_purchased and self.picking_type_id.code == 'incoming':
+                # if not order.ore_purchased and self.picking_type_id.code == 'incoming':
+                if not (order.ore_purchased or order.tailing_purchased) and self.picking_type_id.code == 'incoming':
                     env = self.env(user=1)
                     inspection_line_ids = []
                     if self.order_line:
@@ -852,7 +854,7 @@ class PurchaseOrder(models.Model):
                 order.make_ovearses()
 
 
-            if order.ore_purchased:
+            if order.ore_purchased or order.tailing_purchased:
                 order.weight_request_id.state = 'done'
                 for record in order.order_line:
                     for recordd in order.picking_ids.move_ids:

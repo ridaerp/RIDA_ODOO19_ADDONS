@@ -56,11 +56,25 @@
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
-
     <record id="group_ore_rock_supply_chain_manager" model="res.groups">
         <field name="name">Ore/Rock Manager</field>
         <field name="privilege_id" ref="mr_settings_privilege"/>
         <field name="implied_ids" eval="[(4, ref('group_ore_rock_purchase_user'))]"/>
+    </record>
+
+  <!-- ore/tailing -->
+
+    <record id="group_ore_tailing_purchase_user" model="res.groups">
+        <field name="name">Ore/Tailing Purchaser</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <record id="group_ore_tailing_supply_chain_manager" model="res.groups">
+        <field name="name">Ore/Tailing Manager</field>
+        <field name="privilege_id" ref="mr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('group_ore_tailing_purchase_user'))]"/>
     </record>
 
 
@@ -136,12 +150,20 @@
         <field name="implied_ids" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
     </record>
 
+    <record id="group_ore_tailing_db_geology_user" model="res.groups">
+        <field name="name">Tailing/DB geologist</field>
+        <field name="privilege_id" ref="wr_settings_privilege"/>
+        <field name="implied_ids" eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
+    </record>
+
 
     <record id="group_opu_user" model="res.groups">
         <field name="name">Ore/MATERIAL MINDS</field>
         <field name="privilege_id" ref="wr_settings_privilege"/>
         <field name="implied_ids" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
     </record>
+
+
 
 
 

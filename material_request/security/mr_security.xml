@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- access_stock_valution_layer,stock_valution_layer,stock_account.model_stock_valuation_layer,stock.group_stock_user,1,0,1,0
-
-
-access_stock_valution_layer_edit,stock_valution_layer,stock_account.model_stock_valuation_layer,stock.group_stock_user,1,1,1,0
-
-
-access_stock_valution_layer_create,stock_valution_layer,stock_account.model_stock_valuation_layer,purchase.group_purchase_user,1,1,1,0 
-
-access_purchase_landed_cost_line4,access_purchase_landed_cost_read,stock_account.model_stock_valuation_layer,material_request.group_ore_rock_purchase_user,1,1,1,1
-
--->
-
+    
 
         <!--  MR requester User rule(change by ekhlas code ) -->
         <record id="internal_request_rule" model="ir.rule">
@@ -423,13 +412,28 @@ access_purchase_landed_cost_line4,access_purchase_landed_cost_read,stock_account
 
 
         </record>
+        <record id="purchase_tail_user_account_move_line_rule" model="ir.rule">
+            <field name="name">Purchase User Account Move Line</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
 
+
+        </record>
 
         <record id="roc_purchase_user_account_move_rule" model="ir.rule">
             <field name="name">Purchase User Account Move</field>
             <field name="model_id" ref="account.model_account_move"/>
             <field name="domain_force">[('move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
             <field name="groups" eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
+        </record>
+
+
+        <record id="tail_purchase_user_account_move_rule" model="ir.rule">
+            <field name="name">Purchase User Account Move</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('move_type', 'in', ('in_invoice', 'in_refund', 'in_receipt'))]</field>
+            <field name="groups" eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
         </record>
 
         <record id="roc_purchase_user_account_move_rule3" model="ir.rule">
@@ -540,6 +544,22 @@ access_purchase_landed_cost_line4,access_purchase_landed_cost_read,stock_account
         </record>
 
 
+
+        <record id="chemical_all_ule_report_tailing" model="ir.rule">
+            <field name="name">Scaling unit report rule</field>
+            <field name="model_id" ref="model_chemical_samples_request"/>
+            <field name="domain_force">[('sample_type','=','tailing')]</field>
+
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+
+
+
         <record id="reader_scale_all_read" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
@@ -571,44 +591,51 @@ access_purchase_landed_cost_line4,access_purchase_landed_cost_read,stock_account
         <record id="reader_scale_all2_read" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
-            <field name="domain_force">[(1, '=',1)]</field>
-
+            <field name="domain_force">[('is_tailing', '=',False)]</field>
             <field name="groups"
                    eval="[(4, ref('material_request.group_ore_rock_purchase_user'))]"/>
             <field name="perm_unlink" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
+        </record>
+
+  <record id="reader_scale_all22_read" model="ir.rule">
+            <field name="name">Scaling unit Lab Rule</field>
+            <field name="model_id" ref="model_weight_request"/>
+            <field name="domain_force">[('is_tailing', '=',True)]</field>
+            <field name="groups"
+                   eval="[(4, ref('material_request.group_ore_tailing_purchase_user'))]"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_create" eval="1"/>
 
         </record>
 
 
-        <record id="reader_scal_all_ule" model="ir.rule">
+<!--         <record id="reader_scal_all_ule" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
             <field name="domain_force">[(1, '=',1)]</field>
-
             <field name="groups"
                    eval="[(4,ref('material_request.ore_lab_requester'))]"/>
             <field name="perm_unlink" eval="0"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="0"/>
-
-        </record>
+        </record> -->
 
         <record id="reader_scal_all2_ule" model="ir.rule">
             <field name="name">Scaling unit Lab Rule</field>
             <field name="model_id" ref="model_weight_request"/>
             <field name="domain_force">[(1, '=',1)]</field>
-
             <field name="groups"
                    eval="[(4,ref('material_request.group_weight_unit_user'))]"/>
             <field name="perm_unlink" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_read" eval="1"/>
             <field name="perm_create" eval="1"/>
-
         </record>
 
         <!--  meta requester -->
@@ -713,9 +740,16 @@ access_purchase_landed_cost_line4,access_purchase_landed_cost_read,stock_account
                 <field name="name">Purchase Order: Allow Ore Rock Purchase</field>
                 <field name="model_id" ref="purchase.model_purchase_order"/>
                 <field name="groups" eval="[(4, ref('material_request.group_ore_rock_db_geology_user'))]"/>
-                <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+                <field name="domain_force">[('company_id', 'in', company_ids),('ore_purchased','=',True)]</field>
             </record>
 
+  <!-- Record Rule for Purchase Order -->
+            <record id="purchase_order_rule_2" model="ir.rule">
+                <field name="name">Purchase Order: Allow Ore Tailing Purchase</field>
+                <field name="model_id" ref="purchase.model_purchase_order"/>
+                <field name="groups" eval="[(4, ref('material_request.group_ore_tailing_db_geology_user'))]"/>
+                <field name="domain_force">[('company_id', 'in', company_ids),('tailing_purchased','=',True)]</field>
+            </record>
 
     </data>
 </odoo>

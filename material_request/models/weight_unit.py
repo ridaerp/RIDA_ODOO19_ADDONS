@@ -19,6 +19,7 @@ _STATES = [
     ('chem_lab', 'Chem-Lab Assaying'),
     ('db_price', 'Waiting Pricing '),
     ('rock_user', 'Waiting Rock Purchaser  '),
+    ('tailing_user', 'Waiting Tailing Purchaser  '),
     ('done', 'Purchase Order'),
     ('reject', 'Rejected'),
     ('cancel', 'Cancelled'),
@@ -64,7 +65,7 @@ class WeightRequest(models.Model):
     car_plate = fields.Char(related="car_id.car_plate", string="Plate license No.")
     driver_id = fields.Many2one(related="car_id.driver_id", string="Driver")
     transporter_id = fields.Many2one(related="car_id.transporter_id", string="Transporter" )
-    rock_vendor = fields.Many2one("res.partner", "Rock Vendor" )
+    rock_vendor = fields.Many2one("res.partner", "Rock/Tail Vendor" )
     quantity = fields.Float("Quantity" )
     area_id = fields.Many2one("x_area", "Area", required=True )
     state = fields.Selection(selection=_STATES, string='Status', index=True, readonly=True,
@@ -87,6 +88,7 @@ class WeightRequest(models.Model):
     dump = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="dumped after analysis")
     oven = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="Oven Option for Samples")
     is_sack = fields.Boolean( string="Is Sack")
+    is_tailing = fields.Boolean( string="Is Tailing")
 
     disposal_info = fields.Char(default="STRUCTION FOR DISPOSAL OF SAMPLES AND RECEIPT OF RESULTS", readonly="1")
 
@@ -159,9 +161,35 @@ class WeightRequest(models.Model):
     is_opu_po = fields.Boolean(string='Is MATERIAL MINDS PO', compute='_compute_is_opu_po', store=True)
     x_studio_supplier_type = fields.Many2many("res.partner.category",)
 
-    def action_reset_price(self):
+
+    lot_product_id = fields.Many2one(
+        'product.product',
+        compute='_compute_lot_product_id',
+        store=False
+    )
+
+    @api.depends('is_tailing')
+    def _compute_lot_product_id(self):
+
+        product_rock = self.env['product.product'].search(
+            [('custom_sequence', '=', 'rock')],
+            limit=1
+        )
+
+        product_tailing = self.env['product.product'].search(
+            [('custom_sequence', '=', 'tailing')],
+            limit=1
+        )
+
         for rec in self:
-            rec.state = 'db_price'
+            if rec.is_tailing:
+                rec.lot_product_id = product_tailing
+            else:
+                rec.lot_product_id = product_rock
+
+    # def action_reset_price(self):
+    #     for rec in self:
+    #         rec.state = 'db_price'
 
 
     @api.depends('x_studio_supplier_type')
@@ -402,6 +430,7 @@ class WeightRequest(models.Model):
         # Change state and return an action to open the created record
         self.state = 'rock_user'
 
+            
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -411,21 +440,141 @@ class WeightRequest(models.Model):
             'context': {'form_view_initial_mode': 'edit'},
         }
 
-    @api.model
-    def create(self, vals):
-        for val in vals:
-            val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
-            request = super(WeightRequest, self).create(vals)
-            product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
 
-            if product:
+    def make_tail_purchase_quotation(self):
+        self.ensure_one()
+        order_line_ids = []
+
+        self.po_request = datetime.today()
+
+        # Prepare purchase order lines
+        for line in self.line_ids:
+            unit_price = line.unit_price
+            incentive_price = line.incentive_price
+            if line.is_landed_costs_line and not line.product_id.product_tmpl_id.self_deportation:
+                unit_price = -abs(unit_price)
+            if line.product_id.is_company_percentage:
+                unit_price = -abs(unit_price)
+            else:
+                unit_price = unit_price
+            analytic_distribution = {}
+
+            if line.analytic_account_id:
+                analytic_distribution[line.analytic_account_id.id] = 100
+
+            order_line = {
+                'product_id': line.product_id.id,
+                'product_uom_id': line.product_id.uom_id.id,
+                'price_unit': unit_price+incentive_price,
+                'incentive_price':incentive_price,
+                'product_qty': line.product_qty,
+                'percentage': line.percentage,
+                'discount': line.discount,
+                'is_landed_costs_line': line.is_landed_costs_line,
+                'self_deportation': line.self_deportation,
+                'name': line.product_id.name,
+                'date_planned': self.date_request.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                'x_studio_batch_no': self.batch,
+                'lot_id': self.lot_id.id,
+                'average': self.average,
+                'analytic_distribution': analytic_distribution,
+            }
+            order_line_ids.append((0, 0, order_line))
+
+
+        delivery_obj = self.env['stock.picking.type'].search([
+            ('code', '=', 'incoming'),
+            ('warehouse_id.code', '=', 'Tail')
+        ], limit=1)
+
+        # Create the purchase order
+        purchase_order = self.env['purchase.order'].sudo().create({
+            'partner_id': self.rock_vendor.id,
+            'order_line': order_line_ids,
+            'is_opu_po':self.is_opu_po,
+            'weight_request_id': self.id,
+            'x_studio_transporter': self.car_id.transporter_id.id,
+            'analytic_account_id': self.analytic_account_id.id,
+            'x_studio_many2one_field_t3bCi': self.area_id.id,
+            'company_id': self.company_id.id,
+            'lot_id': self.lot_id.id,
+            'tailing_purchased': True,
+            'picking_type_id':delivery_obj.id
+        })
+
+        # Change state and return an action to open the created record
+        self.state = 'tailing_user'
+
+            
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'purchase.order',
+            'res_id': purchase_order.id,
+            'view_id': self.env.ref('material_request.purchase_order_form_inherith').id,
+            'context': {'form_view_initial_mode': 'edit'},
+        }
+    # @api.model
+    # def create(self, vals):
+    #     for val in vals:
+    #         val['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
+    #         request = super(WeightRequest, self).create(vals)
+    #         product = self.env['product.product'].search([('custom_sequence', '=', 'landed_cost_product')], limit=1)
+    #         product_tailing = self.env['product.product'].search([('custom_sequence', '=', 'tailing_landed_cost_product')], limit=1)
+
+    #         landed_product = (
+    #             product_tailing if request.is_tailing else product
+    #         )
+
+    #         if landed_product:
+    #             self.env['weight.request.landedcost.line'].create({
+    #                 'product_id': landed_product.id,
+    #                 'weight_id': request.id,
+    #             })
+
+    #             if landed_product.custom_analytic_account_id:
+    #                 request.analytic_account_id = (
+    #                     landed_product.custom_analytic_account_id
+    #                 )
+
+    #     return request
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('weight_request.sequence') or "/"
+
+        requests = super(WeightRequest, self).create(vals_list)
+
+        for request, vals in zip(requests, vals_list):
+            is_tailing = vals.get('is_tailing', request.is_tailing)
+
+            product_sequence = (
+                'tailing_landed_cost_product'
+                if is_tailing
+                else 'landed_cost_product'
+            )
+
+            print ("###########################3",product_sequence)
+
+            landed_product = self.env['product.product'].search([
+                ('custom_sequence', '=', product_sequence)
+            ], limit=1)
+            print ("###########################3",landed_product)
+
+            if landed_product:
                 self.env['weight.request.landedcost.line'].create({
-                    'product_id': product.id,
+                    'product_id': landed_product.id,
                     'weight_id': request.id,
                 })
-            if  product.custom_analytic_account_id:
-              request.analytic_account_id = product.custom_analytic_account_id
-        return request
+
+                if landed_product.custom_analytic_account_id:
+                    request.analytic_account_id = landed_product.custom_analytic_account_id.id
+
+        return requests
+
+
 
     def get_requested_by(self):
         user = self.env.user.id
@@ -549,6 +698,26 @@ class WeightRequest(models.Model):
                     'area_id': rec.area_id.display_name,
                     'rock_vendor': rec.rock_vendor.name,
                 }
+            if rec.is_tailing == True:
+                create_chemical_sample = {
+                    'request_id': rec.id,
+                    'company_id': rec.company_id.id,
+                    'requested_by': self.env.user.id,
+                    'email': rec.requested_by.email,
+                    'phone': rec.requested_by.phone,
+                    'date': datetime.today(),
+                    'request_samples_ids': chemical_samples,
+                    'state': 'receive',
+                    'sample_type': 'tailing',
+                    'form_type': 'scaling_unit',
+                    'store': rec.store,
+                    'store_time': rec.store_time,
+                    'dump': rec.dump,
+                    'dump_time': rec.dump_time,
+                    'sample_no_from': rec.sample_no_from,
+                    'sample_no_to': rec.sample_no_to,
+
+                }
             else:
                 create_chemical_sample = {
                     'request_id': rec.id,
@@ -656,6 +825,67 @@ class WeightRequest(models.Model):
                     'sample_no_to': rec.sample_no_to,
 
                 }
+
+            chemical = self.env['chemical.samples.request'].create(create_chemical_sample)
+        if self.form_type != 'external_visit' and not self.car_id.x_studio_no_landed_cost:
+            self.button_create_landed_costs()
+        else:
+            pass
+
+        return self.write({'state': 'chem_lab'})
+
+
+
+    def button_tailing_db_geologist(self):
+        if not self.request_samples_ids:
+            raise UserError('Please Click to generate Samples')
+        chemical_samples = []
+        sample_line = []
+        for rec in self:
+
+            if not rec.store:
+                raise UserError(_("Answer The DISPOSAL store Yes/NO "))
+            if not rec.dump:
+                raise UserError(_("Answer The DISPOSAL dump Yes/NO "))
+
+            if not rec.oven:
+                raise UserError(_("Answer The Oven Option Yes/NO "))
+
+            for line in rec.request_samples_ids:
+
+                if line.quantity == 0.0:
+                    raise UserError(_("Please Enter the Quantity"))
+
+                sample_line = (0, 0, {'name': line.name,
+                                      'sample_no1': line.sample_no,
+                                      'quantity': line.quantity,
+                                      'batch': line.batch,
+                                      'lot_id': line.lot_id.id,
+                                      'sample_type': line.sample_type,
+                                      'weight_request_id': line.id,
+                                      'analysis_required': 'au'
+                                      })
+                chemical_samples.append(sample_line)
+
+            create_chemical_sample = {
+                'request_id': rec.id,
+                'company_id': rec.company_id.id,
+                'requested_by': self.env.user.id,
+                'email': rec.requested_by.email,
+                'phone': rec.requested_by.phone,
+                'date': datetime.today(),
+                'request_samples_ids': chemical_samples,
+                'state': 'receive',
+                'sample_type': 'tailing',
+                'form_type': 'scaling_unit',
+                'store': rec.store,
+                'store_time': rec.store_time,
+                'dump': rec.dump,
+                'dump_time': rec.dump_time,
+                'sample_no_from': rec.sample_no_from,
+                'sample_no_to': rec.sample_no_to,
+
+            }
 
             chemical = self.env['chemical.samples.request'].create(create_chemical_sample)
         if self.form_type != 'external_visit' and not self.car_id.x_studio_no_landed_cost:
@@ -1765,7 +1995,7 @@ class ChemicalSamplesLine(models.Model):
     methods = fields.Char("Methods", default="AAS")
     comments = fields.Char("Comments")
     # weight_request_id=fields.Char("Request")
-    sample_type = fields.Selection([('rock', 'Rock'), ('blank', 'Blank'), ('double', 'Double'), ('std', 'STD') , ('cic', 'CIC'),],
+    sample_type = fields.Selection([('rock', 'Rock/Tail'), ('blank', 'Blank'), ('double', 'Double'), ('std', 'STD') , ('cic', 'CIC'),],
                                    default="rock")
 
     company_id = fields.Many2one(related="chemical_request_id.company_id")

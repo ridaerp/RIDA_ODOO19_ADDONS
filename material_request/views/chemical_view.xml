@@ -93,7 +93,7 @@
 
                         <button name="button_reject" type="object" string="Reject"
                                 invisible="state not in ['assay','receive']"
-                                        groups="material_request.group_ore_rock_purchase_user,material_request.group_chemical_receiver_user"/>
+                                        groups="material_request.group_ore_rock_purchase_user,material_request.group_ore_tailing_purchase_user,material_request.group_chemical_receiver_user"/>
 
 <!--                        <button name="%(material_request.purchase_order_reject_action)d" type="action"-->
 <!--                                invisible="state not in ['assay','receive']" string="Reject"-->
@@ -180,7 +180,7 @@
                                 <field name="form_type" groups="material_request.group_ore_rock_db_geology_user"
                                        readonly="state != 'draft'"/>
                                 <field name="request_id" readonly="1"
-                                       groups="material_request.group_ore_rock_supply_chain_manager,material_request.ore_lab_requester"/>
+                                       groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.ore_lab_requester"/>
                                 <field name="receive_date" readonly="1"
                                        invisible="state not in ['receive','assay','close']"/>
                                 <field name="receive_name" readonly="1"
@@ -248,30 +248,30 @@
 
                                 readonly="1"
 
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.ore_lab_requester"
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.ore_lab_requester"
                                                sum="au"/>
 
 
                                         <field name="try1" readonly="parent_state != 'assay'" optional="show"
                                              
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
 
                                         <field name="try2" readonly="parent_state != 'assay'" optional="show"
                                                
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                         <field name="ag" readonly="parent_state != 'assay'" optional="show"
                                               
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                         <field name="cu" readonly="parent_state != 'assay'" optional="show"
                                              
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                         <field name="fe" readonly="parent_state != 'assay'" optional="show"
                                                
-                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                               groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                         <field name="east" groups="material_request.group_ore_rock_db_geology_user"/>
                                         <field name="north" groups="material_request.group_ore_rock_db_geology_user"/>
@@ -320,29 +320,29 @@
 
                                             <field name="au" readonly="parent_state not in ['draft','generate']"
                                                   
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"
                                                    sum="au"/>
 
 
                                             <field name="try1" readonly="parent_state != 'assay'"
                                                   
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                             <field name="try2" readonly="parent_state != 'assay'"
                                                   
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                             <field name="ag" readonly="parent_state != 'assay'"
 
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                             <field name="cu" readonly="parent_state != 'assay'"
                                                    
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
 
                                             <field name="fe" readonly="parent_state != 'assay'"
                                                   
-                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
+                                                   groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,material_request.group_ore_rock_chemical_user,material_request.ore_lab_requester,material_request.ore_lab_requester"/>
                                         </sheet>
                                     </form>
 
@@ -415,42 +415,6 @@
 </page>
 
 
-
-
-
-                            <!--                            <page string="ORE/Rock Info" name="ore_rock_inf"-->
-                            <!--                                  groups="material_request.group_ore_rock_db_geology_user"-->
-                            <!--                            invisible="form_type != 'external_visit'">-->
-                            <!--                                <group>-->
-
-                            <!--                                    <group>-->
-                            <!--                                        <h2 class="oe_title">Survey Point</h2>-->
-                            <!--                                        <field name="east" placeholder="Easting"-->
-                            <!--                                               readonly="state != 'draft'"/>-->
-                            <!--                                        <field name="north" placeholder="Northing"-->
-                            <!--                                               readonly="state != 'draft'"/>-->
-                            <!--                                        <field name="elevation" placeholder="Elevation"-->
-                            <!--                                               readonly="state != 'draft'"/>-->
-                            <!--                                    </group>-->
-
-                            <!--                                    <group>-->
-                            <!--                                        <h2 class="oe_title">Samples</h2>-->
-                            <!--                                        <field name="rock_type" readonly="state != 'draft'"/>-->
-                            <!--                                        <field name="sample_position" readonly="state != 'draft'"/>-->
-                            <!--                                    </group>-->
-
-                            <!--                                </group>-->
-
-                            <!--                                <group>-->
-
-                            <!--                                    <group></group>-->
-                            <!--                                    <group>-->
-                            <!--                                        <h2 class="oe_title">Geology</h2>-->
-                            <!--                                        <field name="oxidation" readonly="state != 'draft'"/>-->
-                            <!--                                        <field name="alteration" readonly="state != 'draft'"/>-->
-                            <!--                                    </group>-->
-                            <!--                                </group>-->
-                            <!--                            </page>-->
                         </notebook>
                         <footer>
                             <field name="notes" placeholder="Enter your notes here..."/>

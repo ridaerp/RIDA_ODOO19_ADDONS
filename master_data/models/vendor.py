@@ -12,13 +12,29 @@ class RequestVendor(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'image.mixin']
     _description = 'Supplier Request'
 
+    # def default_get(self, fields):
+    #     res = super(RequestVendor, self).default_get(fields)
+    #     if not self.env.user.has_group('material_request.group_ore_rock_purchase_user'):
+    #         is_rock_vendor = False
+    #     else:
+    #         is_rock_vendor = True
+    #     res['is_rock_vendor'] = is_rock_vendor
+    #     return res
+
+
     def default_get(self, fields):
         res = super(RequestVendor, self).default_get(fields)
-        if not self.env.user.has_group('material_request.group_ore_rock_purchase_user'):
-            is_rock_vendor = False
-        else:
-            is_rock_vendor = True
-        res['is_rock_vendor'] = is_rock_vendor
+        is_rock_vendor = self.env.user.has_group(
+            'material_request.group_ore_rock_purchase_user'
+        )
+        is_tailing_vendor = self.env.user.has_group(
+            'material_request.group_ore_tailing_purchase_user'
+        )
+        res.update({
+            'is_rock_vendor': is_rock_vendor,
+            'is_tailing_vendor': is_tailing_vendor,
+        })
+
         return res
 
     def _default_category(self):
@@ -45,7 +61,7 @@ class RequestVendor(models.Model):
     phone = fields.Char(required=True)
     email = fields.Char()
     state = fields.Selection(
-        [('draft', 'Draft'), ('scm', 'Waiting Procurement Manager'), ('w_ore_rock', 'Waiting Ore/Rock Manager'),
+        [('draft', 'Draft'), ('scm', 'Waiting Procurement Manager'),('w_ore_rock', 'Waiting Ore/Rock Manager'), ('w_ore_tailing', 'Waiting Ore/Tailing Manager'),
          ('w_account', 'Waiting Account Verification'), ('w_audit', 'Waiting Internal Audit'),
          ('w_scm_director', 'Waiting Supply Chain Director'),
          ('w_adv', 'Waiting Finance Manager /Analyti Account'),
@@ -53,8 +69,10 @@ class RequestVendor(models.Model):
          ('reject', 'reject'), ('done', 'Done')],
         string='Status', default='draft', tracking=True)
     state_rock = fields.Selection(related='state')
+    state_tailing = fields.Selection(related='state')
     partner = fields.Many2one('res.partner', string='Partner')
     is_rock_vendor = fields.Boolean()
+    is_tailing_vendor = fields.Boolean()
     bank_ids = fields.One2many('master.data.res.partner.bank', 'master_data_sup_id', string='Banks')
 
     # area_x = fields.Many2many('x_area')
@@ -188,56 +206,17 @@ class RequestVendor(models.Model):
             names = ", ".join([p.name for p in duplicates_name])
             warning_messages.append("⚠ Warning: Similar supplier names detected:\n%s" % names)
 
-        # If any warning, show popup but continue
-        # if warning_messages:
-        #     return {
-        #         'type': 'ir.actions.client',
-        #         'tag': 'display_notification',
-        #         'params': {
-        #             'title': "Duplicate Check",
-        #             'message': "\n".join(warning_messages),
-        #             'sticky': False,  # True = user must dismiss, False = auto-hide
-        #         }
-        #     }
-
-        # Normal state change
-        return self.write({'state': 'w_ore_rock' if self.is_rock_vendor else 'scm'})
+        # return self.write({'state': 'w_ore_rock' if self.is_rock_vendor else 'scm'})
 
 
+        return self.write({
+            'state': (
+                'w_ore_rock' if self.is_rock_vendor
+                else 'w_ore_tailing' if self.is_tailing_vendor
+                else 'scm'
+            )
+        })
 
-
-
-    # def set_submit(self):
-    #     duplicates_name, duplicates_phone, duplicates_email = self._check_duplicates()
-    #     warning_messages = []
-
-    #     # Check phone duplicates
-    #     if duplicates_phone:
-    #         warning_messages.append("Phone already exists for supplier: %s" % duplicates_phone[0].name)
-
-    #     # Check email duplicates
-    #     if duplicates_email:
-    #         warning_messages.append("Email already exists for supplier: %s" % duplicates_email[0].name)
-
-    #     # Check name duplicates
-    #     if duplicates_name:
-    #         names = ", ".join([p.name for p in duplicates_name])
-    #         warning_messages.append("⚠ Warning: Similar supplier names detected:\n%s" % names)
-
-    #     # If any warning, show popup but continue
-    #     if warning_messages:
-    #         return {
-    #             'type': 'ir.actions.client',
-    #             'tag': 'display_notification',
-    #             'params': {
-    #                 'title': "Duplicate Check",
-    #                 'message': "\n".join(warning_messages),
-    #                 'sticky': False,  # True = user must dismiss, False = auto-hide
-    #             }
-    #         }
-
-    #     # Normal state change
-    #     return self.write({'state': 'w_ore_rock' if self.is_rock_vendor else 'scm'})
 
     @api.onchange('vendor_name', 'phone', 'email','state')
     def _onchange_duplicate_check(self):
@@ -287,20 +266,26 @@ class RequestVendor(models.Model):
                 return self.write({'state': 'w_adv','analytic_account_req_id':Analyti_account})
             else:
                 return self.write({'state': 'w_account'})
+        if self.is_tailing_vendor:
+            return self.write({'state': 'w_account'})
         else:
             return self.write({'state': 'w_scm_director'})
 
     def account_verification(self):
         for rec in self:
-            if rec.is_rock_vendor:
+            if rec.is_rock_vendor or rec.is_tailing_vendor:
                 rec.state = 'w_audit'
                 rec.activity_update()
 
+
+
     def internal_audit(self):
         for rec in self:
-            if rec.is_rock_vendor:
+            if rec.is_rock_vendor or rec.is_tailing_vendor:
                 rec.state = 'md'
                 rec.activity_update()
+            
+
 
     def set_draft(self):
         for rec in self:

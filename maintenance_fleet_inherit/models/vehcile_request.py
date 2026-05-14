@@ -69,7 +69,8 @@ class VehicleEquipmentRequest(models.Model):
     requested_by = fields.Many2one("res.users", readonly=True, string="Employee", tracking=True,
                                    default=lambda self: self.get_requested_by(), store=True)
     movement_receiving_request_time = fields.Datetime("Receiving request time")
-    operator_driver_name = fields.Many2one("res.users", string="Operator / Driver Name")
+    operator_driver_name = fields.Many2one("res.users", string="Operator / Driver Name", ondelete="set null")
+    operator_driver_name_e = fields.Many2one("hr.employee", string="Operator - Driver Name")
     movement_delivery_time = fields.Datetime("Delivery Time", readonly=True)
     movement_received_time = fields.Datetime("Received Time", readonly=True)
     duration_mintus = fields.Float("Mintus", compute="compute_duration")

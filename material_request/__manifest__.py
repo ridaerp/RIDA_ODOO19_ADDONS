@@ -49,7 +49,6 @@
         'data/ir_cron_data.xml',
 
         'report/mr_RFQ_template.xml',
-        ############added by ekhas code
         'views/ore_rock_purchases_view.xml',
         'report/purchase_contract.xml',
         'report/mr_print_pdf.xml',

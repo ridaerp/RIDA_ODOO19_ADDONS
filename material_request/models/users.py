@@ -10,26 +10,3 @@ class ResPartner(models.Model):
         digits="Discount",
         tracking=True,
     )
-
-    # is_employee = fields.Boolean(
-    #     string="Is Employee",
-    #     compute="_compute_is_employee",
-    #     store=True
-    # )
-
-    # @api.depends('employee_ids')
-    # def _compute_is_employee(self):
-    #     for partner in self:
-    #         # employee_ids comes from One2many via work_contact_id
-    #         partner.is_employee = bool(partner.employee_ids)
-
-
-    # partner_type = fields.Selection(
-    #     selection=[
-    #         ('local', 'Local'),
-    #         ('overseas', 'Overseas'),
-    #     ],
-    #     string='Partner Type',
-    #     default="overseas",
-    #     required=True,
-    # )

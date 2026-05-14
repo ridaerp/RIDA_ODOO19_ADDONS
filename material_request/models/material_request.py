@@ -1528,7 +1528,7 @@ class MaterialRequestLine(models.Model):
         for record in self:
             if record.product_id and record.request_id.id:
                 # Fetch all Purchase Orders related to this material request
-                related_po_lines = self.env['purchase.order.line'].search([
+                related_po_lines = self.env['purchase.order.line'].sudo().search([
                     ('order_id.request_ids', 'in', [record.request_id.id]),
                     ('product_id', '=', record.product_id.id),
                     ('order_id.state', '=','purchase'),
@@ -1561,7 +1561,7 @@ class MaterialRequestLine(models.Model):
 
             if record.product_id and record.request_id.id:
                 # Fetch all Purchase Orders related to this material request
-                related_po_lines = self.env['purchase.order.line'].search([
+                related_po_lines = self.env['purchase.order.line'].sudo().search([
                     ('order_id.request_ids', 'in', [record.request_id.id]),
                     ('product_id', '=', record.product_id.id),
                     ('order_id.state', '=','purchase')
@@ -2149,7 +2149,7 @@ class AddToRfqWizardLine(models.TransientModel):
         for record in self:
             if record.product_id and record.wizard_id.material_request_id:
                 # Fetch all Purchase Orders related to this material request
-                related_po_lines = self.env['purchase.order.line'].search([
+                related_po_lines = self.env['purchase.order.line'].sudo().search([
                     ('order_id.request_ids', 'in', [record.wizard_id.material_request_id.id]),
                     ('product_id', '=', record.product_id.id),
                     ('order_id.state', '=','purchase')

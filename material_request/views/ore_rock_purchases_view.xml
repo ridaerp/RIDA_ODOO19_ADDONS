@@ -67,7 +67,7 @@
                                 string="Send To Procurement Manager" class="oe_highlight"/>
                         <button name="button_approve" type="object" invisible="state not in ['to_approve']"
                                 string="Approve Order" class="oe_highlight"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="action_create_invoice" string="Create Bill" type="object" class="oe_highlight"
                                 context="{'create_bill':True}"
                                 invisible="state not in ('purchase', 'done') or invoice_status in ('no', 'invoiced')"
@@ -89,9 +89,9 @@
                                 string="Reject" groups="base.group_user"/>
                         <button name="go_to_ccso" type="object" invisible="state != 'sum'" string="Approve"
                                 class="oe_highlight"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="%(purchase_order_reject_action)d" type="action" invisible="state != 'sum'"
-                                string="Reject" groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                string="Reject" groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <button name="button_confirm" type="object"
                                 invisible="state not in ['site','fleet_director','ccso']" string="Confirm Order"
                                 class="oe_highlight"
@@ -113,7 +113,7 @@
                                 string="Cancel" type="object"/>
                         <button name="button_lock" type="object" string="Lock" invisible="state not in ['purchase']"/>
                         <button name="button_unlock" type="object" string="Unlock" invisible="state not in ['done']"
-                                groups="material_request.group_ore_rock_supply_chain_manager"/>
+                                groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1"/>
                     </header>
                     <sheet>
@@ -200,8 +200,8 @@
                                             class="oe_link" type="action"
                                             context="{'search_default_partner_id': partner_id}">
                                         <span invisible="on_time_rate &lt; 0"><field name="on_time_rate"
-                                                                                     widget="integer"
-                                                                                     class="oe_inline"/>% On-Time
+                                                 widget="integer"
+                                                 class="oe_inline"/>% On-Time
                                             Delivery
                                         </span>
                                         <span invisible="on_time_rate &gt; 0">No On-time Delivery Data</span>
@@ -449,8 +449,7 @@
 
 
 
-
-        <!-- ORe Purchase -->
+        <!-- ORe Rock Purchase -->
 
         <record id="action_ore_rock_po_purchase" model="ir.actions.act_window">
             <field name="name">Ore/Rock Purcharses</field>
@@ -461,7 +460,6 @@
                 (False, 'list'),
                 (ref('purchase.purchase_order_kpis_tree'), 'form')
             ]"/>
-            <!--            <field name="view_id" ref="purchase_order_form_inherith"/>-->
             <field name="domain">[('ore_purchased','=',True)]</field>
             <field name="context">{'default_ore_purchased':True}</field>
             <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
@@ -474,22 +472,26 @@
 
 
 
+        <!-- ORe Tailing Purchase -->
 
-     <!--    <record id="action_ore_po_purchase" model="ir.actions.act_window">
-            <field name="name">Ore/Rock Purcharses</field>
+        <record id="action_ore_tailing_po_purchase" model="ir.actions.act_window">
+            <field name="name">Ore/Tailing Purcharses</field>
+            <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="view_mode">list,form</field>
+            <field name="views" eval="[
+                (False, 'list'),
+                (ref('purchase.purchase_order_kpis_tree'), 'form')
+            ]"/>
+            <field name="domain">[('tailing_purchased','=',True)]</field>
+            <field name="context">{'default_tailing_purchased':True}</field>
             <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
-            <field name="context">{'default_ore_purchased':True}</field>
-            <field name="domain">[('ore_purchased','=',True)]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create ORE/ROCK PURCHASES
+                    Create ORE/Tailingg PURCHASES
                 </p>
             </field>
-        </record>  -->
-
+        </record>
 
 
  <record id="action_po_form_inerit" model="ir.actions.act_window.view">
@@ -507,36 +509,38 @@
             <field name="act_window_id" ref="material_request.action_ore_rock_po_purchase"/>
         </record>
 
+   <!-- ore tailing-->
+    
+ <record id="action_po2_form_inerit" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="purchase_order_form_inherith"/>
+            <field name="act_window_id" ref="material_request.action_ore_tailing_po_purchase"/>
+        </record> 
 
-        <!--                <record id="action_po_form_inerit" model="ir.actions.act_window.view">-->
-        <!--                    <field eval="2" name="sequence"/>-->
-        <!--                    <field name="view_mode">form</field>-->
-        <!--                    <field name="view_id" ref="purchase_order_form_inherith"/>-->
-        <!--                    <field name="act_window_id" ref="material_request.action_ore_po_purchases_2"/>-->
-        <!--                </record>-->
 
-<!--         <record id="account_move_landed_view" model="ir.ui.view">
-            <field name="name">account.move.view.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='ref']" position="after">
-                    <field name="landed_cost_id" readonly="1"/>
-                    <field name="landed_cost_po_id" readonly="1"/>
-                </xpath>
-            </field>
-        </record> -->
+    <record id="action_po2_tree_inerit" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="act_window_id" ref="material_request.action_ore_tailing_po_purchase"/>
+        </record>
 
 
        <menuitem id="menu_ore_poo_maiin" name="Ore/Rock Purcharses"
                   groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
-       
+         <menuitem id="menu_ore_poo_maiin2" name="Ore/Tailing Purcharses"
+                  groups="material_request.group_ore_tailing_purchase_user,base_rida.rida_group_site_manager"/>
+
 
 
         <menuitem id="meniu_ore_poo_root_new" parent="menu_ore_poo_maiin" action="action_ore_rock_po_purchase"
             groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
 
+
+        <menuitem id="meniu_ore_poo2_root_new" parent="menu_ore_poo_maiin2" action="action_ore_tailing_po_purchase"
+            groups="material_request.group_ore_tailing_purchase_user,base_rida.rida_group_site_manager"/>
 
 
 
