@@ -735,6 +735,102 @@
 
             </field>
         </record>
+<!-- ore tailing price list -->
+     <record id="weight_request_price_tailing_list_tree" model="ir.ui.view">
+            <field name="name">Tailing Price List</field>
+            <field name="model">tailing.purchase.price.list</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="partner_id"/>
+                    <field name="unit_price"/>
+                    <field name="discount"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="weight_request_price_tailing_list_form" model="ir.ui.view">
+            <field name="name">Tailing Price List</field>
+            <field name="model">tailing.purchase.price.list</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="unit_price"/>
+                                <field name="discount"/>
+
+                            </group>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="weight_request_price_tailing_list_action">
+            <field name="name">Taling Price List</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tailing.purchase.price.list</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to start a new Tailing price list .
+                </p>
+
+            </field>
+        </record>
+
+
+     <record id="weight_request_tailing_area_list" model="ir.ui.view">
+            <field name="name">Tailing Area</field>
+            <field name="model">tailing.area</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="distance"/>
+                    <field name="unit_price"/>
+                    <field name="truck_qty"/>
+                    <field name="state_id"/>
+
+                </list>
+            </field>
+        </record>
+
+
+        <record id="weight_request_tailing_area_form" model="ir.ui.view">
+            <field name="name">Tailing Area</field>
+            <field name="model">tailing.area</field>
+
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                    <field name="name"/>
+                    <field name="distance"/>
+                    <field name="unit_price"/>
+                    <field name="truck_qty"/>
+                    <field name="state_id"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="weight_request_tailing_area_action">
+            <field name="name">Tailing Area</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tailing.area</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to start a new Tailing Area  .
+                </p>
+
+            </field>
+        </record>
 
 
         <!-- incentive category -class -->
@@ -971,10 +1067,19 @@
                   action="weight_request_car_driver_action"/>
 
         <menuitem id="menu_weight_price_list_conf" sequence="0" parent="menu_weight_requet_configuration"
-                  name="Price Lists"
-                  groups="material_request.group_ore_rock_supply_chain_manager,material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
+                  name=" Rock Price Lists"
+                  groups="material_request.group_ore_rock_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
                   action="weight_request_price_list_action"/>
 
+       <menuitem id="menu_weight_tailing_price_list_conf" sequence="1" parent="menu_weight_requet_configuration"
+                  name="Tailing Price Lists"
+                  groups="material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
+                  action="weight_request_price_tailing_list_action"/>
 
+        <menuitem id="menu_weight_tailing_area_conf" sequence="1" parent="menu_weight_requet_configuration"
+                  name="Tailing Areas"
+                  groups="material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
+                  action="weight_request_tailing_area_action"/>
+    </data>
     </data>
 </odoo>

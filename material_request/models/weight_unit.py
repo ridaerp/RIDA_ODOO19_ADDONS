@@ -2643,6 +2643,22 @@ class PurchasePriceList(models.Model):
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
 
+class TailingPurchasePriceList(models.Model):
+    _name = "tailing.purchase.price.list"
+
+    name = fields.Char("Name")
+    qty_min = fields.Many2one("res.partner","partner_id")
+    unit_price = fields.Float("Unit Price")
+    discount = fields.Float("Discount")
+
+class TailingArea(models.Model):
+    _name = "tailing.area"
+
+    name = fields.Char("Name")
+    distance = fields.Float("Distance")
+    truck_qty = fields.Float("Truck")
+    unit_price = fields.Float("Unit Price")
+    discount = fields.Float("Discount")
 
 class ChemicalSamplesSequnces(models.Model):
     _name = "chemical.samples.sequences"
