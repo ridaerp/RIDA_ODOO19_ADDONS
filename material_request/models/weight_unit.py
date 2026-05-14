@@ -2647,7 +2647,7 @@ class TailingPurchasePriceList(models.Model):
     _name = "tailing.purchase.price.list"
     _rec_name="partner_id"
     name = fields.Char("Name")
-    partner_id = fields.Many2one("res.partner","partner_id")
+    partner_id = fields.Many2one("res.partner","Vendor")
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
 
@@ -2659,6 +2659,8 @@ class TailingArea(models.Model):
     truck_qty = fields.Float("Truck")
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
+    state_id=fields.Many2one("res.country.state","State")
+
 
 class ChemicalSamplesSequnces(models.Model):
     _name = "chemical.samples.sequences"

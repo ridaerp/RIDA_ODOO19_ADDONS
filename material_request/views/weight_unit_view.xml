@@ -757,8 +757,8 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name="partner_id"/>
-                                <field name="unit_price"/>
+                                <field name="partner_id" required="1"/>
+                                <field name="unit_price" required="1"/>
                                 <field name="discount"/>
 
                             </group>
@@ -808,10 +808,10 @@
                     <sheet>
                         <group>
                     <field name="name"/>
-                    <field name="distance"/>
-                    <field name="unit_price"/>
+                    <field name="distance" />
+                    <field name="unit_price" required="1"/>
                     <field name="truck_qty"/>
-                    <field name="state_id"/>
+                    <field name="state_id" required="1"/>
 
                         </group>
                     </sheet>
