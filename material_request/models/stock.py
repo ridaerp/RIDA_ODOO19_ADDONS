@@ -192,7 +192,7 @@ class StockLandedCost(models.Model):
         partner_bank_id = self.partner_id.bank_ids.filtered_domain(
             ['|', ('company_id', '=', False), ('company_id', '=', self.company_id.id)])[:1]
         invoice_vals = {
-            'ref': '',
+            'ref': self.name,
             'move_type': 'in_invoice',
             'currency_id': self.currency_id.id,
             # 'invoice_user_id': self.user_id and self.user_id.id or self.env.user.id,
