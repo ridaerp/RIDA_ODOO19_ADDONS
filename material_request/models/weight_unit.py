@@ -2306,7 +2306,6 @@ class WeightLandedCostLine(models.Model):
 
                         ############################discount on area#########################
                         if area_list.x_studio_discount_on_transportation:
-
                             if average_qty < area_list.x_studio_discount_on_transportation:
                                 if rec.product_id.type == 'consu':
                                     if average_qty >= price_min and average_qty <= price_max:
@@ -2760,6 +2759,11 @@ class WeightOrderLine(models.Model):
         def in_special_range(avg):
             avg = round(avg or 0.0, 2)
             return 1.50 <= avg <= 1.99
+       
+        def in_special_range2(avg):
+            avg = round(avg or 0.0, 2)
+            return 1 <= avg <= 1.49
+
 
         for rec in self:
             rec.unit_price = 0.0
@@ -2899,7 +2903,7 @@ class WeightOrderLine(models.Model):
                                     rec.discount = 0.0 if rec.product_id.product_tmpl_id.self_deportation else discount
 
                         if area_list.x_studio_discount_on_transportation:
-                            if average_qty < round(area_list.x_studio_discount_on_transportation or 0.0, 2):
+                            if average_qty <= area_list.x_studio_discount_on_transportation :
                                 if rec.product_id.type == 'consu':
                                     if matched_range:
                                         rec.unit_price = line.unit_price
