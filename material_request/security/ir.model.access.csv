@@ -266,8 +266,7 @@ access_price_list_read_manager,price_list,model_purchase_price_list,base_rida.ri
 access_price_tail_list_read,price_list,model_tailing_purchase_price_list,base.group_user,1,0,0,0
 access_price_tail_list_read_manager,price_list,model_tailing_purchase_price_list,base_rida.rida_group_master_data_manager,1,1,1,1
 
-access_price_tail_area_read,price_area,model_tailing_area,base.group_user,1,0,0,0
-access_price_tail_area_read_manager,price_area,model_tailing_area,base_rida.rida_group_master_data_manager,1,1,1,1
+
 
 access_weight_request_read,price_list,model_weight_request_line,base.group_user,1,1,0,0
 access_weight_request_read_manager,price_list,model_weight_request_line,material_request.group_ore_rock_purchase_user,1,1,1,1
