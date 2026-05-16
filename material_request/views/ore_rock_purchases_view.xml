@@ -9,7 +9,7 @@
             <field name="res_model">purchase.order</field>
             <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
             <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
-            <field name="domain">[('ore_purchased','=',False),
+            <field name="domain">[('ore_purchased','=',False),('tailing_purchased','=',False)
                 ('contract_purchased','=',False)
                 ]
             </field>
