@@ -528,10 +528,10 @@
 
 
        <menuitem id="menu_ore_poo_maiin" name="Ore/Rock Purcharses"
-                  groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager"/>
+                  groups="material_request.group_ore_rock_purchase_user,base_rida.rida_group_site_manager" />
 
          <menuitem id="menu_ore_poo_maiin2" name="Ore/Tailing Purcharses"
-                  groups="material_request.group_ore_tailing_purchase_user,base_rida.rida_group_site_manager"/>
+                  groups="material_request.group_ore_tailing_purchase_user,base_rida.rida_group_site_manager" web_icon="material_request,static/description/tailing.png"/>
 
 
 
