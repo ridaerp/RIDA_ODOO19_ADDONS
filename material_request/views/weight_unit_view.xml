@@ -791,7 +791,6 @@
                     <field name="name"/>
                     <field name="distance"/>
                     <field name="unit_price"/>
-                    <field name="truck_qty"/>
                     <field name="state_id"/>
 
                 </list>
@@ -810,7 +809,6 @@
                     <field name="name"/>
                     <field name="distance" />
                     <field name="unit_price" required="1"/>
-                    <field name="truck_qty"/>
                     <field name="state_id" required="1"/>
 
                         </group>

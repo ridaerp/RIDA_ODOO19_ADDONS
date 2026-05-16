@@ -2656,7 +2656,6 @@ class TailingArea(models.Model):
 
     name = fields.Char("Name")
     distance = fields.Float("Distance")
-    truck_qty = fields.Float("Truck")
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
     state_id=fields.Many2one("res.country.state","State")
