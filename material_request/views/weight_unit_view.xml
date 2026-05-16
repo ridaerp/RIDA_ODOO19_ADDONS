@@ -783,7 +783,7 @@
         </record>
 
 
-     <record id="weight_request_tailing_area_list" model="ir.ui.view">
+ <!--     <record id="weight_request_tailing_area_list" model="ir.ui.view">
             <field name="name">Tailing Area</field>
             <field name="model">tailing.area</field>
             <field name="arch" type="xml">
@@ -828,7 +828,7 @@
                 </p>
 
             </field>
-        </record>
+        </record> -->
 
 
         <!-- incentive category -class -->
@@ -1074,9 +1074,9 @@
                   groups="material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
                   action="weight_request_price_tailing_list_action"/>
 
-        <menuitem id="menu_weight_tailing_area_conf" sequence="1" parent="menu_weight_requet_configuration"
+      <!--   <menuitem id="menu_weight_tailing_area_conf" sequence="1" parent="menu_weight_requet_configuration"
                   name="Tailing Areas"
                   groups="material_request.group_ore_tailing_supply_chain_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_master_data_manager,base_rida.rida_group_CCSO,base_rida.rida_group_COO,base_rida.rida_group_site_manager,material_request.group_ore_reader_planning"
-                  action="weight_request_tailing_area_action"/>
+                  action="weight_request_tailing_area_action"/> -->
     </data>
 </odoo>
