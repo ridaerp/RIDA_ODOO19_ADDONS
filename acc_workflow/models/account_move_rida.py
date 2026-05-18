@@ -96,7 +96,6 @@ class Bills_Workflow(models.Model):
     dm_date_gm = fields.Date(string='General Manager Approval Date')
 
     assigned_to_accountant = fields.Many2one('res.users', 'Assign To', tracking=True , domain= lambda self: [("group_ids", "=", self.env.ref("account.group_account_user").id)] )
-    ######################################comment by ekhlas#########3
     accountant_type = fields.Selection(string='Employee type', related="assigned_to_accountant.employee_id.rida_employee_type")
     # invoice_date=fields.Date(states=False)
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=False ,
@@ -146,7 +145,6 @@ class Bills_Workflow(models.Model):
         for move in self:
             move.duplicated_ref_ids = self.env['account.move']
 
-    ############################## change function by ekhlas    
     def action_submit(self):
         for rec in self:
             if not rec.invoice_date:
@@ -157,22 +155,15 @@ class Bills_Workflow(models.Model):
 
     def action_finance(self):
        for rec in self:
-            # if rec.landed_cost_id:
-            #     if rec.landed_cost_id.state != 'done':
-            #         raise UserError("Landed Cost must be Posted first.")
 
             if not rec.assigned_to_accountant:
                 raise UserError("Please Assign Accountant !")
 
 
-            ###################3comment by ekhlas ###################
-            # if rec.accountant_type == 'site':
             if rec.assigned_to_accountant.user_type == 'site':
                 rec.write({'state': 'internal_audit',})
             elif rec.assigned_to_accountant.user_type == 'fleet':
                 rec.write({'state': 'fleet_director',})                
-            ###################3comment by ekhlas ###################
-            # elif rec.accountant_type == 'hq':
             elif rec.assigned_to_accountant.user_type == 'hq':
                 rec.write({'state': 'internal_audit',})
 
@@ -184,15 +175,6 @@ class Bills_Workflow(models.Model):
 
     def action_internal_audit(self):
         for rec in self:
-            ###ekhlas code#################change status 
-            # rec.write({'state': 'ccso'})
-            # if rec.assigned_to_accountant.user_type == 'hq':
-            #     rec.write({'state': 'accountant'})
-            # else:
-            #     rec.write({'state': 'site'})
-
-
-            ############################new change by thiqup comments
 
             rec.write({'state': 'accountant'})
 
@@ -232,22 +214,6 @@ class Bills_Workflow(models.Model):
 
  
 
-    # def write(self, vals):
-    #     result = super(Bills_Workflow, self).write(vals)
-    #     if 'payment_state' in vals:
-    #         self._check_related_purchase_payment_status()
-    #     return result
-
-
-    # def _check_related_purchase_payment_status(self):
-    #     for move in self:
-    #         if move.move_type != 'in_invoice':
-    #             continue
-    #         purchase_orders = move.purchase_id
-    #         for po in purchase_orders:
-    #             linked_records = self.env['overseas.payment'].search([('purchase_order_id', '=', po.id)])
-    #             for record in linked_records:
-    #                 record.check_payment_status()
 
 
 class AnalyticAccount(models.Model):
@@ -257,16 +223,6 @@ class AnalyticAccount(models.Model):
     analytic_type = fields.Selection(string="", selection=[('ser_cost_center', 'Service Cost Centers'), ('prod_cost_center', 'Productive Cost Center'),('admin_cost_center', 'Administrative Cost Center'),('capitalized', 'Capitalized Cost Centers'),
                                                            ('group_business_dev','Group Business Development '),('group_cost_center', 'Group Cost Centers'),('none', 'None'),], required=False, )
 
-
-
-# class AccountMoveLine(models.Model):
-#     _inherit = 'account.move.line'
-#
-#     journal_type = fields.Selection(
-#         related='move_id.journal_id.type',
-#         store=True,
-#         string="Journal Type",
-#     )
 
 
 class AccountJournal(models.Model):
