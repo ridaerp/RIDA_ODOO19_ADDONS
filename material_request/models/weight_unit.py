@@ -370,6 +370,9 @@ class WeightRequest(models.Model):
         self.ensure_one()
         order_line_ids = []
 
+        if not self.line_ids:
+            raise ValidationError(_("Please add at least one line before creating the purchase quotation."))
+
         self.po_request = datetime.today()
 
         # Prepare purchase order lines
@@ -444,6 +447,9 @@ class WeightRequest(models.Model):
     def make_tail_purchase_quotation(self):
         self.ensure_one()
         order_line_ids = []
+        
+        if not self.line_ids:
+            raise ValidationError(_("Please add at least one line before creating the purchase quotation."))
 
         self.po_request = datetime.today()
 
