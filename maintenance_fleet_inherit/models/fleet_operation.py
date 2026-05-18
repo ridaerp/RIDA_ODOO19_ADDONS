@@ -110,48 +110,6 @@ class FleetOperation(models.Model):
         res['odometer_ids'] = odometer_lines
         return res
 
-    # ---------- تحديث العدادات ----------
-    # def _update_vehicle_odometers(self):
-    #     print("\n==== Updating Vehicle Odometers ====\n")
-    #     Odometer = self.env['fleet.vehicle.odometer']
-    #     for rec in self:
-    #         for line in rec.odometer_ids:
-    #             print(f"Processing line for equipment: {line.equipment_id.name}, vehicle: {line.vehicle_id.name}")
-    #             # تحديد أو إنشاء الموقع
-    #             location_id = line.location_id.id or self._get_or_create_vehicle_location(
-    #                 getattr(line.vehicle_id, 'location', False)
-    #             )
-
-    #             # تحديد مفتاح البحث (المعدة أولًا، ثم المركبة)
-    #             domain = [
-    #                 ('date', '=', rec.date),
-    #                 ('equipment_id', '=', line.equipment_id.id)
-    #             ]
-    #             if line.vehicle_id:
-    #                 domain.append(('vehicle_id', '=', line.vehicle_id.id))
-
-
-
-    #             # البحث أو الإنشاء
-    #             existing = Odometer.search(domain, limit=1)
-    #             print(f"  Found existing odometer? {bool(existing)} domain={domain}")
-    #             if vehicle.company_id and vehicle.company_id not in self.env.user.company_ids:
-    #                 raise UserError(f"Vehicle {vehicle.name} belongs to another company")
-    #             vals = {
-    #                 'date': rec.date,
-    #                 'vehicle_id': line.vehicle_id.id,
-    #                 'equipment_id': line.equipment_id.id,
-    #                 'location_id': line.location_id.id,
-    #                 'value': line.end_value,
-    #                 'start_value': line.start_value,
-    #             }
-
-    #             if existing:
-    #                 print("  → Updating existing odometer record")
-    #                 existing.write(vals)
-    #             else:
-    #                 print("  → Creating new odometer record")
-    #                 Odometer.create(vals)
     def _update_vehicle_odometers(self):
         print("\n==== Updating Vehicle Odometers ====\n")
         Odometer = self.env['fleet.vehicle.odometer']
@@ -220,7 +178,7 @@ class FleetVehicleOdometerLine(models.Model):
 
     operation_id = fields.Many2one('fleet.operation', string='Operation', ondelete='cascade')
     vehicle_id = fields.Many2one('fleet.vehicle', string='Equipment Name')
-    equipment_id = fields.Many2one('maintenance.equipment', 'Equipment Type', ondelete="cascade")
+    equipment_id = fields.Many2one('maintenance.equipment', 'Equipment Type', ondelete="set null")
     equipment_code = fields.Char(string='Equipment Code', compute='_compute_equipment_code', store=True)
     location_id = fields.Many2one('vehicle.location', string='Location', tracking=True,
     ondelete='set null')
