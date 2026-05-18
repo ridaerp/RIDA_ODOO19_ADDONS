@@ -157,7 +157,22 @@ class MaintenanceEquiement(models.Model):
 
 
     asset_id=fields.Many2one("account.asset","Asset")
+    # استبدال Many2one بـ Char
+    location = fields.Char(string='Location', help="Equipment location")
     
+    # إذا كان هناك كود يعتمد على location_id، أضف computed field
+    location_id = fields.Many2one('vehicle.location', compute='_compute_location_id', store=True)
+    
+    def _compute_location_id(self):
+        for record in self:
+            if record.location:
+                loc = self.env['vehicle.location'].search([('name', '=', record.location)], limit=1)
+                record.location_id = loc.id if loc else False
+            else:
+                record.location_id = False
+
+    
+
     def _compute_count_all(self):
         Odometer = self.env['fleet.vehicle.odometer']
         for record in self:
@@ -848,18 +863,9 @@ class MaintenanceRequest(models.Model):
     @api.model
     def create(self, vals):
         rec = super().create(vals)
-        if rec.location:
-            loc = self.env['vehicle.location'].search([('name', '=', rec.location)], limit=1)
-            if not loc:
-                self.env['vehicle.location'].create({'name': rec.location})
         return rec
 
     def write(self, vals):
-        location_name = vals.get('location')
-        if location_name:
-            loc = self.env['vehicle.location'].search([('name', '=', location_name)], limit=1)
-            if not loc:
-                self.env['vehicle.location'].create({'name': location_name})
         return super().write(vals)
 
     @api.constrains('std_durattion', 'stage_id', 'team_id')
@@ -1570,7 +1576,7 @@ class OfficeRoom(models.Model):
 class FleetVehicleOdometer(models.Model):
     _inherit = 'fleet.vehicle.odometer'
 
-    equipment_id = fields.Many2one('maintenance.equipment', ' Equipment', ondelete="cascade")
+    equipment_id = fields.Many2one('maintenance.equipment', ' Equipment', ondelete="set null")
     location_id = fields.Many2one('vehicle.location', ' location', ondelete="cascade")
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle',required=False)
     start_value = fields.Float(string='Start',group_operator="min")

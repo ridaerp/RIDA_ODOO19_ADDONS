@@ -52,7 +52,8 @@ class StockPicking(models.Model):
 
                         # التأكد من حالة الفوترة لتجنب الأخطاء
                         if purchase_sudo.invoice_status == 'to invoice':
-                            purchase_sudo.action_create_invoice()
+                            ctx = dict(self.env.context, default_invoice_date=fields.Date.today(), default_date=fields.Date.today())
+                            purchase_sudo.with_context(ctx).action_create_invoice()
 
                     except Exception as e:
                         # يفضل طباعة الخطأ في السجلات (Logs)

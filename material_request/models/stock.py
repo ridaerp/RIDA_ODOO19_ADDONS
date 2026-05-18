@@ -194,6 +194,7 @@ class StockLandedCost(models.Model):
         invoice_vals = {
             'ref': self.name,
             'move_type': 'in_invoice',
+            'invoice_date': fields.Date.today(),
             'currency_id': self.currency_id.id,
             # 'invoice_user_id': self.user_id and self.user_id.id or self.env.user.id,
             'partner_id': partner_invoice_id,

@@ -30,11 +30,26 @@
                 </header>
 
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_procedure"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-book">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Procedure
+                                </span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="text-center" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <h2 style="color: #714B67;">
                             <field name="doc_no" readonly="1"/>
                         </h2>
                         <div class="text-muted">PPE Complain/Suggestion DOCUMENT</div>
+                        <p style="margin: 0; font-size: 1.2rem; line-height: 1.6; direction: rtl;">
+ يُستخدم لتقديم شكاوى أو مقترحات تتعلق بمعدات الوقاية الشخصية، حيث يتم تسجيل الملاحظات والتحقيق فيها واتخاذ الإجراءات المناسبة لتحسين السلامة. 
+                        </p>
                     </div>
 
                     <div class="oe_title">

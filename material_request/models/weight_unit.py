@@ -370,6 +370,9 @@ class WeightRequest(models.Model):
         self.ensure_one()
         order_line_ids = []
 
+        if not self.line_ids:
+            raise ValidationError(_("Please add at least one line before creating the purchase quotation."))
+
         self.po_request = datetime.today()
 
         # Prepare purchase order lines
@@ -444,6 +447,9 @@ class WeightRequest(models.Model):
     def make_tail_purchase_quotation(self):
         self.ensure_one()
         order_line_ids = []
+        
+        if not self.line_ids:
+            raise ValidationError(_("Please add at least one line before creating the purchase quotation."))
 
         self.po_request = datetime.today()
 
@@ -2752,22 +2758,42 @@ class StockLot(models.AbstractModel):
 
 
 
+    # def _compute_average(self):
+    #     for lot in self:
+    #         # Filter moves where lot.id exists in move's lot_ids
+    #         moves = self.env['stock.move'].search([
+    #             ('lot_ids', 'in', lot.id),  # Ensure this move is linked to the lot
+    #             ('state', '=', 'done'),  # Consider only completed stock moves
+    #             ('average', '>', 0)  # Ignore zero or negative averages
+    #         ])
+
+    #         # Ensure we only calculate the average for this specific lot, not all moves' lot_ids
+    #         valid_moves = moves.filtered(lambda move: lot.id in move.lot_ids.ids)
+
+    #         print(f">>>>>>> Lot {lot.id} >>>>> Valid Moves: {valid_moves.mapped('id')}")
+
+    #         # Compute total average
+    #         lot.total_average = sum(valid_moves.mapped('average')) / len(valid_moves) if valid_moves else 0.0
+    @api.depends()
     def _compute_average(self):
         for lot in self:
-            # Filter moves where lot.id exists in move's lot_ids
-            moves = self.env['stock.move'].search([
-                ('lot_ids', 'in', lot.id),  # Ensure this move is linked to the lot
-                ('state', '=', 'done'),  # Consider only completed stock moves
-                ('average', '>', 0)  # Ignore zero or negative averages
+
+            move_lines = self.env['stock.move.line'].search([
+                ('lot_id', '=', lot.id),
+                ('state', '=', 'done'),
+                ('average', '>', 0)
             ])
 
-            # Ensure we only calculate the average for this specific lot, not all moves' lot_ids
-            valid_moves = moves.filtered(lambda move: lot.id in move.lot_ids.ids)
+            moves = move_lines.mapped('move_id').filtered(
+                lambda m: m.average > 0
+            )
 
-            print(f">>>>>>> Lot {lot.id} >>>>> Valid Moves: {valid_moves.mapped('id')}")
+            averages = moves.mapped('average')
 
-            # Compute total average
-            lot.total_average = sum(valid_moves.mapped('average')) / len(valid_moves) if valid_moves else 0.0
+            lot.total_average = (
+                sum(averages) / len(averages)
+                if averages else 0.0
+            )
 
     @api.model
     def set_state(self, new_state):
