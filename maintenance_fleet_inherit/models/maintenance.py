@@ -161,7 +161,7 @@ class MaintenanceEquiement(models.Model):
     location = fields.Char(string='Location', help="Equipment location")
     
     # إذا كان هناك كود يعتمد على location_id، أضف computed field
-    location_id = fields.Many2one('vehicle.location', compute='_compute_location_id', store=False)
+    location_id = fields.Many2one('vehicle.location', compute='_compute_location_id', store=True)
     
     def _compute_location_id(self):
         for record in self:

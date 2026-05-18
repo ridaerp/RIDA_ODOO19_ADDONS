@@ -23,6 +23,7 @@ access_qhse_ppe_receipt,access_qhse_receipt,model_ppe_receipt,,1,1,1,1
 access_qhse_ppe_receipt_line,access_qhse_receipt_line,model_ppe_receipt_line,,1,1,1,1
 access_qhse_ppe_distribution,access_qhse_ppe_distribution,model_ppe_distribution,,1,1,1,1
 access_qhse_ppe_distribution_line,access_qhse_ppe_distribution_line,model_ppe_distribution_line,,1,1,1,1
+access_work_dept_approval,access_work_dept_approval,model_work_dept_approval,,1,1,1,1
 
 
 

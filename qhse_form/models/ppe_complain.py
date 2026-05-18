@@ -14,6 +14,25 @@ class PPEComplaint(models.Model):
         if self.state != 'draft':
             raise UserError("You cannot delete this Blasting Work Permit. Only DRAFT records can be deleted.")
         return super(PPEComplaint, self).unlink()
+    
+    def action_view_procedure(self):
+        self.ensure_one()
+
+        procedure = self.env['qhse.procedure'].search([
+            ('name', '=', 'PERSONAL PROTECTIVE EQUIPMENT PROCEDURE')
+        ], limit=1)
+
+        if not procedure:
+            raise UserError(_("Procedure not found."))
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Personal Protective Equipment Procedure'),
+            'res_model': 'qhse.procedure',
+            'res_id': procedure.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     name = fields.Char(string='Permit Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
 

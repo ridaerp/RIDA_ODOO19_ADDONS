@@ -73,7 +73,8 @@ class PPEReplacement(models.Model):
         ('wlm_approve', 'Waiting Line Manager'),
         ('officer', 'Safety Officer Review'),
         ('manager', 'Manager Approval'),
-        ('done', 'Approved')
+        ('done', 'Approved'),
+        ('reject', 'Rejected'),
     ], default='draft', string='Status', tracking=True)
     reason_reject = fields.Text(string='Reject Reason', tracking=True)
     deduction_count = fields.Integer(compute='_compute_deduction_count')
