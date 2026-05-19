@@ -57,7 +57,10 @@ class BlastingWorkPermit(models.Model):
     )
     department_id = fields.Many2one('hr.department', string='القسم / Department',
                                     default=lambda self: self.env.user.employee_id.department_id)
-
+    
+    except_date = fields.Date(string='التاريخ المتوقع للتفجير/ Expected date of blasting')
+    extension_date_from = fields.Datetime(string='بداية التمديد / Extension From')
+    extension_date_to = fields.Datetime(string='نهاية التمديد / Extension To')
     department_ids = fields.Many2many('hr.department', string='الاقسام المعنية / Departments Involved')
     approved_dept_ids = fields.Many2many('hr.department', 'blasting_work_dept_rel', string='الأقسام التي وافقت')
     dept_approval_ids = fields.One2many(
