@@ -143,7 +143,6 @@ class FleetOperation(models.Model):
                     'date': rec.date,
                     'vehicle_id': line.vehicle_id.id,
                     'equipment_id': line.equipment_id.id,
-                    'location_id': location_id, # تم استخدام المتغير المحسوب أعلاه
                     'value': line.end_value,
                     'start_value': line.start_value,
                 }

@@ -8,6 +8,7 @@ class PermissionRequest(models.Model):
     _name = "permission.request"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Permission Request"
+    _order = "create_date desc"
 
     name = fields.Char(string="Reference", readonly=True, copy=False, default=lambda self: _('New'))
     state = fields.Selection([

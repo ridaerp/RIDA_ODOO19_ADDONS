@@ -214,6 +214,7 @@ class RequestProduct(models.Model):
                     "name": self.product_name,
                     "image_1920": self.image_1920,
                     "type": type,
+                    "is_storable": is_storable,
                     "default_code": self.default_code,
                     "purchase_method": self.purchase_method,
                     "part_number": self.part_number,
