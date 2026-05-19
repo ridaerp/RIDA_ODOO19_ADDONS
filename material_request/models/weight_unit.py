@@ -88,7 +88,7 @@ class WeightRequest(models.Model):
     dump = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="dumped after analysis")
     oven = fields.Selection([('yes', 'Yes'), ('no', 'No')], string="Oven Option for Samples")
     is_sack = fields.Boolean( string="Is Sack")
-    is_tailing = fields.Boolean( string="Is Tailing")
+    is_tailing = fields.Boolean( string="Is Ore Tailing")
 
     disposal_info = fields.Char(default="STRUCTION FOR DISPOSAL OF SAMPLES AND RECEIPT OF RESULTS", readonly="1")
 
