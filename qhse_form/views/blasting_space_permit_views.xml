@@ -98,6 +98,7 @@
                         <group string="Part #01/A: Details of Site Blasting / تفاصيل موقع التفجير">
                             <group>
                                 <field name="date_from"/>
+                                <field name="except_date"/>
                                 <field name="requester_id"/>
                                 <field name="department_id"/>
                                 <field name="is_need_ptw" invisible="state != 'draft'"/>
@@ -194,7 +195,7 @@
                                         <field name="ppe_hearing" widget="radio" options="{'horizontal': true}" required="True"/>
                                         <field name="ppe_head" widget="radio" options="{'horizontal': true}" required="True"/>
                                         <field name="ppe_body" widget="radio" options="{'horizontal': true}" required="True"/>
-                                        <field name="ppe_respirator" widget="radio" options="{'horizontal': true}" required="True"/>
+                                        <field name="ppe_respirator"/>
                                         <field name="ppe_other"/>
                                     </group>
                                 </group>
@@ -246,6 +247,12 @@
                                 <field name="closing_reason" invisible="state not in ['pending_close', 'closed']"/>
                                 <field name="reason_reject" invisible="state != 'draft'"/>
                             </group>
+                            <group>
+                            <group string="فترة التمديد / Extension Period" invisible="state not in ['pending_extension','extended', 'closed']">
+                                <field name="extension_date_from" required="state == 'pending_extension'"/>
+                                <field name="extension_date_to" required="state == 'pending_extension'"/>
+                            </group>
+                        </group>
                         </group>
                         <group string="الموافقة والتعهد / Confirmation" class="mt-3">
                             <field name="confirmation_check" widget="boolean_toggle"
