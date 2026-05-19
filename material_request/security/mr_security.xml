@@ -740,7 +740,17 @@
                 <field name="name">Purchase Order: Allow Ore Rock Purchase</field>
                 <field name="model_id" ref="purchase.model_purchase_order"/>
                 <field name="groups" eval="[(4, ref('material_request.group_ore_rock_db_geology_user'))]"/>
-                <field name="domain_force">[('company_id', 'in', company_ids),('ore_purchased','=',True)]</field>
+                <field name="domain_force">
+                       [
+                            ('company_id', 'in', company_ids),
+                            '|',
+                                ('ore_purchased', '=', True),
+                                '&amp;',
+                                    ('ore_purchased', '=', False),
+                                    ('tailing_purchased', '=', False)
+                        ]
+
+                </field>
             </record>
 
   <!-- Record Rule for Purchase Order -->
@@ -748,8 +758,20 @@
                 <field name="name">Purchase Order: Allow Ore Tailing Purchase</field>
                 <field name="model_id" ref="purchase.model_purchase_order"/>
                 <field name="groups" eval="[(4, ref('material_request.group_ore_tailing_db_geology_user'))]"/>
-                <field name="domain_force">[('company_id', 'in', company_ids),('tailing_purchased','=',True)]</field>
+                <field name="domain_force">
+                [
+                    ('company_id', 'in', company_ids),
+                    '|',
+                        ('tailing_purchased', '=', True),
+                        '&amp;',
+                            ('ore_purchased', '=', False),
+                            ('tailing_purchased', '=', False)
+                ]
+
+                </field>
             </record>
+                    <!-- [('company_id', 'in', company_ids),('ore_purchased','=',True)] -->
+                    <!-- [('company_id', 'in', company_ids),('tailing_purchased','=',True)] -->
 
     </data>
 </odoo>

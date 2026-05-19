@@ -2667,6 +2667,7 @@ class PurchasePriceList(models.Model):
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
 
+
 class TailingPurchasePriceList(models.Model):
     _name = "tailing.purchase.price.list"
     _rec_name="partner_id"
@@ -2675,6 +2676,13 @@ class TailingPurchasePriceList(models.Model):
     unit_price = fields.Float("Unit Price")
     discount = fields.Float("Discount")
 
+    _sql_constraints = [
+        (
+            'unique_partner_id',
+            'unique(partner_id)',
+            'Vendor already exists in Tailing Purchase Price List.'
+        )
+    ]
 # class TailingArea(models.Model):
 #     _name = "tailing.area"
 
